@@ -1,0 +1,4 @@
+gnunet_signatures.h
+gnunet_signatures.h.tmp
+taler_signatures.go*
+taler_signatures.ts*

@@ -1,0 +1,16 @@
+Amtsgericht sieht folgende Probleme mit der Vorstandswahl und Satzungsänderung:
+
+1. Neuer Sitz nicht angegeben
+   => Problem liegt beim Notar, wird von Notar korrigiert
+
+2. Aus Wahlprotokoll liest das Amtsgericht raus, dass Vorstandswahl in Blockwahl
+   stattgefunden hat.
+   => Dies war nicht der Fall, wir machen Klarstellung im Protokoll
+
+3. Satzungsänderung:
+   (a) § 11 bestimmt nur Wahl und Amtsdauer des Vereinsvorsitzenden und Stellvertreter
+   => Neue Satzung muss Wahl/Berufung/Amtsdauer der übrigen Vorstandsmitglieder ergänzen
+   (b) § 12 Abs. 1 der Satzung von 2023 (flexible Amtsdauer) wird vom
+   Amtsgericht als Problematisch beurteilt, da hierdurch die Einberufung der MV
+   auf unbestimmte Zeit ausgesetzt werden könnte
+   => Die Mitglieder können mit 25% Quorum eine MV einberufen, der Verein ist okay damit

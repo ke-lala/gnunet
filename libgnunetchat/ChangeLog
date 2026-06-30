@@ -1,0 +1,99 @@
+## Version 0.7.0
+* Fix build compatibility with GNUnet 0.27.0
+* Add account secrets for encrypted storage of keys
+* Implement function to randomly generate account secrets
+* Fix issues with internal warning/error messages
+* Add old account name to messages caused by renaming
+
+## Version 0.6.1
+* Fix build compatibility with GNUnet 0.26.0
+
+## Version 0.6.0
+* This release requires the GNUnet Messenger Service 0.5!
+* Fixes issues regarding group creation, leaving chats and invitations
+* Adjust test cases to ensure reproducibility
+* Add test applications for automated latency tests (debugging E2E encryption)
+* Optimize automatic requests and message graph merges
+
+## Version 0.5.3
+* Fix build incompatibility with meson build from GNUnet
+
+## Version 0.5.2
+* Implement iteration of tags by chat contact
+* Adjust types and API to improve consistency
+* Add more test cases and fix some older test cases
+* Adjust IV derivation for file encryption/decryption key
+
+## Version 0.5.1
+* Fixes discourses stalling application on exit of its process.
+* Fixes comparison of egos for proper account management.
+* Implements automatic Github workflow for builds and testing.
+* Fixes destruction of contacts and lobbies.
+* Adjust internal message handling.
+* Adjust all test cases to run independent of each other.
+* Add test case for group opening and leaving.
+
+## Version 0.5.0
+* This release requires the GNUnet Messenger Service 0.5!
+* Implements tickets to share attributes with contacts.
+* Implement functionality to get recipient of sent private messages.
+* Allow file sharing without additional encryption key.
+* Implements discourses to send data in live channels.
+* Fix memory violations and duplicate storage entries.
+* Adjust callbacks regarding account states.
+* Fix deletions of accounts and lobbies.
+* Fix multiple synchronization bugs.
+* Add test cases for discourses and tickets.
+
+## Version 0.3.1
+* Makes dependency to libcheck optional (only required for building test cases)
+* Fixes file iteration of chat context
+* Fixes some build issues
+
+## Version 0.3.0
+* This release requires the GNUnet Messenger Service 0.3!
+* It allows ticket management for tickets sent from contacts.
+* Deletions or other updates of messages result in separate event calls.
+* It is possible to tag messages or contacts.
+* Invitations can be rejected via tag messages.
+* Contacts can be blocked or unblocked which results in filtering messages.
+* Processing of messages is ensured by enforcing logical order of callbacks while querying old messages.
+* Private messages are readable to its sender.
+* Messages provide information about its recipient.
+* Logouts get processed on application level on exit.
+* Delays message callbacks depending on message kind (deletion with custom delay).
+* New debug tools are available to visualize the message graph.
+* Add test case for message receivement.
+* Multiple issues are fixed.
+
+## Version 0.1.3
+* Use Meson as build system instead of GNU Automake
+* Fix issues regarding inclusion of private headers
+
+## Version 0.1.2
+* Improve GNU Automake configuration
+* Update API usage regarding changes in GNUnet 0.19.0
+
+## Version 0.1.1
+* Fixes typos, memory leaks and other reliability issues
+* Transitions from single Makefile to GNU Automake
+* Updates API usage regarding changes in GNUnet 0.18.0
+
+## Version 0.1.0
+* This release requires the GNUnet Messenger Service 0.1!
+* It allows account management (creation, listing and deletion).
+* Clients are able to switch between accounts during runtime.
+* The client can rename an account or update its key.
+* Contact exchange is possible via lobbies in form of URIs to be shared as text form or potentially QR encoded.
+* Each resource allows handling a user pointer for the client application.
+* Contacts and groups can be managed individually and given a custom nick name.
+* It is possible to request and open a direct chat with any contact.
+* Groups allow listing their members with custom user pointers related to the group memberships.
+* Chats can be left explicitly.
+* Each chat will be represented as context resource abstracting the variant of chat.
+* It is possible to send text messages, send files, share files and send read receipts explicitly.
+* Received messages allow checking for a read receipt status.
+* Messages can be deleted with a custom delay.
+* Files in a chat can be fully managed (they can be uploaded, downloaded, unindexed and provide a decrypted temporary preview if necessary) while being encrypted individually.
+* The status of each operation (upload, download, unindex) regarding files can be tracked.
+* Received invitations to new chats can be accepted.

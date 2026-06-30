@@ -1,0 +1,305 @@
+/*
+     This file is part of GNUnet.
+     Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2013 GNUnet e.V.
+
+     GNUnet is free software: you can redistribute it and/or modify it
+     under the terms of the GNU Affero General Public License as published
+     by the Free Software Foundation, either version 3 of the License,
+     or (at your option) any later version.
+
+     GNUnet is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+
+/**
+ * @file util/crypto_symmetric.c
+ * @brief Symmetric encryption services; combined cipher AES+TWOFISH (256-bit each)
+ * @author Christian Grothoff
+ * @author Ioana Patrascu
+ */
+
+
+#include "platform.h"
+#include "gnunet_util_lib.h"
+#include <gcrypt.h>
+
+#define LOG(kind, ...) GNUNET_log_from (kind, "util-crypto-symmetric", \
+                                        __VA_ARGS__)
+
+/**
+ * Create a new SessionKey (for symmetric encryption).
+ *
+ * @param key session key to initialize
+ */
+void
+GNUNET_CRYPTO_symmetric_create_session_key (struct
+                                            GNUNET_CRYPTO_SymmetricSessionKey *
+                                            key)
+{
+  gcry_randomize (key->aes_key,
+                  GNUNET_CRYPTO_AES_KEY_LENGTH,
+                  GCRY_STRONG_RANDOM);
+  gcry_randomize (key->twofish_key,
+                  GNUNET_CRYPTO_AES_KEY_LENGTH,
+                  GCRY_STRONG_RANDOM);
+}
+
+
+/**
+ * Initialize AES cipher.
+ *
+ * @param handle handle to initialize
+ * @param sessionkey session key to use
+ * @param iv initialization vector to use
+ * @return #GNUNET_OK on success, #GNUNET_SYSERR on error
+ */
+static int
+setup_cipher_aes (gcry_cipher_hd_t *handle,
+                  const struct GNUNET_CRYPTO_SymmetricSessionKey *sessionkey,
+                  const struct GNUNET_CRYPTO_SymmetricInitializationVector *iv)
+{
+  int rc;
+
+  GNUNET_assert (0 ==
+                 gcry_cipher_open (handle, GCRY_CIPHER_AES256,
+                                   GCRY_CIPHER_MODE_CFB, 0));
+  rc = gcry_cipher_setkey (*handle,
+                           sessionkey->aes_key,
+                           sizeof(sessionkey->aes_key));
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  rc = gcry_cipher_setiv (*handle,
+                          iv->aes_iv,
+                          sizeof(iv->aes_iv));
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  return GNUNET_OK;
+}
+
+
+/**
+ * Initialize TWOFISH cipher.
+ *
+ * @param handle handle to initialize
+ * @param sessionkey session key to use
+ * @param iv initialization vector to use
+ * @return #GNUNET_OK on success, #GNUNET_SYSERR on error
+ */
+static int
+setup_cipher_twofish (gcry_cipher_hd_t *handle,
+                      const struct
+                      GNUNET_CRYPTO_SymmetricSessionKey *sessionkey,
+                      const struct
+                      GNUNET_CRYPTO_SymmetricInitializationVector *iv)
+{
+  int rc;
+
+  GNUNET_assert (0 ==
+                 gcry_cipher_open (handle, GCRY_CIPHER_TWOFISH,
+                                   GCRY_CIPHER_MODE_CFB, 0));
+  rc = gcry_cipher_setkey (*handle,
+                           sessionkey->twofish_key,
+                           sizeof(sessionkey->twofish_key));
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  rc = gcry_cipher_setiv (*handle,
+                          iv->twofish_iv,
+                          sizeof(iv->twofish_iv));
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  return GNUNET_OK;
+}
+
+
+ssize_t
+GNUNET_CRYPTO_symmetric_encrypt (const void *block,
+                                 size_t size,
+                                 const struct
+                                 GNUNET_CRYPTO_SymmetricSessionKey *sessionkey,
+                                 const struct
+                                 GNUNET_CRYPTO_SymmetricInitializationVector *iv
+                                 ,
+                                 void *result)
+{
+  gcry_cipher_hd_t handle;
+  char tmp[GNUNET_NZL (size)];
+
+  if (GNUNET_OK != setup_cipher_aes (&handle, sessionkey, iv))
+    return -1;
+  GNUNET_assert (0 == gcry_cipher_encrypt (handle, tmp, size, block, size));
+  gcry_cipher_close (handle);
+  if (GNUNET_OK != setup_cipher_twofish (&handle, sessionkey, iv))
+    return -1;
+  GNUNET_assert (0 == gcry_cipher_encrypt (handle, result, size, tmp, size));
+  gcry_cipher_close (handle);
+  memset (tmp, 0, sizeof(tmp));
+  return size;
+}
+
+
+ssize_t
+GNUNET_CRYPTO_symmetric_decrypt (const void *block,
+                                 size_t size,
+                                 const struct
+                                 GNUNET_CRYPTO_SymmetricSessionKey *sessionkey,
+                                 const struct
+                                 GNUNET_CRYPTO_SymmetricInitializationVector *iv
+                                 ,
+                                 void *result)
+{
+  gcry_cipher_hd_t handle;
+  char tmp[size];
+
+  if (GNUNET_OK != setup_cipher_twofish (&handle, sessionkey, iv))
+    return -1;
+  GNUNET_assert (0 == gcry_cipher_decrypt (handle, tmp, size, block, size));
+  gcry_cipher_close (handle);
+  if (GNUNET_OK != setup_cipher_aes (&handle, sessionkey, iv))
+    return -1;
+  GNUNET_assert (0 == gcry_cipher_decrypt (handle, result, size, tmp, size));
+  gcry_cipher_close (handle);
+  memset (tmp, 0, sizeof(tmp));
+  return size;
+}
+
+
+void
+GNUNET_CRYPTO_aes_ctr (
+  const void *in_buf,
+  size_t in_buf_len,
+  const unsigned char key[GNUNET_CRYPTO_AES_KEY_LENGTH],
+  const unsigned char iv[GNUNET_CRYPTO_AES_IV_LENGTH],
+  void *out_buf)
+{
+  gcry_cipher_hd_t handle;
+  int rc;
+
+  GNUNET_assert (0 == gcry_cipher_open (&handle, GCRY_CIPHER_AES256,
+                                        GCRY_CIPHER_MODE_CTR, 0));
+  rc = gcry_cipher_setkey (handle,
+                           key,
+                           GNUNET_CRYPTO_AES_KEY_LENGTH);
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  rc = gcry_cipher_setctr (handle,
+                           iv,
+                           GNUNET_CRYPTO_AES_IV_LENGTH);
+  GNUNET_assert ((0 == rc) || ((char) rc == GPG_ERR_WEAK_KEY));
+  GNUNET_assert (0 == gcry_cipher_encrypt (handle, out_buf, in_buf_len, in_buf,
+                                           in_buf_len));
+  gcry_cipher_close (handle);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_xsalsa20poly1305_decrypt (
+  size_t in_buf_len,
+  const unsigned char in_buf[in_buf_len],
+  const struct GNUNET_CRYPTO_XSalsa20SecretKey *key,
+  const struct GNUNET_CRYPTO_XSalsa20Nonce *nonce,
+  void *out_buf)
+{
+  ssize_t ctlen = in_buf_len - crypto_secretbox_xsalsa20poly1305_MACBYTES;
+  if (ctlen < 0)
+    return GNUNET_SYSERR;
+  if (0 != crypto_secretbox_open_detached (
+        out_buf,
+        in_buf
+        + crypto_secretbox_xsalsa20poly1305_MACBYTES,                                                             // Ciphertext
+        in_buf,                                    // Tag
+        ctlen,
+        nonce->nonce,
+        key->key))
+  {
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_xsalsa20poly1305_encrypt (
+  size_t in_buf_len,
+  const unsigned char in_buf[in_buf_len],
+  const struct GNUNET_CRYPTO_XSalsa20SecretKey *key,
+  const struct GNUNET_CRYPTO_XSalsa20Nonce *nonce,
+  void *out_buf)
+{
+  if (in_buf_len > crypto_secretbox_xsalsa20poly1305_MESSAGEBYTES_MAX)
+    return GNUNET_SYSERR;
+  crypto_secretbox_detached (out_buf
+                             + crypto_secretbox_xsalsa20poly1305_MACBYTES,         // Ciphertext
+                             out_buf, // TAG
+                             in_buf,
+                             in_buf_len,
+                             nonce->nonce,
+                             key->key);
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_aead_decrypt (
+  size_t ct_len,
+  const unsigned char ct[ct_len],
+  size_t aad_len,
+  const unsigned char aad[aad_len],
+  const struct GNUNET_CRYPTO_AeadSecretKey *key,
+  const struct GNUNET_CRYPTO_AeadNonce *nonce,
+  const struct GNUNET_CRYPTO_AeadMac *mac,
+  void *pt)
+{
+  if (0 != crypto_aead_xchacha20poly1305_ietf_decrypt_detached (
+        pt,
+        NULL,
+        ct,                                    // Tag
+        ct_len,
+        mac->mac,
+        aad,
+        aad_len,
+        nonce->npub,
+        key->k))
+  {
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_aead_encrypt (
+  size_t pt_len,
+  const unsigned char pt[pt_len],
+  size_t aad_len,
+  const unsigned char aad[aad_len],
+  const struct GNUNET_CRYPTO_AeadSecretKey *key,
+  const struct GNUNET_CRYPTO_AeadNonce *nonce,
+  void *ct,
+  struct GNUNET_CRYPTO_AeadMac *mac)
+{
+  crypto_aead_xchacha20poly1305_ietf_encrypt_detached (ct,         // Ciphertext
+                                                       mac->mac, // TAG
+                                                       NULL,
+                                                       pt,
+                                                       pt_len,
+                                                       aad,
+                                                       aad_len,
+                                                       NULL,
+                                                       nonce->npub,
+                                                       key->k);
+  return GNUNET_OK;
+}
+
+
+void
+GNUNET_CRYPTO_aead_create_key (struct GNUNET_CRYPTO_AeadSecretKey *key)
+{
+  crypto_aead_xchacha20poly1305_ietf_keygen (key->k);
+}
+
+
+/* end of crypto_symmetric.c */

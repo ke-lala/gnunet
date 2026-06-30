@@ -1,0 +1,64 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{graphicx,eurosym}
+
+\usepackage[utf8]{inputenc}
+\DeclareMathSymbol{,}{\mathord}{letters}{"3B}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{Finanzreport GNUnet e.V. 2017}
+%\subtitle{}
+% \date{\today}
+\date{}
+\author{Florian Dold}
+%\institute{Center for modern beamer themes}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Einnahmen und Ausgaben}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.33\textwidth}
+      Einnahmen
+      \begin{itemize}
+        \item $1\times$ \EUR{100} Spende
+        \item $1\times$ $0,12$ BTC Spende
+        \item \EUR{1800} R\"uckerstattung f\"ur Richard Stallman Vortrag in Rennes (Reise, Unterkunft und Verpflegung; von Christian Grothoff in bar vorgestreckt)
+      \end{itemize}
+
+    \column{0.33\textwidth}
+      Ausgaben
+      \begin{itemize}
+        \item $1\times$ \EUR{150} GHM 2016 R\"uckerstattung wegen Krankheit
+        \item Kontogeb\"uhren \EUR{0,40}
+      \end{itemize}
+    \column{0.33\textwidth}
+      Vorgemerkte Ausgaben
+      \begin{itemize}
+        \item \EUR{1800} R\"uckzahlung an Christian Grothoff
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fazit}
+  \begin{itemize}
+    \item Kontostand vom 05.10.2017: \EUR{4.052,00}
+    \item Bitcoin wallet: 0.15789943 BTC (entspricht ca. \EUR{2100} am 27. Dezember)
+    \item Einnahmen liegen unter Freibetrag
+  \end{itemize}
+\end{frame}
+
+\end{document}

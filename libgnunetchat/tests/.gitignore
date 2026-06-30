@@ -1,0 +1,9 @@
+.deps/
+.libs/
+
+gnunet
+test-suite.log
+
+*.test
+*.log
+*.trs

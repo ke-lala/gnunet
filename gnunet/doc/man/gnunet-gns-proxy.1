@@ -1,0 +1,89 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd October 25, 2012
+.Dt GNUNET-GNS-PROXY 1
+.Os
+.Sh NAME
+.Nm gnunet-gns-proxy
+.Nd run a client-side GNS SOCKS proxy
+.Sh SYNOPSIS
+.Nm
+.Op Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+.Op Fl a Ar AUTHORITY | Fl -authority= Ns Ar AUTHORITY
+.Op Fl p Ar PORT | Fl -port= Ns Ar PORT
+.Op Fl h | -help
+.Op Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+.Op Fl v | -version
+.Sh DESCRIPTION
+Most users will want to run this SOCKS proxy.
+It can be used in combination with browsers that support the SOCKS 4a protocol.
+.Pp
+The proxy will perform SSL authentication of GNS names and rewrite GNS enabled HTML content.
+To assert the validity of GNS names a local root CA certificate has to be generated that is used by the proxy.
+Thus "gnunet-gns-proxy-setup-ca" should be executed before the first launch of this proxy or the --authority switch is used to specify an appropriate CA certificate that is already trusted by the browser.
+.Bl -tag -width indent
+.It Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+Use the configuration file FILENAME.
+.It Fl a Ar AUTHORITY | Fl -authority= Ns Ar AUTHORITY
+Path to a PEM CA file that contains the certificate and private key of the CA to use to assert the validity of GNS names.
+The default port is specified in the configuration file for the gns service under "[gns-proxy]":
+"[gns-proxy]"
+PROXY_CACERT
+.It Fl p Ar PORT | Fl -port= Ns Ar PORT
+The port this proxy should listen on. Default is 7777.
+.It Fl h | -help
+Print short help on options.
+.It Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+Use LOGLEVEL for logging.
+Valid values are DEBUG, INFO, WARNING and ERROR.
+.It Fl v | -version
+Print GNUnet version number.
+.El
+.\".Sh EXAMPLES
+.Sh SEE ALSO
+.Xr gnunet-gns 1
+.sp
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Pp
+.Dl info gnunet
+.Pp
+should give you access to the complete handbook,
+.Pp
+.Dl info gnunet-c-tutorial
+.Pp
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.\".Sh HISTORY
+.\".Sh AUTHORS
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt gnunet-developers@gnu.org .

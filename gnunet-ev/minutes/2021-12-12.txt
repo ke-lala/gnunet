@@ -1,0 +1,52 @@
+December 12th 2021, 20:00 CET
+Gnunet e.V. Mitgliederversammlung 2021 (General Assembly)
+
+Online-meeting, gnunet.org Mumble 
+
+
+# Teilnehmer 
+
+    Guests:
+
+    Members: schanzen, grothoff, thejackiemonster, t3sserakt, ch3, dold
+
+
+# Finanzbericht 
+https://fdold.eu/bilanz2021.pdf (und in gnunet-ev.git/bilanz2021.tex)
+
+# Vorstandsbericht: 
+
+    Satzungsänderungen von GA 2020 noch nicht rechtskr. umgesetzt.
+
+    Vereinsanschrift wird geändert 2021 auf Lenggries b. MUC
+
+    Jaehrliche MV von moeglichst "beim CCC" auf moeglichst "online"
+
+
+# Entlastung 
+
+    Es wurde einstimmig fuer die Entlastung des Vorstands gestimmt.
+
+
+ # Anträge
+
+    Änderungen Satzung (alle angenommen, siehe Beschlüsse)
+
+
+# Vorstandswahl 
+
+  - neuer Finanzwart: Florian Dold
+  - neuer Präsident: Martin Schanzenbach
+  - neuer Vizepräsident: t3sserakt
+  - neuer Beisitzer: Christian Grothoff
+  - neuer Beisitzer: Jacki
+
+=> einstimmig gewählt
+
+ # Beschlüsse
+
+    Amtsperiode(nlänge) des nächsten Vorstandes wird vor der Wahl vom (alten) Vorstand vorgeschlagen und von der MV festgelegt.
+
+    MV wird bei Bedarf einberufen, spätestens zur nächsten (notwendigen) Wahl. (Vorher: Jährlich, effektiv dann bis zu zweijährlich) => Streichung des "möglichst jählich".
+
+    Neuer Vorstand in Satzung aufnehmen.

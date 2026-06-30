@@ -1,0 +1,569 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Internal Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Public Headers">
+      <UniqueIdentifier>{ec88d605-3383-4989-8e25-bc8efa824720}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Template Files">
+      <UniqueIdentifier>{df5ad836-e372-437b-a0e3-299d3675d6b4}</UniqueIdentifier>
+      <Extensions>in</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MhdSrc)include\microhttpd2.h">
+      <Filter>Public Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)include\microhttpd2_portability.h">
+      <Filter>Public Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MhdSrc)incl_priv\mhd_sys_options.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdW32Common)mhd_config.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\autoinit_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_offsetof.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_null_macro.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_base_types.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_bool_type.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sockets_types.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sockets_headers.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_ip_headers.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_errno.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_file_fd.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_malloc.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_select.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_poll.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sendfile.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\compat_calloc.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_w32_ver.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_align.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_bithelpers.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_byteorder.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_assert.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_unreachable.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_cntnr_ptr.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_arr_num_elems.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_tristate.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_status_code_int.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_type.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sockets_macros.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sockets_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_error_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_error.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_atomic_counter.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_bool.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str_macros.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str_types.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_buffer.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_limits.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_iovec.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dbg_print.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_panic.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init_impl.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init_auto.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dlinked_list.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_conn_socket.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_connection.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_stream.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_locks.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_itc.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_itc_types.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_threads.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sys_thread_entry_type.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_mono_clock.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_mempool.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_read_file.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_recv.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_send.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_daemon.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_public_api.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_request.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_reply.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_response.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\http_method.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\http_prot_ver.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\http_status_str.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_action.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dcc_action.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\events_process.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_logger.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_logger_default.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_options.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_add_conn.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\extr_events_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_process.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_recv.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_send.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\conn_mark_ready.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\request_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\request_get_value.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\respond_with_error.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_from.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_add_header.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_destroy.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_set_options.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_options.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\stream_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_states.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_request.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_reply.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\http_post_enc.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_post_parser.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_post_result.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_postfield_int.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\post_parser_funcs.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\request_auth_get.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\auth_basic.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_digest_auth_data.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_auth_digest_hdr.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\response_auth_digest.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\auth_digest.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\md5_int.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_md5.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sha256_int.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sha256.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\sha512_256_int.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sha512_256.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_upgrade.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\upgrade_prep.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MhdSrc)mhd2\upgrade_proc.h">
+      <Filter>Internal Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_sockets_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_socket_error_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_atomic_counter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_panic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_lib_init.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\lib_get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_itc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_threads.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_mono_clock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_mempool.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_read_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_recv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_send.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\http_status_str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\action.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\dcc_action.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\events_process.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_logger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_logger_default.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_set_options.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_create.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_start.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_add_conn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_event_update.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\extr_events_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_process.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_recv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_send.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\conn_get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\request_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\request_get_value.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\request_resume.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\respond_with_error.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\request_get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_from.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_add_header.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_destroy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_set_options.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\stream_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_states.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_request.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_reply.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\stream_get_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\compat_calloc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\post_parser_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\request_auth_get.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\auth_basic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_auth_basic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\response_auth_digest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\auth_digest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\md5_int.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\sha256_int.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\sha512_256_int.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\upgrade_prep.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\upgrade_proc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MhdSrc)mhd2\upgraded_net.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(MhdW32Common)microhttpd2.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(MhdW32Common)microhttpd2.rc.in">
+      <Filter>Template Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MhdSrc)mhd2\cpp.hint" />
+  </ItemGroup>
+</Project>

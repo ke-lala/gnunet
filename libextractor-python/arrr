@@ -1,0 +1,4 @@
+#!/bin/sh
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+#export DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}:$HOME/.guix-profile/lib"
+$@

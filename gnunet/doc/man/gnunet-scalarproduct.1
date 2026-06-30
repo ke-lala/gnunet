@@ -1,0 +1,131 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd August 8, 2013
+.Dt GNUNET-SCALARPRODUCT 1
+.Os
+.Sh NAME
+.Nm gnunet-scalarproduct
+.Nd compute a vectorproduct
+.Sh SYNOPSIS
+.Nm
+.Op Fl e Ar ELEMENTS | Fl -elements= Ns Ar ELEMENTS
+.Op Fl m Ar MASK | Fl -mask= Ns Ar MASK
+.Op Fl k Ar KEY | Fl -key= Ns Ar KEY
+.Op Fl c Ar FILENAME | -config= Ns Ar FILENAME
+.Op Fl p Ar PEERID | Fl -peer= Ns Ar PEERID
+.Op Fl h | -help
+.Op Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+.Op Fl v | -version
+.Sh DESCRIPTION
+.Nm
+enables you to compute a vectorproduct across two peers
+.Sy Alice
+and
+.Sy Bob .
+.Pp
+A client can issue one of two messages to its service:
+.Bl -enum -width 3n -offset indent
+.It
+A request to compute a vectorproduct with another peer (Alice)
+.It
+Elements to support a peer in computing a vectorproduct (Bob)
+.El
+.Pp
+Both requests must share the same SID, which can be an arbitrary
+string identifying the session. SIDs should be unique, however it is
+sufficient to guarantee the uniqueness of the tuple element count and
+session ID.
+.Pp
+Alice's client must supply the ASCII encoded peer ID of bob's
+service, it will internally be checked by the client for
+validity. Invalid values here result in the client or the service
+failing the session.
+.Pp
+Elements are handed over as signed decimal integers, the element count
+supplied by Alice and Bob must match. Alice can also
+supply a mask for these values to her service, which allows partial
+vector products to be computed across the vector. Elements can be
+masked by setting their the corresponding mask element to zero, any
+other value means the element will not be masked. Alice's
+client will also mask all 0-values to avoid information leakage to
+Bob.
+.Pp
+The protocol by definition relies on Alice and Bob being
+benign, thus Bob can arbitrarily falsify his information. Both
+peers collaborate to achieve a correct result.
+.Pp
+The options are as follows:
+.Bl -tag -width indent
+.It Fl e Ar ELEMENTS | Fl -elements= Ns Ar ELEMENTS
+The element-vector the vectorproduct should be computed over in
+signed decimal form, eg: "42,1,-3,3,7".
+Zero value elements will be automatically masked.
+.It Fl m Ar MASK | Fl -mask= Ns Ar MASK
+Elements in the vector can be masked.
+There must be at least two elements left in the vector to
+compute a vectorproduct.
+Non-Zero values indicate an element is not maskes.
+.It Fl k Ar KEY | Fl -key= Ns Ar KEY
+The session key, a shared string of arbitrary length from which
+the SID will be generated.
+.It Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+Use the configuration file FILENAME.
+.It Fl p Ar PEERID | Fl -peer= Ns Ar PEERID
+The remote peer's ASCII-armored gnunet-peer ID as output by
+.Xr gnunet-peerinfo 1 .
+If this option is not given, the peer will take the Bob's role.
+.It Fl h | -help
+Print short help on options.
+.It Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+Use LOGLEVEL for logging.
+Valid values are DEBUG, INFO, WARNING and ERROR.
+.It Fl v | -version
+Print GNUnet version number.
+.El
+.Sh SEE ALSO
+.Xr gnunet-peerinfo 1
+.sp
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Pp
+.Dl info gnunet
+.Pp
+should give you access to the complete handbook,
+.Pp
+.Dl info gnunet-c-tutorial
+.Pp
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.\".Sh HISTORY
+.\".Sh AUTHORS
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt gnunet-developers@gnu.org .

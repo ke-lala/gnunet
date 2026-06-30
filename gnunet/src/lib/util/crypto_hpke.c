@@ -1,0 +1,1109 @@
+/*
+     This file is part of GNUnet.
+     Copyright (C) 2024 GNUnet e.V.
+
+     GNUnet is free software: you can redistribute it and/or modify it
+     under the terms of the GNU Affero General Public License as published
+     by the Free Software Foundation, either version 3 of the License,
+     or (at your option) any later version.
+
+     GNUnet is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+
+/**
+ * @file util/crypto_hpke.c
+ * @brief Hybrid Public Key Encryption (HPKE) and Key encapsulation mechanisms (KEMs)
+ * @author Martin Schanzenbach
+ */
+#include "platform.h"
+#include "gnunet_common.h"
+#include <sodium.h>
+#include <stdint.h>
+#include "gnunet_util_lib.h"
+#include "sodium/crypto_scalarmult.h"
+#include "sodium/crypto_scalarmult_curve25519.h"
+#include "sodium/utils.h"
+
+/**
+ * A RFC9180 inspired labeled extract.
+ *
+ * @param ctx_str the context to label with (c string)
+ * @param salt the extract salt
+ * @param salt_len salt length in bytes
+ * @param label the label to label with
+ * @param label_len label length in bytes
+ * @param ikm initial keying material
+ * @param ikm_len ikm length in bytes
+ * @param suite_id the suite ID
+ * @param suite_id_len suite_id length in bytes
+ * @param prk the resulting extracted PRK
+ * @return GNUNET_OK on success
+ */
+static enum GNUNET_GenericReturnValue
+labeled_extract (const char *ctx_str,
+                 const void *salt, size_t salt_len,
+                 const void *label, size_t label_len,
+                 const void *ikm, size_t ikm_len,
+                 const uint8_t *suite_id, size_t suite_id_len,
+                 struct GNUNET_ShortHashCode *prk)
+{
+  size_t labeled_ikm_len = strlen (ctx_str) + suite_id_len
+                           + label_len + ikm_len;
+  uint8_t labeled_ikm[labeled_ikm_len];
+  uint8_t *tmp = labeled_ikm;
+
+  // labeled_ikm = concat("HPKE-v1", suite_id, label, ikm)
+  memcpy (tmp, ctx_str, strlen (ctx_str));
+  tmp += strlen (ctx_str);
+  memcpy (tmp, suite_id, suite_id_len);
+  tmp += suite_id_len;
+  memcpy (tmp, label, label_len);
+  tmp += label_len;
+  memcpy (tmp, ikm, ikm_len);
+  // return Extract(salt, labeled_ikm)
+  return GNUNET_CRYPTO_hkdf_extract (prk,
+                                     salt, salt_len,
+                                     labeled_ikm, labeled_ikm_len);
+}
+
+
+/**
+ * A RFC9180 inspired labeled extract.
+ *
+ * @param ctx_str the context to label with (c string)
+ * @param prk the extracted PRK
+ * @param label the label to label with
+ * @param label_len label length in bytes
+ * @param info context info
+ * @param info_len info in bytes
+ * @param suite_id the suite ID
+ * @param suite_id_len suite_id length in bytes
+ * @param out_buf output buffer, must be allocated
+ * @param out_len out_buf length in bytes
+ * @return GNUNET_OK on success
+ */
+static enum GNUNET_GenericReturnValue
+labeled_expand (const char *ctx_str,
+                const struct GNUNET_ShortHashCode *prk,
+                const char *label, size_t label_len,
+                const void *info, size_t info_len,
+                const uint8_t *suite_id, size_t suite_id_len,
+                void *out_buf,
+                uint16_t out_len)
+{
+  uint8_t labeled_info[2 + strlen (ctx_str) + suite_id_len + label_len
+                       + info_len];
+  uint8_t *tmp = labeled_info;
+  uint16_t out_len_nbo = htons (out_len);
+
+  // labeled_info = concat(I2OSP(L, 2), "HPKE-v1", suite_id,
+  //                      label, info)
+  memcpy (tmp, &out_len_nbo, 2);
+  tmp += 2;
+  memcpy (tmp, ctx_str, strlen (ctx_str));
+  tmp += strlen (ctx_str);
+  memcpy (tmp, suite_id, suite_id_len);
+  tmp += suite_id_len;
+  memcpy (tmp, label, label_len);
+  tmp += label_len;
+  memcpy (tmp, info, info_len);
+  return GNUNET_CRYPTO_hkdf_expand (
+    out_buf,
+    out_len,
+    prk,
+    GNUNET_CRYPTO_kdf_arg (labeled_info,
+                           sizeof labeled_info));
+}
+
+
+static enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_labeled_extract_and_expand (const void *dh,
+                                               size_t dh_len,
+                                               const char *extract_ctx,
+                                               const char *expand_ctx,
+                                               const void*extract_lbl, size_t
+                                               extract_lbl_len,
+                                               const void*expand_lbl, size_t
+                                               expand_lbl_len,
+                                               const uint8_t *kem_context,
+                                               size_t kem_context_len,
+                                               const uint8_t *suite_id, size_t
+                                               suite_id_len,
+                                               struct GNUNET_ShortHashCode *
+                                               shared_secret)
+{
+  struct GNUNET_ShortHashCode prk;
+  // eae_prk = LabeledExtract("", "eae_prk", dh)
+  labeled_extract (extract_ctx,
+                   NULL, 0,
+                   extract_lbl, extract_lbl_len,
+                   dh, dh_len,
+                   suite_id, suite_id_len,
+                   &prk);
+  return labeled_expand (expand_ctx,
+                         &prk,
+                         expand_lbl, expand_lbl_len,
+                         kem_context, kem_context_len,
+                         suite_id, suite_id_len,
+                         shared_secret, sizeof *shared_secret);
+}
+
+
+// DHKEM(X25519, HKDF-256): kem_id = 32
+// concat("KEM", I2OSP(kem_id, 2))
+static uint8_t GNUNET_CRYPTO_HPKE_KEM_SUITE_ID[] = { 'K', 'E', 'M',
+                                                     0x00, 0x20 };
+
+// DHKEM(X25519Elligator, HKDF-256): kem_id = 0x0022
+// concat("KEM", I2OSP(kem_id, 2))
+static uint8_t GNUNET_CRYPTO_HPKE_KEM_ELLIGATOR_SUITE_ID[] = { 'K', 'E', 'M',
+                                                               0x00, 0x22 };
+
+static enum GNUNET_GenericReturnValue
+kem_encaps_norand (uint8_t *suite_id, size_t suite_id_len,
+                   const struct GNUNET_CRYPTO_HpkePublicKey *pkR,
+                   const struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+                   const struct GNUNET_CRYPTO_HpkePrivateKey *skE,
+                   struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePublicKey dh;
+  uint8_t kem_context[sizeof *c + sizeof pkR->ecdhe_key];
+
+  // dh = DH(skE, pkR)
+  if (GNUNET_OK != GNUNET_CRYPTO_ecdh_x25519 (
+        &skE->ecdhe_key,
+        &pkR->ecdhe_key,
+        &dh.ecdhe_key))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE KEM encaps: Validation error\n");
+    return GNUNET_SYSERR; // ValidationError
+  }
+  // enc = SerializePublicKey(pkE) is a NOP, see Section 7.1.1
+  // pkRm = SerializePublicKey(pkR) is a NOP, see Section 7.1.1
+  // kem_context = concat(enc, pkRm)
+  memcpy (kem_context, c, sizeof *c);
+  memcpy (kem_context + sizeof *c,
+          &pkR->ecdhe_key,
+          sizeof pkR->ecdhe_key);
+  // shared_secret = ExtractAndExpand(dh, kem_context)
+  return GNUNET_CRYPTO_hpke_labeled_extract_and_expand (
+    &dh.ecdhe_key, sizeof dh.ecdhe_key,
+    "HPKE-v1",
+    "HPKE-v1",
+    "eae_prk", strlen ("eae_prk"),
+    "shared_secret", strlen ("shared_secret"),
+    kem_context, sizeof kem_context,
+    suite_id, suite_id_len,
+    shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_kem_encaps_norand (
+  const struct GNUNET_CRYPTO_HpkePublicKey *pkR,
+  struct GNUNET_CRYPTO_HpkeEncapsulation *enc,
+  const struct GNUNET_CRYPTO_HpkePrivateKey *skE,
+  struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_EcdhePublicKey ecdh_pk;
+  // enc = SerializePublicKey(pkE) is a NOP, see Section 7.1.1
+  GNUNET_CRYPTO_ecdhe_key_get_public (
+    &skE->ecdhe_key,
+    &ecdh_pk);
+  GNUNET_memcpy (enc,
+                 ecdh_pk.q_y,
+                 sizeof ecdh_pk.q_y);
+  return kem_encaps_norand (GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                            sizeof GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                            pkR, enc, skE, shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_kem_encaps (const struct GNUNET_CRYPTO_HpkePublicKey *
+                               pub,
+                               struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+                               struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePrivateKey skE;
+  // skE, pkE = GenerateKeyPair()
+  GNUNET_CRYPTO_ecdhe_key_create (&skE.ecdhe_key);
+
+  return GNUNET_CRYPTO_hpke_kem_encaps_norand (pub, c, &skE, shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_eddsa_kem_encaps (const struct GNUNET_CRYPTO_EddsaPublicKey *pub,
+                                struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+                                struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePublicKey pkR;
+
+  // This maps the ed25519 point to X25519
+  if (0 != crypto_sign_ed25519_pk_to_curve25519 (pkR.ecdhe_key.q_y,
+                                                 pub->q_y))
+    return GNUNET_SYSERR;
+
+  return GNUNET_CRYPTO_hpke_kem_encaps (&pkR, c, shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_kem_decaps (const struct GNUNET_CRYPTO_HpkePrivateKey *
+                               skR,
+                               const struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+                               struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePublicKey dh;
+  uint8_t kem_context[sizeof *c + crypto_scalarmult_curve25519_BYTES];
+  uint8_t pkR[crypto_scalarmult_BYTES];
+
+  // pkE = DeserializePublicKey(enc) is a NOP, see Section 7.1.1
+  // dh = DH(skR, pkE)
+  if (GNUNET_OK !=
+      GNUNET_CRYPTO_x25519_ecdh (&skR->ecdhe_key,
+                                 (struct GNUNET_CRYPTO_EcdhePublicKey*) c,
+                                 &dh.ecdhe_key))
+    return GNUNET_SYSERR; // ValidationError
+
+  // pkRm = DeserializePublicKey(pk(skR)) is a NOP, see Section 7.1.1
+  crypto_scalarmult_curve25519_base (pkR,
+                                     skR->ecdhe_key.d);
+  // kem_context = concat(enc, pkRm)
+  memcpy (kem_context, c, sizeof *c);
+  memcpy (kem_context + sizeof *c, pkR, sizeof pkR);
+  // shared_secret = ExtractAndExpand(dh, kem_context)
+  return GNUNET_CRYPTO_hpke_labeled_extract_and_expand (
+    &dh.ecdhe_key, sizeof dh.ecdhe_key,
+    "HPKE-v1",
+    "HPKE-v1",
+    "eae_prk", strlen ("eae_prk"),
+    "shared_secret", strlen ("shared_secret"),
+    kem_context, sizeof kem_context,
+    GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+    sizeof GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+    shared_secret);
+}
+
+
+// FIXME use Ed -> Curve conversion???
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_eddsa_kem_decaps (const struct
+                                GNUNET_CRYPTO_EddsaPrivateKey *priv,
+                                const struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+                                struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePrivateKey skR;
+
+  // This maps the ed25519 point to X25519
+  if (0 != crypto_sign_ed25519_sk_to_curve25519 (skR.ecdhe_key.d,
+                                                 priv->d))
+    return GNUNET_SYSERR;
+  return GNUNET_CRYPTO_hpke_kem_decaps (&skR, c, shared_secret);
+
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_elligator_kem_encaps_norand (
+  uint8_t random_tweak,
+  const struct GNUNET_CRYPTO_HpkePublicKey *pkR,
+  struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+  const struct GNUNET_CRYPTO_ElligatorEcdhePrivateKey *skE,
+  struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePublicKey pkE;
+  struct GNUNET_CRYPTO_HpkePrivateKey skE_hpke;
+  // skE, pkE = GenerateElligatorKeyPair()
+  // enc = SerializePublicKey(pkE) == c is the elligator representative
+  GNUNET_CRYPTO_ecdhe_elligator_key_get_public_norand (
+    random_tweak,
+    skE,
+    &pkE.ecdhe_key,
+    (struct GNUNET_CRYPTO_ElligatorRepresentative*) c);
+
+  GNUNET_memcpy (&skE_hpke.ecdhe_key,
+                 skE,
+                 sizeof *skE);
+  return kem_encaps_norand (GNUNET_CRYPTO_HPKE_KEM_ELLIGATOR_SUITE_ID,
+                            sizeof GNUNET_CRYPTO_HPKE_KEM_ELLIGATOR_SUITE_ID,
+                            pkR,
+                            c,
+                            &skE_hpke,
+                            shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_elligator_kem_encaps (
+  const struct GNUNET_CRYPTO_HpkePublicKey *pkR,
+  struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+  struct GNUNET_ShortHashCode *shared_secret)
+{
+  uint8_t random_tweak;
+  struct GNUNET_CRYPTO_ElligatorEcdhePrivateKey skE;
+
+  GNUNET_CRYPTO_random_block (&random_tweak,
+                              sizeof(uint8_t));
+
+  // skE, pkE = GenerateElligatorKeyPair()
+  GNUNET_CRYPTO_ecdhe_elligator_key_create (&skE);
+
+  return GNUNET_CRYPTO_hpke_elligator_kem_encaps_norand (random_tweak, pkR, c,
+                                                         &skE, shared_secret);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_elligator_kem_decaps (
+  const struct GNUNET_CRYPTO_HpkePrivateKey *skR,
+  const struct GNUNET_CRYPTO_HpkeEncapsulation *c,
+  struct GNUNET_ShortHashCode *shared_secret)
+{
+  struct GNUNET_CRYPTO_HpkePublicKey pkE;
+  struct GNUNET_CRYPTO_HpkePublicKey dh;
+  const struct GNUNET_CRYPTO_ElligatorRepresentative *r;
+  uint8_t kem_context[sizeof *r + crypto_scalarmult_curve25519_BYTES];
+  uint8_t pkR[crypto_scalarmult_BYTES];
+
+  r = (struct GNUNET_CRYPTO_ElligatorRepresentative*) c;
+  // pkE = DeserializePublicKey(enc) Elligator deserialize!
+  GNUNET_CRYPTO_ecdhe_elligator_decoding (
+    &pkE.ecdhe_key,
+    NULL,
+    r);
+  // dh = DH(skR, pkE)
+  GNUNET_assert (GNUNET_OK ==
+                 GNUNET_CRYPTO_x25519_ecdh (
+                   &skR->ecdhe_key,
+                   &pkE.ecdhe_key,
+                   &dh.ecdhe_key));
+  // pkRm = DeserializePublicKey(pk(skR)) is a NOP, see Section 7.1.1
+  crypto_scalarmult_curve25519_base (pkR,
+                                     skR->ecdhe_key.d);
+  memcpy (kem_context, r, sizeof *r);
+  memcpy (kem_context + sizeof *r, pkR, sizeof pkR);
+  // shared_secret = ExtractAndExpand(dh, kem_context)
+  return GNUNET_CRYPTO_hpke_labeled_extract_and_expand (
+    &dh.ecdhe_key, sizeof dh.ecdhe_key,
+    "HPKE-v1",
+    "HPKE-v1",
+    "eae_prk", strlen ("eae_prk"),
+    "shared_secret", strlen ("shared_secret"),
+    kem_context, sizeof kem_context,
+    GNUNET_CRYPTO_HPKE_KEM_ELLIGATOR_SUITE_ID,
+    sizeof GNUNET_CRYPTO_HPKE_KEM_ELLIGATOR_SUITE_ID,
+    shared_secret);
+}
+
+
+static enum GNUNET_GenericReturnValue
+verify_psk_inputs (enum GNUNET_CRYPTO_HpkeMode mode,
+                   const uint8_t *psk, size_t psk_len,
+                   const uint8_t *psk_id, size_t psk_id_len)
+{
+  bool got_psk;
+  bool got_psk_id;
+
+  got_psk = (0 != psk_len);
+  got_psk_id = (0 != psk_id_len);
+
+  if (got_psk != got_psk_id)
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "Inconsistent PSK inputs\n");
+    return GNUNET_SYSERR;
+  }
+
+  if (got_psk &&
+      ((GNUNET_CRYPTO_HPKE_MODE_BASE == mode) ||
+       (GNUNET_CRYPTO_HPKE_MODE_AUTH == mode)))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "PSK input provided when not needed\n");
+    return GNUNET_SYSERR;
+  }
+  if (! got_psk &&
+      ((GNUNET_CRYPTO_HPKE_MODE_PSK == mode) ||
+       (GNUNET_CRYPTO_HPKE_MODE_AUTH_PSK == mode)))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "Missing required PSK input\n");
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+}
+
+
+static enum GNUNET_GenericReturnValue
+key_schedule (enum GNUNET_CRYPTO_HpkeRole role,
+              enum GNUNET_CRYPTO_HpkeMode mode,
+              const struct GNUNET_ShortHashCode *shared_secret,
+              const uint8_t *info, size_t info_len,
+              const uint8_t *psk, size_t psk_len,
+              const uint8_t *psk_id, size_t psk_id_len,
+              struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  struct GNUNET_ShortHashCode psk_id_hash;
+  struct GNUNET_ShortHashCode info_hash;
+  struct GNUNET_ShortHashCode secret;
+  uint8_t key_schedule_context[1 + sizeof info_hash * 2];
+  uint8_t suite_id[4 + 3 * 2];
+  uint16_t kem_id = htons (32); // FIXME hardcode as constant
+  uint16_t kdf_id = htons (1); // HKDF-256 FIXME hardcode as constant
+  uint16_t aead_id = htons (3); // ChaCha20Poly1305 FIXME hardcode as constant
+
+  // DHKEM(X25519, HKDF-256): kem_id = 32
+  // concat("KEM", I2OSP(kem_id, 2))
+  memcpy (suite_id, "HPKE", 4);
+  memcpy (suite_id + 4, &kem_id, 2);
+  memcpy (suite_id + 6, &kdf_id, 2);
+  memcpy (suite_id + 8, &aead_id, 2);
+
+  if (GNUNET_OK != verify_psk_inputs (mode, psk, psk_len, psk_id, psk_id_len))
+    return GNUNET_SYSERR;
+
+  if (GNUNET_OK != labeled_extract ("HPKE-v1", NULL, 0,
+                                    "psk_id_hash", strlen ("psk_id_hash"),
+                                    psk_id, psk_id_len,
+                                    suite_id, sizeof suite_id, &psk_id_hash))
+    return GNUNET_SYSERR;
+  if (GNUNET_OK != labeled_extract ("HPKE-v1", NULL, 0,
+                                    "info_hash", strlen ("info_hash"),
+                                    info, info_len,
+                                    suite_id, sizeof suite_id, &info_hash))
+    return GNUNET_SYSERR;
+  memcpy (key_schedule_context, &mode, 1);
+  memcpy (key_schedule_context + 1, &psk_id_hash, sizeof psk_id_hash);
+  memcpy (key_schedule_context + 1 + sizeof psk_id_hash,
+          &info_hash, sizeof info_hash);
+  if (GNUNET_OK != labeled_extract ("HPKE-v1",
+                                    shared_secret, sizeof *shared_secret,
+                                    "secret", strlen ("secret"),
+                                    psk, psk_len,
+                                    suite_id, sizeof suite_id, &secret))
+    return GNUNET_SYSERR;
+  // key = LabeledExpand(secret, "key", key_schedule_context, Nk)
+  // Note: Nk == sizeof ctx->key
+  if (GNUNET_OK != labeled_expand ("HPKE-v1",
+                                   &secret,
+                                   "key", strlen ("key"),
+                                   &key_schedule_context,
+                                   sizeof key_schedule_context,
+                                   suite_id, sizeof suite_id,
+                                   ctx->key, sizeof ctx->key))
+    return GNUNET_SYSERR;
+  // base_nonce = LabeledExpand(secret, "base_nonce",
+  // key_schedule_context, Nn)
+  if (GNUNET_OK != labeled_expand ("HPKE-v1",
+                                   &secret,
+                                   "base_nonce", strlen ("base_nonce"),
+                                   &key_schedule_context,
+                                   sizeof key_schedule_context,
+                                   suite_id, sizeof suite_id,
+                                   ctx->base_nonce, sizeof ctx->base_nonce))
+    return GNUNET_SYSERR;
+  // exporter_secret = LabeledExpand(secret, "exp",
+  // key_schedule_context, Nh)
+  if (GNUNET_OK != labeled_expand ("HPKE-v1",
+                                   &secret,
+                                   "exp", strlen ("exp"),
+                                   &key_schedule_context,
+                                   sizeof key_schedule_context,
+                                   suite_id, sizeof suite_id,
+                                   &ctx->exporter_secret,
+                                   sizeof ctx->exporter_secret))
+    return GNUNET_SYSERR;
+  ctx->seq = 0;
+  ctx->role = role;
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sender_setup2 (
+  enum GNUNET_CRYPTO_HpkeKem kem,
+  enum GNUNET_CRYPTO_HpkeMode mode,
+  struct GNUNET_CRYPTO_HpkePrivateKey *skE,
+  struct GNUNET_CRYPTO_HpkePrivateKey *skS,
+  const struct GNUNET_CRYPTO_HpkePublicKey *pkR,
+  const uint8_t *info, size_t info_len,
+  const uint8_t *psk, size_t psk_len,
+  const uint8_t *psk_id, size_t psk_id_len,
+  struct GNUNET_CRYPTO_HpkeEncapsulation *enc,
+  struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  struct GNUNET_ShortHashCode shared_secret;
+
+  switch (mode)
+  {
+  case GNUNET_CRYPTO_HPKE_MODE_BASE:
+  case GNUNET_CRYPTO_HPKE_MODE_PSK:
+    if (kem == GNUNET_CRYPTO_HPKE_KEM_DH_X25519_HKDF256)
+    {
+      if (GNUNET_OK != GNUNET_CRYPTO_hpke_kem_encaps_norand (pkR, enc, skE,
+                                                             &shared_secret))
+        return GNUNET_SYSERR;
+      break;
+    }
+    else if (kem ==
+             GNUNET_CRYPTO_HPKE_KEM_DH_X25519ELLIGATOR_HKDF256)
+    {
+      uint8_t random_tweak;
+      GNUNET_CRYPTO_random_block (&random_tweak,
+                                  sizeof(uint8_t));
+      if (GNUNET_OK !=
+          GNUNET_CRYPTO_hpke_elligator_kem_encaps_norand (random_tweak,
+                                                          pkR,
+                                                          enc,
+                                                          (struct
+                                                           GNUNET_CRYPTO_ElligatorEcdhePrivateKey
+                                                           *) skE,
+                                                          &shared_secret))
+        return GNUNET_SYSERR;
+    }
+    break;
+  default:
+    return GNUNET_SYSERR;
+  }
+  if (GNUNET_OK != key_schedule (GNUNET_CRYPTO_HPKE_ROLE_S,
+                                 mode,
+                                 &shared_secret,
+                                 info, info_len,
+                                 psk, psk_len,
+                                 psk_id, psk_id_len,
+                                 ctx))
+    return GNUNET_SYSERR;
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sender_setup (const struct
+                                 GNUNET_CRYPTO_HpkePublicKey *pkR,
+                                 const uint8_t *info, size_t info_len,
+                                 struct GNUNET_CRYPTO_HpkeEncapsulation *enc,
+                                 struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  struct GNUNET_CRYPTO_HpkePrivateKey sk;
+  // skE, pkE = GenerateKeyPair()
+  GNUNET_CRYPTO_ecdhe_key_create (&sk.ecdhe_key);
+
+  return GNUNET_CRYPTO_hpke_sender_setup2 (
+    GNUNET_CRYPTO_HPKE_KEM_DH_X25519_HKDF256,
+    GNUNET_CRYPTO_HPKE_MODE_BASE,
+    &sk, NULL,
+    pkR, info, info_len,
+    NULL, 0,
+    NULL, 0,
+    enc,
+    ctx);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_receiver_setup2 (
+  enum GNUNET_CRYPTO_HpkeKem kem,
+  enum GNUNET_CRYPTO_HpkeMode mode,
+  const struct GNUNET_CRYPTO_HpkeEncapsulation *enc,
+  const struct GNUNET_CRYPTO_HpkePrivateKey *skR,
+  const struct GNUNET_CRYPTO_HpkePublicKey *pkS,
+  const uint8_t *info, size_t info_len,
+  const uint8_t *psk, size_t psk_len,
+  const uint8_t *psk_id, size_t psk_id_len,
+  struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  struct GNUNET_ShortHashCode shared_secret;
+
+  switch (mode)
+  {
+  case GNUNET_CRYPTO_HPKE_MODE_BASE:
+  case GNUNET_CRYPTO_HPKE_MODE_PSK:
+    if (kem == GNUNET_CRYPTO_HPKE_KEM_DH_X25519_HKDF256)
+    {
+      if (GNUNET_OK != GNUNET_CRYPTO_hpke_kem_decaps (skR, enc,
+                                                      &shared_secret))
+        return GNUNET_SYSERR;
+    }
+    else if (kem ==
+             GNUNET_CRYPTO_HPKE_KEM_DH_X25519ELLIGATOR_HKDF256)
+    {
+      if (GNUNET_OK != GNUNET_CRYPTO_hpke_elligator_kem_decaps (skR,
+                                                                enc,
+                                                                &shared_secret))
+        return GNUNET_SYSERR;
+    }
+    break;
+  default:
+    return GNUNET_SYSERR;
+  }
+  if (GNUNET_OK != key_schedule (GNUNET_CRYPTO_HPKE_ROLE_R,
+                                 mode,
+                                 &shared_secret,
+                                 info, info_len,
+                                 psk, psk_len,
+                                 psk_id, psk_id_len,
+                                 ctx))
+    return GNUNET_SYSERR;
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_receiver_setup (
+  const struct GNUNET_CRYPTO_HpkeEncapsulation *enc,
+  const struct GNUNET_CRYPTO_HpkePrivateKey *skR,
+  const uint8_t *info, size_t info_len,
+  struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  return GNUNET_CRYPTO_hpke_receiver_setup2 (
+    GNUNET_CRYPTO_HPKE_KEM_DH_X25519_HKDF256,
+    GNUNET_CRYPTO_HPKE_MODE_BASE,
+    enc, skR, NULL,
+    info, info_len,
+    NULL, 0, NULL, 0, ctx);
+}
+
+
+static enum GNUNET_GenericReturnValue
+increment_seq (struct GNUNET_CRYPTO_HpkeContext *ctx)
+{
+  if (ctx->seq >= UINT64_MAX)
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR, "MessageLimitReached\n");
+    return GNUNET_SYSERR;
+  }
+  ctx->seq = GNUNET_htonll (GNUNET_ntohll (ctx->seq) + 1);
+  return GNUNET_OK;
+}
+
+
+static void
+compute_nonce (struct GNUNET_CRYPTO_HpkeContext *ctx,
+               uint8_t *nonce)
+{
+  size_t offset = GNUNET_CRYPTO_HPKE_NONCE_LEN - sizeof ctx->seq;
+  int j = 0;
+  for (int i = 0; i < GNUNET_CRYPTO_HPKE_NONCE_LEN; i++)
+  {
+    // FIXME correct byte order?
+    if (i < offset)
+      memset (&nonce[i], ctx->base_nonce[i], 1);
+    else
+      nonce[i] = ctx->base_nonce[i] ^ ((uint8_t*) &ctx->seq)[j++];
+  }
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_seal (struct GNUNET_CRYPTO_HpkeContext *ctx,
+                         const uint8_t*aad, size_t aad_len,
+                         const uint8_t *pt, size_t pt_len,
+                         uint8_t *ct, unsigned long long *ct_len_p)
+{
+  uint8_t comp_nonce[GNUNET_CRYPTO_HPKE_NONCE_LEN];
+  if (ctx->role != GNUNET_CRYPTO_HPKE_ROLE_S)
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Wrong role; called as receiver (%d)!\n",
+                ctx->role);
+    return GNUNET_SYSERR;
+  }
+  compute_nonce (ctx, comp_nonce);
+  crypto_aead_chacha20poly1305_ietf_encrypt (ct, ct_len_p,
+                                             pt, pt_len,
+                                             aad, aad_len,
+                                             NULL,
+                                             comp_nonce,
+                                             ctx->key);
+  if (GNUNET_OK != increment_seq (ctx))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Seq increment failed!\n");
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_open (struct GNUNET_CRYPTO_HpkeContext *ctx,
+                         const uint8_t*aad, size_t aad_len,
+                         const uint8_t *ct, size_t ct_len,
+                         uint8_t *pt, unsigned long long *pt_len)
+{
+  uint8_t comp_nonce[GNUNET_CRYPTO_HPKE_NONCE_LEN];
+  if (ctx->role != GNUNET_CRYPTO_HPKE_ROLE_R)
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Wrong role; called as sender (%d)!\n",
+                ctx->role);
+    return GNUNET_SYSERR;
+  }
+  compute_nonce (ctx, comp_nonce);
+  if (0 != crypto_aead_chacha20poly1305_ietf_decrypt (pt, pt_len,
+                                                      NULL,
+                                                      ct, ct_len,
+                                                      aad, aad_len,
+                                                      comp_nonce,
+                                                      ctx->key))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR, "OpenError\n");
+    return GNUNET_SYSERR;
+  }
+  if (GNUNET_OK != increment_seq (ctx))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Seq increment failed!\n");
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_seal_oneshot (const struct
+                                 GNUNET_CRYPTO_HpkePublicKey *pkR,
+                                 const uint8_t *info, size_t info_len,
+                                 const uint8_t*aad, size_t aad_len,
+                                 const uint8_t *pt, size_t pt_len,
+                                 uint8_t *ct, unsigned long long *ct_len_p)
+{
+  struct GNUNET_CRYPTO_HpkeContext ctx;
+  struct GNUNET_CRYPTO_HpkeEncapsulation *enc;
+  uint8_t *ct_off;
+
+  enc = (struct GNUNET_CRYPTO_HpkeEncapsulation*) ct;
+  ct_off = (uint8_t*) &enc[1];
+  if (GNUNET_OK != GNUNET_CRYPTO_hpke_sender_setup (pkR,
+                                                    info, info_len,
+                                                    enc, &ctx))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Sender setup failed!\n");
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_CRYPTO_hpke_seal (&ctx,
+                                  aad, aad_len,
+                                  pt, pt_len,
+                                  ct_off,
+                                  ct_len_p);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_open_oneshot (
+  const struct GNUNET_CRYPTO_HpkePrivateKey *skR,
+  const uint8_t *info, size_t info_len,
+  const uint8_t*aad, size_t aad_len,
+  const uint8_t *ct, size_t ct_len,
+  uint8_t *pt, unsigned long long *pt_len_p)
+{
+  struct GNUNET_CRYPTO_HpkeContext ctx;
+  struct GNUNET_CRYPTO_HpkeEncapsulation *enc;
+  uint8_t *ct_off;
+
+  enc = (struct GNUNET_CRYPTO_HpkeEncapsulation*) ct;
+  ct_off = (uint8_t*) &enc[1];
+  if (GNUNET_OK != GNUNET_CRYPTO_hpke_receiver_setup (enc, skR,
+                                                      info, info_len,
+                                                      &ctx))
+  {
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "HPKE: Receiver setup failed!\n");
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_CRYPTO_hpke_open (&ctx,
+                                  aad, aad_len,
+                                  ct_off,
+                                  ct_len - sizeof *enc,
+                                  pt,
+                                  pt_len_p);
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_pk_to_x25519 (const struct GNUNET_CRYPTO_BlindablePublicKey *
+                                 pk,
+                                 struct GNUNET_CRYPTO_HpkePublicKey *
+                                 x25519)
+{
+  switch (ntohl (pk->type))
+  {
+  case GNUNET_PUBLIC_KEY_TYPE_ECDSA:
+    if (0 != crypto_sign_ed25519_pk_to_curve25519 (x25519->ecdhe_key.q_y,
+                                                   pk->ecdsa_key.q_y))
+      return GNUNET_SYSERR;
+    x25519->type = htonl (GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519);
+    return GNUNET_OK;
+  case GNUNET_PUBLIC_KEY_TYPE_EDDSA:
+    if (0 != crypto_sign_ed25519_pk_to_curve25519 (x25519->ecdhe_key.q_y,
+                                                   pk->eddsa_key.q_y))
+      return GNUNET_SYSERR;
+    x25519->type = htonl (GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519);
+    return GNUNET_OK;
+  default:
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_SYSERR;
+
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sk_to_x25519 (const struct
+                                 GNUNET_CRYPTO_BlindablePrivateKey *sk,
+                                 struct GNUNET_CRYPTO_HpkePrivateKey *
+                                 x25519)
+{
+  switch (ntohl (sk->type))
+  {
+  case GNUNET_PUBLIC_KEY_TYPE_ECDSA:
+    memcpy (x25519->ecdhe_key.d,
+            sk->ecdsa_key.d,
+            sizeof sk->ecdsa_key.d);
+    x25519->type = htonl (GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519);
+    return GNUNET_OK;
+  case GNUNET_PUBLIC_KEY_TYPE_EDDSA:
+    if (0 != crypto_sign_ed25519_sk_to_curve25519 (x25519->ecdhe_key.d,
+                                                   sk->eddsa_key.d))
+      return GNUNET_SYSERR;
+    x25519->type = htonl (GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519);
+    return GNUNET_OK;
+  default:
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_SYSERR;
+
+}
+
+
+ssize_t
+GNUNET_CRYPTO_hpke_pk_get_length (
+  const struct GNUNET_CRYPTO_HpkePublicKey *key)
+{
+  switch (ntohl (key->type))
+  {
+  case GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519:
+    return sizeof (key->type) + sizeof (key->ecdhe_key);
+  default:
+    GNUNET_break (0);
+  }
+  return -1;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_read_hpke_pk_from_buffer (const void *buffer,
+                                        size_t len,
+                                        struct
+                                        GNUNET_CRYPTO_HpkePublicKey *key,
+                                        size_t *read)
+{
+  ssize_t length;
+  if (len < sizeof (key->type))
+    return GNUNET_SYSERR;
+  GNUNET_memcpy (&key->type,
+                 buffer,
+                 sizeof (key->type));
+  length = GNUNET_CRYPTO_hpke_pk_get_length (key);
+  if (len < length)
+    return GNUNET_SYSERR;
+  if (length < 0)
+    return GNUNET_SYSERR;
+  GNUNET_memcpy (&key->ecdhe_key,
+                 buffer + sizeof (key->type),
+                 length - sizeof (key->type));
+  *read = length;
+  return GNUNET_OK;
+}
+
+
+ssize_t
+GNUNET_CRYPTO_write_hpke_pk_to_buffer (const struct
+                                       GNUNET_CRYPTO_HpkePublicKey *key,
+                                       void*buffer,
+                                       size_t len)
+{
+  const ssize_t length = GNUNET_CRYPTO_hpke_pk_get_length (key);
+  if (len < length)
+    return -1;
+  if (length < 0)
+    return -2;
+  GNUNET_memcpy (buffer, &(key->type), sizeof (key->type));
+  GNUNET_memcpy (buffer + sizeof (key->type), &(key->ecdhe_key), length
+                 - sizeof (key->type));
+  return length;
+}
+
+
+void
+GNUNET_CRYPTO_hpke_sk_clear (struct GNUNET_CRYPTO_HpkePrivateKey *key)
+{
+  switch (ntohl (key->type))
+  {
+  case GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519:
+    GNUNET_CRYPTO_ecdhe_key_clear (&key->ecdhe_key);
+    break;
+  default:
+    GNUNET_break (0);
+  }
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sk_create2 (enum GNUNET_CRYPTO_HpkeKeyType type,
+                               const char *ikm,
+                               size_t ikm_len,
+                               struct GNUNET_CRYPTO_HpkePrivateKey *sk)
+{
+  struct GNUNET_ShortHashCode dkp_prk;
+
+  if (type != GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519)
+  {
+    GNUNET_break (0);
+    return GNUNET_SYSERR;
+  }
+  sk->type = htonl (type);
+
+  labeled_extract ("HPKE-v1",
+                   "",
+                   0,
+                   "dkp_prk",
+                   strlen ("dkp_prk"),
+                   ikm,
+                   ikm_len,
+                   GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                   sizeof GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                   &dkp_prk);
+  labeled_expand ("HPKE-v1",
+                  &dkp_prk,
+                  "sk",
+                  strlen ("sk"),
+                  "",
+                  0,
+                  GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                  sizeof GNUNET_CRYPTO_HPKE_KEM_SUITE_ID,
+                  &sk->ecdhe_key,
+                  sizeof sk->ecdhe_key);
+  // RFC 9180 Section 7.1.2 states SerializePrivateKey() MUST clamp its output for X25519.
+  // https://www.rfc-editor.org/errata/eid7121
+  sk->ecdhe_key.d[0] &= 248;
+  sk->ecdhe_key.d[31] &= 127;
+  sk->ecdhe_key.d[31] |= 64;
+
+  return GNUNET_OK;
+
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sk_create (enum GNUNET_CRYPTO_HpkeKeyType type,
+                              struct GNUNET_CRYPTO_HpkePrivateKey *pk)
+{
+  char ikm[64];
+
+  GNUNET_CRYPTO_random_block (ikm,
+                              sizeof(ikm));
+
+  return GNUNET_CRYPTO_hpke_sk_create2 (type,
+                                        ikm,
+                                        sizeof ikm,
+                                        pk);
+}
+
+
+ssize_t
+GNUNET_CRYPTO_hpke_sk_get_length (const struct
+                                  GNUNET_CRYPTO_HpkePrivateKey *key)
+{
+  switch (ntohl (key->type))
+  {
+  case GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519:
+    return sizeof (key->type) + sizeof (key->ecdhe_key);
+    break;
+  default:
+    GNUNET_log (GNUNET_ERROR_TYPE_ERROR,
+                "Got key type %u\n", ntohl (key->type));
+    GNUNET_break (0);
+  }
+  return -1;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_read_hpke_sk_from_buffer (const void *buffer,
+                                        size_t len,
+                                        struct
+                                        GNUNET_CRYPTO_HpkePrivateKey *
+                                        key,
+                                        size_t *read)
+{
+  ssize_t length;
+  if (len < sizeof (key->type))
+    return GNUNET_SYSERR;
+  GNUNET_memcpy (&key->type,
+                 buffer,
+                 sizeof (key->type));
+  length = GNUNET_CRYPTO_hpke_sk_get_length (key);
+  if (len < length)
+    return GNUNET_SYSERR;
+  if (length < 0)
+    return GNUNET_SYSERR;
+  GNUNET_memcpy (&key->ecdhe_key,
+                 buffer + sizeof (key->type),
+                 length - sizeof (key->type));
+  *read = length;
+  return GNUNET_OK;
+}
+
+
+ssize_t
+GNUNET_CRYPTO_write_hpke_sk_to_buffer (const struct
+                                       GNUNET_CRYPTO_HpkePrivateKey *
+                                       key,
+                                       void *buffer,
+                                       size_t len)
+{
+  const ssize_t length = GNUNET_CRYPTO_hpke_sk_get_length (key);
+  if (len < length)
+    return -1;
+  if (length < 0)
+    return -2;
+  GNUNET_memcpy (buffer, &(key->type), sizeof (key->type));
+  GNUNET_memcpy (buffer + sizeof (key->type), &(key->ecdhe_key), length
+                 - sizeof (key->type));
+  return length;
+}
+
+
+enum GNUNET_GenericReturnValue
+GNUNET_CRYPTO_hpke_sk_get_public (const struct
+                                  GNUNET_CRYPTO_HpkePrivateKey *
+                                  privkey,
+                                  struct GNUNET_CRYPTO_HpkePublicKey
+                                  *key)
+{
+  key->type = privkey->type;
+  switch (ntohl (privkey->type))
+  {
+  case GNUNET_CRYPTO_HPKE_KEY_TYPE_X25519:
+    GNUNET_CRYPTO_ecdhe_key_get_public (&privkey->ecdhe_key,
+                                        &key->ecdhe_key);
+    break;
+  default:
+    GNUNET_break (0);
+    return GNUNET_SYSERR;
+  }
+  return GNUNET_OK;
+}

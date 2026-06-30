@@ -1,0 +1,36 @@
+[namestore]
+START_ON_DEMAND = @START_ON_DEMAND@
+RUN_PER_USER = YES
+UNIXPATH = $GNUNET_USER_RUNTIME_DIR/gnunet-service-namestore.sock
+UNIX_MATCH_UID = NO
+UNIX_MATCH_GID = YES
+@UNIXONLY@ PORT = 2099
+HOSTNAME = localhost
+BINARY = gnunet-service-namestore
+ACCEPT_FROM = 127.0.0.1;
+ACCEPT_FROM6 = ::1;
+
+# Which database should we use?
+DATABASE = sqlite
+
+# Should we optimize publishing record by caching the mapping
+# from zone private keys to zone public keys in memory?
+# (Set to NO if totally paranoid about keeping private keys
+# in RAM longer than necessary.)
+CACHE_KEYS = YES
+
+
+[namestore-sqlite]
+INIT_ON_CONNECT = YES
+FILENAME = $GNUNET_DATA_HOME/namestore/sqlite.db
+
+[namestore-postgres]
+# How to connect to the database
+CONFIG = postgres:///gnunet
+# Use asynchronous commit (SET synchronous_commit TO OFF).
+ASYNC_COMMIT = NO
+INIT_ON_CONNECT = YES
+SQL_DIR = ${DATADIR}/sql/
+
+[uri]
+gns = gnunet-namestore -e 1a -u

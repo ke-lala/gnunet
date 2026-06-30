@@ -1,0 +1,11 @@
+prefix=/home/user/ndk-sysroot/arm64-v8a/gnunet
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: gnunetgnsrecord
+Description: Provides API for manipulating GNS records
+URL: https://www.gnunet.org
+Version: show
+Requires.private: gnunetutil, libsodium >= 1.0.18, libgcrypt
+Libs: -L${prefix}/lib -lgnunetgnsrecord
+Cflags: -I${includedir}

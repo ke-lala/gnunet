@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2021‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkBox" id="entry_box">
+    <property name="visible">1</property>
+    <property name="spacing">8</property>
+    <child>
+      <object class="HdyAvatar" id="entry_avatar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="size">48</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">1</property>
+        <property name="border-width">2</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkLabel" id="title_label">
+            <property name="visible">1</property>
+            <property name="wrap">1</property>
+            <property name="wrap-mode">word-char</property>
+            <property name="ellipsize">end</property>
+            <property name="xalign">0</property>
+            <property name="yalign">1</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="subtitle_label">
+            <property name="visible">1</property>
+            <property name="wrap">1</property>
+            <property name="wrap-mode">word-char</property>
+            <property name="ellipsize">end</property>
+            <property name="max-width-chars">48</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="semilight"/>
+            </attributes>
+            <style>
+              <class name="profile-key"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">1</property>
+        <property name="pack-type">end</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <style>
+      <class name="contact-entry"/>
+    </style>
+  </object>
+</interface>

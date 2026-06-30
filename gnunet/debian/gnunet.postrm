@@ -1,0 +1,77 @@
+#!/bin/sh
+
+set -e
+
+remove_gns() {
+  # abort if /etc/nsswitch.conf does not exist
+  if ! [ -e /etc/nsswitch.conf ]; then
+    return
+  fi
+  perl -i -pe '
+		my @remove=(
+			"gns [NOTFOUND=return]",
+		);
+		sub remove {
+			my $s=shift;
+			foreach my $bit (@remove) {
+				$s=~s/\s+\Q$bit\E//g;
+			}
+			return $s;
+		}
+		s/^(hosts:)(.*)/$1.remove($2)/e;
+	' /etc/nsswitch.conf
+}
+
+if [ -e /usr/share/debconf/confmodule ]; then
+  . /usr/share/debconf/confmodule
+  db_version 2.0
+
+  db_get gnunet-dns/libnsswitch
+  _LIBNSSWITCH="${RET}"
+fi
+
+case "${1}" in
+purge)
+  if $_LIBNSSWITCH; then
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns.so.2
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns4.so.2
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns6.so.2
+    remove_gns
+  fi
+
+  rm -rf /var/log/gnunet.log /var/lib/gnunet /etc/default/gnunet
+  ;;
+
+remove | upgrade | failed-upgrade | abort-install | abort-upgrade | disappear)
+
+  if $_LIBNSSWITCH;
+  then
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns.so.2
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns4.so.2
+    rm -rf /usr/lib/x86_64-linux-gnu/usr/libnss_gns6.so.2
+    remove_gns
+  fi
+
+  ;;
+
+*)
+  echo "postrm called with unknown argument \`${1}'" >&2
+  exit 1
+  ;;
+esac
+
+for file in /usr/bin/gnunet-helper-exit \
+    /usr/bin/gnunet-helper-nat-client \
+    /usr/bin/gnunet-helper-nat-server \
+    /usr/bin/gnunet-helper-transport-bluetooth \
+    /usr/bin/gnunet-helper-transport-wlan \
+    /usr/bin/gnunet-service-dns \
+    /usr/bin/gnunet-helper-dns \
+    /usr/bin/gnunet-helper-vpn;
+do
+    dpkg-statoverride --remove "$file" || true
+done
+
+#DEBHELPER#
+
+exit 0

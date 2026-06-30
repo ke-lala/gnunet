@@ -1,0 +1,31 @@
+Format: 1.8
+Date: Sat, 01 Jun 2019 09:35:40 +0000
+Source: ascension
+Binary: python3-ascension
+Architecture: source
+Version: 0.11.4-1
+Distribution: unstable
+Urgency: low
+Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+Changed-By: rexxnor <rexxnor+gnunet@brief.li>
+Description:
+ python3-ascension - Tool to migrate DNS Zones to the GNU Name System
+Changes:
+ ascension (0.11.4-1) unstable; urgency=low
+ .
+   * source package automatically created by stdeb 0.8.5
+Checksums-Sha1:
+ a54775d0115ada7d770b87de1740e8982c607ba1 846 ascension_0.11.4-1.dsc
+ ea06751883f83324f4f94d2a2d14ae6e8fdf7993 10655 ascension_0.11.4.orig.tar.gz
+ 69954bec026529110c6a774439ca31493bb50617 1140 ascension_0.11.4-1.debian.tar.xz
+ f7ed92661d055e1ed1ffdff1b835be180dfe075f 5163 ascension_0.11.4-1_source.buildinfo
+Checksums-Sha256:
+ a667b7ce0d07fb36005d693dd1cfe620cb00ddc635fd6167a70f098181230dc7 846 ascension_0.11.4-1.dsc
+ 69f7835f69ab067bf04cf95bfe9d84bff57aa9772dee087298f12bbcda2929f1 10655 ascension_0.11.4.orig.tar.gz
+ d2dd222d25b8102857c6c0a7270f9b7e21804d4ddc5095bfd7be9f167bf86cb3 1140 ascension_0.11.4-1.debian.tar.xz
+ 96654db9450b00f2901598dff94ef1b0a430b65e778ce67b3d7609bcb1a76737 5163 ascension_0.11.4-1_source.buildinfo
+Files:
+ 96895bc3794d24afeb26b54d6d8ba2fd 846 python optional ascension_0.11.4-1.dsc
+ 737ce6949e7dee1aa3a3723908b36566 10655 python optional ascension_0.11.4.orig.tar.gz
+ 821619cd497fda3df5428e25bddc7a87 1140 python optional ascension_0.11.4-1.debian.tar.xz
+ 3a89ec81f3ba3346382d243eac87e02e 5163 python optional ascension_0.11.4-1_source.buildinfo

@@ -1,0 +1,13 @@
+GNS Record Flags
+----------------
+
+This registry is for GNU Name System Record Flags.
+
+GNU Name System Record flags uniquely identify the different kinds
+of key-value pairs that can be used as flags of a GNU Name System record.
+
+This registry is used to ensure that the names and numeric values
+used to identify record flags are uniquely defined and to
+allow GNS resolvers implementors to find out details about the
+respective semantics and human-readable syntax.
+

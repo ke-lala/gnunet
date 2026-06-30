@@ -1,0 +1,8 @@
+.alt Subdomains
+---------------
+
+This registry is for the `.alt Top-Level-Domains (TLDs) of the Domain Name System (RFC 9476) <https://www.rfc-editor.org/rfc/rfc9476.html>`__.
+
+This registry is used to ensure that names of alternative name systems
+do not conflict with DNS names or with each other.
+

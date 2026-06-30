@@ -1,0 +1,39 @@
+.version
+
+aclocal.m4
+autom4te.cache/
+build-aux/
+.cache/
+
+config.log
+config.status
+configure
+configure~
+
+libtool
+m4/
+
+Makefile.in
+Makefile
+
+# IDE specific files:
+.cproject
+.project
+.settings/
+.vscode/
+
+# Binary files:
+*.o
+*.so
+
+# Test files:
+tests/*.test
+
+# Tar files
+libgnunetchat-*.tar.gz
+
+# Valgrind
+vgcore.*
+
+# Benchmark
+.build_benchmark/

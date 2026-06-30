@@ -1,0 +1,65 @@
+# Ascension
+
+Tool to easily migrate existing DNS Zones into the GNU Name System using
+incremental zone transfers (AXFR/IXFR).
+
+## How to install
+To install the ascension simply execute one of the following commands in the
+freshly cloned directory:
+
+```bash
+# System wide installation
+sudo python3 setup.py install
+
+# Local installation through virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install .
+```
+
+## How to install (Developer)
+A developer installation is very handy when you are making changes to the source
+code as this way you don't need to re-run the installation procedure every time
+you make a change.
+
+```bash
+# installation through virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## How to use
+If you have installed it, simply execute ascension with one of several options.
+You can also just run the file ascension.py itself directly.
+
+Taken from the docstring of the ascension.py file:
+```
+usage: ascension [-h] [-n NAMESERVER] [-P PORT] [-k KEYFILE] [-l LOGLEVEL] [-t TTL] [-s] [-p] [-g] [-V] domain
+
+Easy tool to migrate DNS zones into GNS
+
+positional arguments:
+  domain                Domain to be migrated into GNS
+
+options:
+  -h, --help            show this help message and exit
+  -n NAMESERVER, --nameserver NAMESERVER
+                        Nameserver to use for migrating
+  -P PORT, --port PORT  Port to use for zone transfer with nameserver
+  -k KEYFILE, --keyfile KEYFILE
+                        Keyfile to use for DNS TSIG
+  -l LOGLEVEL, --loglevel LOGLEVEL
+                        Loglevel to use, 10 Debug, 20 Info, 30 Warning, 40 Error, 50 Critical
+  -t TTL, --ttl TTL     Sets the minimum ttl of records added to GNS
+  -s, --standalone      Run ascension once and not as daemon
+  -p, --public          Push records to the public DHT
+  -g, --dryrun          Tests if zone is transferrable without changing anything
+  -V, --version         show program's version number and exit
+```
+
+Example use:
+```
+# Transfers the nu TLD from zonedata.iis.se with loglevel debug
+ascension nu -n zonedata.iis.se. -l10
+```

@@ -1,0 +1,129 @@
+* Requirements and Related Work
+
+This chapter describes our requirements for a system that we can use to build a
+secure social network and introduces currently available alternatives to
+centralized social networks. This chapter is partly based on \cite{fsw-paranoia}.
+
+** Privacy
+
+Our goal is to provide a system for social interaction in a privacy-protecting
+and scalable manner. A truly private communication system we're aiming for
+should have the following properties:
+
+- End-to-end encryption: only the intended recipients can read the messages, no
+  server or network operators along the way between the communicating
+  parties. To ensure this, it is not enough to use link-level encryption between
+  a client and a server, end-to-end encryption is needed, which means that every
+  participant in the system has to manage their own cryptographic keys on their
+  own systems.
+- Perfect forward secrecy: messages transmitted over the network can't be
+  decrypted later if a user's private key is compromised. To achieve this,
+  temporary session keys need to be used when encrypting messages.
+- When logging a message to disk it should not contain a cryptographic signature
+  of the sender, so if someone gains access to the log, it does not provide a
+  proof that someone actually transmitted the messages.
+- An observer cannot determine for sure when two parties are communicating and
+  how much data they exchange with each other. This requires a trade-off: while
+  sending packets through other participants in the network would ensure this,
+  this also increases message delay.
+- Padding of packets is necessary to prevent attacks based on statistical
+  analysis of packet lengths. This is absolutely necessary when sending messages
+  through multiple hops, otherwise it would be enough to monitor packet lengths
+  to determine where a packet is forwarded to.
+- Delayed forwarding is also necessary to prevent correlation of received and
+  transmitted packets when forwarding. Sending multiple packets at once at
+  certain intervals would help to prevent this.
+- Private contact list: only visible to whom it needs be -- typically other
+  friends -- not available publicly or managed on servers where server operators
+  have access to it.
+- Every component of the system should be open source, so one can ensure it
+  really works as advertised. A closed component would be a security risk, as it
+  could leak information or otherwise weaken the security of the system, which
+  is harder to detect when no source code is available. This can be enforced
+  with a copyleft license, such as the Affero General Public License (AGPL).
+
+Currently available alternatives to centralized social network services are in
+most cases federated networks, which use a standardized protocol between servers
+enabling many service providers to take part in the network and communicate with
+each other. Examples for such systems include web-based platforms like Diaspora
+or Friendica, and others using a messaging protocol extended with social network
+functionalities -- friendship establishment, status messages to friends -- like
+OneSocialWeb, which is based on XMPP (Extensible Messaging and Presence
+Protocol) or PSYC (Protocol for SYnchronous Conferencing).
+
+These federated systems intend to offer more privacy than centralized systems,
+but they still not fulfill most of the requirements above, in most cases they
+only provide link-level encryption. They still store personal data on servers
+unencrypted, just like centralized systems. Users can have a server themselves,
+but that requires server administration skills which average users do not have,
+so we'll end up with a few larger servers and several smaller ones, just like in
+the case of email. Privacy is an even more serious issue in this case as it's no
+longer enough to trust one company, there are several server operators in this
+architecture sharing personal data with each other -- users' messages and
+profile data are transmitted to and stored unencrypted on servers of their
+friends as well. Even if some users run their own server, they would still
+communicate with people without their own server, exposing personal data to even
+more server operators this way.
+
+It is possible to enhance privacy of these federated protocols by adding
+end-to-end encryption on top of them, this is what PGP (Pretty Good Privacy)
+does for e-mail and OTR (Off-The-Record Messaging) does for instant messaging
+protocols. While this prevents servers from reading the content of messages,
+they still know everything else about a message, e.g. its sender, recipient, and
+size. There's an additional overhead of base64 encoding, which is needed because
+the underlying messaging protocols often do not support binary data
+transfer. Furthermore PGP and OTR can only be used for one-to-one messaging,
+one-to-many and many-to-many messaging are not supported by them.
+
+** Scalability
+
+Efficient message distribution is crucial in social networks, as one of their
+most prevalent features is sending one-to-many status updates, but many-to-many
+group messaging is frequently used as well. To deliver these messages most
+efficiently, multicast message distribution would be necessary. IP multicast
+does not scale to a large number of channels, as multicast routing tables would
+fill up very fast -- at least one channel would be needed for a user's status
+updates, and similarly, at least one for each group -- thus this has to be
+implemented on the application layer to make it work.
+
+XMPP has a simple distribution strategy, it sends one message per recipient
+server, which is only efficient if there are many large sites. XMPP's
+scalability is also limited by the way it handles presence updates, the majority
+of inter-server traffic in the XMPP network consists of this type of messages.
+
+XMPP's use of an XML stream as network protocol without any framing makes it
+less efficient, as it complicates parsing and makes it impossible to transport
+binary data without Base64 or similar encoding. Also, protocol extensions
+described in XML add a large amount of unnecessary verbosity to the protocol.
+
+PSYC is another federated messaging protocol with a compact but extensible
+syntax, which enables fast parsing and small bandwidth usage. It is a text-based
+protocol with length prefixes for binary data. Benchmarks we made show that it
+outperforms XMPP and JSON when it comes to parsing speed \cite{psyc-bench}.
+
+PSYC sends out one message per recipient server when distributing messages, but
+it also has manual multicast tree configuration.
+
+** Peer-to-peer networks
+
+Peer-to-peer (P2P) networks come closer to fulfilling these privacy
+requirements, as in many cases they're designed with security and privacy in
+mind from the ground up.
+
+Projects such as Tor and I2P aim to create an anonymous overlay network, while
+Freenet and GNUnet focus on anonymous information storage and retrieval. GNUnet
+also provides an extensive framework for writing P2P applications, including
+packet-based communication over different transport mechanisms.
+
+In a P2P network every user of the network runs the P2P software on their own
+computers (a computer in the P2P network is referred to as a node). This allows
+for creating a network architecture where servers are not needed to store and
+manage user data, every user can do so on their own node, giving them more
+control over their data. High-capacity servers we had in federated networks
+would be still useful in a P2P network, they can forward (and store when needed)
+encrypted data without being able to decrypt them, this way improving
+throughput, connectivity and stability of the network.
+
+Combining peer-to-peer network technology with social network semantics allows
+for creating a scalable, privacy-protecting social network based on connections
+of trusted peers. The next section describes the architecture of such a network.

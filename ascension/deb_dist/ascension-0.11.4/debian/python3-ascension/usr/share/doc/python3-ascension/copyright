@@ -1,0 +1,21 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: python3-ascension
+Source: <https://git.gnunet.org/ascension.git/>
+
+Files: *
+Copyright: 2019 GNUnet e.V.
+License: AGPL-3.0
+ Source: python3-ascension
+ Section: contrib
+ Priority: optional
+ Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+ Build-Depends: debhelper (>= 9), python3-ascension, bind9
+ Standards-Version: 3.9.8
+ Homepage: https://git.gnunet.org/ascension.git/
+
+ Package: ascension-bind
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: Tool to migrate DNS Zones to the GNU Name System
+ Tool to easily migrate existing DNS Zones into the GNU Name System using
+ incremental zone transfers (AXFR/IXFR).

@@ -1,0 +1,129 @@
+I read, and am reviewing, draft-schanzen-gns-13. These comments are public.
+
+It would be appropriate for the [ISE] to publish this document. It is about a decentralized naming scheme known as GNS (the GNU Name System), analogous to DNS, that operates over the Internet and allows clients to find information about servers and services. That seems to fall exactly into the IETF (sic) domain. I have some questions, which the authors could address: is the GNS protocol and data structures, etc., "done"? When was the last that affected interoperability?
+
+The document seems completely and competent. It is certainly in reasonable editorial shape, and once again I am impressed by the ability of (I assume) non-native speakers.
+
+The abstract is very nice and definitely makes the document worth reading.
+
+Overall, I think the use of 2119 language isn't right (e.g., there's no mandatory-to-implement redirection zone type). But I think that is okay given the stream for this doc.
+
+Some people might be offended by "limiting" IANA registrations (e.g., Sec 5.3.3's PROTO). Maybe you need to have story here and explain that is not the intent?  Or not.
+
+======= Clarified as fixed bit fields by IANA, where applicable.
+
+This seems incomplete, since an implementation needs to be able to talk to remote storage (i.e., the GET in sec 7ff), and that is not defined. Does the storage need to be globally consistent? What if two views diverge?  Suggest you discuss that. Somewhat addressed in section 9.5, should be joined with the other global storage sections in my view.  Okay if you disagree.
+
+======= We think 9.5 is good enough
+
+Some minor items, or nits, follow. None of them, in my view, are intended to block publication.
+
+Abstract, should it mention SDSI?
+
+Sec 1, the first two paragraphs are going to disturb some folks in the IETF DNS community.  Has anyone in DNS, in particular DNSSEC, looked at this? I think the "in practice it relies on" phrase is wrong.  The term "petname" should have a definition, even if something parenthetical like "petname (user's personal name for something)." The paragraph containing "In DNS terminology," is a *very nice* one.
+
+Sec 2, the  items seem in arbitrary order. Consider alphabetical or explaining the ordering.
+
+====== Alphabetical ordering.
+
+Each definition might be more clear if the repetition of the term were omitted as in:
+	Application    A component which uses a GNS implementation to ...
+
+===== Updated wording.
+
+In the "Name" definition, do you mean "applications MAY *require* that ... "?
+
+===== I think we could also formulate it like that. But that would be a normative statement for the application as opposed to a normative statement what the GNS impl. should expect. => No change.
+
+Using "Zone type" as the term for cipher and encoding seemed strange to me, why not "Zone Representation" or something shorter?  One or two examples before the terms, with text identifying the parts in the definition, would be helpful.
+
+===== Unclear, should the terminology be moved?
+
+Sec 3, "cryptographically secured zones" is redundant, aren't all zones cryptographically secured?
+
+===== Fixed
+
+Last sentence of first paragraph repeats the definition we just read.
+
+===== Unable to find this issue in the text itself.
+
+Second para "A zone can be populated by its owner with ..." A clarification that the distributed storage isn't required by the protocol would be useful.
+
+===== Remove "distributed". The storage is required.
+
+The text introducing figure 2 makes me think it's going to show all the flows for a recursive resolution, and it is rather a high-level view.
+
+===== That is what the figure description sais and I think this is enough for an "Overview".
+
+Sec 4, which user creates and manages zones?  The Zone admin? The end-user?
+
+==== Zone owners. Clarified.
+
+The forward ref to Section 5.1 should be before the list of algorithms in my opinion.
+
+==== After review I disagree as it refers to the functions which are introduced above that text.
+
+Sec 4.1, maybe say "||" is the concatenation operator and that "[a..b]" is the semi-closed range from A to B-1
+
+==== Clarified the use of the operators.
+
+Sec 4.2, "strictly monotonically increasing order" I think monotonically is wrong.
+
+====== I am 99% sure that monotonically is correct and the important part.
+
+Sec 5, nice to block of IANA numbers for interop. Are timestamps in GNS always 64bit microsec since 1/1/1970? Maybe add a definition or something at the top?
+
+===== Subjectively I like to keep normative implementation details with the fields.
+
+Sec 5.1, period missing in last line.
+
+======= Fixed.
+
+Sec 5.1.1, the crypto heart starts to appear. ;)  This all looks okay to me, and follows current practice.
+
+Sec 5.1.2, "highest 32 bytes" maybe "top-most"?  Nit.  SignDerived is clever.  Consider asking CFRG to review the crypto in Sec 5.
+
+======= We could do that, but then again we had a review by djb already.
+
+Sec 5.2.1+5.2.2, have you thought of allowing multiple REDIRECT records to achieve some kind of load-balancing or other?
+
+======= This is a CNAME-derivative. It seems that CNAMEs do not support this either: https://docstore.mik.ua/orelly/networking_2ndEd/dns/ch10_07.htm#dns4-CHP-10-SECT-7.1
+
+Sec 5.3.1, I would think TLS SNI value is also common for LEHO data.
+
+===== Added ref to RFC6066 SNI
+
+Sec 5.3.3, not unlike the new SVCB RR type?
+
+==== Yeah, bit is still draft status (?).
+
+Sec 6, is this whole storage strictly necessary for interop?  You could split it off into a separate document. There's not enough here to implement the storage. What happens to resolution if the GET() fails? I assume that's discussed.
+
+======= Renamed section to "Record Encoding" in order to avoid storage confusion.
+
+Sec 7, the application filters record sets.  Oh, that is *VERY* interesting.  And that picture is starting to look familiar. Third time?
+
+Sec 7.1+7.2+7.3 very nice, very clear, I could implement this (modulo the storage aspect).
+
+Sec 9.3 seems very important.  Somewhere up near the front you should forward-link to it.  And in the security considerations, backlink.
+
+===== Added.
+
+Sec 9.4, it's difficult because it requires law enforcement, etc., to get the private key?  Is that really so hard? https://xkcd.com/538/
+
+===== A misunderstanding that this is related to the private keys. Added a reasoning.
+
+Sec 9.5, "offline signing of records"  not quite sure, maybe a better word, but I cannot think of one.
+
+==== Signing of records in advance ("offline")
+
+Sec 9.6, this belongs with Sec 6 I think.  Should the DHT be part of the zone type?
+
+==== That is an interesting question! We could introduce STORAGE record which defined the storage type. Example: Storage: Typenum (GANA) + Metadata e.g. 3294 (REST) + "https://example.com". OR 0 => R5N/GNUnet w/o metadata
+==== But, this would require a "glue" from the delegating zone: The zone owner must know the storages where the delegated zone exists. Any changes will have delays/inconsistencies. We decided to document this for a possible update of the protocol if the need arises. For now, it would be too complex and there is no real use case for this.
+
+Sec 9.7 is good.
+
+Sec 12, last sentence of paragraph 1. "given that they are built on top of the same underlying DHT storage." Does that mean *any* implementation should interoperate? Does an implementation *have to use* the DHT storage?
+
+===== Fixed: Only If.

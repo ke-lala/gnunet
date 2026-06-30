@@ -1,0 +1,37 @@
+* Conclusion and Future Work
+
+The implementation of Secure Share contributes to the efforts of creating a
+privacy protecting peer-to-peer social network. The client API provided as a
+library allows for creating various client applications right away, while the
+lower layers of the system are worked out.
+
+By implementing psycd as a service for the GNUnet framework, it allows us to
+benefit from GNUnet's modular architecture, which can be extended with new or
+improved routing schemes in future versions. The DV and mesh service are areas
+which need improvement. We need to have proper multicast message distribution in
+the network, and the mesh service is a promising candidate for that. It
+implements multicast groups, but group encryption still has to be implemented
+for this service. Thus improvements on the routing level are necessary to make
+the system really scalable and privacy protecting.
+
+As the implementation is still in a prototype stage, further work is needed to
+enhance the functionality of the system. Areas that need more work are:
+
+- improve the functionality and usability of the user interface, e.g. add
+  dialogs for friendship establishment, and add different interfaces for different
+  types of channels, e.g. status updates.
+- implement dedicated groups independent of person entities
+- user identities should be decoupled from node identities by assigning separate
+  keys to users, so they have a master key and subkeys for their devices
+- file transfer over PSYC, this requires splitting large packets into smaller
+  fragments and reassembling them when receiving
+- add UNIX socket support to psycd, as currently only TCP sockets are supported
+  for clients
+- TLS sockets could be added later as well to enable secure connection to a
+  remote node in case a local installation is not available
+- make the system work on mobile devices -- this could be done either via
+  setting up a GNUnet node on the device or via establishing a TLS connection to
+  a remote node; this also requires developing a user interface specifically
+  designed for mobile devices
+- implement a web interface
+- implement testing using the GNUnet testing library

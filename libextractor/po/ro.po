@@ -1,0 +1,2717 @@
+# Mesajele în limba română pentru libextractor.
+# Copyright © 2003, 2022 Free Software Foundation, Inc.
+# Acest fișier este distribuit sub aceeași licență ca și pachetul libextractor.
+# This file is distributed under the same license as the libextractor package.
+#
+# Laurentiu Buzdugan <lbuz@rolix.org>, 2005.
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2022.
+#
+# Cronologia traducerii fișierului „libextractor”:
+# Traducerea inițială, făcută de LB, pentru versiunea libextractor 0.5.3.
+# Actualizare a mesajelor, de la fișierul „libextractor-1.9.pot”.
+# Actualizare a codării caracterelor, la codarea de caractere UTF-8.
+# Actualizare a diacriticelor de la „cu sedilă” la „cu virgulă”.
+# Actualizare a algoritmului formelor de plural (de la „două” la „trei”).
+# NU și a mesajelor traduse (acestea au rămas neschimbate).
+# Eliminare a mesajelor ce-au dispărut în ultima versiune.
+# Actualizări realizate de Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 15.01.2022.
+# Actualizare a traducerii pentru versiunea 1.9, făcută de R-GC, 2022.
+# Actualizare a traducerii pentru versiunea Y, făcută de X, Z(anul).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libextractor 1.9\n"
+"Report-Msgid-Bugs-To: libextractor@gnu.org\n"
+"POT-Creation-Date: 2026-06-29 20:05+0200\n"
+"PO-Revision-Date: 2022-10-11 18:47+0200\n"
+"Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
+"Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2);\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#: src/main/extract.c:134
+#, c-format
+msgid ""
+"Usage: %s\n"
+"%s\n"
+"\n"
+msgstr ""
+"Utilizare: %s\n"
+"%s\n"
+"\n"
+
+#: src/main/extract.c:138
+#, c-format
+msgid ""
+"Arguments mandatory for long options are also mandatory for short options.\n"
+msgstr ""
+"Argumentele obligatorii pentru opțiunile lungi sunt obligatorii și pentru "
+"opțiunile scurte.\n"
+
+#: src/main/extract.c:219
+msgid "print output in bibtex format"
+msgstr "afișează ieșirea în format bibtex"
+
+#: src/main/extract.c:222
+msgid "produce grep-friendly output (all results on one line per file)"
+msgstr ""
+"produce rezultate care sunt ușor de manipulat cu grep (toate rezultatele pe "
+"o singură linie per fișier)"
+
+#: src/main/extract.c:224
+msgid "print this help"
+msgstr "afișează acest mesaj de ajutor"
+
+#: src/main/extract.c:226
+msgid "run plugins in-process (simplifies debugging)"
+msgstr "rulează module în interiorul procesului (simplifică depanarea)"
+
+#: src/main/extract.c:229
+msgid "read data from file into memory and extract from memory"
+msgstr "citește datele din fișier în memorie și le extrage din memorie"
+
+#: src/main/extract.c:231
+msgid "load an extractor plugin named LIBRARY"
+msgstr "încarcă un modul extractor numit „LIBRARY”"
+
+#: src/main/extract.c:233
+msgid "list all keyword types"
+msgstr "listează toate tipurile de cuvinte cheie"
+
+#: src/main/extract.c:235
+msgid "do not use the default set of extractor plugins"
+msgstr "nu utilizează setul implicit de module extractoare"
+
+#: src/main/extract.c:238
+msgid "print only keywords of the given TYPE (use -L to get a list)"
+msgstr ""
+"afișează numai cuvintele cheie pentru TIP-ul dat (utilizați opțiunea „-L” "
+"pentru a obține o listă)"
+
+#: src/main/extract.c:240
+msgid "print the version number"
+msgstr "afișează numărul versiunii"
+
+#: src/main/extract.c:242
+msgid "be verbose"
+msgstr "afișează mesaje cu informații detaliate"
+
+#: src/main/extract.c:244
+msgid "do not print keywords of the given TYPE"
+msgstr "nu afișează cuvintele cheie de TIP-ul dat"
+
+#: src/main/extract.c:247
+msgid "extract [OPTIONS] [FILENAME]*"
+msgstr "extract [OPȚIUNI] [NUME_FIȘIER]*"
+
+#: src/main/extract.c:248
+msgid "Extract metadata from files."
+msgstr "Extrage metadatele din fișiere."
+
+#: src/main/extract.c:294
+#, c-format
+msgid "Found by `%s' plugin:\n"
+msgstr "Găsit de pluginul „%s”:\n"
+
+#: src/main/extract.c:297 src/main/extract.c:386
+#: src/main/extractor_metatypes.c:153 src/main/extractor_print.c:86
+#: src/main/extractor_print.c:96
+msgid "unknown"
+msgstr "necunoscut"
+
+#: src/main/extract.c:302
+#, c-format
+msgid "%s - (unknown, %u bytes)\n"
+msgstr "%s - (necunoscut, %u octeți)\n"
+
+#: src/main/extract.c:333
+#, c-format
+msgid "%s - (binary, %u bytes)\n"
+msgstr "%s - (binar, %u octeți)\n"
+
+#: src/main/extract.c:827 src/main/extract.c:840
+msgid ""
+"Illegal combination of options, cannot combine multiple styles of printing.\n"
+msgstr ""
+"Combinație nevalidă de opțiuni, nu se pot combina mai multe stiluri de "
+"imprimare.\n"
+
+#: src/main/extract.c:874
+#, c-format
+msgid "You must specify an argument for the `%s' option (option ignored).\n"
+msgstr ""
+"Trebuie să specificați un argument pentru opțiunea „%s” (opțiunea este "
+"ignorată).\n"
+
+#: src/main/extract.c:943
+msgid "Use --help to get a list of options.\n"
+msgstr "Utilizați „--help” pentru a obține o listă de opțiuni.\n"
+
+#: src/main/extract.c:984
+msgid "% BiBTeX file\n"
+msgstr "%% fișier BiBTeX\n"
+
+#: src/main/extract.c:992
+#, c-format
+msgid "Keywords for file %s:\n"
+msgstr "Cuvinte cheie pentru fișierul %s:\n"
+
+#: src/main/extractor.c:679
+#, c-format
+msgid "Initialization of plugin mechanism failed: %s!\n"
+msgstr "Inițializarea mecanismului pluginului a eșuat: %s!n\n"
+
+#: src/main/extractor_metatypes.c:46
+msgid "reserved"
+msgstr "rezervat"
+
+#: src/main/extractor_metatypes.c:47
+msgid "reserved value, do not use"
+msgstr "valoare rezervată, nu se utilizează"
+
+#: src/main/extractor_metatypes.c:48
+msgid "mimetype"
+msgstr "tip MIME"
+
+#: src/main/extractor_metatypes.c:49
+msgid "mime type"
+msgstr "tip MIME"
+
+#: src/main/extractor_metatypes.c:50
+msgid "embedded filename"
+msgstr "numele fișierului încorporat"
+
+#: src/main/extractor_metatypes.c:52
+msgid "filename that was embedded (not necessarily the current filename)"
+msgstr ""
+"numele fișierului care a fost încorporat (nu neapărat numele fișierului "
+"curent)"
+
+#: src/main/extractor_metatypes.c:53
+msgid "comment"
+msgstr "comentariu"
+
+#: src/main/extractor_metatypes.c:54
+msgid "comment about the content"
+msgstr "comentariu despre conținut"
+
+#: src/main/extractor_metatypes.c:55
+msgid "title"
+msgstr "titlu"
+
+#: src/main/extractor_metatypes.c:56
+msgid "title of the work"
+msgstr "titlul lucrării"
+
+#: src/main/extractor_metatypes.c:58
+msgid "book title"
+msgstr "titlul cărții"
+
+#: src/main/extractor_metatypes.c:59
+msgid "title of the book containing the work"
+msgstr "titlul cărții care conține lucrarea"
+
+#: src/main/extractor_metatypes.c:60
+msgid "book edition"
+msgstr "ediția cărții"
+
+#: src/main/extractor_metatypes.c:61
+msgid "edition of the book (or book containing the work)"
+msgstr "ediția cărții (sau cartea care conține lucrarea)"
+
+#: src/main/extractor_metatypes.c:62
+msgid "book chapter"
+msgstr "capitolul cărții"
+
+#: src/main/extractor_metatypes.c:63
+msgid "chapter number"
+msgstr "numărul capitolului"
+
+#: src/main/extractor_metatypes.c:64
+msgid "journal name"
+msgstr "numele jurnalului"
+
+#: src/main/extractor_metatypes.c:65
+msgid "journal or magazine the work was published in"
+msgstr "jurnalul sau revista în care lucrarea a fost publicată"
+
+#: src/main/extractor_metatypes.c:66
+msgid "journal volume"
+msgstr "volumul jurnalului"
+
+#: src/main/extractor_metatypes.c:67
+msgid "volume of a journal or multi-volume book"
+msgstr "volumul unui jurnal sau al unei cărți în mai multe volume"
+
+#: src/main/extractor_metatypes.c:69
+msgid "journal number"
+msgstr "numărul jurnalului"
+
+#: src/main/extractor_metatypes.c:70
+msgid "number of a journal, magazine or tech-report"
+msgstr "numărul unui jurnal, al unei reviste sau al unui raport tehnologic"
+
+#: src/main/extractor_metatypes.c:71
+msgid "page count"
+msgstr "număr de pagini"
+
+#: src/main/extractor_metatypes.c:72
+msgid "total number of pages of the work"
+msgstr "numărul total de pagini ale lucrării"
+
+#: src/main/extractor_metatypes.c:73
+msgid "page range"
+msgstr "interval pagini"
+
+#: src/main/extractor_metatypes.c:75
+msgid "page numbers of the publication in the respective journal or book"
+msgstr "numerele paginilor publicației din jurnalul sau cartea respectivă"
+
+#: src/main/extractor_metatypes.c:76
+msgid "author name"
+msgstr "numele autorului"
+
+#: src/main/extractor_metatypes.c:77
+msgid "name of the author(s)"
+msgstr "numele autorului/autorilor"
+
+#: src/main/extractor_metatypes.c:78
+msgid "author email"
+msgstr "e-mailul autorului"
+
+#: src/main/extractor_metatypes.c:79
+msgid "e-mail of the author(s)"
+msgstr "e-mailul autorului/autorilor"
+
+#: src/main/extractor_metatypes.c:81
+msgid "author institution"
+msgstr "instituția autorului"
+
+#: src/main/extractor_metatypes.c:82
+msgid "institution the author worked for"
+msgstr "instituția pentru care a lucrat autorul"
+
+#: src/main/extractor_metatypes.c:83
+msgid "publisher"
+msgstr "editura"
+
+#: src/main/extractor_metatypes.c:84
+msgid "name of the publisher"
+msgstr "numele editurii"
+
+#: src/main/extractor_metatypes.c:85
+msgid "publisher's address"
+msgstr "adresa editurii"
+
+#: src/main/extractor_metatypes.c:86
+msgid "Address of the publisher (often only the city)"
+msgstr "Adresa editurii (de cele mai multe ori, doar orașul)"
+
+#: src/main/extractor_metatypes.c:87
+msgid "publishing institution"
+msgstr "instituția editorială"
+
+#: src/main/extractor_metatypes.c:89
+msgid ""
+"institution that was involved in the publishing, but not necessarily the "
+"publisher"
+msgstr "instituția care a fost implicată în editare, dar nu neapărat editura"
+
+#: src/main/extractor_metatypes.c:90
+msgid "publication series"
+msgstr "seria de publicații"
+
+#: src/main/extractor_metatypes.c:91
+msgid "series of books the book was published in"
+msgstr "seria de cărți în care a fost publicată cartea"
+
+#: src/main/extractor_metatypes.c:93
+msgid "publication type"
+msgstr "tipul publicației"
+
+#: src/main/extractor_metatypes.c:94
+msgid "type of the tech-report"
+msgstr "tipul raportului tehnologic"
+
+#: src/main/extractor_metatypes.c:95
+msgid "publication year"
+msgstr "anul publicării"
+
+#: src/main/extractor_metatypes.c:97
+msgid "year of publication (or, if unpublished, the year of creation)"
+msgstr "anul publicării (sau, dacă nu a fost publicată, anul creării)"
+
+#: src/main/extractor_metatypes.c:98
+msgid "publication month"
+msgstr "luna publicării"
+
+#: src/main/extractor_metatypes.c:100
+msgid "month of publication (or, if unpublished, the month of creation)"
+msgstr "luna publicării (sau, dacă nu este publicată, luna creării)"
+
+#: src/main/extractor_metatypes.c:101
+msgid "publication day"
+msgstr "ziua publicării"
+
+#: src/main/extractor_metatypes.c:103
+msgid ""
+"day of publication (or, if unpublished, the day of creation), relative to "
+"the given month"
+msgstr "ziua publicării (sau, dacă nu este publicată, ziua creării)"
+
+#: src/main/extractor_metatypes.c:104
+msgid "publication date"
+msgstr "data publicării"
+
+#: src/main/extractor_metatypes.c:106
+msgid "date of publication (or, if unpublished, the date of creation)"
+msgstr "data publicării (sau, dacă nu este publicată, data creării)"
+
+#: src/main/extractor_metatypes.c:108
+msgid "bibtex eprint"
+msgstr "imprimare electronică bibtex"
+
+#: src/main/extractor_metatypes.c:109
+msgid "specification of an electronic publication"
+msgstr "specificația unei publicații electronice"
+
+#: src/main/extractor_metatypes.c:110
+msgid "bibtex entry type"
+msgstr "tipul de intrare bibtex"
+
+#: src/main/extractor_metatypes.c:111
+msgid "type of the publication for bibTeX bibliographies"
+msgstr "tipul publicației pentru bibliografii bibTeX"
+
+#: src/main/extractor_metatypes.c:112
+msgid "language"
+msgstr "limba"
+
+#: src/main/extractor_metatypes.c:113
+msgid "language the work uses"
+msgstr "limba utilizată în lucrare"
+
+#: src/main/extractor_metatypes.c:114
+msgid "creation time"
+msgstr "ora creării"
+
+#: src/main/extractor_metatypes.c:115
+msgid "time and date of creation"
+msgstr "ora și data creării"
+
+#: src/main/extractor_metatypes.c:116
+msgid "URL"
+msgstr "adresa URL"
+
+#: src/main/extractor_metatypes.c:118
+msgid "universal resource location (where the work is made available)"
+msgstr ""
+"locația universală a resurselor (unde lucrarea este pusă la dispoziție)"
+
+#: src/main/extractor_metatypes.c:120
+msgid "URI"
+msgstr "adresa URI"
+
+#: src/main/extractor_metatypes.c:121
+msgid "universal resource identifier"
+msgstr "identificatorul universal al resursei"
+
+#: src/main/extractor_metatypes.c:122
+msgid "international standard recording code"
+msgstr "codul standard internațional de înregistrare (ISRC în engleză)"
+
+#: src/main/extractor_metatypes.c:123
+msgid "ISRC number identifying the work"
+msgstr "Numărul ISRC care identifică lucrarea"
+
+#: src/main/extractor_metatypes.c:124
+msgid "MD4"
+msgstr "MD4"
+
+#: src/main/extractor_metatypes.c:125
+msgid "MD4 hash"
+msgstr "sumă de control MD4"
+
+#: src/main/extractor_metatypes.c:126
+msgid "MD5"
+msgstr "MD5"
+
+#: src/main/extractor_metatypes.c:127
+msgid "MD5 hash"
+msgstr "sumă de control MD5"
+
+#: src/main/extractor_metatypes.c:128
+msgid "SHA-0"
+msgstr "SHA-0"
+
+#: src/main/extractor_metatypes.c:129
+msgid "SHA-0 hash"
+msgstr "sumă de control SHA-0"
+
+#: src/main/extractor_metatypes.c:131
+msgid "SHA-1"
+msgstr "SHA-1"
+
+#: src/main/extractor_metatypes.c:132
+msgid "SHA-1 hash"
+msgstr "sumă de control SHA-1"
+
+#: src/main/extractor_metatypes.c:133
+msgid "RipeMD160"
+msgstr "RipeMD160"
+
+#: src/main/extractor_metatypes.c:134
+msgid "RipeMD150 hash"
+msgstr "sumă de control RipeMD160"
+
+#: src/main/extractor_metatypes.c:135 src/main/extractor_metatypes.c:136
+msgid "GPS latitude ref"
+msgstr "referință de latitudine GPS"
+
+#: src/main/extractor_metatypes.c:137 src/main/extractor_metatypes.c:138
+msgid "GPS latitude"
+msgstr "latitudine GPS"
+
+#: src/main/extractor_metatypes.c:139 src/main/extractor_metatypes.c:140
+msgid "GPS longitude ref"
+msgstr "referință de longitudine GPS"
+
+#: src/main/extractor_metatypes.c:142 src/main/extractor_metatypes.c:143
+msgid "GPS longitude"
+msgstr "longitudine GPS"
+
+#: src/main/extractor_metatypes.c:144
+msgid "city"
+msgstr "orașul"
+
+#: src/main/extractor_metatypes.c:145
+msgid "name of the city where the document originated"
+msgstr "numele orașului din care a provenit documentul"
+
+#: src/main/extractor_metatypes.c:146
+msgid "sublocation"
+msgstr "sublocație"
+
+#: src/main/extractor_metatypes.c:147
+msgid "more specific location of the geographic origin"
+msgstr "localizarea mai specifică a originii geografice"
+
+#: src/main/extractor_metatypes.c:148
+msgid "country"
+msgstr "țara"
+
+#: src/main/extractor_metatypes.c:149
+msgid "name of the country where the document originated"
+msgstr "numele țării din care a provenit documentul"
+
+#: src/main/extractor_metatypes.c:150
+msgid "country code"
+msgstr "codul țării"
+
+#: src/main/extractor_metatypes.c:151
+msgid "ISO 2-letter country code for the country of origin"
+msgstr "codul de țară ISO din două litere pentru țara de origine"
+
+#: src/main/extractor_metatypes.c:154
+msgid "specifics are not known"
+msgstr "nu se cunosc detaliile"
+
+#: src/main/extractor_metatypes.c:155 src/main/extractor_metatypes.c:156
+msgid "description"
+msgstr "descriere"
+
+#: src/main/extractor_metatypes.c:157
+msgid "copyright"
+msgstr "drepturi de autor"
+
+#: src/main/extractor_metatypes.c:158
+msgid "Name of the entity holding the copyright"
+msgstr "Numele entității care deține drepturile de autor"
+
+#: src/main/extractor_metatypes.c:159
+msgid "rights"
+msgstr "drepturi"
+
+#: src/main/extractor_metatypes.c:160
+msgid "information about rights"
+msgstr "informații despre drepturi"
+
+#: src/main/extractor_metatypes.c:161 src/main/extractor_metatypes.c:162
+msgid "keywords"
+msgstr "cuvinte cheie"
+
+#: src/main/extractor_metatypes.c:164 src/main/extractor_metatypes.c:165
+msgid "abstract"
+msgstr "rezumat"
+
+#: src/main/extractor_metatypes.c:166 src/main/extractor_metatypes.c:167
+msgid "summary"
+msgstr "cuprins"
+
+#: src/main/extractor_metatypes.c:168
+msgid "subject"
+msgstr "subiect"
+
+#: src/main/extractor_metatypes.c:169
+msgid "subject matter"
+msgstr "tematica"
+
+#: src/main/extractor_metatypes.c:170 src/main/extractor_metatypes.c:205
+msgid "creator"
+msgstr "creator"
+
+#: src/main/extractor_metatypes.c:171
+msgid "name of the person who created the document"
+msgstr "numele persoanei care a creat documentul"
+
+#: src/main/extractor_metatypes.c:172
+msgid "format"
+msgstr "format"
+
+#: src/main/extractor_metatypes.c:173
+msgid "name of the document format"
+msgstr "numele formatului documentului"
+
+#: src/main/extractor_metatypes.c:175
+msgid "format version"
+msgstr "versiunea formatului"
+
+#: src/main/extractor_metatypes.c:176
+msgid "version of the document format"
+msgstr "versiunea formatului documentului"
+
+#: src/main/extractor_metatypes.c:177
+msgid "created by software"
+msgstr "creat de software"
+
+#: src/main/extractor_metatypes.c:178
+msgid "name of the software that created the document"
+msgstr "numele software-ului care a creat documentul"
+
+#: src/main/extractor_metatypes.c:179
+msgid "unknown date"
+msgstr "data necunoscută"
+
+#: src/main/extractor_metatypes.c:181
+msgid ""
+"ambiguous date (could specify creation time, modification time or access "
+"time)"
+msgstr ""
+"data ambiguă (ar putea specifica ora creării, ora modificării sau ora de "
+"acces)"
+
+#: src/main/extractor_metatypes.c:182
+msgid "creation date"
+msgstr "data creării"
+
+#: src/main/extractor_metatypes.c:183
+msgid "date the document was created"
+msgstr "data la care a fost creat documentul"
+
+#: src/main/extractor_metatypes.c:184
+msgid "modification date"
+msgstr "data modificării"
+
+#: src/main/extractor_metatypes.c:185
+msgid "date the document was modified"
+msgstr "data la care documentul a fost modificat"
+
+#: src/main/extractor_metatypes.c:187
+msgid "last printed"
+msgstr "tipărit ultima dată"
+
+#: src/main/extractor_metatypes.c:188
+msgid "date the document was last printed"
+msgstr "data la care documentul a fost tipărit ultima dată"
+
+#: src/main/extractor_metatypes.c:189
+msgid "last saved by"
+msgstr "salvat ultima dată de"
+
+#: src/main/extractor_metatypes.c:190
+msgid "name of the user who saved the document last"
+msgstr "numele utilizatorului care a salvat documentul ultima dată"
+
+#: src/main/extractor_metatypes.c:191
+msgid "total editing time"
+msgstr "timpul total de editare"
+
+#: src/main/extractor_metatypes.c:192
+msgid "time spent editing the document"
+msgstr "timpul petrecut cu editarea documentului"
+
+#: src/main/extractor_metatypes.c:193
+msgid "editing cycles"
+msgstr "cicluri de editare"
+
+#: src/main/extractor_metatypes.c:194
+msgid "number of editing cycles"
+msgstr "numărul de cicluri de editare"
+
+#: src/main/extractor_metatypes.c:195
+msgid "modified by software"
+msgstr "modificat de software"
+
+#: src/main/extractor_metatypes.c:196
+msgid "name of software making modifications"
+msgstr "numele software-ului care efectuează modificările"
+
+#: src/main/extractor_metatypes.c:198
+msgid "revision history"
+msgstr "istoricul reviziilor"
+
+#: src/main/extractor_metatypes.c:199
+msgid "information about the revision history"
+msgstr "informații despre istoricul revizuirilor"
+
+#: src/main/extractor_metatypes.c:200
+msgid "embedded file size"
+msgstr "dimensiunea fișierului încorporat"
+
+#: src/main/extractor_metatypes.c:202
+msgid "size of the contents of the container as embedded in the file"
+msgstr "dimensiunea datelor containerului încorporat în fișier"
+
+#: src/main/extractor_metatypes.c:203
+msgid "file type"
+msgstr "tipul fișierului"
+
+#: src/main/extractor_metatypes.c:204
+msgid "standard Macintosh Finder file type information"
+msgstr "informații standard despre tipul de fișier din Finder Macintosh"
+
+#: src/main/extractor_metatypes.c:206
+msgid "standard Macintosh Finder file creator information"
+msgstr "informații standard pentru crearea fișierelor din Finder Macintosh"
+
+#: src/main/extractor_metatypes.c:207
+msgid "package name"
+msgstr "numele pachetului"
+
+#: src/main/extractor_metatypes.c:208
+msgid "unique identifier for the package"
+msgstr "identificatorul unic pentru pachet"
+
+#: src/main/extractor_metatypes.c:210
+msgid "package version"
+msgstr "versiunea pachetului"
+
+#: src/main/extractor_metatypes.c:211
+msgid "version of the software and its package"
+msgstr "versiunea software-ului și pachetul acestuia"
+
+#: src/main/extractor_metatypes.c:212
+msgid "section"
+msgstr "secțiunea"
+
+#: src/main/extractor_metatypes.c:213
+msgid "category the software package belongs to"
+msgstr "categoria căreia îi aparține pachetul de software"
+
+#: src/main/extractor_metatypes.c:214
+msgid "upload priority"
+msgstr "prioritate de încărcare"
+
+#: src/main/extractor_metatypes.c:215
+msgid "priority for promoting the release to production"
+msgstr "prioritatea pentru promovarea lansării în producţie"
+
+#: src/main/extractor_metatypes.c:216
+msgid "dependencies"
+msgstr "dependențe"
+
+#: src/main/extractor_metatypes.c:217
+msgid "packages this package depends upon"
+msgstr "pachetele de care depinde acest pachet"
+
+#: src/main/extractor_metatypes.c:218
+msgid "conflicting packages"
+msgstr "pachete aflate în conflict"
+
+#: src/main/extractor_metatypes.c:219
+msgid "packages that cannot be installed with this package"
+msgstr "pachete care nu pot fi instalate împreună cu acest pachet"
+
+#: src/main/extractor_metatypes.c:221
+msgid "replaced packages"
+msgstr "pachete înlocuite"
+
+#: src/main/extractor_metatypes.c:222
+msgid "packages made obsolete by this package"
+msgstr "pachete devenite învechite prin prezența acestui pachet"
+
+#: src/main/extractor_metatypes.c:223
+msgid "provides"
+msgstr "furnizează"
+
+#: src/main/extractor_metatypes.c:224
+msgid "functionality provided by this package"
+msgstr "funcționalitatea furnizată de acest pachet"
+
+#: src/main/extractor_metatypes.c:225
+msgid "recommendations"
+msgstr "recomandări"
+
+#: src/main/extractor_metatypes.c:227
+msgid "packages recommended for installation in conjunction with this package"
+msgstr "pachete recomandate pentru instalare împreună cu acest pachet"
+
+#: src/main/extractor_metatypes.c:228
+msgid "suggestions"
+msgstr "sugestii"
+
+#: src/main/extractor_metatypes.c:230
+msgid "packages suggested for installation in conjunction with this package"
+msgstr "pachete sugerate pentru instalare împreună cu acest pachet"
+
+#: src/main/extractor_metatypes.c:231
+msgid "maintainer"
+msgstr "întreţinător"
+
+#: src/main/extractor_metatypes.c:232
+msgid "name of the maintainer"
+msgstr "numele întreținătorului"
+
+#: src/main/extractor_metatypes.c:234
+msgid "installed size"
+msgstr "dimensiunea instalată"
+
+#: src/main/extractor_metatypes.c:235
+msgid "space consumption after installation"
+msgstr "spațiul consumat după instalare"
+
+#: src/main/extractor_metatypes.c:236 src/main/extractor_metatypes.c:319
+msgid "source"
+msgstr "sursa"
+
+#: src/main/extractor_metatypes.c:237
+msgid "original source code"
+msgstr "codul sursă original"
+
+#: src/main/extractor_metatypes.c:238
+msgid "is essential"
+msgstr "este esențial"
+
+#: src/main/extractor_metatypes.c:239
+msgid "package is marked as essential"
+msgstr "pachetul este marcat ca fiind esențial"
+
+#: src/main/extractor_metatypes.c:240
+msgid "target architecture"
+msgstr "arhitectura țintă"
+
+#: src/main/extractor_metatypes.c:241
+msgid "hardware architecture the contents can be used for"
+msgstr "arhitectura hardware pentru care poate fi folosit conținutul"
+
+#: src/main/extractor_metatypes.c:242
+msgid "pre-dependency"
+msgstr "predependenţă"
+
+#: src/main/extractor_metatypes.c:243
+msgid "dependency that must be satisfied before installation"
+msgstr "dependență care trebuie satisfăcută înainte de instalare"
+
+#: src/main/extractor_metatypes.c:245
+msgid "license"
+msgstr "licența"
+
+#: src/main/extractor_metatypes.c:246
+msgid "applicable copyright license"
+msgstr "licența de drepturi de autor aplicabilă"
+
+#: src/main/extractor_metatypes.c:247
+msgid "distribution"
+msgstr "distribuție"
+
+#: src/main/extractor_metatypes.c:248
+msgid "distribution the package is a part of"
+msgstr "distribuția din care face parte pachetul"
+
+#: src/main/extractor_metatypes.c:249
+msgid "build host"
+msgstr "gazda contrucției"
+
+#: src/main/extractor_metatypes.c:250
+msgid "machine the package was build on"
+msgstr "mașina pe care a fost construit pachetul"
+
+#: src/main/extractor_metatypes.c:251
+msgid "vendor"
+msgstr "vânzător"
+
+#: src/main/extractor_metatypes.c:252
+msgid "name of the software vendor"
+msgstr "numele furnizorului de software"
+
+#: src/main/extractor_metatypes.c:253
+msgid "target operating system"
+msgstr "sistemul de operare țintă"
+
+#: src/main/extractor_metatypes.c:254
+msgid "operating system for which this package was made"
+msgstr "sistemul de operare pentru care a fost făcut acest pachet"
+
+#: src/main/extractor_metatypes.c:256
+msgid "software version"
+msgstr "versiunea software-ului"
+
+#: src/main/extractor_metatypes.c:257
+msgid "version of the software contained in the file"
+msgstr "versiunea software-ului conținut în fișier"
+
+#: src/main/extractor_metatypes.c:258
+msgid "target platform"
+msgstr "platformă țintă"
+
+#: src/main/extractor_metatypes.c:260
+msgid ""
+"name of the architecture, operating system and distribution this package is "
+"for"
+msgstr ""
+"numele arhitecturii, sistemului de operare și distribuției pentru care este "
+"destinat acest pachet"
+
+#: src/main/extractor_metatypes.c:261
+msgid "resource type"
+msgstr "tipul de resursă"
+
+#: src/main/extractor_metatypes.c:263
+msgid ""
+"categorization of the nature of the resource that is more specific than the "
+"file format"
+msgstr ""
+"categorizarea naturii resursei care este mai specifică decât formatul "
+"fișierului"
+
+#: src/main/extractor_metatypes.c:264
+msgid "library search path"
+msgstr "calea de căutare a bibliotecii"
+
+#: src/main/extractor_metatypes.c:266
+msgid ""
+"path in the file system to be considered when looking for required libraries"
+msgstr ""
+"calea din sistemul de fișiere care trebuie luată în considerare atunci când "
+"se caută bibliotecile necesare"
+
+#: src/main/extractor_metatypes.c:267
+msgid "library dependency"
+msgstr "dependență de biblioteca"
+
+#: src/main/extractor_metatypes.c:268
+msgid "name of a library that this file depends on"
+msgstr "numele unei biblioteci de care depinde acest fișier"
+
+#: src/main/extractor_metatypes.c:270 src/main/extractor_metatypes.c:271
+msgid "camera make"
+msgstr "marca camerei"
+
+#: src/main/extractor_metatypes.c:272 src/main/extractor_metatypes.c:273
+msgid "camera model"
+msgstr "model de cameră"
+
+#: src/main/extractor_metatypes.c:274 src/main/extractor_metatypes.c:275
+msgid "exposure"
+msgstr "expunere"
+
+#: src/main/extractor_metatypes.c:276 src/main/extractor_metatypes.c:277
+msgid "aperture"
+msgstr "apertură"
+
+#: src/main/extractor_metatypes.c:278 src/main/extractor_metatypes.c:279
+msgid "exposure bias"
+msgstr "deviația de expunere"
+
+#: src/main/extractor_metatypes.c:281 src/main/extractor_metatypes.c:282
+msgid "flash"
+msgstr "bliț"
+
+#: src/main/extractor_metatypes.c:283 src/main/extractor_metatypes.c:284
+msgid "flash bias"
+msgstr "deviație bliț"
+
+#: src/main/extractor_metatypes.c:285 src/main/extractor_metatypes.c:286
+msgid "focal length"
+msgstr "distanță focală"
+
+#: src/main/extractor_metatypes.c:287 src/main/extractor_metatypes.c:288
+msgid "focal length 35mm"
+msgstr "distanță focală 35mm"
+
+#: src/main/extractor_metatypes.c:289 src/main/extractor_metatypes.c:290
+msgid "iso speed"
+msgstr "viteza ISO"
+
+#: src/main/extractor_metatypes.c:292 src/main/extractor_metatypes.c:293
+msgid "exposure mode"
+msgstr "mod expunere"
+
+#: src/main/extractor_metatypes.c:294 src/main/extractor_metatypes.c:295
+msgid "metering mode"
+msgstr "mod de măsurare"
+
+#: src/main/extractor_metatypes.c:296 src/main/extractor_metatypes.c:297
+msgid "macro mode"
+msgstr "mod macro"
+
+#: src/main/extractor_metatypes.c:298 src/main/extractor_metatypes.c:299
+msgid "image quality"
+msgstr "calitate imagine"
+
+#: src/main/extractor_metatypes.c:300 src/main/extractor_metatypes.c:301
+msgid "white balance"
+msgstr "balanță alb"
+
+#: src/main/extractor_metatypes.c:303 src/main/extractor_metatypes.c:304
+msgid "orientation"
+msgstr "orientare"
+
+#: src/main/extractor_metatypes.c:305 src/main/extractor_metatypes.c:306
+msgid "magnification"
+msgstr "mărire"
+
+#: src/main/extractor_metatypes.c:307
+msgid "image dimensions"
+msgstr "dimensiunile imaginii"
+
+#: src/main/extractor_metatypes.c:308
+msgid "size of the image in pixels (width times height)"
+msgstr "dimensiunea imaginii în pixeli (lățime x înălțime)"
+
+#: src/main/extractor_metatypes.c:309 src/main/extractor_metatypes.c:310
+msgid "produced by software"
+msgstr "produs de software-ul"
+
+#: src/main/extractor_metatypes.c:314
+msgid "thumbnail"
+msgstr "miniatură"
+
+#: src/main/extractor_metatypes.c:315
+msgid "smaller version of the image for previewing"
+msgstr "o versiune mai mică a imaginii pentru previzualizare"
+
+#: src/main/extractor_metatypes.c:317
+msgid "image resolution"
+msgstr "rezoluția imaginii"
+
+#: src/main/extractor_metatypes.c:318
+msgid "resolution in dots per inch"
+msgstr "rezoluție în puncte pe inci"
+
+#: src/main/extractor_metatypes.c:320
+msgid "Originating entity"
+msgstr "Entitatea de origine"
+
+#: src/main/extractor_metatypes.c:321
+msgid "character set"
+msgstr "set de caractere"
+
+#: src/main/extractor_metatypes.c:322
+msgid "character encoding used"
+msgstr "codificarea caracterelor utilizată"
+
+#: src/main/extractor_metatypes.c:323
+msgid "line count"
+msgstr "numărarea liniilor"
+
+#: src/main/extractor_metatypes.c:324
+msgid "number of lines"
+msgstr "numărul de linii"
+
+#: src/main/extractor_metatypes.c:325
+msgid "paragraph count"
+msgstr "numărarea paragrafelor"
+
+#: src/main/extractor_metatypes.c:326
+msgid "number of paragraphs"
+msgstr "numărul de paragrafe"
+
+#: src/main/extractor_metatypes.c:328
+msgid "word count"
+msgstr "numărarea cuvintelor"
+
+#: src/main/extractor_metatypes.c:329
+msgid "number of words"
+msgstr "numărul de cuvinte"
+
+#: src/main/extractor_metatypes.c:330
+msgid "character count"
+msgstr "numărarea caracterelor"
+
+#: src/main/extractor_metatypes.c:331
+msgid "number of characters"
+msgstr "numărul de caractere"
+
+#: src/main/extractor_metatypes.c:332 src/main/extractor_metatypes.c:333
+msgid "page orientation"
+msgstr "orientarea paginii"
+
+#: src/main/extractor_metatypes.c:334 src/main/extractor_metatypes.c:335
+msgid "paper size"
+msgstr "dimensiunea hârtiei"
+
+#: src/main/extractor_metatypes.c:336
+msgid "template"
+msgstr "șablon"
+
+#: src/main/extractor_metatypes.c:337
+msgid "template the document uses or is based on"
+msgstr "șablonul pe care documentul îl folosește sau pe care se bazează"
+
+#: src/main/extractor_metatypes.c:339 src/main/extractor_metatypes.c:340
+msgid "company"
+msgstr "compania"
+
+#: src/main/extractor_metatypes.c:341 src/main/extractor_metatypes.c:342
+msgid "manager"
+msgstr "administrator"
+
+#: src/main/extractor_metatypes.c:343 src/main/extractor_metatypes.c:344
+msgid "revision number"
+msgstr "numărul reviziei"
+
+#: src/main/extractor_metatypes.c:345
+msgid "duration"
+msgstr "durata"
+
+#: src/main/extractor_metatypes.c:346
+msgid "play time for the medium"
+msgstr "timpul de redare pentru mediu"
+
+#: src/main/extractor_metatypes.c:347
+msgid "album"
+msgstr "album"
+
+#: src/main/extractor_metatypes.c:348
+msgid "name of the album"
+msgstr "numele albumului"
+
+#: src/main/extractor_metatypes.c:350
+msgid "artist"
+msgstr "artist"
+
+#: src/main/extractor_metatypes.c:351
+msgid "name of the artist or band"
+msgstr "numele artistului sau al trupei"
+
+#: src/main/extractor_metatypes.c:352 src/main/extractor_metatypes.c:353
+msgid "genre"
+msgstr "gen"
+
+#: src/main/extractor_metatypes.c:354
+msgid "track number"
+msgstr "numărul piesei"
+
+#: src/main/extractor_metatypes.c:355
+msgid "original number of the track on the distribution medium"
+msgstr "numărul original al piesei pe mediul de distribuție"
+
+#: src/main/extractor_metatypes.c:356
+msgid "disk number"
+msgstr "numărul discului"
+
+#: src/main/extractor_metatypes.c:358
+msgid "number of the disk in a multi-disk (or volume) distribution"
+msgstr "numărul discului într-o distribuție cu mai multe discuri (sau volumul)"
+
+#: src/main/extractor_metatypes.c:359
+msgid "performer"
+msgstr "interpret"
+
+#: src/main/extractor_metatypes.c:361
+msgid ""
+"The artist(s) who performed the work (conductor, orchestra, soloists, actor, "
+"etc.)"
+msgstr ""
+"Artistul sau artiștii care au interpretat lucrarea (dirijor, orchestră, "
+"soliști, actor etc.)"
+
+#: src/main/extractor_metatypes.c:363
+msgid "contact"
+msgstr "contact"
+
+#: src/main/extractor_metatypes.c:364
+msgid "Contact information for the creator or distributor"
+msgstr "Informațiile de contact pentru creator sau distribuitor"
+
+#: src/main/extractor_metatypes.c:365
+msgid "song version"
+msgstr "varianta melodiei"
+
+#: src/main/extractor_metatypes.c:366
+msgid "name of the version of the song (i.e. remix information)"
+msgstr "numele variantei melodiei (de exemplu, informații despre remix)"
+
+#: src/main/extractor_metatypes.c:367
+msgid "picture"
+msgstr "imagine"
+
+#: src/main/extractor_metatypes.c:368
+msgid "associated misc. picture"
+msgstr "diverse imagini asociate"
+
+#: src/main/extractor_metatypes.c:369
+msgid "cover picture"
+msgstr "imagine de copertă"
+
+#: src/main/extractor_metatypes.c:370
+msgid "picture of the cover of the distribution medium"
+msgstr "imaaginea coperții suportului de distribuție"
+
+#: src/main/extractor_metatypes.c:371
+msgid "contributor picture"
+msgstr "imaginea colaboratorului"
+
+#: src/main/extractor_metatypes.c:372
+msgid "picture of one of the contributors"
+msgstr "imaginea unuia dintre colaboratori"
+
+#: src/main/extractor_metatypes.c:374
+msgid "event picture"
+msgstr "imaginea evenimentului"
+
+#: src/main/extractor_metatypes.c:375
+msgid "picture of an associated event"
+msgstr "imaginea unui eveniment asociat"
+
+#: src/main/extractor_metatypes.c:376
+msgid "logo"
+msgstr "logo"
+
+#: src/main/extractor_metatypes.c:377
+msgid "logo of an associated organization"
+msgstr "logo-ul unei organizații asociate"
+
+#: src/main/extractor_metatypes.c:378
+msgid "broadcast television system"
+msgstr "sistem de difuzare a televiziunii"
+
+#: src/main/extractor_metatypes.c:380
+msgid "name of the television system for which the data is coded"
+msgstr "numele sistemului de televiziune pentru care sunt codificate datele"
+
+#: src/main/extractor_metatypes.c:381
+msgid "source device"
+msgstr "dispozitivul sursă"
+
+#: src/main/extractor_metatypes.c:382
+msgid "device used to create the object"
+msgstr "dispozitivul utilizat pentru a crea obiectul"
+
+#: src/main/extractor_metatypes.c:383
+msgid "disclaimer"
+msgstr "declinare a răspunderii"
+
+#: src/main/extractor_metatypes.c:384
+msgid "legal disclaimer"
+msgstr "declinare a răspunderii juridice"
+
+#: src/main/extractor_metatypes.c:386
+msgid "warning"
+msgstr "avertisment"
+
+#: src/main/extractor_metatypes.c:387
+msgid "warning about the nature of the content"
+msgstr "avertisment cu privire la natura conținutului"
+
+#: src/main/extractor_metatypes.c:388
+msgid "page order"
+msgstr "ordinea paginilor"
+
+#: src/main/extractor_metatypes.c:389
+msgid "order of the pages"
+msgstr "ordinea paginilor"
+
+#: src/main/extractor_metatypes.c:390
+msgid "writer"
+msgstr "scriitor"
+
+#: src/main/extractor_metatypes.c:391
+msgid "contributing writer"
+msgstr "scriitor colaborator"
+
+#: src/main/extractor_metatypes.c:392 src/main/extractor_metatypes.c:393
+msgid "product version"
+msgstr "versiunea produsului"
+
+#: src/main/extractor_metatypes.c:394
+msgid "contributor"
+msgstr "colaborator"
+
+#: src/main/extractor_metatypes.c:395
+msgid "name of a contributor"
+msgstr "numele unui colaborator"
+
+#: src/main/extractor_metatypes.c:397
+msgid "movie director"
+msgstr "regizor de film"
+
+#: src/main/extractor_metatypes.c:398
+msgid "name of the director"
+msgstr "numele regizorului"
+
+#: src/main/extractor_metatypes.c:399
+msgid "network"
+msgstr "rețeaua"
+
+#: src/main/extractor_metatypes.c:400
+msgid "name of the broadcasting network or station"
+msgstr "numele rețelei sau postului de emisie"
+
+#: src/main/extractor_metatypes.c:401
+msgid "show"
+msgstr "emisiunea"
+
+#: src/main/extractor_metatypes.c:402
+msgid "name of the show"
+msgstr "numele emisiunii"
+
+#: src/main/extractor_metatypes.c:403
+msgid "chapter name"
+msgstr "nume piesă"
+
+#: src/main/extractor_metatypes.c:404
+msgid "name of the chapter"
+msgstr "numele piesei"
+
+#: src/main/extractor_metatypes.c:405
+msgid "song count"
+msgstr "număr melodie"
+
+#: src/main/extractor_metatypes.c:406
+msgid "number of songs"
+msgstr "numărul de melodii"
+
+#: src/main/extractor_metatypes.c:408
+msgid "starting song"
+msgstr "melodia de deschidere"
+
+#: src/main/extractor_metatypes.c:409
+msgid "number of the first song to play"
+msgstr "numărul primei melodii redate"
+
+#: src/main/extractor_metatypes.c:410
+msgid "play counter"
+msgstr "contor redare"
+
+#: src/main/extractor_metatypes.c:411
+msgid "number of times the media has been played"
+msgstr "de câte ori a fost redat conținutul media"
+
+#: src/main/extractor_metatypes.c:412
+msgid "conductor"
+msgstr "dirijor"
+
+#: src/main/extractor_metatypes.c:413
+msgid "name of the conductor"
+msgstr "numele dirijorului"
+
+#: src/main/extractor_metatypes.c:414
+msgid "interpretation"
+msgstr "interpretarea"
+
+#: src/main/extractor_metatypes.c:416
+msgid ""
+"information about the people behind interpretations of an existing piece"
+msgstr ""
+"informații despre persoanele din spatele interpretării unei piese existente"
+
+#: src/main/extractor_metatypes.c:417
+msgid "composer"
+msgstr "compozitor"
+
+#: src/main/extractor_metatypes.c:418
+msgid "name of the composer"
+msgstr "numele compozitorului"
+
+#: src/main/extractor_metatypes.c:420 src/main/extractor_metatypes.c:421
+msgid "beats per minute"
+msgstr "bătăi pe minut"
+
+#: src/main/extractor_metatypes.c:422
+msgid "encoded by"
+msgstr "codificat de"
+
+#: src/main/extractor_metatypes.c:423
+msgid "name of person or organization that encoded the file"
+msgstr "numele persoanei sau organizației care a codificat fișierul"
+
+#: src/main/extractor_metatypes.c:424
+msgid "original title"
+msgstr "titlul original"
+
+#: src/main/extractor_metatypes.c:425
+msgid "title of the original work"
+msgstr "titlul lucrării originale"
+
+#: src/main/extractor_metatypes.c:426
+msgid "original artist"
+msgstr "artistul original"
+
+#: src/main/extractor_metatypes.c:427
+msgid "name of the original artist"
+msgstr "numele artistului original"
+
+#: src/main/extractor_metatypes.c:428
+msgid "original writer"
+msgstr "autorul original al textului"
+
+#: src/main/extractor_metatypes.c:429
+msgid "name of the original lyricist or writer"
+msgstr "numele autorului versurilor sau textului original"
+
+#: src/main/extractor_metatypes.c:431
+msgid "original release year"
+msgstr "anul de lansare original"
+
+#: src/main/extractor_metatypes.c:432
+msgid "year of the original release"
+msgstr "anul lansării originale"
+
+#: src/main/extractor_metatypes.c:433
+msgid "original performer"
+msgstr "interpret original"
+
+#: src/main/extractor_metatypes.c:434
+msgid "name of the original performer"
+msgstr "numele interpretului original"
+
+#: src/main/extractor_metatypes.c:435
+msgid "lyrics"
+msgstr "versuri"
+
+#: src/main/extractor_metatypes.c:437
+msgid "lyrics of the song or text description of vocal activities"
+msgstr "versurile cântecului sau textul descrierii activităților vocale"
+
+#: src/main/extractor_metatypes.c:438
+msgid "popularity"
+msgstr "popularitate"
+
+#: src/main/extractor_metatypes.c:439
+msgid "information about the file's popularity"
+msgstr "informații despre popularitatea fișierului"
+
+#: src/main/extractor_metatypes.c:440
+msgid "licensee"
+msgstr "titular licență"
+
+#: src/main/extractor_metatypes.c:441
+msgid "name of the owner or licensee of the file"
+msgstr "numele proprietarului sau titularului licenței fișierului"
+
+#: src/main/extractor_metatypes.c:443
+msgid "musician credit list"
+msgstr "lista muzicienilor participanți"
+
+#: src/main/extractor_metatypes.c:444
+msgid "names of contributing musicians"
+msgstr "numele muzicienilor care au contribuit"
+
+#: src/main/extractor_metatypes.c:445
+msgid "mood"
+msgstr "starea de spirit"
+
+# R-GC, scrie:
+# o altă variantă de traducere a acestui mesaj, este:
+# .
+# „cuvinte cheie care corespond cu starea de spirit a piesei”, sau:
+# .
+# „cuvinte cheie care corespond stării de spirit a piesei”
+# .
+# Ce zici DȘ, care ți se pare cea mai potrivită traducere?
+#: src/main/extractor_metatypes.c:446
+msgid "keywords reflecting the mood of the piece"
+msgstr "cuvinte cheie care reflectă starea de spirit a piesei"
+
+#: src/main/extractor_metatypes.c:447
+msgid "subtitle"
+msgstr "subtitlul"
+
+#: src/main/extractor_metatypes.c:448
+msgid "subtitle of this part"
+msgstr "subtitlul acestei părţi"
+
+#: src/main/extractor_metatypes.c:449
+msgid "display type"
+msgstr "metoda de afișare"
+
+#: src/main/extractor_metatypes.c:451
+msgid "what rendering method should be used to display this item"
+msgstr "ce metodă de redare ar trebui utilizată pentru a afișa acest element"
+
+#: src/main/extractor_metatypes.c:452
+msgid "full data"
+msgstr "date complete"
+
+#: src/main/extractor_metatypes.c:454
+msgid ""
+"entry that contains the full, original binary data (not really meta data)"
+msgstr ""
+"intrare care conține datele binare complete, originale (nu metadatele cu "
+"adevărat)"
+
+#: src/main/extractor_metatypes.c:456
+msgid "rating"
+msgstr "clasificare"
+
+#: src/main/extractor_metatypes.c:457
+msgid "rating of the content"
+msgstr "clasificarea conținutului"
+
+#: src/main/extractor_metatypes.c:458 src/main/extractor_metatypes.c:459
+msgid "organization"
+msgstr "organizație"
+
+#: src/main/extractor_metatypes.c:460 src/main/extractor_metatypes.c:461
+msgid "ripper"
+msgstr "extractor"
+
+#: src/main/extractor_metatypes.c:462 src/main/extractor_metatypes.c:463
+msgid "producer"
+msgstr "producător"
+
+#: src/main/extractor_metatypes.c:464
+msgid "group"
+msgstr "grup"
+
+#: src/main/extractor_metatypes.c:465
+msgid "name of the group or band"
+msgstr "numele grupului sau al trupei"
+
+#: src/main/extractor_metatypes.c:467
+msgid "original filename"
+msgstr "numele fișierului original"
+
+#: src/main/extractor_metatypes.c:468
+msgid "name of the original file (reserved for GNUnet)"
+msgstr "numele fișierului original (rezervat pentru GNUnet)"
+
+#: src/main/extractor_metatypes.c:469
+msgid "disc count"
+msgstr "numărul de discuri"
+
+#: src/main/extractor_metatypes.c:470
+msgid "count of discs inside collection this disc belongs to"
+msgstr "numărul de discuri din colecția căreia îi aparține acest disc"
+
+#: src/main/extractor_metatypes.c:471
+msgid "codec"
+msgstr "codec"
+
+#: src/main/extractor_metatypes.c:472
+msgid "codec the data is stored in"
+msgstr "codec în care sunt stocate datele"
+
+#: src/main/extractor_metatypes.c:473
+msgid "video codec"
+msgstr "codec video"
+
+#: src/main/extractor_metatypes.c:474
+msgid "codec the video data is stored in"
+msgstr "codec în care sunt stocate datele video"
+
+#: src/main/extractor_metatypes.c:475
+msgid "audio codec"
+msgstr "codec audio"
+
+#: src/main/extractor_metatypes.c:476
+msgid "codec the audio data is stored in"
+msgstr "codec în care sunt stocate datele audio"
+
+#: src/main/extractor_metatypes.c:478
+msgid "subtitle codec"
+msgstr "codec pentru subtitrare"
+
+#: src/main/extractor_metatypes.c:479
+msgid "codec/format the subtitle data is stored in"
+msgstr "codec/format în care sunt stocate datele de subtitrare"
+
+#: src/main/extractor_metatypes.c:480
+msgid "container format"
+msgstr "format container"
+
+#: src/main/extractor_metatypes.c:481
+msgid "container format the data is stored in"
+msgstr "formatul containerului în care sunt stocate datele"
+
+#: src/main/extractor_metatypes.c:482
+msgid "bitrate"
+msgstr "rata de biți"
+
+#: src/main/extractor_metatypes.c:483
+msgid "exact or average bitrate in bits/s"
+msgstr "rata de biți exactă sau medie în biți/s"
+
+#: src/main/extractor_metatypes.c:484
+msgid "nominal bitrate"
+msgstr "rata de biți nominală"
+
+#: src/main/extractor_metatypes.c:486
+msgid ""
+"nominal bitrate in bits/s. The actual bitrate might be different from this "
+"target bitrate."
+msgstr ""
+"rata de biți nominală în biți/s. Rata de biți reală ar putea fi diferită de "
+"această rată de biți preconizată."
+
+#: src/main/extractor_metatypes.c:487
+msgid "minimum bitrate"
+msgstr "rata de biți minimă"
+
+#: src/main/extractor_metatypes.c:488
+msgid "minimum bitrate in bits/s"
+msgstr "rata de biți minimă în biți/s"
+
+#: src/main/extractor_metatypes.c:490
+msgid "maximum bitrate"
+msgstr "rata de biți maximă"
+
+#: src/main/extractor_metatypes.c:491
+msgid "maximum bitrate in bits/s"
+msgstr "rata maximă de biți în biți/s"
+
+#: src/main/extractor_metatypes.c:492
+msgid "serial"
+msgstr "numărul de serie"
+
+#: src/main/extractor_metatypes.c:493
+msgid "serial number of track"
+msgstr "numărul de serie al pistei"
+
+#: src/main/extractor_metatypes.c:494
+msgid "encoder"
+msgstr "codificator"
+
+#: src/main/extractor_metatypes.c:495
+msgid "encoder used to encode this stream"
+msgstr "codificatorul utilizat pentru a codifica acest flux"
+
+#: src/main/extractor_metatypes.c:496
+msgid "encoder version"
+msgstr "versiunea codificatorului"
+
+#: src/main/extractor_metatypes.c:497
+msgid "version of the encoder used to encode this stream"
+msgstr "versiunea codificatorului utilizată pentru a codifica acest flux"
+
+#: src/main/extractor_metatypes.c:498
+msgid "track gain"
+msgstr "câștig pistă"
+
+#: src/main/extractor_metatypes.c:499
+msgid "track gain in db"
+msgstr "câștigul în db al pistei"
+
+#: src/main/extractor_metatypes.c:501
+msgid "track peak"
+msgstr "vârful pistei"
+
+#: src/main/extractor_metatypes.c:502
+msgid "peak of the track"
+msgstr "vârful pistei"
+
+#: src/main/extractor_metatypes.c:503
+msgid "album gain"
+msgstr "câștig album"
+
+#: src/main/extractor_metatypes.c:504
+msgid "album gain in db"
+msgstr "câștigul în db al albumului"
+
+#: src/main/extractor_metatypes.c:505
+msgid "album peak"
+msgstr "vârful albumului"
+
+#: src/main/extractor_metatypes.c:506
+msgid "peak of the album"
+msgstr "vârful albumului"
+
+#: src/main/extractor_metatypes.c:507
+msgid "reference level"
+msgstr "nivel de referință"
+
+#: src/main/extractor_metatypes.c:508
+msgid "reference level of track and album gain values"
+msgstr "nivelul de referință al valorilor câștigului pistei și albumului"
+
+#: src/main/extractor_metatypes.c:509
+msgid "location name"
+msgstr "numele locației"
+
+#: src/main/extractor_metatypes.c:511
+msgid ""
+"human readable descriptive location of where the media has been recorded or "
+"produced"
+msgstr ""
+"locație descriptivă, care poate fi citită de om, a locului în care a fost "
+"înregistrat sau produs conținutul media"
+
+#: src/main/extractor_metatypes.c:513
+msgid "location elevation"
+msgstr "cota locației"
+
+#: src/main/extractor_metatypes.c:515
+msgid ""
+"geo elevation of where the media has been recorded or produced in meters "
+"according to WGS84 (zero is average sea level)"
+msgstr ""
+"altitudinea geografică a locului în care media a fost înregistrată sau "
+"produsă în metri conform WGS84 (zero este nivelul mediu al mării)"
+
+#: src/main/extractor_metatypes.c:516
+msgid "location horizontal error"
+msgstr "eroare orizontală de locație"
+
+#: src/main/extractor_metatypes.c:518
+msgid "represents the expected error on the horizontal positioning in meters"
+msgstr "reprezintă eroarea așteptată asupra poziționării orizontale în metri"
+
+#: src/main/extractor_metatypes.c:519
+msgid "location movement speed"
+msgstr "viteza de deplasare a locației"
+
+#: src/main/extractor_metatypes.c:521
+msgid ""
+"speed of the capturing device when performing the capture. Represented in m/s"
+msgstr ""
+"viteza dispozitivului de captare la efectuarea capturii. Reprezentată în m/s"
+
+#: src/main/extractor_metatypes.c:522
+msgid "location movement direction"
+msgstr "direcția de deplasare a locației"
+
+#: src/main/extractor_metatypes.c:524
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"indică direcția de deplasare a dispozitivului care efectuează capturarea "
+"unui suport media. Este reprezentată ca grade în reprezentarea în virgulă "
+"mobilă, 0 înseamnă nordul geografic și crește în sensul acelor de ceasornic"
+
+#: src/main/extractor_metatypes.c:525
+msgid "location capture direction"
+msgstr "direcția de captare a locației"
+
+#: src/main/extractor_metatypes.c:527
+msgid ""
+"indicates the direction the device is pointing to when capturing a media. It "
+"is represented as degrees in floating point representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"indică direcția către care îndreaptă dispozitivul atunci când captează un "
+"conținut media. Este reprezentat ca grade în reprezentarea în virgulă "
+"mobilă, 0 înseamnă nordul geografic și crește în sensul acelor de ceasornic"
+
+#: src/main/extractor_metatypes.c:529
+msgid "show episode number"
+msgstr "afișează numărul episodului"
+
+#: src/main/extractor_metatypes.c:530
+msgid "number of the episode within a season/show"
+msgstr "numărul episodului dintr-un sezon/emisiune"
+
+#: src/main/extractor_metatypes.c:531
+msgid "show season number"
+msgstr "numărul sezonului emisiunii"
+
+#: src/main/extractor_metatypes.c:532
+msgid "number of the season of a show/series"
+msgstr "numărul sezonului unei emisiuni/serii"
+
+#: src/main/extractor_metatypes.c:533
+msgid "grouping"
+msgstr "grupare"
+
+#: src/main/extractor_metatypes.c:535
+msgid ""
+"groups together media that are related and spans multiple tracks. An example "
+"are multiple pieces of a concerto"
+msgstr ""
+"grupează laolaltă mediile care sunt înrudite și se întinde pe mai multe "
+"piste. De exemplu, piesele ale unui concert"
+
+#: src/main/extractor_metatypes.c:536
+msgid "device manufacturer"
+msgstr "producătorul dispozitivului"
+
+#: src/main/extractor_metatypes.c:537
+msgid "manufacturer of the device used to create the media"
+msgstr "producătorul dispozitivului utilizat pentru a crea suportul media"
+
+#: src/main/extractor_metatypes.c:538
+msgid "device model"
+msgstr "modelul dispozitivului"
+
+#: src/main/extractor_metatypes.c:539
+msgid "model of the device used to create the media"
+msgstr "modelul dispozitivului utilizat pentru a crea suportul media"
+
+#: src/main/extractor_metatypes.c:541
+msgid "audio language"
+msgstr "limba coloanei sonore"
+
+#: src/main/extractor_metatypes.c:542
+msgid "language of the audio track"
+msgstr "limba pistei audio"
+
+#: src/main/extractor_metatypes.c:543
+msgid "channels"
+msgstr "canale"
+
+#: src/main/extractor_metatypes.c:544
+msgid "number of audio channels"
+msgstr "numărul de canale audio"
+
+#: src/main/extractor_metatypes.c:545
+msgid "sample rate"
+msgstr "frecvența de eșantionare"
+
+#: src/main/extractor_metatypes.c:546
+msgid "sample rate of the audio track"
+msgstr "frecvența de eșantionare a pistei audio"
+
+#: src/main/extractor_metatypes.c:547
+msgid "audio depth"
+msgstr "adâncimea audio"
+
+#: src/main/extractor_metatypes.c:548
+msgid "number of bits per audio sample"
+msgstr "numărul de biți per eșantion audio"
+
+#: src/main/extractor_metatypes.c:549
+msgid "audio bitrate"
+msgstr "rata de biți audio"
+
+#: src/main/extractor_metatypes.c:550
+msgid "bitrate of the audio track"
+msgstr "rata de biți a pistei audio"
+
+#: src/main/extractor_metatypes.c:552 src/main/extractor_metatypes.c:553
+msgid "maximum audio bitrate"
+msgstr "rata de biți audio maximă"
+
+#: src/main/extractor_metatypes.c:554
+msgid "video dimensions"
+msgstr "dimensiunile video"
+
+#: src/main/extractor_metatypes.c:555
+msgid "width and height of the video track (WxH)"
+msgstr "lățimea și înălțimea pistei video (Lăț.xÎnălț.)"
+
+#: src/main/extractor_metatypes.c:556
+msgid "video depth"
+msgstr "adâncimea video"
+
+#: src/main/extractor_metatypes.c:557
+msgid "numbers of bits per pixel"
+msgstr "numărul de biți pe pixel"
+
+#: src/main/extractor_metatypes.c:558
+msgid "frame rate"
+msgstr "frecvența cadrelor"
+
+#: src/main/extractor_metatypes.c:559
+msgid "number of frames per second (as D/N or floating point)"
+msgstr ""
+"numărul de cadre pe secundă (ca D/N «adâncimea video / nr. de secunde» sau "
+"virgulă mobilă)"
+
+#: src/main/extractor_metatypes.c:560
+msgid "pixel aspect ratio"
+msgstr "raportul de aspect al pixelilor"
+
+#: src/main/extractor_metatypes.c:561
+msgid "pixel aspect ratio (as D/N)"
+msgstr "raportul de aspect al pixelilor (ca D/N)"
+
+#: src/main/extractor_metatypes.c:563 src/main/extractor_metatypes.c:564
+msgid "video bitrate"
+msgstr "rata de biți video"
+
+#: src/main/extractor_metatypes.c:565 src/main/extractor_metatypes.c:566
+msgid "maximum video bitrate"
+msgstr "rata de biți video maximă"
+
+#: src/main/extractor_metatypes.c:567
+msgid "subtitle language"
+msgstr "limba de subtitrare"
+
+#: src/main/extractor_metatypes.c:568
+msgid "language of the subtitle track"
+msgstr "limba pistei de subtitrare"
+
+#: src/main/extractor_metatypes.c:569
+msgid "video language"
+msgstr "limba folosită în video"
+
+#: src/main/extractor_metatypes.c:570
+msgid "language of the video track"
+msgstr "limba pistei video"
+
+#: src/main/extractor_metatypes.c:571
+msgid "table of contents"
+msgstr "cuprinsul"
+
+#: src/main/extractor_metatypes.c:572
+msgid "chapters, contents or bookmarks (in xml format)"
+msgstr "capitole, conținut sau marcaje (în format xml)"
+
+#: src/main/extractor_metatypes.c:574
+msgid "video duration"
+msgstr "durata video"
+
+#: src/main/extractor_metatypes.c:575
+msgid "duration of a video stream"
+msgstr "durata unui flux video"
+
+#: src/main/extractor_metatypes.c:576
+msgid "audio duration"
+msgstr "durata audio"
+
+#: src/main/extractor_metatypes.c:577
+msgid "duration of an audio stream"
+msgstr "durata unui flux audio"
+
+#: src/main/extractor_metatypes.c:578
+msgid "subtitle duration"
+msgstr "durata de subtitrare"
+
+#: src/main/extractor_metatypes.c:579
+msgid "duration of a subtitle stream"
+msgstr "durata unui flux de subtitrare"
+
+# R-GC, scrie:
+# cred c-ar fi mai corectă adaptarea traducerii
+# mesajului:
+# „preauditare audio”; în contrast:
+# „previzualizare video”
+#: src/main/extractor_metatypes.c:581
+msgid "audio preview"
+msgstr "preauditare audio"
+
+#: src/main/extractor_metatypes.c:582
+msgid "a preview of the file audio stream"
+msgstr "o preauditare a fișierului fluxului audio"
+
+#: src/main/extractor_metatypes.c:584
+msgid "narinfo"
+msgstr "narinfo"
+
+#: src/main/extractor_metatypes.c:586
+msgid ""
+"file containing information about contents of a normalized archive (nar)"
+msgstr ""
+"fișier care conține informații despre conținutul unei arhive normalizate "
+"(nar)"
+
+#: src/main/extractor_metatypes.c:588
+msgid "nar"
+msgstr "nar"
+
+#: src/main/extractor_metatypes.c:589
+msgid "normalized archive"
+msgstr "arhivă normalizată"
+
+#: src/main/extractor_metatypes.c:591 src/main/extractor_metatypes.c:592
+msgid "last"
+msgstr "ultimul"
+
+#: src/main/getopt.c:694
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: opțiunea „%s” este ambiguă\n"
+
+#: src/main/getopt.c:719
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: opțiunea „--%s” nu permite un argument\n"
+
+#: src/main/getopt.c:725
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: opțiunea „%c%s” nu permite un argument\n"
+
+#: src/main/getopt.c:742 src/main/getopt.c:914
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: opțiunea „%s” necesită un argument\n"
+
+#: src/main/getopt.c:771
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: opțiune nerecunoscută „--%s”\n"
+
+#: src/main/getopt.c:775
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: opțiune nerecunoscută „%c%s”\n"
+
+#: src/main/getopt.c:801
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr "%s: opțiune ilegală -- %c\n"
+
+#: src/main/getopt.c:803
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: opțiune nevalidă -- %c\n"
+
+#: src/main/getopt.c:832 src/main/getopt.c:963
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: opțiunea necesită un argument -- %c\n"
+
+#: src/main/getopt.c:880
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: opțiunea „-W %s” este ambiguă\n"
+
+#: src/main/getopt.c:899
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: opțiunea „-W %s” nu permite un argument\n"
+
+#: src/plugins/flac_extractor.c:323
+#, c-format
+msgid "%u Hz, %u channels"
+msgstr "%u Hz, %u canale"
+
+#: src/plugins/man_extractor.c:216
+msgid "Commands"
+msgstr "Comenzi"
+
+#: src/plugins/man_extractor.c:220
+msgid "System calls"
+msgstr "Apeluri sistem"
+
+#: src/plugins/man_extractor.c:224
+msgid "Library calls"
+msgstr "Apeluri de bibliotecă"
+
+#: src/plugins/man_extractor.c:228
+msgid "Special files"
+msgstr "Fișiere speciale"
+
+#: src/plugins/man_extractor.c:232
+msgid "File formats and conventions"
+msgstr "Formate de fișiere și convenții"
+
+#: src/plugins/man_extractor.c:236
+msgid "Games"
+msgstr "Jocuri"
+
+#: src/plugins/man_extractor.c:240
+msgid "Conventions and miscellaneous"
+msgstr "Convenții și diverse alte lucruri"
+
+#: src/plugins/man_extractor.c:244
+msgid "System management commands"
+msgstr "Comenzi de gestionare a sistemului"
+
+#: src/plugins/man_extractor.c:248
+msgid "Kernel routines"
+msgstr "Rutine nucleu"
+
+#: src/plugins/qt_extractor.c:61
+msgid "Blues"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:62
+msgid "Classic Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:63
+#, fuzzy
+#| msgid "country"
+msgid "Country"
+msgstr "țara"
+
+#: src/plugins/qt_extractor.c:64
+msgid "Dance"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:65
+msgid "Disco"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:66
+msgid "Funk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:67
+msgid "Grunge"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:68
+msgid "Hip-Hop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:69
+msgid "Jazz"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:70
+msgid "Metal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:71
+msgid "New Age"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:72
+msgid "Oldies"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:73
+msgid "Other"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:74
+msgid "Pop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:75
+msgid "R&B"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:76
+msgid "Rap"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:77
+msgid "Reggae"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:78
+msgid "Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:79
+msgid "Techno"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:80
+#, fuzzy
+#| msgid "serial"
+msgid "Industrial"
+msgstr "numărul de serie"
+
+#: src/plugins/qt_extractor.c:81
+msgid "Alternative"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:82
+msgid "Ska"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:83
+msgid "Death Metal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:84
+msgid "Pranks"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:85
+msgid "Soundtrack"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:86
+msgid "Euro-Techno"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:87
+msgid "Ambient"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:88
+msgid "Trip-Hop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:89
+msgid "Vocal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:90
+msgid "Jazz+Funk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:91
+msgid "Fusion"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:92
+msgid "Trance"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:93
+msgid "Classical"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:94
+msgid "Instrumental"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:95
+msgid "Acid"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:96
+msgid "House"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:97
+#, fuzzy
+#| msgid "Games"
+msgid "Game"
+msgstr "Jocuri"
+
+#: src/plugins/qt_extractor.c:98
+msgid "Sound Clip"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:99
+msgid "Gospel"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:100
+msgid "Noise"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:101
+msgid "Alt. Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:102
+msgid "Bass"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:103
+msgid "Soul"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:104
+msgid "Punk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:105
+msgid "Space"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:106
+msgid "Meditative"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:107
+msgid "Instrumental Pop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:108
+msgid "Instrumental Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:109
+msgid "Ethnic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:110
+msgid "Gothic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:111
+msgid "Darkwave"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:112
+msgid "Techno-Industrial"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:113
+msgid "Electronic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:114
+msgid "Pop-Folk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:115
+msgid "Eurodance"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:116
+msgid "Dream"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:117
+msgid "Southern Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:118
+msgid "Comedy"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:119
+msgid "Cult"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:120
+msgid "Gangsta Rap"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:121
+msgid "Top 40"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:122
+msgid "Christian Rap"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:123
+msgid "Pop/Funk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:124
+msgid "Jungle"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:125
+msgid "Native American"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:126
+msgid "Cabaret"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:127
+msgid "New Wave"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:128
+msgid "Psychedelic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:129
+msgid "Rave"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:130
+msgid "Showtunes"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:131
+msgid "Trailer"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:132
+msgid "Lo-Fi"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:133
+msgid "Tribal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:134
+msgid "Acid Punk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:135
+msgid "Acid Jazz"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:136
+msgid "Polka"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:137
+msgid "Retro"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:138
+msgid "Musical"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:139
+msgid "Rock & Roll"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:140
+msgid "Hard Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:141
+msgid "Folk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:142
+msgid "Folk/Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:143
+msgid "National Folk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:144
+msgid "Swing"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:145
+msgid "Fast-Fusion"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:146
+msgid "Bebob"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:147
+#, fuzzy
+#| msgid "rating"
+msgid "Latin"
+msgstr "clasificare"
+
+#: src/plugins/qt_extractor.c:148
+msgid "Revival"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:149
+msgid "Celtic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:150
+msgid "Bluegrass"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:151
+msgid "Avantgarde"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:152
+msgid "Gothic Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:153
+msgid "Progressive Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:154
+msgid "Psychedelic Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:155
+msgid "Symphonic Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:156
+msgid "Slow Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:157
+msgid "Big Band"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:158
+msgid "Chorus"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:159
+msgid "Easy Listening"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:160
+msgid "Acoustic"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:161
+msgid "Humour"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:162
+msgid "Speech"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:163
+msgid "Chanson"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:164
+msgid "Opera"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:165
+msgid "Chamber Music"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:166
+msgid "Sonata"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:167
+msgid "Symphony"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:168
+msgid "Booty Bass"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:169
+msgid "Primus"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:170
+msgid "Porn Groove"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:171
+msgid "Satire"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:172
+msgid "Slow Jam"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:173
+msgid "Club"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:174
+msgid "Tango"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:175
+msgid "Samba"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:176
+msgid "Folklore"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:177
+msgid "Ballad"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:178
+msgid "Power Ballad"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:179
+msgid "Rhythmic Soul"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:180
+msgid "Freestyle"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:181
+msgid "Duet"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:182
+msgid "Punk Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:183
+msgid "Drum Solo"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:184
+msgid "A Cappella"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:185
+msgid "Euro-House"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:186
+msgid "Dance Hall"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:187
+msgid "Goa"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:188
+msgid "Drum & Bass"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:189
+msgid "Club-House"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:190
+msgid "Hardcore"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:191
+msgid "Terror"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:192
+msgid "Indie"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:193
+msgid "BritPop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:194
+msgid "Negerpunk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:195
+msgid "Polsk Punk"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:196
+msgid "Beat"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:197
+msgid "Christian Gangsta Rap"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:198
+msgid "Heavy Metal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:199
+msgid "Black Metal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:200
+msgid "Crossover"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:201
+msgid "Contemporary Christian"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:202
+msgid "Christian Rock"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:203
+msgid "Merengue"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:204
+msgid "Salsa"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:205
+msgid "Thrash Metal"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:206
+msgid "Anime"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:207
+msgid "JPop"
+msgstr ""
+
+#: src/plugins/qt_extractor.c:208
+msgid "Synthpop"
+msgstr ""
+
+#: src/plugins/ole2_extractor.c:412
+msgid "No Proofing"
+msgstr "Fără verificare"
+
+#: src/plugins/ole2_extractor.c:420
+msgid "Traditional Chinese"
+msgstr "Chineză tradițională"
+
+#: src/plugins/ole2_extractor.c:422
+msgid "Simplified Chinese"
+msgstr "Chineză simplificată"
+
+#: src/plugins/ole2_extractor.c:430
+msgid "Swiss German"
+msgstr "Germană elvețiană"
+
+#: src/plugins/ole2_extractor.c:434
+msgid "U.S. English"
+msgstr "Engleză americană"
+
+#: src/plugins/ole2_extractor.c:436
+msgid "U.K. English"
+msgstr "Engleză britanică"
+
+#: src/plugins/ole2_extractor.c:438
+msgid "Australian English"
+msgstr "Engleză australiană"
+
+#: src/plugins/ole2_extractor.c:440
+msgid "Castilian Spanish"
+msgstr "Spaniolă castiliană"
+
+#: src/plugins/ole2_extractor.c:442
+msgid "Mexican Spanish"
+msgstr "Spaniolă mexicană"
+
+#: src/plugins/ole2_extractor.c:448
+msgid "Belgian French"
+msgstr "Franceză belgiană"
+
+#: src/plugins/ole2_extractor.c:450
+msgid "Canadian French"
+msgstr "Franceză canadiană"
+
+#: src/plugins/ole2_extractor.c:452
+msgid "Swiss French"
+msgstr "Franceză elvețiană"
+
+#: src/plugins/ole2_extractor.c:462
+msgid "Swiss Italian"
+msgstr "Italiană elvețiană"
+
+#: src/plugins/ole2_extractor.c:470
+msgid "Belgian Dutch"
+msgstr "Olandeză belgiană"
+
+#: src/plugins/ole2_extractor.c:472
+msgid "Norwegian Bokmal"
+msgstr "Norvegiană (bokmal)"
+
+#: src/plugins/ole2_extractor.c:482
+msgid "Rhaeto-Romanic"
+msgstr "Reto-romanică"
+
+#: src/plugins/ole2_extractor.c:488
+msgid "Croato-Serbian (Latin)"
+msgstr "Croato-sârbă (latină)"
+
+#: src/plugins/ole2_extractor.c:490
+msgid "Serbo-Croatian (Cyrillic)"
+msgstr "Sârbo-croată (chirilic)"
+
+#: src/plugins/ole2_extractor.c:518
+msgid "Farsi"
+msgstr "Farsi(persană)"
+
+#: src/plugins/ole2_extractor.c:608
+#, c-format
+msgid "Revision #%u: Author `%s' worked on `%s'"
+msgstr "Revizia #%u: Autorul „%s” a lucrat la „%s”"
+
+#: src/plugins/riff_extractor.c:577
+#, c-format
+msgid "codec: %s, %u fps, %u ms"
+msgstr "codec: %s, %u cadre/s, %u ms"
+
+#: src/plugins/wav_extractor.c:128
+msgid "mono"
+msgstr "mono"
+
+#: src/plugins/wav_extractor.c:128
+msgid "stereo"
+msgstr "stereo"

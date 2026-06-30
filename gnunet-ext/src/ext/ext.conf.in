@@ -1,0 +1,6 @@
+[ext]
+BINARY = gnunet-service-ext
+UNIXPATH = /tmp/gnunet-service-ext.sock
+HOME = $SERVICEHOME
+# PORT = 2500
+@UNIXONLY@ PORT = 2500

@@ -1,0 +1,12 @@
+prefix=/home/user/ndk-sysroot/arm64-v8a/gnunet
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: gnunetutil
+Description: Provides miscellaneous utility functions and API for GNUnet
+URL: https://www.gnunet.org
+Version: show
+Requires.private: libgmp, libmicrohttpd, libsodium >= 1.0.18, libgcrypt, libunistring, libltdl, libidn
+Libs: -L${prefix}/lib -lgnunetutil
+Libs.private: -lz
+Cflags: -I${includedir}

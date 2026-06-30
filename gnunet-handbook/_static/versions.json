@@ -1,0 +1,12 @@
+[
+    {
+        "name": "v0.20.x",
+        "version": "0.20.x",
+        "url": "https://docs.gnunet.org/0.20/"
+    },
+    {
+        "name": "latest",
+        "version": "latest",
+        "url": "https://docs.gnunet.org/latest/"
+    }
+]

@@ -1,0 +1,2 @@
+option('use_libportal', type: 'boolean', value: true)
+option('use_eventfd', type: 'boolean', value: true)

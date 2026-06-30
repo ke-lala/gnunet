@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/accountListFragment">
+
+    <!-- Account List -->
+    <fragment
+        android:id="@+id/accountListFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.AccountListFragment"
+        android:label="Accounts">
+        <action
+            android:id="@+id/action_accountListFragment_to_createAccountFragment"
+            app:destination="@id/createAccountFragment" />
+        <action
+            android:id="@+id/action_accountListFragment_to_accountOverviewFragment"
+            app:destination="@id/accountOverviewFragment">
+            <argument
+                android:name="account"
+                app:argType="org.gnunet.gnunetmessenger.model.ChatAccount" />
+        </action>
+    </fragment>
+
+    <!-- Create Account -->
+    <fragment
+        android:id="@+id/createAccountFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.CreateAccountFragment"
+        android:label="Create Account"
+        tools:layout="@layout/fragment_create_account">
+        <action
+            android:id="@+id/action_createAccountFragment_to_accountOverviewFragment"
+            app:destination="@id/accountOverviewFragment">
+            <argument
+                android:name="account"
+                app:argType="org.gnunet.gnunetmessenger.model.ChatAccount" />
+        </action>
+    </fragment>
+
+    <!-- Account Overview -->
+    <fragment
+        android:id="@+id/accountOverviewFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.AccountOverviewFragment"
+        android:label="@string/account_overview">
+        <argument
+            android:name="account"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatAccount" />
+        <action
+            android:id="@+id/action_accountOverviewFragment_to_chatFragment"
+            app:destination="@id/chatFragment"/>
+        <action
+            android:id="@+id/action_accountOverviewFragment_to_accountDetailsFragment"
+            app:destination="@id/accountDetailsFragment" />
+    </fragment>
+
+    <!-- Chat Fragment -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.chat.ChatFragment">
+        <argument
+            android:name="chatContext"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatContext"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_chatFragment_to_ContactFragment"
+            app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_chatFragment_to_lobbyDisplayFragment"
+            app:destination="@id/lobbyDisplayFragment" />
+        <action
+            android:id="@+id/action_chatFragment_to_memberListFragment"
+            app:destination="@id/memberListFragment">
+            <argument
+                android:name="chatGroup"
+                app:argType="org.gnunet.gnunetmessenger.model.ChatGroup" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/memberListFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.chat.MemberListFragment"
+        android:label="Mitgliederliste"
+        tools:layout="@layout/fragment_member_list">
+        <argument
+            android:name="chatGroup"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatGroup" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/attributeListFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.AttributeListFragment"
+        android:label="Attributes"
+        tools:layout="@layout/fragment_attribute_list">
+        <argument
+            android:name="contact"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatContact"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+
+        <argument
+            android:name="editable"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+    </fragment>
+
+    <!-- Account Details -->
+    <fragment
+        android:id="@+id/accountDetailsFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.AccountDetailsFragment"
+        android:label="Account Details">
+
+        <action
+            android:id="@+id/action_accountDetailsFragment_to_attributeListFragment"
+            app:destination="@id/attributeListFragment" />
+        <action
+            android:id="@+id/action_accountDetailsFragment_to_lobbyDisplayFragment"
+            app:destination="@id/lobbyDisplayFragment" />
+    </fragment>
+
+    <!-- Lobby Create -->
+    <fragment
+        android:id="@+id/lobbyCreateFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.LobbyCreateFragment"
+        android:label="Create Lobby"
+        tools:layout="@layout/fragment_lobby_create">
+        <action
+            android:id="@+id/action_lobbyCreateFragment_to_lobbyDisplayFragment"
+            app:destination="@id/lobbyDisplayFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lobbyJoinFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.contact.LobbyJoinFragment"
+        android:label="Join Lobby"
+        tools:layout="@layout/fragment_join_lobby" />
+
+    <!-- Lobby Display -->
+    <fragment
+        android:id="@+id/lobbyDisplayFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.account.LobbyDisplayFragment"
+        android:label="Lobby Info"
+        tools:layout="@layout/fragment_lobby_display">
+        <argument
+            android:name="lobbyId"
+            app:argType="string" />
+        <argument
+            android:name="lifetime"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactListFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.contact.ContactListFragment"
+        android:label="Contacts">
+        <action
+            android:id="@+id/action_contactListFragment_to_ContactFragment"
+            app:destination="@id/contactFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.contact.ContactFragment"
+        android:label="Contact">
+        <argument
+            android:name="contact"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatContact" />
+        <action
+            android:id="@+id/action_contactFragment_to_attributeListFragment"
+            app:destination="@id/attributeListFragment" />
+        <action
+            android:id="@+id/action_contactFragment_to_shareAttributesFragment"
+            app:destination="@id/shareAttributesFragment" />
+        <action
+            android:id="@+id/action_contactFragment_to_lobbyDisplayFragment"
+            app:destination="@id/lobbyDisplayFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shareAttributesFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.contact.ShareAttributesFragment"
+        tools:layout="@layout/fragment_share_attribute">
+        <argument
+            android:name="contact"
+            app:argType="org.gnunet.gnunetmessenger.model.ChatContact" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectGroupMembersFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.group.SelectGroupMembersFragment"
+        android:label="Mitglieder auswählen"
+        tools:layout="@layout/fragment_select_group_members">
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.SettingsFragment"
+        tools:layout="@layout/fragment_settings">
+    </fragment>
+
+    <fragment
+        android:id="@+id/createGroupOrPlatformFragment"
+        android:name="org.gnunet.gnunetmessenger.ui.group.CreateGroupOrPlatformFragment"
+        android:label="Create"
+        tools:layout="@layout/fragment_create_group_or_platform">
+        <argument
+            android:name="isGroup"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_createGroupOrPlatformFragment_to_selectGroupMembersFragment"
+            app:destination="@id/selectGroupMembersFragment" />
+    </fragment>
+
+    <!-- Global Navigation for Menu Actions -->
+    <action
+        android:id="@+id/action_global_accountDetailsFragment"
+        app:destination="@id/accountDetailsFragment" />
+
+    <action
+        android:id="@+id/action_global_lobbyCreateFragment"
+        app:destination="@id/lobbyCreateFragment" />
+    <action
+        android:id="@+id/action_global_lobbyJoinFragment"
+        app:destination="@id/lobbyJoinFragment" />
+    <action
+        android:id="@+id/action_global_createGroupOrPlatformFragment"
+        app:destination="@id/createGroupOrPlatformFragment" />
+    <action
+        android:id="@+id/action_global_contactListFragment"
+        app:destination="@id/contactListFragment" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment" />
+</navigation>

@@ -1,0 +1,6 @@
+
+
+  /**
+   * {{Comment}}
+   */
+  GNUNET_GNSRECORD_RF_{{Name}} = 1 << (15 - {{Number}}),

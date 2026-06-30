@@ -1,0 +1,120 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd May 3, 2016
+.Dt GNUNET-CADET 1
+.Os
+.Sh NAME
+.Nm gnunet-cadet
+.Nd create or obtain information about CADET tunnels and peers
+.Sh SYNOPSIS
+.Nm
+.Op Fl C Ar CONNECTION_ID | Fl -connection= Ns Ar CONNECTION_ID
+.Op Fl d | -dump
+.Op Fl e | -echo
+.Op Fl o Ar SHARED_SECRET | Fl -open-port= Ns Ar SHARED_SECRET
+.Op Fl p Ar PEER_ID | Fl -peer= Ns Ar PEER_ID
+.Op Fl P | -peers
+.Op Fl T | -tunnels
+.Op Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+.Op Fl h | -help
+.Op Fl l Ar FILENAME | Fl -logfile= Ns Ar FILENAME
+.Op Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+.Op Fl v | -version
+.Ao Ar PEER_ID Ac
+.Ao Ar SHARED_SECRET Ac
+.Sh DESCRIPTION
+.Nm
+prints information about CADET tunnels and peers.
+It can also be used for command-line based CADET tunnels using the
+.Fl o Ar SHARED_SECRET
+option to open a port on a receiving
+.Ar PEER_ID
+and using
+.Nm
+.Ao Ar PEER_ID Ac
+.Ao Ar SHARED_SECRET Ac
+to establish one circuit to that peer from any other peer.
+The receiving process will only accept one incoming circuit, but several commands using the same
+.Fl o
+can be issued to satisfy multiple requests.
+For one-to-many communication
+.Xr gnunet-social 1
+may be better suited, however.
+.Bl -tag -width indent
+.It Fl C Ar CONNECTION_ID | Fl -connection= Ns Ar CONNECTION_ID
+Provide information about the connection
+.Ar CONNECTION_ID .
+.It Fl d | -dump
+Dump debug information to stderr.
+.It Fl e | -echo
+Activate echo mode.
+.It Fl o Ar SHARED_SECRET | Fl -open-port= Ns Ar SHARED_SECRET
+Listen for connections using a shared secret, provided as
+.Ar SHARED_SECRET ,
+among sender and recipient.
+.It Fl p Ar PEER_ID | Fl -peer= Ns Ar PEER_ID
+Provide information about the peer
+.Ar PEER_ID .
+.It Fl P | -peers
+Provide information about all (known) peers.
+.It Fl T | -tunnels
+Provide information about all tunnels.
+.It Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+Use the configuration file
+.Ar FILENAME .
+.It Fl h | -help
+Print the help page.
+.It Fl l Ar FILENAME | Fl -logfile= Ns Ar FILENAME
+Configure logging to write logs to
+.Ar FILENAME .
+.It Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+Use LOGLEVEL for logging.
+Valid values are DEBUG, INFO, WARNING and ERROR.
+.It Fl v | -version
+Print the GNUnet version number.
+.El
+.Sh SEE ALSO
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Pp
+.Dl info gnunet
+.Pp
+should give you access to the complete handbook,
+.Pp
+.Dl info gnunet-c-tutorial
+.Pp
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.\".Sh HISTORY
+.\".Sh AUTHORS
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt gnunet-developers@gnu.org .

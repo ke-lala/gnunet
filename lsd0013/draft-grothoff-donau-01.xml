@@ -1,0 +1,956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="info" docName="draft-grothoff-donau-01"
+     ipr="trust200902" submissionType="independent" version="3">
+<!-- SEE ALSO: https://docs.taler.net/core/taler-uri.html -->
+
+<!-- FIXME ipr is copied from lsd0001, need to be updated -->
+  <front xmlns="">
+    <title abbrev="The 'donau' URI scheme">
+      The 'donau' URI scheme for validation of Donau donation statements.
+    </title>
+
+    <author fullname="Christian Grothoff" initials="C.G." surname="Grothoff">
+      <organization>Bern University of Applied Sciences</organization>
+      <address>
+        <postal>
+          <street>H&#246;heweg 80</street>
+          <city>Biel/Bienne</city>
+	      <code>2501</code>
+          <country>CH</country>
+        </postal>
+        <email>christian.grothoff@bfh.ch</email>
+      </address>
+    </author>
+
+    <author fullname="Emmanuel Benoist" initials="E.B." surname="Benoist">
+      <organization>Bern University of Applied Sciences</organization>
+      <address>
+        <postal>
+          <street>H&#246;heweg 80</street>
+          <city>Biel/Bienne</city>
+	      <code>2501</code>
+          <country>CH</country>
+        </postal>
+       <email>emmanuel.benoist@bfh.ch</email>
+      </address>
+    </author>
+
+
+    <author fullname="Bohdan Potuzhnyi" initials="B.P." surname="Potuzhnyi">
+      <organization>Bern University of Applied Sciences</organization>
+      <address>
+        <postal>
+          <street>H&#246;heweg 80</street>
+          <city>Biel/Bienne</city>
+	      <code>2501</code>
+          <country>CH</country>
+        </postal>
+        <email>bohdan.potuzhnyi@bfh.ch</email>
+      </address>
+    </author>
+
+
+    <author fullname="Florian Dold" initials="F.D." surname="Dold">
+      <organization>Taler Systems AG</organization>
+      <address>
+        <postal>
+          <street>7, rue de Mondorf</street>
+          <city>Erpeldange</city>
+	      <code>5421</code>
+          <country>LU</country>
+        </postal>
+        <email>dold@taler.net</email>
+      </address>
+    </author>
+
+
+    <date day="2" month="November" year="2025" />
+
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>taxation</keyword>
+
+    <abstract>
+
+      <t>
+        This document defines the 'donau' Uniform Resource Identifier (URI) scheme
+        for triggering interactions with a validator for Donau donation
+	statements.
+      </t>
+
+      <t>
+        This URI scheme allows applications to trigger interactions
+        with a Donau validator.  A Donau validator is typically run by
+        a tax authority to validate tax records from citizens that
+        made donations to a charity that supports the Donau protocol.
+        The Donau validator will receive 'donau' URIs representing the
+        sum of donations a taxpayer made to recognized charities over
+        a year.  Donors would submit 'donau' URLs (or QR codes with
+        'donau' URLs) to tax authorities to have their donations
+        recognized by the tax authority as tax-deductible
+        expenditures.  The application logic to verify the validity of
+        the donation is triggered by 'donau' URIs. The validator
+        application would then typically confirm to the tax official
+        the validity of the signature encoded in the URI and show the
+        total amount donated as well as the taxpayer identification
+        number and the year of the donation.  Multiple URIs could be
+        submitted per donor, and the application can correctly
+        determine which submissions are cumulative and which ones are
+        redundant.
+      </t>
+
+      <t>
+	This specification only covers the syntax of the 'donau' URI
+	scheme and excludes details on the protocol(s) that would
+	allow taxpayers to donate to recognized charities to obtain
+	these suitable signed donation statements.  While a
+	privacy-preserving protocol to obtain such statements exists
+	within the context of the GNU Taler protocol suite, other
+	protocols could be developed in the future and still yield
+	compatible 'donau' URIs as the URI scheme is reasonably generic.
+      </t>
+      <t>
+	The validation tool will be registered for all donau:// URIs.
+        Since each taxation authority will typically use a different
+        domain, it will not be feasible to encode all the
+        domains of tax authorities servers inside the validation tool.
+        Hence a new URI scheme is needed that will trigger the validation
+        tool for any domain name.
+      </t>
+    </abstract>
+
+  </front>
+
+<middle xmlns="">
+
+<section anchor="introduction">
+  <name>Introduction</name>
+<t>
+  This document defines the 'donau' Uniform Resource Identifier (URI)
+  <xref target="RFC3986" /> scheme for triggering interactions with
+  Donau validators.
+</t>
+
+<section>
+  <name>Objective</name>
+  <t>
+    A 'donau' URI always instructs a Donau validator to perform the
+    validation of a Donau donation statement.
+    A 'donau' URI consists of the reference to the authority
+    that signed the statement, an identifier for the specific taxpayer,
+    the year of the donation, a salt and optional parameters.
+    Optional parameters include the total amount donated by the
+    taxpayer and the signature of the Donau donation statement.
+  </t>
+  <t>
+    This specification is based on the Bachelor Thesis of
+    Casaburi and Matya <xref target="BaThesis" /> presenting the
+    solution and the first implementation of a Donau system.
+  </t>
+</section>
+
+
+<section>
+  <name>Requirements Language</name>
+  <t>
+    The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+    "OPTIONAL" in this document are to be interpreted as described in BCP 14
+    <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only when,
+    they appear in all capitals, as shown here.
+  </t>
+</section>
+
+</section>
+
+<section anchor="syntax">
+  <name>Syntax of a 'donau' URI</name>
+  <t>
+  This document uses the Augmented Backus-Naur Form (ABNF) of <xref target="RFC5234"/>.
+  </t>
+  <figure>
+  <artwork type="abnf"><![CDATA[
+  ; Scheme and high-level structure
+  scheme    = "donau" / "DONAU" / "donau+http" / "DONAU+HTTP"
+  donau-URI = scheme "://" base "?" year-param "&"
+              taxid-param "&" salt-param
+              ("&" total-param "&" sig-param)?
+
+  ; The base is the HTTP(S) origin plus optional path segments that
+  ; identify the Donau REST API deployment. Everything before the last
+  ; three path segments (year, taxid-enc, salt) is part of the base.
+  base      = 1*( ALPHA / DIGIT / "-" / "." / ":" / "/" / "_" )
+
+  year-param = [ "year" / "YEAR" ] "=" year
+
+  tax-id-param = [ "id" / "ID" ] "=" tax-id-enc
+
+  salt-param = [ "salt" / "SALT" ] "=" salt
+
+  total-param = [ "total" / "TOTAL" ] "=" amount
+
+  signature-param = [ "sig" / "SIG" ] "=" algo ":" signature
+
+  ; Path parameters
+  year      = DIGIT DIGIT DIGIT DIGIT
+
+  ; The taxid-enc is the percent-encoding (RFC 3986) of the UTF-8
+  ; taxpayer identifier string. See semantics for decoding rules.
+  taxid-enc = 1*( unreserved / pct-encoded )
+  pct-encoded = "%" HEXDIG HEXDIG
+  unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+
+  ; Salt remains an opaque string for the URI and is interpreted by
+  ; the Donau system. (See semantics.)
+  salt      = 1*( ALPHA / DIGIT )
+
+  ; Query parameters and signature encoding
+  amount    = currency ":" unit [ "." fraction ]
+  currency  = 1*ALPHA
+  unit      = 1*( DIGIT )
+  fraction  = 1*( DIGIT )
+  algo      = "ED25519"
+  signature = 1*( ALPHA / DIGIT )
+]]>
+  </artwork>
+  </figure>
+</section>
+
+<section anchor="semantics">
+  <name>Semantics</name>
+  <t>
+    Even if RFC3986 <xref target="RFC3986"/> explicitly writes that scheme names
+    are case-insensitive, lower and upper case variations are presented here to
+    emphasize this possibility. The applications encoding URI in a QR-code can
+    benefit from the possibility to encode the URI using only uppercase letters
+    which should result in a more compact encoding.
+  </t>
+  <t>
+    The base of a Donau URI refers to the base URL of the Donau REST API.
+    It consists of the network location (host name or IP address) and <bcp14>MAY</bcp14> include
+    additional path segments (for example, <tt>https://admin.ch/taxes/donau/</tt>)
+    mapping to the Donau deployment behind reverse proxies. Validators <bcp14>MUST NOT</bcp14>
+    assume a specific domain naming convention or pattern
+    (such as <tt>donau.example</tt>) and
+    <bcp14>MUST</bcp14> accept bases with or without additional path components.
+  </t>
+    <t>
+    The year of a Donau URI refers to the year when the donations
+    have been done.
+    </t>
+    <t>
+    The taxid of a Donau URI refers to the taxid of the person that
+    did the donations and asks for their Donau donation statement to
+    be verified. The format of the taxid is specific for each tax authority.
+    The taxid is conveyed in the URI as a percent-encoded query parameter as
+    per <xref target="RFC3986"/>. Implementations <bcp14>MUST</bcp14> decode <tt>taxid-enc</tt>
+    by applying percent-decoding to obtain the exact UTF-8 bytes of the tax identifier
+    before any processing. In particular, the character '/' <bcp14>MUST</bcp14> be percent-encoded
+    as <tt>%2F</tt> if present in a tax identifier.
+    </t>
+    <t>
+
+    The salt of a Donau URI refers to information used by a
+    wallet application to generate the Donau donation statement.
+    This salt is wallet-specific. As taxpayers <bcp14>MAY</bcp14>
+    use multiple wallets, tax authorities <bcp14>SHOULD</bcp14>
+    allowing a taxpayer to supply multiple Donau
+    donation statements for the same year. If the salts
+    are different, these should be treated as
+    cumulative by the validator application.  The salt
+    <bcp14>SHOULD</bcp14> also used to obfuscate the taxpayer ID
+    in the donation protocol.
+    </t>
+    <t>
+    The total follows the syntax from <xref target="RFC8905"/> and
+    represents the total amount donated in this year by the given
+    taxpayer with the given salt. Thus, given multiple 'donau' URIs
+    with the same salt, the maximum total amount should be used, while
+    the total amounts from 'donau' URIs with different salts should be
+    added.
+    </t>
+    <t>
+    Finally, <tt>algo</tt> specifies the specific signature algorithm
+    used; for now,
+    only ED25519 (see <xref target="RFC8032" />) is supported.
+    The signature using the specified algorithm <bcp14>MUST</bcp14> be
+    made over the information above (see <xref target="signature"/>)
+    and <bcp14>MUST</bcp14> be encoded using the Base 32 U Crockford encoding
+    scheme <xref target="base32-U-crockford"/>.
+    </t>
+    <t>
+    The default operation of applications that invoke a URI with the
+    Donau scheme <bcp14>MUST</bcp14> be to launch a Donau validator (if
+    available). If no Donau validator is available, an application
+    <bcp14>SHOULD</bcp14> show a QR code with the content of the URI.
+    If multiple
+    Donau validators are registered, the user <bcp14>SHOULD</bcp14> be able to choose
+    which application to launch. This allows users with multiple
+    validators to choose which validator to perform the operation
+    with.
+    </t>
+    <!--<t>
+    An application <bcp14>SHOULD</bcp14> allow dereferencing a "donau://" URI even
+    if the action of that URI is not registered in the "Donau URI
+    Actions" sub-registry.
+    </t>-->
+    <t>
+      Validators <bcp14>MUST</bcp14> use HTTP over TLS when processing a "<tt>donau</tt>" URI.
+      Validators <bcp14>MUST</bcp14> use HTTP without TLS when processing a "<tt>donau+http</tt>" URI.
+      The base origin <bcp14>SHOULD</bcp14> be shown to the
+      user to indicate which authority issued the proof of donation.
+      Alternatively, specific validation apps <bcp14>MAY</bcp14> only accept 'donau'
+      URLs from a specific set of hard-coded authorities and simply display
+      an error message when given 'donau' URLs from other authorities.
+    </t>
+</section>
+
+<section anchor="examples">
+  <name>Examples</name>
+  <figure>
+    <artwork><![CDATA[
+    ; Minimal example with a simple base and simple taxid
+    donau://example.com/
+      ?year=2025&id=7560001010000&
+      salt=1234&
+      total=EUR:15&
+      sig=ED25519:
+        H9PM3BW3P8MEKB34GZ0G1F7JSNVX7B8AHXRFFMS37QZM7TXZ5MWPXTEDZZGN1
+        QRB1AFPKNCFXJB39NJHP3BAFGCZSCXHEYPHA1YJY28
+
+    ; Example with percent-encoded taxid containing '/'
+    donau://donau.test.taler.net/
+      ?year=2025&id=123%2F456%2F789&
+      salt=1234&
+      total=TESTKUDOS:1&
+      sig=ED25519:
+        B14WGS43FFPEB8JMSR6W1H8M6KH9AV33JFH376R6PM2MNH4GR24FP1C93C4ZPDG2
+        1W5WY4SASZQ4CRS427F4WJZJFZMQ5Y4HZNXGY30
+
+    ; Example with a base URL that includes path components
+    donau://admin.ch/taxes/donau/
+      ?year=2025&id=7560001010000&
+      salt=1234&
+      total=EUR:15&
+      sig=ED25519:
+        H9PM3BW3P8MEKB34GZ0G1F7JSNVX7B8AHXRFFMS37QZM7TXZ5MWPXTEDZZGN1
+        QRB1AFPKNCFXJB39NJHP3BAFGCZSCXHEYPHA1YJY28
+]]>
+    </artwork>
+  </figure>
+</section>
+
+<section anchor="verification">
+  <name>Verification of a Donau URI</name>
+  <t>
+    The verification requires the Donau verification application to test
+    if a given taxpayer is entitled to a tax reduction.
+    For doing this, the Donau verification application must
+    verify that the Donau URI corresponds to a valid Donau donation
+    statement. The Donau verification application <bcp14>MUST</bcp14> verify the
+    validity of the donation statement. There are two possibilities:
+    signature and total are available, or at least one is not available.
+  </t>
+  <t>
+    If signature and total are available, then the verification
+    application <bcp14>MUST</bcp14> verify
+    that the signature is valid for the server key (see <xref
+    target="get-server-keys"/> to get the key).
+  </t>
+  <t>
+    If either or both are missing, the application <bcp14>MUST</bcp14> download them from
+    the get donation statement endpoint <xref target="get-donation-statement"/>.
+  </t>
+
+</section>
+<section anchor="get-server-keys">
+  <name>Obtaining Donau Server Public Keys</name>
+  <t>
+    The verification app <bcp14>MUST</bcp14> obtain the signing public key
+    corresponding to the base for the given year.
+    The key <bcp14>MAY</bcp14> be retrieved from a
+    cache. If no key for this base and this year is available in the
+    cache, the verification app <bcp14>MUST</bcp14> download the key from the
+    base. The Donau server <bcp14>MUST</bcp14> provide the key at the /keys
+    endpoint. If the key is not available, no verification can take place
+    and the validator <bcp14>MUST</bcp14> return an appropriate error.
+
+    The verification app <bcp14>SHOULD</bcp14> cache downloaded signing
+    public keys for the current year.
+  </t>
+  <ul>
+    <li>Endpoint: /keys</li>
+    <li>Method: GET</li>
+    <li>Syntax: base/keys</li>
+    <li>Syntax response: defined hereunder</li>
+    <li>References: [this.I-D]</li>
+  </ul>
+
+  <t>
+    Each of the "<tt>signkeys</tt>" is valid between "<tt>stamp_start</tt>" and
+    "<tt>stamp_expire</tt>" and the public "<tt>key</tt>" returned is encoded using Base 32
+    U Crockford encoding <xref target="base32-U-crockford"/>.
+  </t>
+
+  <sourcecode>
+        <![CDATA[
+; Core JSON tokens (simplified; assumes standard JSON dialect)
+JSONString      = DQUOTE *(%x20-21 / %x23-5B /
+                 %x5D-10FFFF / "\" EscapedChar) DQUOTE
+UCrockford = *( ALPHA32 / "-" )
+ALPHA32 = DIGIT / LETTER
+DIGIT   = %x30-39                       ; 0-9
+LETTER  = %x41-48 / %x4A-4E / %x50-5A / %x61-68 / %x6A-6E / %x70-7A
+JSONUCrockfordString      = DQUOTE UCrockford DQUOTE
+EscapedChar    = %x22 / %x5C / %x2F / %x62 / %x66 /
+                 %x6E / %x72 / %x74 / "u" 4HEXDIG
+JSONNumber     = [ "-" ] 1DIGIT *( DIGIT ) [ "." 1DIGIT *( DIGIT ) ]
+                 [ ( "e" / "E" ) [ "+" / "-" ] 1DIGIT *( DIGIT ) ]
+JSONBool       = "true" / "false"
+JSONNull       = "null"
+JSONArray      = "[" [ JSONException *( "," JSONException ) ] "]"
+JSONObject     = "{" [ JSONMember *( "," JSONMember ) ] "}"
+JSONMember     = JSONString ":" JSONException
+JSONException  = JSONString / JSONNumber / JSONObject /
+                 JSONArray / JSONBool / JSONNull
+
+; Specific DonauKeysResponse structure
+DonauKeysResponse = "{"
+                      JSONMemberSep
+                    "}"
+JSONMemberSep  = version , domain , base_url , currency ,
+                 currency_fraction_digits , donation_units , signkeys
+
+version       = DQUOTE "version" DQUOTE ":" JSONString
+domain        = DQUOTE "domain"  DQUOTE ":" JSONString
+base_url      = DQUOTE "base_url" DQUOTE ":" JSONString
+currency      = DQUOTE "currency" DQUOTE ":" JSONString
+currency_fraction_digits = DQUOTE "currency_fraction_digits"
+                DQUOTE ":" JSONNumber
+EDDSAPubKey   = JSONUCrockfordString
+SignKey       = DQUOTE "key" DQUOTE ":" EDDSAPubKey
+donation_units = DQUOTE "donation_units" DQUOTE ":" "["
+                 DonationUnitKeyGroup *(
+                   "," DonationUnitKeyGroup ) "]"
+signkeys       = DQUOTE "signkeys" DQUOTE ":" "[" SignKey
+                 *( "," SignKey ) "]"
+
+DonationUnitKeyGroup = "{" cipher_field "," value_field ","
+                       donation_units_array "}"
+cipher_field           = DQUOTE "cipher" DQUOTE ":" (
+                        DQUOTE "RSA" DQUOTE / DQUOTE "CS" DQUOTE )
+value_field            = DQUOTE "value"  DQUOTE ":" JSONNumber
+donation_units_array   = DQUOTE "donation_units" DQUOTE ":" "["
+                         DUNK_UNIT_KEY *(
+                           "," DUNK_UNIT_KEY ) "]"
+
+; donation unit entries differ depending on cipher
+DUNK_UNIT_KEY = "{" base_fields "," key_specific "}"
+base_fields   = DQUOTE "year"  DQUOTE ":" JSONNumber
+                [ "," DQUOTE "lost" DQUOTE ":" JSONBool ]
+key_specific  = ( DQUOTE "rsa_pub" DQUOTE ":" JSONObject ) /
+                ( DQUOTE "cs_pub"  DQUOTE ":" JSONString )
+
+SignKey = "{" DQUOTE "key" DQUOTE ":" JSONObject ","
+          DQUOTE "year" DQUOTE ":" JSONNumber "}"
+        ]]>
+      </sourcecode>
+
+  <t>Example, a response to a GET request to the <tt>/keys</tt> endpoint.</t>
+  <sourcecode>
+        <![CDATA[
+ { "signkeys":
+   [
+     {
+       "stamp_start": {"ts_s": 42 },
+       "stamp_expire": {"ts_s": 43 },
+       "key": "XXXXXXXXXXXXXXXX"
+     }
+   ]
+ }
+        ]]>
+      </sourcecode>
+</section>
+
+
+<section anchor="get-donation-statement">
+  <name>Donation Statement Retrieval</name>
+  <t>
+    If the Donau URI does not contain the total or the signature, the
+    verification app <bcp14>MUST</bcp14> download them from the <tt>/donation-statement</tt>
+    endpoint of the base.<br/>
+
+    The verification app <bcp14>MUST</bcp14> compute the hash of the donor
+    taxpayer ID <tt>hash-donor-id</tt> using SHA-512 <xref target="RFC6234"/>
+    over the exact UTF-8 bytes of the taxpayer ID string, followed by a single
+    NUL byte (0x00), followed by the salt string, followed by a final NUL byte (0x00):
+    <tt>hash-donor-id = SHA-512(taxid || 0x00 || salt || 0x00)</tt>.
+    Here, <tt>taxid</tt> is the UTF-8 string obtained by percent-decoding the <tt>taxid-enc</tt> path segment.
+    The verification app <bcp14>MUST</bcp14> contact the
+    base at the endpoint <tt>/donation-statement</tt> with the year and <tt>hash-donor-id</tt>.
+
+    The hash of the donor taxpayer ID <tt>hash-donor-id</tt> <bcp14>MUST</bcp14> be encoded
+    using Base 32 U Crockford
+    encoding <xref target="base32-U-crockford"/>.
+  </t>
+
+  <ul>
+    <li>Endpoint: /donation-statement</li>
+    <li>Method: GET</li>
+    <li>Syntax: base/donation-statement/{year}/{hash-donor-id}</li>
+    <li>References: [this.I-D]</li>
+  </ul>
+
+  <t>
+    Servers implementing the donation-statement endpoint
+    <bcp14>MUST</bcp14> respect the
+    following syntax; all three fields (<tt>total-field</tt>, <tt>sig-field</tt>, <tt>pub-field</tt>) <bcp14>MUST</bcp14> be included.
+
+    The total amount is a string formed first of the currency (in capital
+    letters) then ":" and then the value (can be an integer or a decimal
+    number).
+  </t>
+
+  <sourcecode>
+        <![CDATA[
+json-object     = "{" ws field-list ws "}"
+
+field-list      = field *(ws "," ws field)
+field           = total-field / sig-field / pub-field
+
+; Allow any order of the three fields
+total-field     = DQUOTE "total" DQUOTE ws ":" ws
+                  DQUOTE currency ":" value DQUOTE
+sig-field       = DQUOTE "donation_statement_sig" DQUOTE ws ":"
+                  ws DQUOTE signature DQUOTE
+pub-field       = DQUOTE "donau_pub" DQUOTE ws ":" ws
+                  DQUOTE signature DQUOTE  ; same format as signature
+
+currency        = 1*(%x41-5A)   ; A-Z uppercase letters
+value           = int / decimal
+int             = ["-"] 1*DIGIT
+decimal         = ["-"] 1*DIGIT "." 1*DIGIT
+
+signature       = 1*(ALPHA / DIGIT / "=")
+
+; Common tokens
+ws              = *WSP
+DQUOTE          = %x22  ; "
+WSP             = %x20 / %x09
+DIGIT           = %x30-39
+ALPHA           = %x41-5A / %x61-7A
+        ]]>
+      </sourcecode>
+
+  <t>Example of an element of USD 100.00 :</t>
+  <sourcecode>
+        <![CDATA[
+{
+  "total": "USD:100",
+  "donation_statement_sig": "SIGNATURE",
+  "donau_pub": "EDDSA_PUBLIC_KEY"
+}
+        ]]>
+      </sourcecode>
+</section>
+
+
+<section anchor="signature-total-available">
+  <name>Verification if Signature and Total are Available</name>
+  <t>
+    The verification app <bcp14>MUST</bcp14> verify that the signature corresponds to
+    the claimed values.
+
+    If the information is not in the URI, the verification app <bcp14>MUST</bcp14>
+    download the total and the signature from the
+    base using the GET <tt>/donation-statement</tt> endpoint <xref
+    target="get-donation-statement"/>. Otherwise, it <bcp14>SHOULD</bcp14> use the
+    value given in the URI.
+
+    The verification of the signature is done using EdDSA as
+    specified in <xref target="RFC8032" />.
+
+    The verification <bcp14>MAY</bcp14> be done with the following instructions.
+    The signed data is the concatenation of the following fields
+    in network byte order (big-endian):
+  </t>
+
+  <ul>
+    <li>size (4 bytes): 32-bit unsigned integer with the total length of the signed data in bytes.</li>
+    <li>purpose (4 bytes): 32-bit unsigned integer with the constant value <tt>1500</tt>.</li>
+    <li>total value (8 bytes): integer part as an unsigned 64-bit integer.</li>
+    <li>total fraction (4 bytes): fractional part as an unsigned 32-bit integer in units of 1/100000000.</li>
+    <li>currency (12 bytes): ASCII string, left-aligned with zero-padding on the right to 12 bytes.</li>
+    <li>hash of donor taxpayer ID (64 bytes): <tt>hash-donor-id = SHA-512( UTF-8(taxid) || 0x00 || UTF-8(salt) || 0x00 )</tt>.</li>
+    <li>year (4 bytes): 32-bit unsigned integer (the donation year).</li>
+  </ul>
+</section>
+
+
+<section anchor="signature">
+  <name>Creating Donation Statement Signatures</name>
+  <t>
+    The server signing the donation statement  <bcp14>MUST</bcp14> use the Sign(d,message) procedure implemented as defined in <xref target="RFC8032" />.
+  </t>
+  <t>
+    The signature over the public key covers a 32-bit pseudo header
+    conceptually prefixed to the donation data fields.
+    The wire format is illustrated
+    in <xref target="figure_donausigwithpseudo"/>.
+  </t>
+  <figure anchor="figure_donausigwithpseudo">
+    <name>The Format for Creating Donation Statement Signatures</name>
+    <artwork name="" type="" alt="">
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE (1500)  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                TOTAL value                    |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|       TOTAL  fraction |     CURRENCY          |
++-----+-----+-----+-----+                       +
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|              SHA512 of the donor ID           |
+/                                               /
+/                                               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+|       YEAR            |
++-----+-----+-----+-----+
+    </artwork>
+  </figure>
+  <dl newline="false">
+    <dt>SIZE:</dt>
+    <dd>
+      A 32-bit value containing the length of the signed data in bytes
+      in network byte order.
+    </dd>
+    <dt>PURPOSE:</dt>
+    <dd>
+      A 32-bit signature purpose flag in network byte order. The value of this
+      field <bcp14>MUST</bcp14> be 1500.  It defines the context in which
+      the signature is created so that it cannot be reused in other parts
+      of the protocol that might include possible future extensions.
+      The value of this field corresponds to an entry in the
+      GANA "GNUnet Signature Purposes" registry <xref target="GANA"/>.
+    </dd>
+    <dt>TOTAL value:</dt>
+    <dd>
+      The integer part of the total value.
+      Unsigned integer containing the integer part of the value for the total.
+      It is represented using a 64 bit value (in big endian).
+    </dd>
+    <dt>TOTAL fraction:</dt>
+    <dd>
+      The fractional part of the total value is represented by an
+      unsigned integer on 32 bits (also in big endian notation).
+      It represents the fractional part of the value  in 1/100000000th of the base unit.
+    </dd>
+    <dt>TOTAL currency</dt>
+    <dd>
+      A string representing the currency. ASCII, left-aligned and zero-padded to exactly 12 bytes.
+    </dd>
+    <dt>HASH:</dt>
+    <dd>The SHA512 hash code for the donor ID.</dd>
+    <dt>YEAR:</dt>
+    <dd>The year on a 32 bit unsigned integer in big endian.</dd>
+  </dl>
+</section>
+
+<section anchor="signature-verification">
+  <name>Validating Donation Statement Signatures</name>
+  <t>
+    The signature verification step is taking the data presented in the
+    figure <xref target="figure_donausigwithpseudo" /> as input.
+    The signature <bcp14>MUST</bcp14> be verified using the EdDSA scheme described in
+    <xref target="RFC8032" /> the procedure is
+    <tt>Verify(zk,message,signature)</tt>.
+    Public key and signature, which are
+    encoded in Base 32 U Crockford in the URL,
+    <bcp14>MUST</bcp14> first be decoded to obtain the
+    respective binary value.
+  </t>
+  <t>
+    The Sign(d,message) and Verify(zk,message,signature) procedures <bcp14>MUST</bcp14>
+    be implemented as defined in <xref target="RFC8032" />.
+  </t>
+</section>
+
+
+<section anchor="base32-U-crockford">
+  <name>Base 32 Representation of Binary Data</name>
+  <t>
+    All binary data <bcp14>MUST</bcp14> be encoded to be transmitted. For encoding, one
+    <bcp14>MUST</bcp14> use the Base32 U Crockford encoding. This is a variation of the
+    base32 encoding <xref target ="RFC4648" />. This encoding is presented
+    in detail in the appendix of the RFC for GNU Name System <xref target="RFC9498" />
+  </t>
+  <t>
+    The encoding works similarly to the standard, but uses another Base 32
+    Alphabet. The new alphabet is given in the Table <xref target="figure_base32_encoding" />, below.
+  </t>
+
+  <figure anchor="figure_base32_encoding">
+    <name>The Base 32 Encoding Alphabet.</name>
+    <artwork name="" type="" align="left" alt="table where value between 0 and 9 are encoded with the character corresponding to the number. Then between 10 and 31, we have all the letters expect I, L, O, U that could be misleading (OCR may not recognize them properly). Padding is the char ="><![CDATA[
+Value Encoding  Value Encoding  Value Encoding  Value Encoding
+    0 0             9 9            18 J            27 V
+    1 1            10 A            19 K            28 W
+    2 2            11 B            20 M            29 X
+    3 3            12 C            21 N            30 Y
+    4 4            13 D            22 P            31 Z
+    5 5            14 E            23 Q
+    6 6            15 F            24 R           (pad) =
+    7 7            16 G            25 S
+    8 8            17 H            26 T
+
+    ]]>
+    </artwork>
+  </figure>
+
+  <t>
+    To prevent optical character reading (OCR) problems, a system decoding
+    binary data encoded with base 32 U Crockford <bcp14>MUST</bcp14>
+    accept the codes presented in the Table <xref target="figure_base32_decoding"/>, below.
+    System reading a <tt>U</tt> <bcp14>MUST</bcp14> evaluate it as a <tt>V</tt>.
+  </t>
+
+  <figure anchor="figure_base32_decoding">
+    <name>The Base 32 Decoding Alphabet.</name>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+Value Encoding  Value Encoding  Value Encoding  Value Encoding
+    0 0             9 9            18 J|j          27 V|v|u|U
+    1 1|i|I|l|L    10 A|a          19 K|k          28 W|w
+    2 2            11 B|b          20 M|m          29 X|x
+    3 3            12 C|c          21 N|n          30 Y|y
+    4 4            13 D|d          22 P|p          31 Z|z
+    5 5            14 E|e          23 Q|q
+    6 6            15 F|f          24 R|r        (pad) =
+    7 7            16 G|g          25 S|s
+    8 8            17 H|h          26 T|t
+    ]]></artwork>
+  </figure>
+
+
+</section>
+
+<section anchor="security">
+  <name>Security Considerations</name>
+  <t>
+    Donau validators <bcp14>SHOULD</bcp14> support
+    "<tt>donau+http://</tt>"-URIs only when run in developer or debug mode
+    as otherwise the integrity and authenticity of the public key
+    cannot be assured.
+  </t>
+  <t>
+    Running  "<tt>donau+http://</tt>"-URIs on a production server
+    <bcp14>MUST NOT</bcp14> be permitted, since it would be a security issue.
+    This scheme is intended only for testing purposes,
+    for instance on <tt>localhost</tt>.
+  </t>
+  <t>
+    Validator applications <bcp14>MUST</bcp14> include protections
+    against repeated validations of the same donation statement
+    with the same salt and year. Specifically, when summing up
+    multiple donation statements for the same taxpayer and
+    tax year, the <bcp14>MUST</bcp14> keep enough state to add
+    up the maximum total amounts per salt if multiple donation
+    statements are submitted with the same salt.
+  </t>
+</section>
+
+
+<section anchor="iana">
+  <name slugifiedName="name-iana-considerations">IANA Considerations</name>
+  <t>
+    IANA maintains the "Uniform Resource Identifier (URI) Schemes"
+    registry that contains an entry for the 'donau' URI scheme.  IANA is
+    requested to update that entry to reference this document when
+    published as an RFC.
+  </t>
+  <dl indent="3" newline="false" spacing="normal">
+    <dt>Scheme name:</dt>
+    <dd> donau</dd>
+    <dt>Status:</dt>
+    <dd> provisional</dd>
+    <dt>URI scheme syntax:</dt>
+    <dd>See <xref target="syntax" format="default" sectionFormat="of" derivedContent="Section 3"/> of [This.I-D].</dd>
+    <dt>URI scheme semantics:</dt>
+    <dd>See <xref target="semantics" format="default" sectionFormat="of" derivedContent="Section 4"/> of [This.I-D].</dd>
+    <dt>Applications/protocols that use this scheme name:</dt>
+    <dd> GNU Taler</dd>
+    <dt>Contact:</dt>
+    <dd>
+      <t><contact fullname="Christian Grothoff"/> &lt;grothoff@gnu.org&gt;</t>
+    </dd>
+    <dt>Change controller:</dt>
+    <dd>
+      <t><contact fullname="Christian Grothoff"/> &lt;grothoff@gnu.org&gt;</t>
+    </dd>
+    <dt>References:</dt>
+    <dd> See <xref target="refs" format="default" sectionFormat="of" derivedContent="Section 13"/> of [This.I-D].</dd>
+  </dl>
+</section>
+
+
+</middle>
+
+<back xmlns="">
+
+
+
+
+  <references anchor="refs">
+    <name>Normative References</name>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5234.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6234.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9498.xml"/>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8905.xml"/>
+
+
+  </references>
+
+  <references>
+    <name>Informational References</name>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.4648.xml"/>
+
+
+   <reference anchor="GANA" target="https://gana.gnunet.org/">
+     <front>
+         <title>GNUnet Assigned Numbers Authority (GANA)</title>
+        <author><organization>GNUnet e.V.</organization>
+        </author>
+         <date month="April" year="2020" />
+     </front>
+   </reference>
+
+   <reference anchor="BaThesis" target="https://www.taler.net/papers/donau-thesis.pdf">
+     <front>
+       <title>Tax-deductable Privacy-Preserving Donations</title>
+       <author initials="J.C." surname="Casaburi" fullname="Johannes Casaburi">
+         <organization>Bern University of Applied Science, Bachelor Thesis</organization>
+       </author>
+       <author initials="L.M." surname="Matya" fullname="Lukas Matya">
+         <organization>Bern University of Applied Science, Bachelor Thesis</organization>
+       </author>
+     </front>
+     </reference>
+  </references>
+
+<section anchor="appendix-test-vectors">
+  <name>Appendix. Test Vector: Verify from URI</name>
+  <t>
+    This appendix shows how to verify a donation statement starting from a
+    received URI. Public key is fetched from the Donau base.
+  </t>
+
+  <figure>
+   <artwork><![CDATA[
+Example URI:
+donau://donau.test.taler.net/?year=2025&id=123%2F456%2F789&
+  salt=AWNFDRFT0WX45W4Y32A9DJA03S1EF66GFQZ9EV5EF9JTHWZ37WR0&
+  total=TESTKUDOS:1&
+  sig=ED25519:
+    B14WGS43FFPEB8JMSR6W1H8M6KH9AV33JFH376R6PM2MNH4GR24FP1C93C4ZPDG21
+    W5WY4SASZQ4CRS427F4WJZJFZMQ5Y4HZNXGY30
+
+Extracted fields:
+- base: donau.test.taler.net
+- year: 2025
+- taxid: 123%2F456%2F789
+- taxid (decoded): 123/456/789
+- salt: AWNFDRFT0WX45W4Y32A9DJA03S1EF66GFQZ9EV5EF9JTHWZ37WR0
+- total: TESTKUDOS:1
+- signature: ED25519:B14WGS43FFPEB8JMSR6W1H8M6KH9AV33JFH376R6PM2MNH4
+  GR24FP1C93C4ZPDG21W5WY4SASZQ4CRS427F4WJZJFZMQ5Y4HZNXGY30
+
+Fetched public key for year 2025 from https://donau.test.taler.net/keys:
+- pub: 2FRN2CAK9DMDWE157W6HY97RAVSP0ZCCC08X9N6JD2MK7413XXZG
+]]></artwork>
+  </figure>
+
+  <t>Verification steps:</t>
+  <ol>
+    <li>Input (URI):<br/>
+<tt>donau://donau.test.taler.net/?year=2025&amp;id=123%2F456%2F789&amp;
+salt=AWNFDRFT0WX45W4Y32A9DJA03S1EF66GFQZ9EV5EF9JTHWZ37WR0&amp;
+total=TESTKUDOS:1&amp;
+sig=ED25519:B14WGS43FFPEB8JMSR6W1H8M6KH9AV33JFH376R6PM2MNH4GR24FP1C93C4ZPDG21
+W5WY4SASZQ4CRS427F4WJZJFZMQ5Y4HZNXGY30</tt></li>
+    <li>Parse fields:<br/>
+          - base: <tt>donau.test.taler.net</tt><br/>
+          - year: <tt>2025</tt> (4 digits)<br/>
+          - taxid-enc: <tt>123%2F456%2F789</tt><br/>
+          - taxid (UTF-8, percent-decoded, no trimming): <tt>123/456/789</tt><br/>
+          - salt (ASCII): <tt>AWNFDRFT0WX45W4Y32A9DJA03S1EF66GFQZ9EV5EF9JTHWZ37WR0</tt><br/>
+          - total (amount string): <tt>TESTKUDOS:1</tt><br/>
+          - sig (Crockford Base32, algorithm ED25519): <tt>B14WGS...XGY30</tt></li>
+    <li>Public signing key (Crockford Base32) (from <tt>/keys</tt>):<br/>
+<tt>2FRN2CAK9DMDWE157W6HY97RAVSP0ZCCC08X9N6JD2MK7413XXZG</tt></li>
+    <li>Hash of the donor taxpayer ID <tt>hash-donor-id</tt> = <tt>SHA-512( UTF-8(taxid) || 0x00 || UTF-8(salt) || 0x00 )</tt>:<br/>
+          - length: 64 bytes<br/>
+          - hex:<br/>
+<tt>4aaa1e16fc5be44842b863b1f17da39296ca7b3529a720e11aba9c8bd729f7a  1e2bb0b9a39c02d271da5dd15aea66ce95be78bcaf380de19a0bdbcd8a7938f1b</tt><br/>
+          - Crockford Base32 (for HTTP endpoints):<br/>
+<tt>9AN1W5QWBFJ4GGNRCERZ2ZD3JABCMYSN56KJ1R8TQAE8QNS9YYGY5ERBK  8WW0B973PJXT5DEMSPEJPZ7HF5F706Y36GBVF6RMY9RY6R</tt></li>
+    <li>Total amount encoding (<tt>TALER_AmountNBO</tt>):<br/>
+          - currency (12 bytes): <tt>"TESTKUDOS"</tt> then <tt>0x00</tt> x 3<br/>
+          - value (uint64 BE): <tt>1</tt> -> <tt>0x0000000000000001</tt><br/>
+          - fraction (uint32 BE): <tt>0</tt> -> <tt>0x00000000</tt></li>
+    <li>Signed message <tt>M</tt> layout (network byte order, total 100 bytes):<br/>
+          - [0000..0003] 4 bytes <tt>size</tt>: <tt>0x00000064</tt><br/>
+          - [0004..0007] 4 bytes <tt>purpose</tt>: <tt>0x000005DC</tt> (1500)<br/>
+          - [0008..0015] 8 bytes <tt>amount.value</tt>: <tt>0x0000000000000001</tt><br/>
+          - [0016..0019] 4 bytes <tt>amount.fraction</tt>: <tt>0x00000000</tt><br/>
+          - [0020..0031] 12 bytes <tt>amount.currency</tt>: <tt>54 45 53 54 4b 55 44 4f 53 00 00 00</tt> ("TESTKUDOS\x00\x00\x00")<br/>
+          - [0032..0095] 64 bytes <tt>i.hash</tt>: hash of donor taxpayer ID <tt>hash-donor-id</tt><br/>
+          - [0096..0099] 4 bytes <tt>year</tt>: <tt>0x000007E9</tt> (2025)</li>
+    <li>Message <tt>M</tt> (hex, 100 bytes):<br/>
+<tt>00000064 000005dc 0000000000000001 00000000 544553544b55444f53000000  4aaa1e16fc5be44842b863b1f17da39296ca7b3529a720e11aba9c8bd729f7a1e2bb0b  9a39c02d271da5dd15aea66ce95be78bcaf380de19a0bdbcd8a7938f1b 000007e9</tt></li>
+    <li>Signature (ED25519, Crockford Base32 -> bytes):<br/>
+          - length: 64 bytes<br/>
+          - R (first 32 bytes, hex):<br/>
+<tt>5849c864837bece5a254ce0dc0c51434e2956c6393e2339b06b5054ac490c088</tt><br/>
+          - S (last 32 bytes, hex):<br/>
+<tt>fb05891b09fb36020f0bcf132acfee46632411de4e4bf27fe972f891fd7b0f0c</tt></li>
+    <li>Public key (Ed25519, Crockford Base32 -> bytes):<br/>
+          - length: 32 bytes<br/>
+          - hex:<br/>
+<tt>13f15131534b68de38253f0d1f24f856f3607d8c6011d4d4d268a9339023ef7f</tt></li>
+    <li>Verification (expected): call <tt>crypto_sign_verify_detached(sig, M, 100, pubkey)</tt>. The result <bcp14>MUST</bcp14> indicate a valid signature for this vector.</li>
+    <li>Negative check (optional): flip one bit of <tt>M</tt> or <tt>sig</tt> and repeat; verification <bcp14>MUST</bcp14> fail.</li>
+  </ol>
+</section>
+
+<section numbered="false">
+  <name>Acknowledgements</name>
+  <t>
+    The authors thank Ted Hardie for his comments on an earlier version of the draft.
+    This work was funded in part by the European Commission through the
+    Horizon Europe program under project number 101135475 (TALER). It also
+    has received funding from the Swiss State Secretariat for Education,
+    Research and Innovation (SERI).
+  </t>
+</section>
+
+<!-- Change Log
+v00 2025-10-17  CG   Initial version
+v01 2025-10-21  EB   Including first reviews (motivations + change in URI structure)
+  -->
+</back>
+</rfc>

@@ -1,0 +1,16 @@
+gnunet.org bibliography is a mixture of various documents.
+
+The TODO (and work-in-progress) here is a re-implementation of
+freehaven's anonbib[0], preferable in a language that requires
+no big bootstrap (or even itself to build itself),
+so the obvious pick could be a lisp.
+Another candidate could be Skribilo[1][2] combined with other
+existing tools.
+
+More TODO:
+Gather sourcecode of our own publications, so that they can be generated
+and no PDF has to be used (for those where this can be applied).
+
+0: https://www.freehaven.net/anonbib/
+1: http://www.nongnu.org/skribilo/doc/user-7.html#biblio
+2: http://www.nongnu.org/skribilo/

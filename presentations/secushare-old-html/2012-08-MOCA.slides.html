@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--
+
+TODO: political slide about Facebook owning and selling your
+      pictures and stuffs you upload!!?
+
+TODO: add a slide about private usefulness as noted by codethief
+	(syncing, managing your stuff)
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Re-Invent the Internet with Secure Share</title>
+<meta name="presdate" content="20120201" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="author" content="Carlo v. Loesch" />
+<meta name="company" content="symlynX.com" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="UI/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="UI/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="UI/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="UI/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- S5 JS -->
+<script src="UI/slides.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer">
+&nbsp; secushare: A Framework for ReInventing the Internet
+</div>
+</div>
+
+<div id="between">&nbsp;</div>
+
+<!-- div id="logo">
+<img src="img/oXoXo-077.png" />
+</div -->
+
+<div class="presentation">
+
+<div class="slide">
+<img style="padding: 80px" src="img/secushare-0444.png" />
+</div>
+
+<div class="slide">
+<img class="framed" src="img/phase0.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase1.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase2.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase3.jpeg" />
+</div>
+
+<div class="slide">
+<h1>ReInventing the Internet?</h1>
+<h2>Overview of the Talk</h2>
+<ul>
+<li>Attack Vectors against Servers &amp; VMs</li>
+<li>How Much Privacy Is Enough?</li>
+<li>Social Onion Routing</li>
+<li>More Desired Features</li>
+<li>Architecture, Protocols</li>
+<li>How to Beat Faceboogle</li>
+<li>The 'Secure Share' App</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>About carlo von lynX</h1>
+<h2>Why am I talking here?</h2>
+<ul class="incremental">
+<li>20 years of messaging &amp; chat protocol design</li>
+<li>/me etc.</li>
+<li>PSYC: federated &amp; multicasting</li>
+<li>then Jabber came</li>
+<li>PSYC good for business, open source delayed</li>
+<li>back then, servers were reliable</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Don't Trust Servers</h1>
+<h2>Hardware Servers are vulnerable</h2>
+<ul class="incremental">
+<li>client/server architecture: data resides on servers</li>
+<li>federation: data visible on even more servers</li>
+<li>memory access via bus sniffing</li>
+<li>no shutdown necessary</li>
+<li>automated memory image analysis proven</li>
+<li>eat-inside or take-away</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Don't Trust Virtual Machines</h1>
+<h2>Commodity Servers are VMs</h2>
+<ul class="incremental">
+<li>vulnerable cryptography</li>
+<li>memory can be monitored</li>
+<li>controlling system accessible by observers</li>
+<li>automated monitoring of federated social networks</li>
+<li>anti-terror legislation possible</li>
+<li>even if <em>your</em> server is at home</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Privacy vs. Paranoia</h1>
+<h2>How Much Privacy Is Enough? 1/2</h2>
+<ul class="incremental">
+<li>just to the intended recipients (e2e encryption)</li>
+<li>packet size padding (unobservability)</li>
+<li>flexible number of anonymization hops</li>
+<li>optional intentional delay</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Privacy vs. Paranoia</h1>
+<h2>How Much Privacy Is Enough? 2/2</h2>
+<ul class="incremental">
+<li>forward secrecy</li>
+<li>deniability (a log is no proof of nothing)</li>
+<li>private subscription lists (not on a server)</li>
+<li>robust and resilient against attacks</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>It's A Question Of Trust</h1>
+<h2>Social Onion Routing</h2>
+<ul class="incremental">
+<li>trust relationship between nodes</li>
+<li>multihop provides anonymization</li>
+<li>motivation to provide "servers" as fast routers</li>
+<li>my server is me, so you can trust my server</li>
+<li>"P2P" a lot faster over servers</li>
+<li>servers agnostically maintain messages (and data)</li>
+<!-- li>irony: role switch between servers and routers</li -->
+</ul>
+</div>
+
+<div class="slide">
+<h1>Portability &amp; Acceptance</h1>
+<h2>Lightweight Daemon</h2>
+<ul class="incremental">
+<li>personal devices and home routers</li>
+<li>lightweight for embedded and mobile</li>
+<li>lightweight for background daemon use</li>
+<li>compiled language</li>
+<li>more likely to get included in OS distros</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Architecture</h1>
+<h2>Technology</h2>
+<ul class="incremental">
+<li>"Enhanced" P2P with servers as agnostic routers</li>
+<li>GNUnet as a framework: privacy, VPN, meshnet</li>
+<li>TUM, learned from I2P, Freenet...</li>
+<li>social graph discovery instead of DHT</li>
+<li>no file sharing, no big traffic</li>
+<li>PSYC on top</li>
+<!-- <li>Multicast distribution for scalability (later)</li> -->
+</ul>
+</div>
+
+<div class="slide">
+<h1>PSYC vs XML and JSON</h1>
+
+<ul class="incremental">
+<li>extensible: semantically rich</li>
+<li>binary/encrypted data capable</li>
+<li>efficient as a binary format</li>
+<li>table shows parsing speed in milliseconds:</li>
+</ul>
+<p/>
+
+<table class="smaller" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="left" /></colgroup>
+<colgroup><col class="right" /><col class="right" /></colgroup><colgroup><col class="right" /><col class="right" /></colgroup><colgroup><col class="right" /><col class="right" /><col class="right" /><col class="right" /></colgroup>
+<thead>
+<tr><th scope="col" class="left"></th><th scope="col" class="right">libpsyc<br/>regular</th><th scope="col" class="center">libpsyc<br/>compact</th><th scope="col" class="right">json-c</th><th scope="col" class="right">json-glib</th><th scope="col" class="right">libxml sax</th><th scope="col" class="right">libxml</th><th scope="col" class="right">rapidxml</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">presence</td><td class="right">236</td><td class="right">122</td><td class="right">2463</td><td class="right">10016</td><td class="right">4997</td><td class="right">7557</td><td class="right">1719</td></tr>
+<tr><td class="left">chat msg</td><td class="right">295</td><td class="right">258</td><td class="right">2147</td><td class="right">9526</td><td class="right">5911</td><td class="right">8999</td><td class="right">1850</td></tr>
+<tr><td class="left">activity</td><td class="right">353</td><td class="right">279</td><td class="right">4666</td><td class="right">16327</td><td class="right">13357</td><td class="right">28858</td><td class="right">4356</td></tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="slide">
+<h1>One Too Many</h1>
+<h2>Multicasting for Scalability</h2>
+<ul class="incremental">
+<li>social = one-to-many | many-to-many</li>
+<li>round robin distribution = slow (SMTP)</li>
+<li>HTTP is one-to-one, query/response</li>
+<li>IP Multicast fails (router table overflow)</li>
+<li>IRC and NNTP do/did multicast, but have other problems</li>
+<li>XMPP has a trust issue (says the XSF)</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Flexibility</h1>
+<h2>Framework Architecture</h2>
+<ul class="incremental">
+<li>a truly private communications backend</li>
+<li>social applications to be built on top</li>
+<li>emulations of the 'open standards' possible</li>
+<li>OStatus, WebID, RDF, even the Twitter API</li>
+<li>optional modules for XMPP, IRC available</li>
+<li>Activity Streams</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Dissemination</h1>
+<h2>Hard to beat Faceboogle</h2>
+<ul class="incremental">
+<li>since we need to go onto every computer anyway..</li>
+<li>offer something Faceboogle can't provide?</li>
+<li>exchanging files between friends sucks</li>
+<li>USB sticks, e-mail, file hosters, skype, MSN, DropBox (brrr!)</li>
+<li>WTF is 'Secure Share' ?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Desktop Integration</h1>
+<h2>'Secure Share' Function</h2>
+<ul class="incremental">
+<li>right mouse button click (context menu)</li>
+<li>share a file to a channel of subscribers</li>
+<li>appears in their file system soon</li>
+<li>realtime or delayed notification</li>
+<li>no permission dialogs</li>
+<li>shipped by default in your free OS?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Secure Share Feature Set</h1>
+<h2>Features of Prototype Edition</h2>
+<ul>
+<li>Messaging, Subscriptions, Status Update</li>
+<li>File Exchange, VPN, Software Distribution</li>
+</ul>
+<h2>Later Features</h2>
+<ul>
+<li>Group Communications, Social Network Features</li>
+<li>Media Support: Photo Albums, Videos, Music</li>
+<li>Extension API for Custom Social Apps</li>
+<li>Realtime Streaming</li>
+</ul>
+</div>
+
+<div class="slide">
+<img class="framed" src="img/phase0.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase1.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase2.jpeg" />
+</div>
+<div class="slide">
+<img class="framed" src="img/phase3.jpeg" />
+</div>
+
+<!--
+
+-->
+
+<div class="slide">
+<h1>Secure Share - the Team</h1>
+<h2>Who's involved?</h2>
+<ul>
+<li>Gabor Toth (secushare.org)</li>
+<li>Carlo von lynX (PSYC, secushare)</li>
+<!-- li>Mathias Baumann (PSYC)</li -->
+<li>Daniel Reusche (secushare, Unlike Us)</li>
+<li>duy (secushare)</li>
+<li>hellekin (lorea, FSF, GNU social)</li>
+</ul>
+<br/>
+with support from Wau Holland Foundation (CCC),
+TU M&uuml;nchen (GNUnet), Institute of Network Cultures
+(Unlike Us) and Mr Stallman (FSF*)
+</div>
+
+<div class="slide">
+<h1>If you like what we do</h1>
+<h2>We need support</h2>
+<img align="right" src="img/oXoXo-380.png" />
+<ul>
+<li>Manpower</li>
+<li>Alliances</li>
+<li>Finances</li>
+<li>Publicity</li>
+</ul>
+<br/>
+Check by: secushare.org<br/>
+Thank you.<br/>
+</div>
+
+<div class="slide">
+<h1>A bad idea whose time has come?</h1>
+<h2>End-to-end Encryption in the Browser!!1!11</h2>
+<br/>
+<ul class="incremental">
+<li>User interface comes from the server.
+<li>Web browser does what the server says.
+<li>Server corrupted? It can steal your data.
+<li>Only static install helps. Still:
+<li>Bad cryptography, bad script signing.
+<li>So you might aswell go for the real thing...
+</ul>
+</div>
+
+<div class="slide">
+<h1>One Too Many (XMPP)</h1>
+<h2>Multicasting with XMPP?</h2>
+<ul class="incremental">
+<li>70% of S2S XMPP messages is presence updates (5 years ago)</li>
+<li>XMPP has limited support for one-to-many communications</li>
+<li>XMPP can be improved, but: trust problem with multicast</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>One Too Many (HTTP)</h1>
+<h2>Multicasting with HTTP?</h2>
+<ul class="incremental">
+<li>fundamentally feasible</li>
+<li>unnatural: HTTP is not bidirectional</li>
+<li>requires trust in a federated architecture</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Cross That Bridge As We Get There?</h1>
+<h2>Let's just get started with something!</h2>
+<ul class="incremental">
+<li>The Mediocre is the Enemy of the Good</li>
+<li>Historic Examples:</li>
+<li>HTTP.. HTTP/NG?, SPDY!?</li>
+<li>SMTP.. What? Faceboogle!?</li>
+<li>XML.. What? JSON!?</li>
+<!-- li>SQL..</li -->
+</ul>
+</div>
+
+</html>

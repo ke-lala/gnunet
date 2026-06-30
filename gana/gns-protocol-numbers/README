@@ -1,0 +1,8 @@
+GNS Protocol Numbers
+--------------------
+
+This registry is for protocol number mappings for GNS names that are BOXed.
+
+Some "_"-labels map to protocol numbers, but others do not.
+For common "_"-labels, we provide a number mapping in this registry.
+

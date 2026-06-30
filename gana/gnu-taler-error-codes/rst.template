@@ -1,0 +1,4 @@
+   * - {{Name}}
+     - {{Value}}
+     - {{HttpStatus_Value}} ({{HttpStatus_Identifier}})
+     - {{Description}}

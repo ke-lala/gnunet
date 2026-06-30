@@ -1,0 +1,108 @@
+{
+    "network": {
+        "bootstrap": [
+            "ip+udp://172.17.0.5:10000",
+            "gnunet://hello/7KTBJ90340HF1Q2GB0A57E2XJER4FDHX8HP5GHEB9125VPWPD27G/BNMDFN6HJCPWSPNBSEC06MC1K8QN1Z2DHRQSRXDTFR7FTBD4JHNBJ2RJAAEZ31FWG1Q3PMN3PXGZQ3Q7NTNEKQZFA7TE2Y46FM8E20R/1653499308?r5n+ip+udp=127.0.0.1%3A7654"
+        ],
+        "numPeers": 10
+    },
+    "local": {
+        "name": "ygng",
+        "privateSeed": "YGoe6XFH3XdvFRl+agx9gIzPTvxA229WFdkazEMdcOs=",
+        "endpoints": [
+            {
+                "id": "test",
+                "network": "ip+udp",
+                "address": "upnp:192.168.134.1",
+                "port": 6666,
+                "ttl": 86400
+            }
+        ]
+    },
+    "environ": {
+        "TMP": "/tmp",
+        "RT_SYS": "${TMP}/gnunet-system-runtime",
+        "RT_USER": "${TMP}/gnunet-user-runtime",
+        "VAR_LIB": "/var/lib/gnunet"
+    },
+    "dht": {
+        "service": {
+            "socket": "${RT_SYS}/gnunet-service-dht-go.sock",
+            "params": {
+                "perm": "0770"
+            }
+        },
+        "storage": {
+            "mode": "file",
+            "cache": false,
+            "path": "${VAR_LIB}/dht/store",
+            "maxGB": 10
+        },
+        "routing": {
+            "peerTTL": 10800,
+            "replLevel": 5
+        },
+        "heartbeat": 900
+    },
+    "gns": {
+        "service": {
+            "socket": "${RT_SYS}/gnunet-service-gns-go.sock",
+            "params": {
+                "perm": "0770"
+            }
+        },
+        "replLevel": 10,
+        "maxDepth": 250
+    },
+    "namecache": {
+        "service": {
+            "socket": "${RT_SYS}/gnunet-service-namecache-go.sock",
+            "params": {
+                "perm": "0770"
+            }
+        },
+        "storage": {
+            "mode": "file",
+            "cache": true,
+            "path": "${VAR_LIB}/namecache",
+            "num": 1000,
+            "expire": 43200
+        }
+    },
+    "revocation": {
+        "service": {
+            "socket": "${RT_SYS}/gnunet-service-revocation-go.sock",
+            "params": {
+                "perm": "0770"
+            }
+        },
+        "storage": {
+            "mode": "redis",
+            "addr": "localhost:6397",
+            "passwd": "",
+            "id": 15
+        }
+    },
+    "zonemaster": {
+        "period": 300,
+        "storage": {
+            "mode": "sqlite3",
+            "file": "${VAR_LIB}/gns/zonemaster.sqlite3"
+        },
+        "gui": "127.0.0.1:8100",
+        "plugins": [],
+        "service": {
+            "socket": "${RT_USER}/gnunet-service-zonemaster-go.sock",
+            "params": {
+                "perm": "0770"
+            }
+        }
+    },
+    "rpc": {
+        "endpoint": "tcp:127.0.0.1:80"
+    },
+    "logging": {
+        "level": 4,
+        "file": "${TMP}/gnunet-go/run.log"
+    }
+}

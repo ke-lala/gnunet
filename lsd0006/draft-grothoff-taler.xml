@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3986 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3986.xml">
+<!ENTITY RFC5234 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5234.xml">
+<!ENTITY RFC8126 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- SEE ALSO: https://docs.taler.net/core/taler-uri.html -->
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+
+<rfc category="info"
+     docName="draft-grothoff-taler-01"
+     ipr="trust200902">
+
+  <front>
+    <title abbrev="The 'taler' URI scheme">
+      The 'taler' URI scheme for GNU Taler Wallet interactions
+    </title>
+
+    <author fullname="Christian Grothoff" initials="C.G." surname="Grothoff">
+      <organization>BFH</organization>
+      <address>
+        <postal>
+          <street>H&ouml;heweg 80</street>
+          <street></street>
+          <city>Biel/Bienne</city>
+	      <code>CH-2501</code>
+          <country>CH</country>
+        </postal>
+        <email>christian.grothoff@bfh.ch</email>
+      </address>
+    </author>
+
+    <author fullname="Florian Dold" initials="F.D." surname="Dold">
+      <organization>Taler Systems SA</organization>
+      <address>
+        <postal>
+          <street>7, rue de Mondorf</street>
+          <city>Erpeldange</city>
+          <code>L-5421</code>
+          <country>LU</country>
+        </postal>
+        <email>dold@taler.net</email>
+      </address>
+    </author>
+
+    <date day="07" month="January" year="2024" />
+
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>payments</keyword>
+
+    <abstract>
+
+      <t>
+        This document defines the 'taler' Uniform Resource Identifier (URI) scheme
+        for triggering interactions with a GNU Taler wallet.
+      </t>
+
+      <t>
+        This URI scheme allows applications to trigger interactions with the GNU Taler wallet,
+        such as withdrawing money, making payments, receiving refunds and restoring a wallet
+        from a backup.  Applications may receive such URIs in many ways (including via NFC,
+        QR codes, Web links or messaging applications), or might generate them internally to
+        interact with a wallet.  By having a Taler wallet handle the respective URIs,
+        applications can integrate Taler payments without having to support the Taler protocol
+        directly. Furthermore, by passing control to a Taler wallet process, the wallet's
+        database with its financial data might be better protected from application failures.
+      </t>
+
+    </abstract>
+
+  </front>
+
+  <middle>
+
+<section anchor="introduction" title="Introduction">
+<t>
+  This document defines the 'taler' Uniform Resource Identifier (URI) <xref target="RFC3986" /> scheme
+  for triggering interactions with GNU Taler wallets.
+</t>
+
+<section title="Objective">
+<t>
+  A 'taler' URI always instructs a GNU Taler wallet to perform a particular operation.
+  A 'taler' URI consists of an action and optional parameters.
+</t>
+<t>
+  The interpretation of the optional parameters depends on the action.
+</t>
+</section>
+<section title="Requirements Language">
+<t>
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP 14
+   <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only when,
+   they appear in all capitals, as shown here.
+</t>
+</section>
+
+</section>
+
+<section anchor="syntax"
+  title="Syntax of a 'taler' URI">
+  <t>
+  This document uses the Augmented Backus-Naur Form (ABNF) of <xref target="RFC5234"/>.
+  </t>
+  <figure>
+  <artwork type="abnf"><![CDATA[
+  taler-URI = ("taler://" / "TALER://" / "taler+http://" / "TALER+HTTP://" )
+              action path-abempty [ "?" query ]
+  action = ALPHA *( ALPHA / DIGIT / "-" / "." )
+]]>
+  </artwork>
+  </figure>
+  <t>
+    'path-abempty' is defined in <xref target="RFC3986" /> in Section 3.3.
+    'query' is defined in <xref target="RFC3986" />, in Section 3.4.
+  </t>
+</section>
+
+<section anchor="semantics" title="Semantics">
+<t>
+  The action of a Taler URI identifies the operation requested from the Taler
+  wallet.  Actions are not case-sensitive.  The actions are defined in the "Taler
+  URI Actions" sub-registry, see <xref target="taler-registry" />.
+
+  The path component of the URI typically provides a network address needed to
+  locate additional information or services relevant to the requested operation.
+  Paths are case-sensitive, but may contain case-insensitive portions, such
+  as domain names.
+
+  The query component of the URI provides immediate additional parameters or
+  options for the operation.  The query is case-sensitive.
+
+  The default operation of applications that invoke a URI with the taler
+  scheme MUST be to launch a Taler wallet (if available).  If no taler URI
+  handler is available, an application SHOULD show a QR code with the contents
+  of the URI.  If multiple Taler wallets are registered, the user SHOULD be
+  able to choose which application to launch.  This allows users with multiple
+  wallets (each possibly with its own money) to choose which wallet to perform
+  the operation with.
+
+  An application SHOULD allow dereferencing a "taler://" URI even
+  if the action of that URI is not registered in the "Taler URI Actions" sub-registry.
+
+  Wallets seeing a "taler://" URI MUST use HTTP over TLS when talking
+  to the respective network service.
+  Wallets seeing a "taler+http://" URI MUST use HTTP without TLS when talking
+  to the respective network service.  Wallets SHOULD support
+  "taler+http://"-URIs only when run in developer or debug mode.
+
+</t>
+</section>
+
+<section anchor="examples" title="Examples">
+<figure>
+  <artwork><![CDATA[
+  taler://pay/example.com/2022.268-03G33PTAY2C6T/\
+    00f68430-363a-46b7-8e33-241a0e49c430?c=KKBWMSTF4AZSP8XS0FFNE9KM5M
+  taler://pay-push/bank.example.com/\
+    3BBW6N8PVDYBRT0DERT8YYARQGFYHVQFG3WVAN1D58FRP5JG3M4G
+  TALER://PAY-PULL/BANK.EXAMPLE.COM/\
+    WB361HXN7BZ9ND1B9YP1Y20NB4H5WS0RNM4K8AFZ5Q2VRW577BPG
+]]>
+  </artwork>
+</figure>
+
+</section>
+
+<section anchor="tracking" title="Tracking Taler URI Actions">
+  <t>
+    A registry of Taler URI Actions is described in <xref target="taler-registry" />.
+
+    The registration policy for this registry is "Expert Review",
+    as described in <xref target="RFC8126" />.
+When requesting new entries, careful consideration of the following criteria is strongly advised:
+<list style="numbers">
+  <t>The description clearly defines the semantics of the action and optional parameters if applicable.</t>
+  <t>The name states the unique name for the action that must be part of the URI.</t>
+  <t>The syntax defines the format of the action-specific part of the URI.</t>
+  <t>Relevant references are provided if they are available.</t>
+  <t>The chosen name is appropriate for the operation, and avoids potential to confuse users.</t>
+  <t>A libre software reference implementation is available.</t>
+</list>
+</t>
+<t>
+Documents that support requests for new registry entries should
+ provide the following information for each entry:
+<list style="symbols">
+<t>Description: A description of the action, including
+   the semantics of the path in the URI if applicable.</t>
+<t>Name: The name of the Taler URI action (case insensitive ASCII string, restricted to alphanumeric characters,
+dots and dashes)</t>
+<t>Syntax: summary of the syntax of the URI as a one-liner.</t>
+<t>Example: At least one example URI to illustrate the action.</t>
+<t>Contact: The contact information of a person to contact for further information</t>
+<t>References: Optionally, references describing the action (such as an RFC) and target-specific options.</t>
+</list>
+</t>
+<t>
+This document populates the registry with $COUNT entries as follows (see
+also <xref target="taler-registry" />).
+</t>
+
+<section anchor="registry-entry-withdraw" title="Action: withdraw">
+<t>
+  The action "withdraw" is used to trigger a bank-integrated withdrawal operation.
+  This means that the user has been interacting with some online banking App and
+  wants to instruct the bank to transfer money from the user's bank account into
+  a the GNU Taler wallet.  The wallet now needs to allow the user to select the
+  GNU Taler exchange, and then ultimately provide the bank with its
+  reserve public key and await the completion of the wire transfer.
+</t>
+<t>
+  The specific arguments of a "withdraw" action are:
+  <list style="symbols">
+    <t>bank_host: hostname of the bank (optionally including a port number)</t>
+    <t>bank_prefix_path: list of path components that identifies the path prefix of the bank integration API base URL</t>
+    <t>withdrawal_uid: the unique ID of the withdrawal operation</t>
+    <t>ext (optional): when set to "1", the wallet does not show a confirmation link to the user.
+    Useful when the withdrawal is initiated from an account that is not controlled by the same
+    user as the user of the wallet.</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: withdraw</t>
+<t>Syntax: taler://withdraw/{bank_host}{/bank_prefix_path*}/{withdrawal_uid}{?external-confirmation=ext}</t>
+<t>Example: taler://withdraw/bank.example.com/wid</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-pay" title="Action: pay">
+<t>
+  Payments are requested with the "pay" action.
+  The parameters are a hierarchical identifier for the requested payment,
+  and must include a hostname, order ID and session ID (which may be
+  an empty string). Additionally, a claim token and a prefix path to be used
+  as part of the HTTP REST API request to the hostname may be specified.
+</t>
+<t>
+  The specific arguments of a "pay" action are:
+  <list style="symbols">
+   <t>merchant_host: hostname of the GNU Taler REST service of merchant (may optionally include a port number)</t>
+   <t>merchant_prefix_path: list of path components that identifies the path prefix of the merchant base URL</t>
+   <t>order_id: the order ID that the customer is asked to pay for</t>
+   <t>session_id:  the session ID under which the payment takes place</t>
+   <t>ct: a high-entropy order "ClaimToken"</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: pay</t>
+<t>Syntax: taler://pay/{merchant_host}{/merchant_prefix_path*}/{order_id}/{session_id}{?c=ct}</t>
+<t>Example: taler://pay/merchant.example.com/42/</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-refund" title="Action: refund">
+  <t>
+    A "refund" action instructs the wallet to download information about
+    an available refund. Wallet SHOULD consult the user about the refund and
+    then obtain the refund for an already paid order.
+  </t>
+  <t>
+  The specific arguments of a "refund" action are:
+  <list style="symbols">
+    <t>merchant_host: hostname of the merchant (possibly including a port number)</t>
+    <t>merchant_prefix_path: list of path components that identifies the path prefix of the merchant base URL</t>
+    <t>order_id: the order ID to check for refunds</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: refund</t>
+<t>Syntax: taler://refund/{merchant_host}{/merchant_prefix_path*}/{order_id}/</t>
+<t>Example: taler://refund/shop.example.com/42/</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-pay-push" title="Action: pay-push">
+  <t>
+    A pay-push URI instructs the wallet to ask the user about accepting a P2P
+    payment. The wallet should download, decrypt and display the underlying
+    contract and accept the offered money if the user agrees to the contract.
+  </t>
+  <t>
+  The specific arguments of a "pay-push" action are:
+  <list style="symbols">
+    <t>exchange_host: the hostname of the exchange (possibly including a port number)</t>
+    <t>exchange_prefix_path: list of path components that identifies the path prefix of the exchange base URL</t>
+    <t>merge_priv: private key that grants the capability to take the money in the purse</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: pay-push</t>
+<t>Syntax: taler://pay-push/{exchange_host}{/exchange_prefix_path*}/{merge_priv}</t>
+<t>Example: taler://pay-push/exchange.example.com/KAMRGDM8FNQ82HSBVDEH8MCAF13Q0B51P4R35RFG2CBVHKGT321G</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-pay-pull" title="Action: pay-pull">
+  <t>
+    A pay-pull URI instructs the wallet about a request made to the user to
+    pay an invoice (or to simply send money to another wallet).  The wallet
+    should download, decrypt and display the underlying contract and ask the
+    user if they agree to pay the invoice.
+  </t>
+<t>
+  The specific arguments of a "pay-pull" action are:
+  <list style="symbols">
+    <t>exchange_host: the hostname of the exchange (possibly including a port number)</t>
+    <t>exchange_prefix_path: list of path components that identifies the path prefix of the exchange base URL</t>
+    <t>contract_priv: the private key of the peer push payment contract stored at the exchange</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: pay-pull</t>
+<t>Syntax: taler://pay-pull/{exchange_host}{/exchange_prefix_path*}/{contract_priv}</t>
+<t>Example: taler://pay-pull/exchange.example.com/PN3W8SN6N8V1V5MTEZRPJJ2ANY8GGZMB1MBXC7NMSRXJN6MZ5SWG</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+
+<section anchor="registry-entry-pay-template" title="Action: pay-template">
+ <t>
+   A "pay-template" action instructs the wallet to ask its user to
+   manually complete an order template and submit the information
+   to the merchant to obtain a "pay" request.  Wallets MUST fetch
+   meta data about the template from the merchant to determine which
+   information to request from the user.
+ </t>
+ <t>
+   Wallets MAY support users entering all possible fields of a
+   contract if allowed by the template.  Fields that MUST be supported
+   at this time are the "amount" and the "summary".  The wallet
+   MUST validate that the amount entered by the user is well-formed.
+   For the amount, it is possible that the template restricts
+   the currency in which case the wallet MUST only allow the user to
+   enter an amount in that currency.  If the amount entered by the
+   user exceeds the wallet balance, the wallet SHOULD NOT allow the
+   user to submit the action.
+ </t>
+ <t>
+   The specific arguments of a "pay-template" action is:
+   <list style="symbols">
+     <t>merchant_host: hostname of the merchant</t>
+     <t>merchant_prefix_path: list of path components that identifies the path prefix of the merchant base URL</t>
+     <t>template_id: identifier that uniquely identifies the template</t>
+   </list>
+ </t>
+<t>
+  <list style="symbols">
+    <t>Name: pay-template</t>
+    <t>Syntax: taler://pay-template/{merchant_host}{/merchant_prefix_path*}/{template_id}</t>
+    <t>Example: taler://pay-template/merchant.example.com/lunch</t>
+    <t>Contact: N/A</t>
+    <t>References: [this.I-D]</t>
+  </list>
+</t>
+</section>
+
+
+<section anchor="registry-entry-restore" title="Action: restore">
+<t>
+  A "restore" action instructs the wallet to restore a wallet backup
+  and merge it into its current state.
+</t>
+<t>
+  The specific arguments of a "restore" action are:
+  <list style="symbols">
+    <t>sync_rootkey: Root sync key of the wallet, used to derive the symmetric key to encrypt the backup with individual providers.</t>
+    <t>sync_provider_list: Comma-separated list of provider http or https URLs.  If no scheme part is specified, https is assumed. Each URL is URI-encoded for all characters except "A-Z a-z 0-9 - _ . ! ~ * ' ( )" (matching the HTML5 encodeURIComponent).</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: restore</t>
+<t>Syntax: taler://restore/{sync_rootkey}/{sync_provider_list}</t>
+<t>Example: taler://restore/backup.example.com/GJKG23V4ZBHEH45YRK7TWQE8ZTY7JWTY5094TQJSRZN5DSDBX8E0/prov1.example.com,prov2.example.com</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-dev-experiment" title="Action: dev-experiment">
+<t>
+  An "dev-experiment" action instructs the wallet to simulate a particular
+  error scenario.  This action can be used to test the user interface.
+  Wallets that are not in developer mode should not run
+  the specified action and instead inform the user that "dev-experiment"
+  actions are only supported in developer mode.
+</t>
+<t>
+  The specific arguments of a "dev-experiment" action are:
+  <list style="symbols">
+    <t>name: specifies the specific type of dev experiment</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: dev-experiment</t>
+<t>Syntax: taler://dev-experiment/{name}</t>
+<t>Example: taler://dev-experiment/xxx</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-add-exchange" title="Action: add-exchange">
+ <t>
+   An "add-exchange" action instructs the wallet to add an exchange to its list of
+   exchanges, download its meta data ("/config"), check that it is compatible with
+   the wallet, and if it is a new exchange, ask the user to agree to the
+   terms of service of the exchange.  If the user agrees to the terms,
+   the currency of the exchange should be added to the list of currencies.
+ </t>
+ <t>
+  The specific arguments of an "add-exchange" action are:
+  <list style="symbols">
+    <t>exchange_host: hostname of the exchange (possibly including a port number)</t>
+    <t>exchange_prefix_path (optional): list of path components that identifies the path prefix of the exchange base URL</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: add-exchange</t>
+<t>Syntax: taler://add-exchange/{exchange_host}{/exchange_prefix_path*}/</t>
+<t>Example: taler://add-exchange/exchange.example.com/</t>
+<t>Example: taler://add-exchange/exchanges.example.com/api/</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+
+<section anchor="registry-entry-withdraw-exchange" title="Action: withdraw-exchange">
+ <t>
+  A "withdraw-exchange" action instructs the wallet to display a prompt to the user, asking
+  the user to confirm/decline withdrawing from the exchange. The amount to be withdraw MAY be
+  specified in the URI with the "amount" parameter and this SHOULD be used as suggested input
+  for the withdraw. The user MUST accept the ToS and select the correct amount before starting
+  the withdrawal.
+ </t>
+<t>
+  The specific arguments of a "withdraw-exchange" action are:
+  <list style="symbols">
+    <t>exchange_host: hostname of the exchange (possibly including a port number)</t>
+    <t>exchange_prefix_path (optional): list of path components that identifies the path prefix of the exchange base URL</t>
+    <t>amount_value (optional): default value to use for the withdrawal amount, currency included</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: withdraw-exchange</t>
+<t>Syntax: taler://withdraw-exchange/{exchange_host}{/exchange_prefix_path*}/{?a=amount_value]}</t>
+<t>Example: taler://withdraw-exchange/exchange.example.com/?a=KUDOS:10</t>
+<t>Example: taler://withdraw-exchange/exchanges.example.com/exchange1/</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+<section anchor="registry-entry-add-contact" title="Action: add-contact">
+ <t>
+   An "add-contact" action instructs the wallet to add a contact to its list of
+   contacts.
+ </t>
+ <t>
+  The specific arguments of an "add-contact" action are:
+  <list style="symbols">
+    <t>alias_type: the type of alias of this contact</t>
+    <t>alias: the alias of a contact</t>
+    <t>mailbox_host: hostname of the mailbox of the contact (possibly including a port number)</t>
+    <t>mailbox_prefix_path (optional): list of path components that identifies the path prefix of the mailbox base URL</t>
+    <t>mailbox_address: the contacts mailbox address.</t>
+    <t>source_base_url (optional): the source of this contact information (taler directory service base URL). Optional.</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: add-contact</t>
+<t>Syntax: taler://add-contact/{alias_type}/{alias}/{mailbox_host}{/mailbox_prefix_path*}/{mailbox_address}{?sourceBaseUrl=source_base_url}</t>
+<t>Example: taler://add-contact/email/taler@example.com/mailbox.example.com/SOMEADDRESS/?sourceBaseUrl=https://taldir.example.com</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+
+<section anchor="registry-entry-withdrawal-transfer-result" title="Action: withdrawal-transfer-result">
+ <t>
+   A "withdrawal-transfer-result" action instructs the wallet to display the status of a withdrawal
+   to the user.  Typically used to transfer control between a banking app/website and a Taler wallet.
+   Optionally, the URI can also specify an update to the status of the transfer
+   to the exchange for the withdrawal as a hint for the wallet.  The wallet must only use this
+   value to show further hints to the user.
+ </t>
+<t>
+  The specific arguments of a "withdraw-exchange" action are:
+  <list style="symbols">
+    <t>ref_value: A reference for the transaction that must contain the reserve public key. Used to identify the
+    withdrawal transaction in the wallet.</t>
+    <t>status_value (optional): The status of the transfer, must be one of: "success", "aborted".</t>
+  </list>
+</t>
+<t>
+<list style="symbols">
+<t>Name: withdraw-transfer-result</t>
+<t>Syntax: taler://withdrawal-transfer-result{?ref=ref_value}{?status=status_value}</t>
+<t>Contact: N/A</t>
+<t>References: [this.I-D]</t>
+</list>
+</t>
+</section>
+
+
+</section><!-- tracking -->
+
+<section anchor="security" title="Security Considerations">
+<t>
+  Interactive applications handling the taler URI scheme MUST NOT initiate any
+  unsafe payment operations prior review and confirmation from the user,
+  and MUST take measures to prevent clickjacking <xref target="HMW12"/>.
+</t>
+<t>
+  The authentication/authorization mechanisms and transport security services
+  used to process a payment encoded in a taler URI
+  are handled by the application and are not in scope of this document.
+</t>
+</section>
+
+<section anchor="iana" title="IANA Considerations">
+
+<t>
+IANA maintains a registry called the "Uniform Resource Identifier
+(URI) Schemes" registry.
+</t>
+
+<section anchor="taler-uri" title="URI Scheme Registration">
+<t>
+  IANA maintains the "Uniform Resource Identifier (URI) Schemes"
+  registry that contains an entry for the 'taler' URI scheme.  IANA is
+  requested to update that entry to reference this document when
+  published as an RFC.
+</t>
+</section>
+</section>
+
+<section anchor="taler-registry" title="Taler URI Actions">
+<t>
+   This document specifies a list of Taler URI Actions.  It is
+   possible that future work will need to specify additional
+   actions.  The GNUnet Assigned Numbers Authority (GANA) <xref target="GANA" />
+   operates the "taler-uri-actions" registry to track
+   the following information for each payment target type:
+<list style="symbols">
+<t>Name:  The name of the action (case insensitive ASCII string, restricted to alphanumeric characters,
+dots and dashes)</t>
+<t>Contact: The contact information of a person to contact for further information</t>
+<t>References: Optionally, references describing the payment target type (such as an RFC) and target-specific options,
+  or references describing the payment system underlying the payment target type.</t>
+</list>
+</t>
+<t>
+  The entries that have been made for the "taler-uri-actions"
+  defined in this document are as follows:
+</t>
+<figure>
+  <artwork>
+    Name                       | Contact                 | Reference
+    ----------------------------+-------------------------+----------
+    pay                        | N/A                     | [This.I-D]
+    withdraw                   | N/A                     | [This.I-D]
+    refund                     | N/A                     | [This.I-D]
+    pay-pull                   | N/A                     | [This.I-D]
+    pay-push                   | N/A                     | [This.I-D]
+    pay-template               | N/A                     | [This.I-D]
+    restore                    | N/A                     | [This.I-D]
+    dev-experiment             | N/A                     | [This.I-D]
+    add-exchange               | N/A                     | [This.I-D]
+    add-contact                | N/A                     | [This.I-D]
+    withdraw-exchange          | N/A                     | [This.I-D]
+    withdrawal-transfer-result | N/A                     | [This-I.D]
+  </artwork>
+</figure>
+
+</section><!-- taler-registry -->
+
+</middle>
+
+<back>
+
+  <references title="Normative References">
+
+    &RFC2119;
+
+    &RFC3986;
+
+    &RFC5234;
+
+    &RFC8126;
+
+    &RFC8174;
+
+
+  </references>
+
+  <references title="Informational References">
+
+   <reference anchor="HMW12" target="https://www.usenix.org/system/files/conference/usenixsecurity12/sec12-final39.pdf">
+     <front>
+         <title>Clickjacking: Attacks and Defenses</title>
+         <author initials="L.S." surname="Huang"
+                 fullname="Lin-Shung Huang">
+         </author>
+         <author initials="A." surname="Moshchuk"
+                 fullname="Alexander, Moshchuk">
+         </author>
+         <author initials="H.J." surname="Wang"
+                 fullname="Helen J. Wang">
+         </author>
+         <author initials="S." surname="Schecter"
+                 fullname="Stuart Schecter">
+         </author>
+         <author initials="C." surname="Jackson"
+                 fullname="Collin Jackson">
+         </author>
+
+         <date month="January" year="2012" />
+     </front>
+  </reference>
+
+ <reference anchor="GANA" target="https://gana.gnunet.org/">
+   <front>
+       <title>GNUnet Assigned Numbers Authority (GANA)</title>
+      <author><organization>GNUnet e.V.</organization>
+      </author>
+       <date month="April" year="2020" />
+   </front>
+ </reference>
+
+  </references>
+
+<!-- Change Log
+v00 2022-11-11  CG   Initial version
+  -->
+</back>
+</rfc>

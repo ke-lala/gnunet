@@ -1,0 +1,791 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC1928 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1928.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!--<!ENTITY RFC2693 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2693.xml">-->
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3629 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC4033 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
+<!ENTITY RFC5237 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5237.xml">
+<!--<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">-->
+<!ENTITY RFC5869 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5895.xml">
+<!ENTITY RFC6066 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
+<!ENTITY RFC6761 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7363 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7363.xml">
+<!ENTITY RFC8806 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8806.xml">
+<!ENTITY RFC7748 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8244 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8244.xml">
+<!ENTITY RFC8324 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8324.xml">
+<!ENTITY RFC8439 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8439.xml">
+<!ENTITY RFC8446 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8446.xml">
+<!ENTITY RFC8499 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8499.xml">
+<!ENTITY RFC9106 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9106.xml">
+<!ENTITY RFC9147 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9147.xml">
+<!ENTITY RFC9180 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9180.xml">
+<!ENTITY I-D.ietf-dnsop-alt-tld PUBLIC '' "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-alt-tld.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="info"
+     docName="draft-schanzen-cake-00"
+     ipr="trust200902"
+     obsoletes="" updates=""
+     submissionType="independent" 
+     xml:lang="en"
+     version="3">
+  <!-- xml2rfc v2v3 conversion 2.26.0 -->
+  <front>
+    <title abbrev="CORE Authenticated Key Exchange (CAKE)">
+      CORE Authenticated Key Exchange (CAKE)
+    </title>
+    <seriesInfo name="Internet-Draft" value="draft-schanzen-cake-00"/>
+    <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+      <organization>Fraunhofer AISEC</organization>
+      <address>
+        <postal>
+          <street>Lichtenbergstrasse 11</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+      </address>
+    </author>
+    <author fullname="ch3" initials="" surname="ch3">
+      <organization>GNUnet e.V.</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>Lenggries</city>
+          <code></code>
+          <country>DE</country>
+        </postal>
+        <email>ch3@mailbox.org</email>
+      </address>
+    </author>
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>transport protocols</keyword>
+    <abstract>
+      <t>
+        This document contains the GNUnet CORE AKE (CAKE).
+      </t>
+      <t>
+        This document defines the normative wire format of the protocol,
+        cryptographic routines and security
+        considerations for use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to inform readers about the
+        function of GNUnet communicators, guide future implementations, and ensure
+        interoperability including with the pre-existing
+        GNUnet implementation.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="introduction" numbered="true" toc="default">
+      <name>Introduction</name>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to guide implementers of GNS
+        and to ensure interoperability among implementations.
+      </t>
+      <section numbered="true" toc="default">
+        <name>Requirements Notation</name>
+        <t>
+          The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+          when, they appear in all capitals, as shown here.
+        </t>
+      </section>
+    </section>
+    <section anchor="terminology">
+      <name>Conventions and Terminology</name>
+      <t>
+        While some of the terminology is explicitly re-defined here, the reader is expected
+        to be familiar with TLS 1.3 (<xref target="RFC8446"/>), DTLS 1.3 (<xref target="RFC9147"/>) and HPKE
+        (<xref target="RFC9180"/>).
+      </t>
+        <dl>
+          <dt>inititator:</dt><dd>See client in <xref target="RFC9147"/> Section 2.</dd>
+          <dt>responder:</dt><dd>See server in <xref target="RFC9147"/> Section 2.</dd>
+          <dt>epoch:</dt><dd>See <xref target="RFC9147"/> Section 2.</dd>
+          <dt>IATS:</dt>
+          <dd>Initiator Application Traffic Secret Key</dd>
+          <dt>RATS:</dt> <dd>Responder Application Traffic Secret Key</dd>
+          <dt>ES:</dt> <dd>Early Secret Key</dd>
+          <dt>ETS:</dt> <dd>Early Traffic Secret Key</dd>
+          <dt>HS:</dt> <dd>Handshake Secret Key</dd>
+          <dt>MS:</dt> <dd>Main Secret Key</dd>
+          <dt>ES:</dt> <dd>Early Secret Key</dd>
+          <dt>IHTS:</dt> <dd>Initiator Handshake Secret Key</dd>
+          <dt>RHTS:</dt> <dd>Responder Handshake Secret Key</dd>
+          <dt>H(D):</dt> <dd>A 512-bit hash over D. The hash function is TBD (Blake2b or SHA-512).</dd>
+          <dt>T(M):</dt> <dd>means the transcript as a concatenation of received/sent messages starting from and including the InitiatorHello pk_e until and including M. Note that the transcript refers to everything that is seen on the wire, including potentially encrypted messages or fields and metadata.</dd>
+      <dt>'{}K'</dt> <dd>indicates encryption with a handshake traffic key K and a modified <xref target="RFC8439"/>, the XChaCha20-Poly1305 Authenticated Encryption with Associated Data (AEAD) construction.</dd>
+      <dt>'[]K'</dt> <dd>indicates encryption with an application traffic key K using the XChaCha20-Poly1305 Authenticated Encryption with Associated Data (AEAD) construction.</dd>
+    </dl>
+    </section>
+    <section anchor="rationale" numbered="true" toc="default">
+      <name>Design Rationale</name>
+      <t>
+        The design rationale for CAKE is similar to DTLS 1.3 (cf. <xref target="RFC9147" section="3"/>).
+        Except that CAKE does not consider Fragmentation as this is expected to be provided by the
+        transport underlay layer of GNUnet.
+      </t>
+    </section>
+    <section anchor="protocol_flow" numbered="true" toc="default">
+      <name>Protocol Flow</name>
+      <t>
+        This protocol is heavily inspired by <xref target="KEMTLS"/>.
+      </t>
+      <t>
+        We assume that the peers have semi-static (as opposed to ephemeral) key pairs. Let (pk<sub>A</sub>,sk<sub>A</sub>) be the key pair of peer PID<sub>A</sub> and (pk<sub>B</sub>,sk<sub>B</sub>) the key pair of peer PID<sub>B</sub>.
+      </t>
+      <t>
+        For any secure handshake protocol, we have to dermine an initiator and a responder in the protocol. We use <tt>GNUNET_CRYPTO_hash_cmp</tt> to determine which peer is the responder R and which peer the initiator I:
+      </t>
+      <sourcecode>
+        <![CDATA[
+if (GNUNET_CRYPTO_hash_cmp (pk_A, pk_B))
+{
+  pk_I = pk_A
+  pk_R = pk_B
+}
+else
+{
+  pk_I = pk_B
+  pk_R = pk_A
+}
+        ]]>
+      </sourcecode>
+      <t>
+        It is possible that the designated initiator does not initiate the handshake. After a pre-determined timeout, the respective other peer may initiate.
+        We assume that the initiator knows pk<sub>R</sub> (pre-distributed through <tt>HELLO</tt>, for example).
+      </t>
+      <t>
+        Below is a swimlane of the protocol messages.
+        On the left and right side of the swimlanes the secrets known to the Initiator and Responder are
+        shown respectively.
+        If a private key of a key pair is known it is implied that the public key is also known.
+        Messages in brackets are optional.
+        Messages in braces are encrypted.
+      </t>
+      <figure anchor="figure_swimlane" title="Overview over the Handshake Protocol Flow.">
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+         Initiator                                Responder
+sk_I     |                                               | sk_R
+sk_e     |                                               |
+r_I      |                                               |
+pk_R     |                                               |
+c_R      |                                               |
+ss_e     |                                               |
+ss_R     |                                               |
+         |                                               |
+         |               InitiatorHello:                 |
+         |                 r_I                           |
+         |                 pk_e                          |
+         |                 c_R                           |
+         |                 H(pk_R)                       |
+         |                 {pk_I,pc_I,svcinfo_I}ETS      |
+         +---------------------------------------------->|
+         |                                               | r_R
+         |                                               | r_I
+         |                                               | pk_I
+         |                                               | c_R
+         |                                               | c_I
+         |                                               | c_e
+         |                                               | ss_R
+         |                                               | ss_I
+         |                                               | ss_e
+         |               ResponderHello:                 |
+         |                 r_R                           |
+         |                 c_e                           |
+         |                 {c_I,pc_R,svcinfo_R}RHTS      |
+         |                 {finished_R}RHTS              |
+r_R      |                                               |
+c_I      |                                               |
+c_e      |                                               |
+ss_I     |                                               |
+ss_e     |                                               |
+         |               InitiatorDone:                  |
+         |                 {finished_I}IHTS              |
+         |                 [ACK]IATS                     |
+         +---------------------------------------------->|
+         |                                               |
+         |                                               |
+         |                 [ACK]RATS                     |
+         |<----------------------------------------------+
+         |                                               |
+         |                                               |
+         |               [Application Payload]           |
+         |<--------------------------------------------->|
+         |                                               |
+         v                                               v
+         ]]></artwork>
+      </figure>
+      <t>
+        Notice how we do not need any acknowledgement messages until after finished<sub>R</sub> (after 1 RTT).
+        We use the ACKs in the handshake as explicit key confirmations.
+        The InitiatorHello message is a single flight that is implicitly ack'ed with ResponderHello.
+        ResponderHello is a single flight that is implicitly ack'ed with finished<sub>I</sub>.
+        The reason why this works is because CAKE groups the messages in row 3 of Table 1 in <xref target="RFC9147" section="5.7"/> into a single message (ResponderHello).
+        Hence the only message that is sent without any expected response (and consequently requiring an explicit ACK) is finished<sub>I</sub> (and Heartbeats).
+        pc<sub>X</sub> are 16 bit fields that indicate the peer class (FIXME peer class section).
+        N<sub>I</sub> is a nonce generated by the initiator.
+        N<sub>R</sub> is a nonce generated by the responder.
+      </t>
+        <t>
+          The Initiator creates the InitiatorHello message which includes the encrypted tuple (pk<sub>I</sub>,svcinfo_I).
+          The fields are encrypted using a key derived from the ETS according to <xref target="figure_swimlane"/>
+          and <xref target="figure_key_schedule"/>.
+          The so-called Responder KEM Challenge c<sub>R</sub> and the nonce r<sub>I</sub> are computed as:
+        </t>
+        <ol>
+          <li>(ss<sub>R</sub>,c<sub>R</sub>) &lt;- Encaps(pk<sub>R</sub>). Reciver KEM Challenge.</li>
+          <li>r<sub>I</sub> &lt;- RandomUInt64(). Initiator nonce.</li>
+          <li>Encrypt pk<sub>I</sub> and svcinfo<sub>I</sub> using ETS (seq=0).</li>
+        </ol>
+        <t>
+          R processes the InitiatorHello as follows:
+        </t>
+        <ol>
+          <li>Verify that the message type is CORE_INITIATOR_HELLO. See Message Header.</li>
+          <li>Verify that H(pk_R) matches R's pk_R.</li>
+          <li>(ss<sub>R</sub>,c<sub>R</sub>) &lt;- Decaps(sk<sub>R</sub>, c<sub>R</sub>). Response to Responder KEM Challenge.</li>
+          <li>(ss<sub>e</sub>,c<sub>e</sub>) &lt;- Encaps(pk<sub>e</sub>). Ephemeral shared secret.</li>
+          <li>Generate ETS from <xref target="key_schedule"/> and decrypt pk<sub>I</sub>. pk<sub>I</sub> and svcinfo_I may be processed now.</li>
+          <li>(ss<sub>I</sub>,c<sub>I</sub>) &lt;- Encaps(pk<sub>I</sub>). Initiator KEM Challenge.</li>
+          <li>Generate RHTS and RATS from <xref target="key_schedule"/>.</li>
+        </ol>
+        <t>
+          The ETS, the Handshake and Master Secrets are generated according to <xref target="figure_key_schedule"/>.
+          Note that IATS cannot be derived (yet) at this point.
+          R may now generate its ResponderHello message:
+        </t>
+        <ol>
+          <li>r<sub>R</sub> &lt;- RandomUInt64(). Responder nonce.</li>
+          <li>Encrypt svcinfo_R and c<sub>I</sub> (Initiator KEM Challenge) using RHTS (seq=0).</li>
+          <li>Create finished<sub>R</sub> as per <xref target="cake_hs_proto"/>.</li>
+          <li>Encrypt finished<sub>R</sub> with RHTS (seq=1).</li>
+          <li>Optionally, R may now already send application data encrypted with RATS.</li>
+        </ol>
+        <t>
+          I processes the message received by R:
+        </t>
+        <ol>
+          <li>Verify that the message type is CORE_Responder_HELLO. See Message Header</li>
+          <li>ss<sub>e</sub> &lt;- Decaps(sk<sub>e</sub>,c<sub>e</sub>). Ephemeral shared secret.</li>
+          <li>Generate IHTS and RHTS from <xref target="key_schedule"/> and decrypt svcinfo_R, c<sub>I</sub> and finished<sub>R</sub>.</li>
+          <li>ss<sub>I</sub> &lt;- Decaps(sk<sub>I</sub>,c<sub>I</sub>). Response to KEM Challenge</li>
+          <li>Create finished<sub>R</sub> as per <xref target="cake_hs_proto"/> and check against decrypted payload.</li>
+          <li>Create finished<sub>I</sub> as per <xref target="cake_hs_proto"/>.</li>
+          <li>Send finished<sub>I</sub> message encrypted with the key derived from IHTS (seq=0) to R</li>
+        </ol>
+        <t>
+          At this point we have a secure channel.
+        </t>
+        <t>
+          Note that for the handshake we do not use epochs or sequence numbers.
+          The reason for this is simple: DTLS uses epoch 0 for plaintext messages.
+          Epoch 1 is reserved for payload encrypted with a key derived from ETS.
+          However, we only have a single message that contains such a payload: InitiatorHello.
+          Epoch 2 is reserved for payload encrypted with a key derived from *HTS.
+          But we only have a single message that contains a payload encrypted with a key
+          derived from RHTS: ResponderHello.
+          We also only have a single message that contains a payload encrypted with a key
+          derived from IHTS: finished<sub>I</sub>.
+          Consequently, we do not need any signalling of Epochs until we encrypt data using
+          *ATS secrets.
+          The optional application data that may already be sent by the responder after its first
+          handshake message or by the initiator after its second handshake message, are
+          already wrapped inside an EncryptedMessage and have both Epoch and sequence numbers set.
+        </t>
+    </section>
+    <section anchor="key_schedule" numbered="true" toc="default">
+      <name>Key Schedule</name>
+      <t>
+          The key schedule is very similar to <xref target="RFC8446"/> Section 7.1:
+        </t>
+        <figure anchor="figure_key_schedule" title="The Key Schedule.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+HKDF-Extract(ss_R,0) = Early Secret (ES)
+         |
+         +-----> HKDF-Expand-Label(.,
+         |                         "early data",
+         |                         H(T(H(pk_R))))
+         |       = Early Transport Secret (ETS)
+         |
+         v
+HKDF-Expand-Label(.,
+         |        "derived",
+         |        "") = derived Early Secret (dES)
+         |
+         v
+HKDF-Extract(ss_e,.) = Handshake Secret (HS)
+         |
+         +-----> HKDF-Expand-Label(.,
+         |                         "i hs traffic",
+         |                         H(T(r_R)))
+         |       = IHTS
+         |
+         +-----> HKDF-Expand-Label(.,
+         |                         "r hs traffic",
+         |                         H(T(r_R)))
+         |       = RHTS
+         v
+HKDF-Expand-Label(.,
+         |        "derived",
+         |        "") = derived Handshake Secret (dHS)
+         |
+         v
+HKDF-Extract(ss_I,.) = Master Secret (MS)
+         |
+         +-----> HKDF-Expand-Label(.,
+         |                         "i ap traffic",
+         |                         H(T({finished_I})))
+         |       = IATS_0
+         |
+         +-----> HKDF-Expand-Label(.,
+                                   "r ap traffic",
+                                   H(T({finished_R})))
+                 = RATS_0
+          ]]></artwork>
+      </figure>
+      <t>
+        "." shows the argument position of the input variable from the incoming arrow.
+      </t>
+          <t>
+            In general the transcript hashes are part of the HKDF-Expand calls.
+            The transcript hash is defined as the hash over the message parts sent (or to be sent) and received on the wire
+            up until that point.
+          </t>
+          <t>
+            Notice that from the very beginning ss<sub>R</sub> is required for the key schedule.
+            This means that R must be able to solve the Responder KEM Challenge c<sub>R</sub>.
+            Similarly, the master secret (MS) requires knowledge of ss<sub>I</sub>.
+            This means that I must be able to solve the Initiator KEM Challenge c<sub>I</sub>.
+            The KEM Challenges provide the underlying public key authentication mechanism.
+          </t>
+          <t>
+            When a traffic secret ([I,R][A,H]TS or ETS) is used to encrypt data, the respective
+            encryption key and starting nonce is generated as follows:
+          </t>
+        <figure anchor="figure_traffic_key_derivation" title="Traffic Key Generation.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+key = HKDF-Expand-Label [I,R][A,H]TS, "key", 32)
+nonce = HKDF-Expand-Label ([I,R][A,H]TS, "iv", 24)
+          ]]></artwork>
+            </figure>
+         <t>
+            Notice that the per-message nonce is generated from the nonce above
+            as defined in <xref target="RFC8446" section="5.3"/> from the sequence number.
+         </t>
+          <t>
+            After a successful initial handshake, both initiator and responder may
+            update the application traffic secrets ([A,I]ATS) and generate new keys.
+            Let [I,R]ATS<sub>0</sub> be the initial secrets with index 0.
+            The next secret is derived as:
+          </t>
+        <figure anchor="figure_traffic_key_derivation_next" title="Traffic Secret Update.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+[I,R]ATS_N+1 = HKDF-Expand-Label ([I,R]ATS_N,
+                                  "traffic_upd",
+                                  secret_len)
+          ]]></artwork>
+        </figure>
+        <t>
+          When a peer wants to update keys, it sends a key update message <xref target="heartbeat_msg"/>.
+          Implementations <bcp14>SHOULD</bcp14> delete old traffic secrets and their derived keys.
+        </t>
+    </section>
+    <section anchor="cake_hs_proto" numbered="true" toc="default">
+      <name>The CAKE Handshake Protocol</name>
+      <t>
+        This section is named and structured to mimic <xref target="RFC9147" section="5"/>.
+      </t>
+      <section anchor="timeout_retransmission" numbered="true" toc="default">
+        <name>Timeout and Retransmission</name>
+        <t>
+          CAKE reuses the logic for timeout and retransmission from <xref target="RFC9147" section="5.8"/>.
+          It differs in that large flight sizes are not of concern for CAKE.
+          Similarly, the only Post-Handshake message relevant for CAKE is the KeyUpdate message.
+        </t>
+      </section>
+      <section anchor="crypto_label" numbered="true" toc="default">
+        <name>Cryptographic Label Prefix</name>
+        <t>
+          <xref target="RFC8446" section="7.1"/> specifies that HKDF-Expand-Label uses a label prefix of "tls13 ".
+          For CAKE, that label <bcp14>SHALL</bcp14> be "cake10".
+          This ensures key separation between CAKE, DTLS 1.3 and TLS 1.3.
+        </t>
+      </section>
+      <section anchor="svcinfo" numbered="true" toc="default">
+        <name>Services Info Field</name>
+        <t>
+          The svcinfo field is a string consisting of key-value pairs separated by
+          a separator indicating supported services and their versions.
+          E.g. "dht:1.1;cadet:0.4".
+          The field is zero terminated.
+        </t>
+      </section>
+      <section anchor="finished_field" numbered="true" toc="default">
+        <name>Finished Field</name>
+        <t>
+          The HandshakeFinished field contains either finished<sub>I</sub>
+          or finished<sub>R</sub> value:
+        </t>
+        <ol>
+          <li>fk<sub>I</sub> &lt;- HKDF-Expand-Label(MS, "i finished", NULL)</li>
+          <li>finished<sub>I</sub> &lt;- HMAC(fk<sub>I</sub>, H(T({finished<sub>R</sub>})))</li>
+        </ol>
+        <ol>
+          <li>fk<sub>R</sub> &lt;- HKDF-Expand-Label(MS, "r finished", NULL)</li>
+          <li>finished<sub>R</sub> &lt;- HMAC(fk<sub>R</sub>, H(T({svcinfo_R,c_I}))</li>
+        </ol>
+        </section>
+      <section anchor="cake_hs_msg_fmt" numbered="true" toc="default">
+        <name>CAKE Message Format</name>
+        <t>
+          Any sent message starts with a <tt>MessageHeader</tt>:
+        </t>
+        <figure anchor="figure_msghdr" title="The Wire Format of the Message Header.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+          0     8     16    24    32    40    48    56
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |         Size          |       Type (0xXX)     |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          ]]></artwork>
+        </figure>
+        <dl>
+          <dt>size:</dt> <dd>The size of the message including the Size and Type fields.</dd>
+          <dt>type:</dt> <dd>The message type.</dd>
+        </dl>
+        <t>
+          The possible types of messages are:
+        </t>
+        <ul>
+          <li>InitiatorHello</li>
+          <li>ResponderHello</li>
+          <li>InitiatorDone</li>
+          <li>EncryptedMessage</li>
+        </ul>
+        <t>
+          An encrypted message also always starts with a MessageHeader
+          and the allowed types are:
+        </t>
+        <ul>
+          <li>Hearbeat</li>
+          <li>Ack</li>
+          <li>ApplicationData</li>
+        </ul>
+      </section>
+        <section anchor="initiator_hello" numbered="true" toc="default">
+        <name>InitiatorHello Message</name>
+        <t>
+          The InitiatorHello:
+        </t>
+        <figure anchor="figure_inithello" title="The Wire Format of the InitiatorHello.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+          0     8     16    24    32    40    48    56
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                  r_I                          |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                  pk_e                         |
+          |                                               |
+          |                                               |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                  c_R                          |
+          |                                               |
+          |                                               |
+          |                                               |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                  H(pk_R) (512 bit)            |
+          /                                               /
+          |                                               |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          /             {pk_I,pc_I,svcinfo_I}             /
+          ]]></artwork>
+        </figure>
+        <t>
+          The initiator kem challenge c<sub>R</sub> is generated according to <xref target="figure_key_schedule"/>  using:
+        </t>
+        <ol>
+          <li>(ss<sub>R</sub>,c<sub>R</sub>) &lt;- Encaps(pk<sub>R</sub>)</li>
+        </ol>
+        <t>
+          The pk<sub>I</sub> and <tt>ServiceInfo</tt> are encrypted using XChaCha20-Poly1305 <xref target="RFC8439"/>
+          with key and IV derived from the ETS.
+          <!-- FIXME: Discuss IV. We may be able to use data from HKDF-Expand for that -->
+        </t>
+        </section>
+        <section anchor="responder_hello" numbered="true" toc="default">
+        <name>ResponderHello Message</name>
+        <t>
+          The ResponderHello:
+        </t>
+        <figure anchor="figure_recvhello" title="The Wire Format of the ResponderHello.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+          0     8     16    24    32    40    48    56
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                     r_R                       |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          |                     c_e                       |
+          |                                               |
+          |                                               |
+          |                                               |
+          +-----+-----+-----+-----+-----+-----+-----+-----+
+          /           {c_I,pc_I,svcinfo_R}{finished_R}    /
+          ]]></artwork>
+        </figure>
+        <t>
+          The protected fields after the nonce are encrypted using a key derived from AHTS.
+          The finished<sub>R</sub> is encrypted individually.
+          This is because the transcript of the ResponderHello to generate the
+          finished<sub>R</sub> must end before it.
+        </t>
+        </section>
+        <section anchor="handshake_finished" numbered="true" toc="default">
+        <name>InitiatorDone Message</name>
+        <t>
+          The InitiatorDone message contains the finished<sub>I</sub> field
+          encrypted with a key derived from the IHTS.
+          The message type <bcp14>MUST</bcp14> be CORE_INITIATOR_DONE.
+        </t>
+        </section>
+        <section anchor="encrypted_message" numbered="true" toc="default">
+        <name>EncryptedMessage</name>
+        <t>
+          The EncryptedMessage follows a message header with type <tt>CORE_ENCRYPTED_MESSAGE</tt>:
+        </t>
+        <figure anchor="figure_encryptedmsg" title="The Wire Format of the EncryptedMessage header.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     Epoch                     |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 Sequence Number               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     Tag                       |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+        </figure>
+        <t>
+          The epoch starts at 0 after the handshake with the first *ATS secret.
+          Any peer may at any time update to a new epoch.
+          Peers may keep a history of secrets for respective epochs at their own discretion in
+          order to handle out-of-order message deliveries.
+          Unlike DTLS1.3 in CAKE does not truncate the epoch and no reconstruction is
+          necessary, hence the epoch may be bumped by peers at their own discretion without
+          explicit key update mechanisms.
+          A peer may consider the epoch too old or too far in the future and reject description.
+          For this purpose, a peer may manage a sliding window of epochs that can be used
+          by the other peer.
+        </t>
+        <t>
+          The sequence number is encrypted as defined in <xref target="RFC9147" section="4.2.3"/>
+          for ChaCha20-based AEAD schemes.
+          For clarity, the XOR-based encryption using the 64 byte output of ChaCha20 is as follows:
+          The Tag is divided into a 32-bit counter and 96-bit nonce for use with ChaCha20.
+          The key is derived from the *ats as follows:
+        </t>
+        <figure anchor="figure_sn_key_derivation" title="Traffic Key Generation.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+sn_secret = HKDF-Expand-Label [I,R]ATS_N, "sn", 32)
+          ]]></artwork>
+        </figure>
+        <t>
+          Where [I,R]ATS_N is the respective ATS secret of epoch N.
+          The leading 8 bytes of the 64 byte output of ChaCha20 are then
+          XORed with the sequence number in network byte order:
+        </t>
+        <figure anchor="figure_sn_xor" title="Traffic Key Generation.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+sn_key = HKDF-Expand-Label(Secret, "sn", "", 8)
+mask = ChaCha20(sn_key, Ciphertext[0..3], Ciphertext[4..15])
+sn_enc = mask[0..8] XOR sn_nbo
+          ]]></artwork>
+        </figure>
+        <t>
+          Notice how this requires a ciphertext of at least 16 bytes.
+          But our ciphertexts are always at least 16 bytes due to the Poly1305
+          atuthentication tag. In fact, since the authentication tag is considered
+          part of the ciphertext, and is prepended in front of the encrypted plaintext,
+          the mask is always computed on the authentication tag only.
+        </t>
+        <t>
+          The Tag is followed by encrypted application data.
+          The length of the data is included in the size field of the MessageHeader
+          preceeding the EncryptedMessage header.
+        </t>
+        <t>
+          The per-message nonce is not transmitted and instead generated as defined in <xref target="RFC8446" section="5.3"/>.
+          <!-- FIXME the records/encryptions apply to all messages(?)-->
+        </t>
+        </section>
+        <section anchor="heartbeat_msg" numbered="true" toc="default">
+        <name>Heartbeat</name>
+        <t>
+          The HEARTBEAT message is a simple MessageHeader inside an EncryptedMessage with type <tt>CORE_HEARTBEAT</tt> followed by an UpdateRequested indicator.
+          This means that for every received EncryptedMessage
+          the peer <bcp14>MUST</bcp14> check if this is a Heartbeat.
+          A Heartbeat message may implicitlyindicate that the sender has switched its
+          traffic secrets according to the key schedule in <xref target="key_schedule"/>.
+          If any bit in the UpdateRequested field is set, this means that the responder
+          of the Heartbeat <bcp14>SHOULD</bcp14> increment its epoch.
+          Any bytes following the UpdateRequested field are updated services info
+          svcinfo (<xref target="svcinfo"/>).
+          Services info updates are optional.
+          <!-- TODO: Incremental or full ServicesInfo -->
+        </t>
+        <figure anchor="figure_keyupdate_msg" title="The Wire Format of the EncryptedMessage header.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32
++-----+-----+-----+-----+
+|      UpdateRequested  |
++-----+-----+-----+-----+
+|        svcinfo        /
+/                       /
+          ]]></artwork>
+        </figure>
+        </section>
+        <section anchor="ack_msg" numbered="true" toc="default">
+        <name>ACK</name>
+        <t>
+          The ACK message is a simple MessageHeader inside an EncryptedMessage with
+          type <tt>CORE_ACK</tt>.
+          This means that for every received EncryptedMessage
+          the peer <bcp14>MUST</bcp14> check if this is an ACK message after decryption.
+          The peer may use the ACK in order to ensure liveliness of connected peers in
+          combination with Heartbeats.
+        </t>
+        </section>
+    </section>
+    <section anchor="open" numbered="true" toc="default">
+      <name>Open Issues</name>
+      <t>
+        We must discuss EdDSA vs X25519 KEM usage. Maybe see Communicator draft for this.
+        Basically, since we also use the EdDSA peer ID key for signing (HELLOs), we offer
+        any attacker a signing oracle against our X25519 public keys.
+        This should be safe, but it is not clean.
+        To solve this, we would have to separate HELLO signing keys and PID KX keys.
+        This issue did not arise before, because we used signed semi-statix DH keys.
+      </t>
+      <t>
+        The IETF ChaCha20 version is basically only recommended for use when a specification
+        or compatibility specifically requires it.
+        With ChaCha20, we would have to increment the nonce as it cannot be chosen securely at random
+        (not long enough).
+        We could actually still use it, and then have to stick to a suitable rekey schedule.
+        XChaCha20 is the generally recommended cipher for any use case and we use it.
+        The only downside seems to be that XChaCha20 is practically not specified anywhere
+        (although it can be trivially defined in this document based on HChaCha) and only really implemented in libsodium.
+        We could also use XSalsa20 which is better specified (and availiable). We use it already for GNS (EDKEY encryption).
+      </t>
+      <t>
+        We must define which KEM is to be used.
+        We may want to use our HPKE Elligator KEM <xref target="LSD0011"/>.
+        Using Elligator on this level may not be useful unless we also get rid of the plaintext message headers since
+        those definitely do not look random.
+        Ergo, the use of elligator probably makes more sense on the communicator level.
+      </t>
+      <t>
+    The Initiator/Responder selection logic may require a timed fallback: The designates Initiator may never initiate (NAT, already has sufficient connections, learns about responder later than responder about initiator etc.).
+
+    This may result in edge cases where the Initiator initiates a handshake and the Responder also initiates a handshake at the same time switching roles.
+
+    In such cases we may simply do both key exchanges. If both succeed, we drop the key exchange that was not initiated by the designated initiator on both peers. Otherwise we use the successful key exchange and the roles are swapped.
+      </t>
+    </section>
+    <section anchor="security" numbered="true" toc="default">
+      <name>Security and Privacy Considerations</name>
+      <t>
+        TODO
+      </t>
+    </section>
+    <!-- gana -->
+    <section>
+      <name>GANA Considerations</name>
+      <t>
+        -
+      </t>
+    </section>
+    <section>
+      <name>Implementation and Deployment Status</name>
+      <t>
+        The CAKE handshake is currently implemented in a branch.
+        Open tasks include:
+      </t>
+      <ol>
+        <li>Requesting key updates</li>
+        <li>Use KDF/Hash Function, SHA2 vs Blake2b</li>
+        <li>Services info transmission (currently empty/unused)</li>
+        <li>Integrate and test PILS PID changes (potentially requires in-band signalling of new PIDs in CORE, not really that much related to CAKE)</li>
+      </ol>
+    </section>
+    <!--     <section>
+         <name>Acknowledgements</name>
+         <t>
+         FIXME
+         </t>
+         </section>-->
+  </middle>
+  <back>
+    <references>
+      <name>Normative References</name>
+      &RFC2119;
+      &RFC8174;
+      &RFC8439;
+      &RFC8446;
+      &RFC9147;
+      &RFC9180;
+
+      <reference anchor="LSD0011" target="https://lsd.gnunet.org/lsd0011">
+        <front>
+          <title>The HPKE Elligator KEM</title>
+          <author initials="M." surname="Schanzenbach" fullname="Martin Schanzenbach">
+            <organization>Fraunhofer AISEC</organization>
+          </author>
+          <author initials="P." surname="Fardzadeh" fullname="Pedram Fardzadeh">
+            <organization>Technische Universität München</organization>
+          </author>
+          <date year="2024"/>
+        </front>
+      </reference>
+    </references>
+    <references>
+      <name>Informative References</name>
+      <reference anchor="KEMTLS" target="https://thomwiggers.nl/publication/thesis/">
+        <front>
+          <title>Post-Quantum TLS</title>
+          <author initials="T." surname="Wiggers" fullname="Thom Wiggers">
+            <organization>Radboud University</organization>
+          </author>
+          <date year="2024"/>
+        </front>
+      </reference>
+</references>
+  </back>
+</rfc>

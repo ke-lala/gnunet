@@ -1,0 +1,80 @@
+About
+=====
+
+GNU libmicrohttpd2 is a GNU package offering a C library that provides
+a compact API and implementation of an HTTP 1.1 web server (HTTP 1.0
+is also supported).  GNU libmicrohttpd2 only implements the HTTP(S)
+protocol.  The main application must still provide the application
+logic to generate the content.
+
+GNU libmicrohttpd2 is dual-licensed under the terms of the GNU Lesser
+General Public License (LGPLv2.1+) or, alternatively, the GNU General
+Public License (GPLv2+) with eCos 2.0 exception. You may use it under
+either license.  See COPYING for details.
+
+
+Joining GNU
+===========
+
+This is a GNU program, developed by the GNU Project and part of the
+GNU Operating System. If you are the author of an awesome program and
+want to join us in writing Free Software, please consider making it an
+official GNU program and become a GNU maintainer.  You can find
+instructions on how to do so at https://www.gnu.org/help/evaluation.
+We are looking forward to hacking with you!
+
+
+Installation
+============
+
+See INSTALL for generic installation instructions.
+
+If you are using Git, run "./bootstrap" to create configure.
+
+In order to run the testcases, you need a recent version of libcurl.
+libcurl is not required if you just want to install the library.
+
+
+Configure options
+=================
+
+If you are concerned about space, you should use configure option
+--enable-build-type=release-compact to have a tight code.
+
+You can use the following options to disable certain MHD features:
+
+--disable-https: no HTTPS / TLS / SSL support (significant reduction)
+--disable-messages: no error messages (they take space!)
+--disable-postprocessor: no MHD_PostProcessor API
+--disable-dauth: no digest authentication API
+--disable-epoll: no support for epoll, even with Linux kernel
+
+The resulting binary should be about XXk depending on the platform.
+
+
+Portability
+===========
+
+GNU libmicrohttpd2 is designed with portability in mind and is known to
+work reliably on GNU/Linux, W32, FreeBSD, NetBSD, OpenBSD, Darwin (macOS),
+Solaris/OpenIndiana and Haiku.  It may also run without modification
+(or with minimal adjustments) on other operating systems, including
+GNU Hurd.
+
+The library attempts to prevent SIGPIPE signals on its sockets.  This
+approach is known to be effective on GNU/Linux, macOS, and recent BSD
+systems.  However, on other platforms where socket operations (such as
+send()) may trigger SIGPIPE, the application should explicitly install
+its own signal handler for SIGPIPE.
+
+
+Development Status
+==================
+
+This is a alpha release of GNU libmicrohttpd2.  Some important features
+are not yet implemented, but a minimal working subset is available for
+early testing and application code adaptation.
+
+Please note that API-breaking changes may still occur until version 2.1
+is released.  After version 2.1 stabilizes, only backward-compatible API
+changes will be introduced (with rare exceptions possible).

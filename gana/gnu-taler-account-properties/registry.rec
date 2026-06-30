@@ -1,0 +1,98 @@
+# -*- mode: rec -*-
+#
+# Registry for GNU Taler account properties
+#
+%rec: TalerProperties
+%unique: Identifier
+%key: Identifier
+%type: Identifier Identifier_t
+%typedef: Identifier_t regexp /^[ABCDEFGHIJKLMNOPQRSTUVWXYZ_][ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789:\.]*$/
+# Define the property's field ID
+%mandatory: Identifier
+# Use to specify the property's type. Arrays and generics are allowed in typescript form.
+# Literal values are enclosed by single quote `'` and enumerated type union by vertical bar `|`
+%mandatory: Type
+%type: Type Type_t
+%typedef: Type_t regexp !^[ABCDEFGHIJKLMNOPQRSTUVWXYZ_'][ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_0123456789 \[\]|:\.,'-/]*$!
+# Define for which deployment this property belongs or "Generic" if doesn't apply to any particular deployment.
+%mandatory: Deployment
+# Description of the usage of the field
+%allowed: Description
+%type: Description Description_t
+%typedef: Description_t regexp |^[ABCDEFGHIJKLMNOPQRSTUVWXYZ_][ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_0123456789 :\.,'-/?]*$|
+%sort: Identifier Description Type Form
+
+Identifier: FILE_NOTE
+Type: String
+Description: Current note on the GWG file.
+Deployment: TOPS
+
+Identifier: CUSTOMER_LABEL
+Type: String
+Description: Customer name or internal alias.
+Deployment: TOPS
+
+Identifier: ACCOUNT_OPEN
+Type: Boolean
+Description: Boolean flag indicating whether the account has been opened. The definition of opening an account is deployment-specific.
+Deployment: TOPS
+
+Identifier: PEP_DOMESTIC
+Type: Boolean
+Description: True if the customer is a domestic PEP.
+Deployment: TOPS
+
+Identifier: PEP_FOREIGN
+Type: Boolean
+Description: True if the customer is a foreign PEP.
+Deployment: TOPS
+
+Identifier: PEP_INTERNATIONAL_ORGANIZATION
+Type: Boolean
+Description: True if the customer is a international organization PEP.
+Deployment: TOPS
+
+Identifier: HIGH_RISK_CUSTOMER
+Type: Boolean
+Description: True if the customer is a  high-risk business.
+Deployment: TOPS
+
+Identifier: HIGH_RISK_COUNTRY
+Type: Boolean
+Description: True if the customer is associated with a high-risk country.
+Deployment: TOPS
+
+Identifier: ACCOUNT_IDLE
+Type: Boolean
+Description: The account has been marked as idle.
+Deployment: TOPS
+
+Identifier: INVESTIGATION_STATE
+Type: 'NONE' | 'INVESTIGATION_PENDING' | 'INVESTIGATION_COMPLETED_WITHOUT_SUSPICION' | 'REPORTED_SUSPICION_SIMPLE' | 'REPORTED_SUSPICION_SUBSTANTIATED'
+Description: The MROS reporting state for the account.
+Deployment: TOPS
+
+Identifier: INVESTIGATION_TRIGGER
+Type: String
+Description: Informal reason why the AML investigation was triggered. Examples include suspicious transaction or (automated) sanction list match
+Deployment: TOPS
+
+Identifier: SANCTION_LIST_BEST_MATCH
+Type: String
+Description: Identifies the sanction list entry that the account matched against (best match, does not mean it was a good match)
+Deployment: TOPS
+
+Identifier: SANCTION_LIST_RATING
+Type: Integer
+Description: Score for how good the sanction list match was (0: none, 10**9: perfect match)
+Deployment: TOPS
+
+Identifier: SANCTION_LIST_CONFIDENCE
+Type: Integer
+Description: Score for how much supporting data we had for the sanction list match (0: none, 10**9: all fields available)
+Deployment: TOPS
+
+Identifier: SANCTION_LIST_SUPPRESS
+Type: Boolean
+Description: Suppress flagging this account when it creates a hit on a sanctions list, this is a false-positive.
+Deployment: TOPS

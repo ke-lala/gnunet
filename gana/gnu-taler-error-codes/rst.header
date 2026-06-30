@@ -1,0 +1,14 @@
+GNU Taler Error Codes
+---------------------
+
+Entries
+^^^^^^^
+
+.. list-table:: GNU Taler Error Codes
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Value
+     - HTTP Status
+     - Description

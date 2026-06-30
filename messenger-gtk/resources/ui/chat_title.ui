@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2024‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkBox" id="chat_title_box">
+    <property name="visible">1</property>
+    <child>
+      <object class="GtkStack" id="chat_title_stack">
+        <property name="visible">1</property>
+        <property name="transition-type">slide-down</property>
+        <child>
+          <object class="GtkBox" id="title_box">
+            <property name="visible">1</property>
+            <property name="valign">center</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkButton" id="back_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">go-previous-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyAvatar" id="chat_avatar">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="size">32</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">1</property>
+                <property name="valign">center</property>
+                <property name="border-width">4</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="chat_subtitle">
+                    <property name="visible">1</property>
+                    <property name="ellipsize">end</property>
+                    <property name="single-line-mode">1</property>
+                    <property name="xalign">0</property>
+                    <attributes>
+                      <attribute name="weight" value="light"/>
+                    </attributes>
+                    <style>
+                      <class name="header-subtitle"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="pack-type">end</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="chat_title">
+                    <property name="visible">1</property>
+                    <property name="ellipsize">end</property>
+                    <property name="single-line-mode">1</property>
+                    <property name="xalign">0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="pack-type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="chat_details_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">view-more-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="chat_search_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">edit-find-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="chat_load_button">
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkSpinner">
+                    <property name="visible">1</property>
+                    <property name="active">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <style>
+              <class name="header-box"/>
+            </style>
+          </object>
+          <packing>
+            <property name="name">title_page</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="selection_box">
+            <property name="visible">1</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkButton" id="selection_close_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">window-close-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="selection_count_label">
+                <property name="visible">1</property>
+                <attributes>
+                  <attribute name="weight" value="semibold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="selection_delete_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">user-trash-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="selection_tag_button">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">1</property>
+                    <property name="icon-name">bookmark-new-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <style>
+              <class name="header-box"/>
+            </style>
+          </object>
+          <packing>
+            <property name="name">selection_page</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">1</property>
+      </packing>
+    </child>
+    <style>
+      <class name="header-box"/>
+    </style>
+  </object>
+  <object class="GtkPopover" id="chat_load_popover">
+    <property name="relative-to">chat_load_button</property>
+    <property name="position">bottom</property>
+    <child>
+      <object class="GtkListBox" id="chat_load_listbox">
+        <property name="visible">1</property>
+        <property name="selection-mode">none</property>
+      </object>
+    </child>
+  </object>
+</interface>

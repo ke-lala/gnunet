@@ -1,0 +1,10 @@
+This registry is for overlay protocols.
+
+Overlay protocol numbers uniquely identify the different kinds
+of protocols implemented to realize overlay service communication.
+
+This registry is used to ensure that the names and numeric values
+used to identify the protocols are uniquely defined and to
+allow implementors to find out details about the respective semantics and
+specifications.
+

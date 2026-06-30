@@ -1,0 +1,1546 @@
+/* SPDX-License-Identifier: LGPL-2.1-or-later OR (GPL-2.0-or-later WITH eCos-exception-2.0) */
+/*
+  This file is part of GNU libmicrohttpd.
+  Copyright (C) 2024-2026 Evgeny Grin (Karlson2k)
+
+  GNU libmicrohttpd is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  GNU libmicrohttpd is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  Alternatively, you can redistribute GNU libmicrohttpd and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of
+  the License, or (at your option) any later version, together
+  with the eCos exception, as follows:
+
+    As a special exception, if other files instantiate templates or
+    use macros or inline functions from this file, or you compile this
+    file and link it with other works to produce a work based on this
+    file, this file does not by itself cause the resulting work to be
+    covered by the GNU General Public License. However the source code
+    for this file must still be made available in accordance with
+    section (3) of the GNU General Public License v2.
+
+    This exception does not invalidate any other reasons why a work
+    based on this file might be covered by the GNU General Public
+    License.
+
+  You should have received copies of the GNU Lesser General Public
+  License and the GNU General Public License along with this library;
+  if not, see <https://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @file src/mhd2/mhd_daemon.h
+ * @brief  The header for declaration of struct MHD_Daemon
+ * @author Karlson2k (Evgeny Grin)
+ */
+
+#ifndef MHD_DAEMON_H
+#define MHD_DAEMON_H 1
+
+#include "mhd_sys_options.h"
+
+#include "sys_bool_type.h"
+#include "sys_base_types.h"
+
+#include "mhd_dlinked_list.h"
+
+#include "mhd_buffer.h"
+#include "mhd_socket_type.h"
+#include "mhd_atomic_counter.h"
+
+#ifdef MHD_SUPPORT_AUTH_DIGEST
+#  include "mhd_digest_auth_data.h"
+#endif
+
+#ifdef MHD_SUPPORT_HTTPS
+#  include "mhd_tls_choice.h"
+#endif
+
+#ifdef MHD_SUPPORT_THREADS
+#  include "mhd_threads.h"
+#  include "mhd_itc_types.h"
+#endif
+
+#include "mhd_locks.h"
+
+#include "sys_select.h"
+#include "sys_poll.h"
+#ifdef MHD_SUPPORT_EPOLL
+#  include <sys/epoll.h>
+#endif
+#include "sys_kqueue.h"
+
+#include "mempool_types.h"
+
+#include "mhd_public_api.h"
+
+struct DaemonOptions; /* Forward declaration */
+struct MHD_Connection; /* Forward declaration */
+struct sockaddr_storage; /* Forward declaration */
+
+/**
+ * The helper struct for the connections list
+ */
+mhd_DLINKEDL_LIST_DEF (MHD_Connection);
+
+/**
+ * The current phase of the daemon life
+ */
+enum MHD_FIXED_ENUM_ mhd_DaemonState
+{
+  /**
+   * The daemon has been created, but not yet started.
+   * Setting configuration options is possible.
+   */
+  mhd_DAEMON_STATE_NOT_STARTED = 0
+  ,
+  /**
+   * The daemon is being started.
+   */
+  mhd_DAEMON_STATE_STARTING
+  ,
+  /**
+   * The daemon has been started.
+   * Normal operations.
+   */
+  mhd_DAEMON_STATE_STARTED
+  ,
+  /**
+   * The daemon has failed to start
+   */
+  mhd_DAEMON_STATE_FAILED
+  ,
+  /**
+   * The daemon is being stopped.
+   */
+  mhd_DAEMON_STATE_STOPPING
+  ,
+  /**
+   * The daemon is stopped.
+   * The state should rarely visible as daemon should be destroyed when stopped.
+   */
+  mhd_DAEMON_STATE_STOPPED
+};
+
+
+/**
+ * Internal version of the daemon work mode type
+ */
+enum MHD_FIXED_ENUM_ mhd_WorkModeIntType
+{
+  /**
+   * Network edge-triggered events are monitored and provided by application.
+   * Receiving, sending and processing of the network data if performed when
+   * special MHD function is called by application.
+   * No threads managed by the daemon.
+   */
+  mhd_WM_INT_EXTERNAL_EVENTS_EDGE
+  ,
+  /**
+   * Network level-triggered events are monitored and provided by application.
+   * Receiving, sending and processing of the network data if performed when
+   * special MHD function is called by application.
+   * No threads managed by the daemon.
+   */
+  mhd_WM_INT_EXTERNAL_EVENTS_LEVEL
+  ,
+  /**
+   * The daemon checks for the network events, receives, sends and process
+   * the network data when special MHD function is called by application.
+   * No threads managed by the daemon.
+   */
+  mhd_WM_INT_INTERNAL_EVENTS_NO_THREADS
+#ifdef MHD_SUPPORT_THREADS
+  ,
+  /**
+   * The daemon runs its own single thread, where the daemon monitors
+   * all network events, receives, sends and process the network data.
+   */
+  mhd_WM_INT_INTERNAL_EVENTS_ONE_THREAD
+  ,
+  /**
+   * The daemon runs its own single thread, where the daemon monitors
+   * the new incoming connections, and runs individual thread for each
+   * established connection, where the daemon monitors connection, receives,
+   * sends and process the network data.
+   */
+  mhd_WM_INT_INTERNAL_EVENTS_THREAD_PER_CONNECTION
+  ,
+  /**
+   * The daemon runs its fixed number of threads, all threads monitors the
+   * new incoming connections and each thread handles own subset of the network
+   * connections (monitors connections network events, receives, sends and
+   * process the network data).
+   */
+  mhd_WM_INT_INTERNAL_EVENTS_THREAD_POOL
+#endif
+};
+
+#ifdef MHD_SUPPORT_THREADS
+/**
+ * Check whether given mhd_WorkModeIntType value should have internal threads,
+ * either directly controlled or indirectly, via additional workers daemons.
+ */
+#  define mhd_WM_INT_HAS_THREADS(wm_i) \
+        (mhd_WM_INT_INTERNAL_EVENTS_ONE_THREAD <= wm_i)
+/**
+ * Check whether given mhd_WorkModeIntType value equals "thread-per-connection"
+ */
+#  define mhd_WM_INT_IS_THREAD_PER_CONN(wm_i) \
+        (mhd_WM_INT_INTERNAL_EVENTS_THREAD_PER_CONNECTION == wm_i)
+/**
+ * Check whether given mhd_WorkModeIntType value equals "thread pool"
+ */
+#  define mhd_WM_INT_IS_THREAD_POOL(wm_i) \
+        (mhd_WM_INT_INTERNAL_EVENTS_THREAD_POOL == wm_i)
+#else  /* ! MHD_SUPPORT_THREADS */
+#  define mhd_WM_INT_HAS_THREADS(wm_i)          (0)
+#  define mhd_WM_INT_IS_THREAD_PER_CONN(wm_i)   (0)
+#  define mhd_WM_INT_IS_THREAD_POOL(wm_i)       (0)
+#endif /* ! MHD_SUPPORT_THREADS */
+
+/**
+ * Check whether given mhd_WorkModeIntType value has external events
+ */
+#define mhd_WM_INT_HAS_EXT_EVENTS(wm_i) \
+        (mhd_WM_INT_EXTERNAL_EVENTS_LEVEL >= wm_i)
+
+
+/**
+ * Sockets polling internal syscalls used by MHD.
+ *
+ * The same value used as by #MHD_SockPollSyscall, however instead of "auto"
+ * method this enum uses "not yet set" and enum is extended with an additional
+ * "external" value.
+ */
+enum MHD_FIXED_ENUM_ mhd_IntPollType
+{
+  /**
+   * External sockets polling is used.
+   */
+  mhd_POLL_TYPE_EXT = -1
+  ,
+  /**
+   * Internal sockets polling syscall has not been selected yet.
+   */
+  mhd_POLL_TYPE_NOT_SET_YET = MHD_SPS_AUTO
+  ,
+  /**
+   * Use select().
+   */
+  mhd_POLL_TYPE_SELECT = MHD_SPS_SELECT
+  ,
+  /**
+   * Use poll().
+   */
+  mhd_POLL_TYPE_POLL = MHD_SPS_POLL
+#ifdef MHD_SUPPORT_EPOLL
+  ,
+  /**
+   * Use epoll.
+   */
+  mhd_POLL_TYPE_EPOLL = MHD_SPS_EPOLL
+#endif /* MHD_SUPPORT_EPOLL */
+#ifdef MHD_SUPPORT_KQUEUE
+  ,
+  /**
+   * Use kqueue.
+   */
+  mhd_POLL_TYPE_KQUEUE = MHD_SPS_KQUEUE
+#endif /* MHD_SUPPORT_KQUEUE */
+};
+
+
+#ifdef MHD_SUPPORT_EPOLL
+/**
+ * Check whether provided mhd_IntPollType value is "epoll"
+ */
+#  define mhd_POLL_TYPE_INT_IS_EPOLL(poll_type) \
+        (mhd_POLL_TYPE_EPOLL == (poll_type))
+#else
+#  define mhd_POLL_TYPE_INT_IS_EPOLL(poll_type) (0)
+#endif
+
+#ifdef MHD_SUPPORT_KQUEUE
+/**
+ * Check whether provided mhd_IntPollType value is "kqueue"
+ */
+#  define mhd_POLL_TYPE_INT_IS_KQUEUE(poll_type) \
+        (mhd_POLL_TYPE_KQUEUE == (poll_type))
+#else
+#  define mhd_POLL_TYPE_INT_IS_KQUEUE(poll_type) (0)
+#endif
+
+#define mhd_POLL_TYPE_INT_IS_EDGE_TRIG(poll_type) \
+        (mhd_POLL_TYPE_INT_IS_EPOLL (poll_type) \
+         || mhd_POLL_TYPE_INT_IS_KQUEUE (poll_type))
+
+#if defined(HAVE_UINTPTR_T)
+typedef uintptr_t mhd_SockRelMarker;
+#else
+typedef unsigned char *mhd_SockRelMarker;
+#endif
+
+/** The marker of the empty position */
+#define mhd_SOCKET_REL_MARKER_EMPTY    ((mhd_SockRelMarker) (0))
+
+/** The marker of the ITC slot */
+#define mhd_SOCKET_REL_MARKER_ITC      ((mhd_SockRelMarker) (-1))
+
+/** The marker of the listen socket slot */
+#define mhd_SOCKET_REL_MARKER_LISTEN   (mhd_SOCKET_REL_MARKER_ITC - 1)
+
+/* Pointer version of the markers */
+
+/** The marker of the empty position */
+#define mhd_SOCKET_REL_PTRMARKER_EMPTY  ((void*) mhd_SOCKET_REL_MARKER_EMPTY)
+
+/** The marker of the ITC slot */
+#define mhd_SOCKET_REL_PTRMARKER_ITC    ((void*) mhd_SOCKET_REL_MARKER_ITC)
+
+/** The marker of the listen socket slot */
+#define mhd_SOCKET_REL_PTRMARKER_LISTEN ((void*) mhd_SOCKET_REL_MARKER_LISTEN)
+
+/**
+ * Identifier of the FD related to event
+ */
+union mhd_SocketRelation
+{
+  /**
+   * Identifier of the FD.
+   * Only valid when it is equal to #mhd_SOCKET_REL_MARKER_EMPTY,
+   * #mhd_SOCKET_REL_MARKER_ITC or #mhd_SOCKET_REL_MARKER_LISTEN.
+   */
+  mhd_SockRelMarker fd_id;
+  /**
+   * This is a connection's FD.
+   * This is valid only when @a fd_id is not valid.
+   */
+  struct MHD_Connection *connection;
+};
+
+#ifdef MHD_SUPPORT_SELECT
+
+/**
+ * Daemon's pointers to the preallocated arrays for running sockets monitoring
+ * by poll().
+ */
+struct mhd_DaemonEventsSelectData
+{
+  /**
+   * Set of sockets monitored for read (receive) readiness.
+   */
+  fd_set *rfds;
+  /**
+   * Set of sockets monitored for write (send) readiness.
+   */
+  fd_set *wfds;
+  /**
+   * Set of sockets monitored for exception (error) readiness.
+   */
+  fd_set *efds;
+};
+
+#endif /* MHD_SUPPORT_SELECT */
+
+#ifdef MHD_SUPPORT_POLL
+
+/**
+ * Daemon's pointers to the preallocated arrays for running sockets monitoring
+ * by poll().
+ */
+struct mhd_DaemonEventsPollData
+{
+  /**
+   * Array of sockets monitored for read (receive) readiness.
+   * The size of the array is maximum number of connections per this daemon plus
+   * two (one for the listen socket and one for ITC).
+   * ITC FDs and the listening are always the first (and the second), if used.
+   * The number of elements is always two plus maximum number of connections
+   * allowed for the daemon.
+   */
+  struct pollfd *fds;
+  /**
+   * Array of the @a fds identifications.
+   * Each slot matches the slot with the same number in @a fds.
+   * Up to two first positions reserved for the ITC and the listening.
+   * The number of elements is always two plus maximum number of connections
+   * allowed for the daemon.
+   */
+  union mhd_SocketRelation *rel;
+};
+
+#endif /* MHD_SUPPORT_POLL */
+
+#ifdef MHD_SUPPORT_EPOLL
+/**
+ * Daemon's parameters and pointers to the preallocated memory for running
+ * sockets monitoring by epoll.
+ */
+struct mhd_DaemonEventsEPollData
+{
+  /**
+   * The epoll control FD.
+   */
+  int e_fd;
+  /**
+   * The array of events reported by epoll.
+   */
+  struct epoll_event *events;
+  /**
+   * The number of elements in the allocated @a events arrays.
+   */
+  size_t num_elements;
+  /**
+   * The epoll control FD, created by probing during early daemon
+   * initialisation.
+   * Temporal location.
+   * Must be moved to @a e_fd with events initialisation.
+   */
+  int early_fd;
+};
+
+#endif
+
+#ifdef MHD_SUPPORT_KQUEUE
+/**
+ * Daemon's parameters and pointers to the preallocated memory for running
+ * sockets monitoring by kqueue.
+ */
+struct mhd_DaemonEventsKQueueData
+{
+  /**
+   * The kqueue FD.
+   */
+  int kq_fd;
+
+  /**
+   * The array of kevents used for both registering filters and getting events
+   */
+  struct kevent *kes;
+
+  /**
+   * The number of elements in the allocated @a kes array.
+   *
+   * Note: kqueue API uses 'int' for the number of elements
+   */
+  unsigned int num_elements;
+};
+
+#endif /* MHD_SUPPORT_KQUEUE */
+
+/**
+ * Daemon's data for external events callback.
+ * Internal version of struct MHD_WorkModeExternalEventLoopCBParam.
+ */
+struct mhd_DaemonEventsExternalCallback
+{
+  /**
+   * Socket registration callback
+   */
+  MHD_SocketRegistrationUpdateCallback cb;
+  /**
+   * Closure for the @a cb
+   */
+  void *cls;
+};
+
+
+#ifdef MHD_SUPPORT_THREADS
+/**
+ * External events data for ITC FD
+ */
+struct mhd_DaemonEventsExternalDaemonItcData
+{
+  /**
+   * Application context for ITC FD
+   */
+  void *app_cntx;
+
+  /**
+   * Set to 'true' when active state was detected on ITC by
+   * external polling
+   */
+  bool is_active;
+
+  /**
+   * Set to 'true' when error state was detected on ITC by
+   * external polling.
+   * The daemon may become non-functional.
+   */
+  bool is_broken;
+};
+#endif /* MHD_SUPPORT_THREADS */
+
+/**
+ * External events data for the listen socket
+ */
+struct mhd_DaemonEventsExternalDaemonListenData
+{
+  /**
+   * Application context for ITC FD
+   */
+  void *app_cntx;
+};
+
+/**
+ * Daemon's data for external events for sockets monitoring.
+ */
+struct mhd_DaemonEventsExternal
+{
+  /**
+   * Daemon's data for external events callback.
+   * Internal version of struct MHD_WorkModeExternalEventLoopCBParam.
+   */
+  struct mhd_DaemonEventsExternalCallback cb_data;
+
+#ifdef MHD_SUPPORT_THREADS
+  /**
+   * External events data for ITC FD
+   */
+  struct mhd_DaemonEventsExternalDaemonItcData itc_data;
+#endif /* MHD_SUPPORT_THREADS */
+
+  /**
+   * External events data for the listen socket
+   */
+  struct mhd_DaemonEventsExternalDaemonListenData listen_data;
+
+  /**
+   * If set to 'true' then all FDs must be registered each round.
+   * If set to 'false' then only changed FDs must be registered.
+   */
+  bool reg_all;
+};
+
+/**
+ * Type-specific events monitoring data
+ */
+union mhd_DaemonEventMonitoringTypeSpecificData
+{
+#ifdef MHD_SUPPORT_SELECT
+  /**
+   * Daemon's pointers to the preallocated arrays for running sockets monitoring
+   * by poll().
+   */
+  struct mhd_DaemonEventsSelectData select;
+#endif /* MHD_SUPPORT_SELECT */
+
+#ifdef MHD_SUPPORT_POLL
+  /**
+   * Daemon's pointers to the preallocated arrays for running sockets monitoring
+   * by poll().
+   */
+  struct mhd_DaemonEventsPollData poll;
+#endif /* MHD_SUPPORT_POLL */
+
+#ifdef MHD_SUPPORT_EPOLL
+  /**
+   * Daemon's parameters and pointers to the preallocated memory for running
+   * sockets monitoring by epoll.
+   */
+  struct mhd_DaemonEventsEPollData epoll;
+#endif
+
+#ifdef MHD_SUPPORT_KQUEUE
+  /**
+   * Daemon's parameters and pointers to the preallocated memory for running
+   * sockets monitoring by kqueue.
+   */
+  struct mhd_DaemonEventsKQueueData kq;
+#endif
+
+  /**
+   * Daemon's data for external events for sockets monitoring.
+   */
+  struct mhd_DaemonEventsExternal extr;
+};
+
+
+struct mhd_DaemonExtAddedConn; /* Forward declaration */
+mhd_DLINKEDL_STRUCTS_DEFS (mhd_DaemonExtAddedConn);
+
+/**
+ * Information about externally added connection
+ */
+struct mhd_DaemonExtAddedConn
+{
+  /**
+   * The links to the other externally added connections in the queue
+   */
+  mhd_DLNKDL_LINKS (mhd_DaemonExtAddedConn, queue);
+
+  /**
+   * The socket of the externally added connection
+   */
+  MHD_Socket skt;
+
+  /**
+   * The size of the data pointed by @a addr.
+   * Zero fi @a addr is NULL.
+   */
+  size_t addr_size;
+
+  /**
+   * Pointer to socket address.
+   * Allocated by malloc(), must be freed;
+   * May be NULL.
+   */
+  struct sockaddr_storage *addr;
+
+  /**
+   * 'true' if @a skt is non-blocking
+   */
+  bool is_nonblock;
+
+  /**
+   * 'true' if @a skt has SIGPIPE suppressed
+   */
+  bool has_spipe_suppr;
+};
+
+
+/**
+ * Information about externally added connections for the worker daemon
+ */
+struct mhd_DaemonExtAddedConnectionsWorker
+{
+  /**
+   * The lock to access @a queue list
+   */
+  mhd_mutex q_lock;
+
+  /**
+   * The list with the queue of externally added connections
+   */
+  mhd_DLNKDL_LIST (mhd_DaemonExtAddedConn, queue);
+};
+
+#ifdef MHD_SUPPORT_THREADS
+/**
+ * Information about externally added connections for the master daemon
+ */
+struct mhd_DaemonExtAddedConnectionsMaster
+{
+  /**
+   * The index (modulo number of workers) of the next worker daemon to add
+   * connection
+   */
+  struct mhd_AtomicCounter next_d_idx;
+};
+#endif /* MHD_SUPPORT_THREADS */
+
+/**
+ * Information about externally added connections
+ */
+union mhd_DaemonExtAddedConnections
+{
+#ifdef MHD_SUPPORT_THREADS
+  /**
+   * Information about externally added connections for the master daemon
+   */
+  struct mhd_DaemonExtAddedConnectionsMaster master;
+#endif /* MHD_SUPPORT_THREADS */
+  /**
+   * Information about externally added connections for the worker daemon
+   */
+  struct mhd_DaemonExtAddedConnectionsWorker worker;
+};
+
+
+/**
+ * The required actions for the daemon
+ */
+struct mhd_DaemonEventActionRequired
+{
+  /**
+   * If 'true' connection resuming is required.
+   */
+  bool resume;
+
+  /**
+   * Information about externally added connections
+   */
+  union mhd_DaemonExtAddedConnections ext_added;
+};
+
+/**
+ * The daemon's time data
+ */
+struct mhd_DaemonEventsCurTime
+{
+  /**
+   * 'true' if @a cur is set
+   */
+  bool is_set;
+  /**
+   * Current value of monotonic milliseconds counter.
+   * Valid only if @a is_set is 'true'.
+   * Updated once per processing round.
+   */
+  uint_fast64_t cur;
+};
+
+/**
+ * The data for events monitoring
+ */
+struct mhd_DaemonEventMonitoringData
+{
+  /**
+   * Sockets polling type used by the daemon.
+   */
+  enum mhd_IntPollType poll_type;
+
+  /**
+   * Type-specific events monitoring data
+   */
+  union mhd_DaemonEventMonitoringTypeSpecificData data;
+
+  /**
+   * The required actions for the daemon.
+   */
+  struct mhd_DaemonEventActionRequired act_req;
+
+  /**
+   * When set to 'true' the listen socket has new incoming connection(s).
+   */
+  bool accept_pending;
+
+  /**
+   * The list of the daemon's connections that need processing
+   */
+  mhd_DLNKDL_LIST (MHD_Connection,proc_ready);
+
+  /**
+   * The daemon's time data
+   */
+  struct mhd_DaemonEventsCurTime time;
+};
+
+
+/**
+ * The type of the socket
+ */
+enum MHD_FIXED_ENUM_ mhd_SocketType
+{
+  /**
+   * The socket type is some non-IP type.
+   */
+  mhd_SOCKET_TYPE_NON_IP = -2
+  ,
+  /**
+   * The socket type is UNIX (LOCAL)
+   */
+  mhd_SOCKET_TYPE_UNIX = -1
+  ,
+  /**
+   * The socket is unknown yet. It can be IP or non-IP.
+   */
+  mhd_SOCKET_TYPE_UNKNOWN = 0
+  ,
+  /**
+   * The socket is definitely IP.
+   */
+  mhd_SOCKET_TYPE_IP = 1
+};
+
+/**
+ * Listen socket data
+ */
+struct mhd_ListenSocket
+{
+  /**
+   * The listening socket
+   */
+  MHD_Socket fd;
+  /**
+   * Set to 'true' when unrecoverable error is detected on the listen socket.
+   * If set to 'true', but @a fd is not #MHD_INVALID_SOCKET then "broken" state
+   * has not yet processed by MHD.
+   */
+  bool is_broken;
+  /**
+   * The type of the listening socket @a fd
+   */
+  enum mhd_SocketType type;
+  /**
+   * 'true' if @a fd is non-blocking
+   */
+  bool non_block;
+  /**
+   * The port number for @a fd
+   *
+   * Zero if unknown and for non-IP socket.
+   */
+  uint_least16_t port;
+};
+
+/**
+ * Configured settings for the daemon's network data
+ */
+struct mhd_DaemonNetworkSettings
+{
+#ifdef MHD_SOCKETS_KIND_POSIX
+  /**
+   * The maximum number for the network FDs.
+   * The valid FD number must be less then @a max_fd_num.
+   */
+  MHD_Socket max_fd_num;
+#else
+  int dummy; /* mute compiler warning */
+#endif
+};
+
+/**
+ * The daemon network/sockets data
+ *
+ * This structure holds mostly static information -- typically initialised once
+ * when the daemon starts, and possibly updated once later (e.g., if the
+ * listening socket fails or is closed).
+ *
+ * It does NOT contain any operational states.
+ */
+struct mhd_DaemonNetwork
+{
+  /**
+   * The listening socket
+   */
+  struct mhd_ListenSocket listen;
+  /**
+   * Configured settings for the daemon's network data
+   */
+  struct mhd_DaemonNetworkSettings cfg;
+};
+
+#ifdef MHD_SUPPORT_AUTH_DIGEST
+
+/**
+ * Digest Auth nonce data
+ */
+struct mhd_DaemonAuthDigestNonceData
+{
+  /**
+   * The nonce value in the binary form, excluding validity tail
+   */
+  uint8_t nonce[mhd_AUTH_DIGEST_NONCE_RAND_BIN_SIZE];
+
+  /**
+   * The nonce validity time
+   */
+  uint_fast32_t valid_time;
+
+  /**
+   * The largest last received 'nc' value.
+   * This 'nc' value has been already used by the client.
+   */
+  uint_fast32_t max_recvd_nc;
+
+  /**
+   * Bitmask over the previous 64 nc values (down to to nc-64).
+   * Used to allow out-of-order 'nc'.
+   * If bit in the bitmask is set to one, then this 'nc' value was already used
+   * by the client.
+   */
+  uint_fast64_t nmask;
+};
+
+/**
+ * Digest Auth daemon configuration data
+ */
+struct mhd_DaemonAuthDigestCfg
+{
+  /**
+   * The number of elements in the nonces array
+   */
+  size_t nonces_num;
+
+  /**
+   * The nonce validity time (in seconds)
+   */
+  unsigned int nonce_tmout;
+
+  /**
+   * The default maximum value of nc
+   */
+  uint_fast32_t def_max_nc;
+};
+
+/**
+ * The Digest Auth daemon's data
+ */
+struct mhd_DaemonAuthDigestData
+{
+  /**
+   * The entropy data used for Digests generation
+   */
+  struct mhd_Buffer entropy;
+
+  /**
+   * The array of generated nonce and related nc
+   */
+  struct mhd_DaemonAuthDigestNonceData *nonces;
+
+  /**
+   * Number of nonces has been generated.
+   * Used as addition for the nonce source data to ensure unique nonce value.
+   * TODO: remove and directly use random generator for nonce generation.
+   */
+  struct mhd_AtomicCounter num_gen_nonces;
+
+#ifdef MHD_SUPPORT_THREADS
+  /**
+   * The mutex to change or access the @a nonces data
+   */
+  mhd_mutex nonces_lock;
+#endif
+
+  /**
+   * Digest Auth daemon configuration data
+   */
+  struct mhd_DaemonAuthDigestCfg cfg;
+};
+
+#endif /* MHD_SUPPORT_AUTH_DIGEST */
+
+#ifdef MHD_SUPPORT_THREADS
+
+/**
+ * The type of the daemon
+ */
+enum MHD_FIXED_ENUM_ mhd_DaemonType
+{
+  /**
+   * A single daemon, performing all the work.
+   *
+   * This daemon may have a optional single thread, managed by MHD.
+   */
+  mhd_DAEMON_TYPE_SINGLE
+#ifndef NDEBUG
+    = 1
+#endif
+#ifdef MHD_SUPPORT_THREADS
+  ,
+  /**
+   * A master daemon, only controlling worker daemons.
+   *
+   * This daemon never handle any network activity directly.
+   */
+  mhd_DAEMON_TYPE_MASTER_CONTROL_ONLY
+  ,
+  /**
+   * A daemon with single internal thread for listening and multiple threads
+   * handling connections with the clients, one thread per connection.
+   */
+  mhd_DAEMON_TYPE_LISTEN_ONLY
+  ,
+  /**
+   * A worker daemon, performing the same work as a single daemon, but
+   * controlled by master daemon.
+   *
+   * This type of daemon always have single internal tread and never exposed
+   * to application directly.
+   */
+  mhd_DAEMON_TYPE_WORKER
+#endif /* MHD_SUPPORT_THREADS */
+};
+
+/**
+ * Check whether the daemon type is allowed to have internal thread with
+ * direct control
+ */
+#define mhd_D_TYPE_IS_VALID(t) \
+        ((mhd_DAEMON_TYPE_SINGLE <= (t)) && (mhd_DAEMON_TYPE_WORKER >= (t)))
+
+/**
+ * Check whether the daemon type must not be exposed to the application
+ */
+#define mhd_D_TYPE_IS_INTERNAL_ONLY(t) \
+        (mhd_DAEMON_TYPE_WORKER == (t))
+/**
+ * Check whether the daemon type is allowed to process the network data
+ */
+#define mhd_D_TYPE_HAS_EVENTS_PROCESSING(t) \
+        (mhd_DAEMON_TYPE_MASTER_CONTROL_ONLY != (t))
+
+/**
+ * Check whether the daemon type must not be exposed to the application
+ */
+#define mhd_D_TYPE_HAS_WORKERS(t) \
+        (mhd_DAEMON_TYPE_MASTER_CONTROL_ONLY == (t))
+
+/**
+ * Check whether the daemon type has master (controlling) daemon
+ */
+#define mhd_D_TYPE_HAS_MASTER_DAEMON(t) \
+        (mhd_DAEMON_TYPE_WORKER == (t))
+
+/**
+ * Check whether the daemon is listening only (with connection data
+ * processed in separate threads)
+ */
+#define mhd_D_TYPE_IS_LISTEN_ONLY(t) \
+        (mhd_DAEMON_TYPE_LISTEN_ONLY == (t))
+
+#else  /* ! MHD_SUPPORT_THREADS */
+
+/**
+ * Check whether the daemon type is allowed to have internal thread with
+ * direct control
+ */
+#define mhd_D_TYPE_IS_VALID(t) (! 0)
+
+/**
+ * Check whether the daemon type must not be exposed to the application
+ */
+#define mhd_D_TYPE_IS_INTERNAL_ONLY(t) (0)
+
+/**
+ * Check whether the daemon type is allowed to process the network data
+ */
+#define mhd_D_TYPE_HAS_EVENTS_PROCESSING(t) (! 0)
+
+/**
+ * Check whether the daemon type must not be exposed to the application
+ */
+#define mhd_D_TYPE_HAS_WORKERS(t) (0)
+
+/**
+ * Check whether the daemon type has master (controlling) daemon
+ */
+#define mhd_D_TYPE_HAS_MASTER_DAEMON(t)  (0)
+
+/**
+ * Check whether the daemon is listening only (with connection data
+ * processed in separate threads)
+ */
+#define mhd_D_TYPE_IS_LISTEN_ONLY(t)    (0)
+
+#endif /* ! MHD_SUPPORT_THREADS */
+
+#ifdef MHD_SUPPORT_THREADS
+
+/**
+ * Workers pool data
+ */
+struct mhd_DaemonWorkerPoolData
+{
+  /**
+   * Array of worker daemons
+   */
+  struct MHD_Daemon *workers;
+
+  /**
+   * The number of workers in the @a workers array
+   */
+  unsigned int num;
+};
+
+/**
+ * Hierarchy data for the daemon
+ */
+union mhd_DaemonHierarchyData
+{
+  /**
+   * The pointer to the master daemon
+   * Only for #mhd_DAEMON_TYPE_WORKER daemons.
+   */
+  struct MHD_Daemon *master;
+
+  /**
+   * Workers pool data.
+   * Only for #mhd_DAEMON_TYPE_MASTER_CONTROL_ONLY daemons.
+   */
+  struct mhd_DaemonWorkerPoolData pool;
+};
+
+/**
+ * Configured settings for threading
+ */
+struct mhd_DaemonThreadingDataSettings
+{
+  /**
+   * The size of the stack.
+   * Zero to use system's defaults.
+   */
+  size_t stack_size;
+};
+
+/**
+ * Threading and Inter-Thread Communication data
+ */
+struct mhd_DaemonThreadingData
+{
+  /**
+   * The type of this daemon
+   */
+  enum mhd_DaemonType d_type;
+
+  /**
+   * Inter-Thread Communication channel.
+   * Used to trigger processing of the command or the data provided or updated
+   * by the application.
+   */
+  struct mhd_itc itc;
+
+  /**
+   * 'True' if stop has been requested.
+   * The daemon thread should stop all connections and then close.
+   */
+  volatile bool stop_requested;
+
+  /**
+   * The handle of the daemon's thread (if managed by the daemon)
+   */
+  mhd_thread_handle_ID tid;
+
+  /**
+   * The hierarchy data for the daemon.
+   * Used only when @a d_type is #mhd_DAEMON_TYPE_MASTER_CONTROL_ONLY or
+   * #mhd_DAEMON_TYPE_WORKER.
+   */
+  union mhd_DaemonHierarchyData hier;
+
+  /**
+   * Configured settings for threading
+   */
+  struct mhd_DaemonThreadingDataSettings cfg;
+};
+
+#endif /* MHD_SUPPORT_THREADS */
+
+/**
+ * Configured settings for the daemon's connections
+ */
+struct mhd_DaemonConnectionsSettings
+{
+  /**
+   * The maximum number of connections handled by the daemon
+   */
+  unsigned int count_limit;
+
+  /**
+   * The maximum number of connections per any IP handled by the daemon
+   */
+  unsigned int per_ip_limit;
+
+  /**
+   * Connection's default timeout value (in milliseconds)
+   */
+  uint_fast32_t timeout_milsec;
+
+  /**
+   * Connection's memory pool size
+   */
+  size_t mem_pool_size;
+
+  /**
+   * Memory pool zeroing mode
+   */
+  enum mhd_MemPoolZeroing mem_pool_zeroing;
+};
+
+#ifdef MHD_SUPPORT_UPGRADE
+
+/**
+ * The data for HTTP-Upgraded connections
+ */
+struct mhd_DaemonConnectionsUpgraded
+{
+  /**
+   * The list of HTTP-Upgraded connection closed by application and
+   * queued for cleanup
+   */
+  mhd_DLNKDL_LIST (MHD_Connection,upgr_cleanup);
+
+#ifdef MHD_SUPPORT_THREADS
+  /**
+   * The mutex to change or check the @a upgr_cleanup list values
+   */
+  mhd_mutex ucu_lock;
+#endif
+};
+
+#endif /* MHD_SUPPORT_UPGRADE */
+
+/**
+ * Connections handling data
+ */
+struct mhd_DaemonConnections
+{
+
+  /**
+   * The list of all daemon's connections.
+   * All connection are listed here, expect connection in @a to_clean list.
+   */
+  mhd_DLNKDL_LIST (MHD_Connection,all_conn);
+
+  /**
+   * The list of connections sorted by last activity
+   */
+  mhd_DLNKDL_LIST (MHD_Connection,def_timeout);
+
+  /**
+   * The list of connections with custom timeouts
+   */
+  mhd_DLNKDL_LIST (MHD_Connection,cust_timeout);
+
+  /**
+   * The current number of connections handled by the daemon
+   */
+  unsigned int count;
+
+  /**
+   * If set to 'true' then no new connection is allowed.
+   * New connection may be blocked because of various system limits, when
+   * additional connection would fail anyway. This flag should be cleared
+   * when any already processing connection closed.
+   * Can be checked from other threads
+   */
+  volatile bool block_new;
+
+  /**
+   * Configured settings for the daemon's connections
+   */
+  struct mhd_DaemonConnectionsSettings cfg;
+
+#ifdef MHD_SUPPORT_UPGRADE
+  /**
+   * The data for HTTP-Upgraded connections
+   */
+  struct mhd_DaemonConnectionsUpgraded upgr;
+#endif /* MHD_SUPPORT_UPGRADE */
+};
+
+/**
+ * Early URI callback
+ */
+struct mhd_DaemonRequestUriCB
+{
+  /**
+   * The callback
+   */
+  MHD_EarlyUriLogCallback cb;
+  /**
+   * The callback closure
+   */
+  void *cls;
+};
+
+/**
+ * Shared large buffer data
+ */
+struct mhd_DaemonLargeBuffer
+{
+  /**
+   * The amount of memory left allowed to be allocated for the large buffer
+   */
+  size_t space_left;
+
+#ifdef MHD_SUPPORT_THREADS
+  /**
+   * The mutex to change or check the @a space_left value
+   */
+  mhd_mutex lock;
+#endif
+};
+
+#ifdef MHD_SUPPORT_HTTP2
+
+/**
+ * Generic settings for HTTP layer communication handling.
+ *
+ * These settings do not include specific settings for requests processing.
+ */
+struct mhd_DaemonHttpSettings
+{
+  /**
+   * 'true' if HTTP/1.x communication is allowed
+   */
+  bool http1x;
+  /**
+   * 'true' if HTTP/2 communication is allowed
+   */
+  bool http2;
+};
+
+#endif /* MHD_SUPPORT_HTTP2 */
+
+/**
+ * Settings for requests processing
+ */
+struct mhd_DaemonRequestProcessingSettings
+{
+  /**
+   * Request callback.
+   * The main request processing callback.
+   */
+  MHD_RequestCallback cb;
+
+  /**
+   * The closure for @a req_cb
+   */
+  void *cb_cls;
+
+  /**
+   * Protocol strictness enforced by MHD on clients.
+   */
+  enum MHD_ProtocolStrictLevel strictness;
+
+#ifdef MHD_SUPPORT_COOKIES
+  /**
+   * Disable automatic cookies parsing
+   */
+  bool disable_cookies;
+#endif
+
+  /**
+   * Early URI callback
+   */
+  struct mhd_DaemonRequestUriCB uri_cb; // TODO: set from settings
+
+  /**
+   * Shared large buffer data
+   */
+  struct mhd_DaemonLargeBuffer large_buf; // TODO: set from settings
+
+  /**
+   * Suppress "Date:" header in responses
+   */
+  bool suppress_date;
+};
+
+
+/**
+ * Get whether bare LF in HTTP header and other protocol elements
+ * should be treated as the line termination depending on the configured
+ * strictness level.
+ * RFC 9112, section 2.2
+ */
+#define mhd_ALLOW_BARE_LF_AS_CRLF(strictness) (0 >= strictness)
+
+
+#ifndef NDEBUG
+/**
+ * Various debugging data
+ */
+struct mhd_daemon_debug
+{
+  bool net_inited;
+  bool net_deinited;
+  bool master_only_inited;
+  bool worker_only_inited;
+  bool events_fd_inited;
+  bool tls_inited;
+  bool events_allocated;
+  unsigned int num_events_elements;
+  bool events_fully_inited;
+  bool thread_pool_inited;
+  bool threading_inited;
+  bool connections_inited;
+  bool avoid_accept4;
+  size_t initial_lbuf_size;
+};
+#endif /* NDEBUG */
+
+
+struct MHD_Daemon
+{
+  /* General data */
+
+  /**
+   * The daemon state
+   */
+  enum mhd_DaemonState state;
+
+  /**
+   * The daemon work mode (private version)
+   */
+  enum mhd_WorkModeIntType wmode_int;
+
+  /* Events/sockets monitoring/polling data */
+
+  /**
+   * The data for events monitoring
+   */
+  struct mhd_DaemonEventMonitoringData events;
+
+  /* Network/sockets data */
+
+  /**
+   * The daemon network/sockets data
+   *
+   * This structure holds mostly static information -- typically initialised
+   * once when the daemon starts, and possibly updated once later (e.g., if the
+   * listening socket fails or is closed).
+   *
+   * It does NOT contain any operational states.
+   */
+  struct mhd_DaemonNetwork net;
+
+#ifdef MHD_SUPPORT_AUTH_DIGEST
+  /**
+   * The Digest Auth daemon's data
+   */
+  struct mhd_DaemonAuthDigestData auth_dg;
+#endif /* MHD_SUPPORT_AUTH_DIGEST */
+
+#ifdef MHD_SUPPORT_HTTPS
+  /**
+   * The pointer to the daemon TLS data.
+   * If set to non-NULL then HTTPS protocol is used, if set to NULL then
+   * plain HTTP protocol used.
+   */
+  struct mhd_TlsDaemonData *tls;
+#endif
+
+#ifdef MHD_SUPPORT_THREADS
+  /* Threading data */
+
+  /**
+   * The daemon threading and Inter-Thread Communication data
+   */
+  struct mhd_DaemonThreadingData threading;
+#endif
+
+  /* Connections handling */
+
+  /**
+   * The connections handling data
+   */
+  struct mhd_DaemonConnections conns;
+
+
+  /* HTTP communication layer */
+#ifdef MHD_SUPPORT_HTTP2
+  /**
+   * Generic settings for HTTP layer communication handling.
+   *
+   * These settings do not include specific settings for requests processing.
+   */
+  struct mhd_DaemonHttpSettings http_cfg;
+#endif /* MHD_SUPPORT_HTTP2 */
+
+
+  /* Request processing data */
+
+  /**
+   * Settings for requests processing
+   */
+  struct mhd_DaemonRequestProcessingSettings req_cfg;
+
+  /* Other data */
+
+  /**
+   * Daemon logging parameters
+   */
+  struct MHD_DaemonOptionValueLog log_params;
+
+
+  /* Temporal data */
+
+  /**
+   * User settings, before applied to the daemon itself
+   */
+  struct DaemonOptions *settings;
+
+#ifndef NDEBUG
+  /* Debug data */
+
+  struct mhd_daemon_debug dbg;
+#endif
+};
+
+
+#ifdef MHD_SOCKETS_KIND_POSIX
+/**
+ * Checks whether @a fd socket number fits limitations for the @a d_ptr daemon
+ */
+#  define mhd_FD_FITS_DAEMON(d_ptr,fd) \
+        ((MHD_INVALID_SOCKET == d_ptr->net.cfg.max_fd_num) || \
+         (d_ptr->net.cfg.max_fd_num > fd))
+#else
+#  define mhd_FD_FITS_DAEMON(d_ptr,fd) (! 0)
+#endif
+
+#define mhd_D_IS_USING_EPOLL(d) \
+        mhd_POLL_TYPE_INT_IS_EPOLL ((d)->events.poll_type)
+
+#define mhd_D_IS_USING_KQUEUE(d) \
+        mhd_POLL_TYPE_INT_IS_KQUEUE ((d)->events.poll_type)
+
+#define mhd_D_POLL_IS_EDGE_TRIG(d) \
+        mhd_POLL_TYPE_INT_IS_EDGE_TRIG ((d)->events.poll_type)
+
+/**
+ * Check whether the daemon has edge-triggered sockets polling
+ */
+#define mhd_D_HAS_EDGE_TRIGG(d) \
+        ((mhd_WM_INT_EXTERNAL_EVENTS_EDGE == (d)->wmode_int) || \
+         mhd_D_POLL_IS_EDGE_TRIG (d))
+
+#ifdef MHD_SUPPORT_THREADS
+#  define mhd_D_HAS_THREADS(d) mhd_WM_INT_HAS_THREADS ((d)->wmode_int)
+#else
+#  define mhd_D_HAS_THREADS(d) (0)
+#endif
+
+#ifdef MHD_SUPPORT_THREADS
+#  define mhd_D_HAS_THR_PER_CONN(d) \
+        (mhd_WM_INT_INTERNAL_EVENTS_THREAD_PER_CONNECTION == \
+         ((d)->wmode_int))
+#else
+#  define mhd_D_HAS_THR_PER_CONN(d) (0)
+#endif
+
+#ifdef MHD_SUPPORT_THREADS
+#  define mhd_D_HAS_STOP_REQ(d)         (d->threading.stop_requested)
+#else
+#  define mhd_D_HAS_STOP_REQ(d)         (0)
+#endif
+
+#define mhd_D_HAS_WORKERS(d) mhd_D_TYPE_HAS_WORKERS ((d)->threading.d_type)
+
+#define mhd_D_HAS_MASTER(d) mhd_D_TYPE_HAS_MASTER_DAEMON ((d)->threading.d_type)
+
+#define mhd_D_IS_INTERNAL_ONLY(d) \
+        mhd_D_TYPE_IS_INTERNAL_ONLY ((d)->threading.d_type)
+
+#ifdef MHD_SUPPORT_HTTPS
+/**
+ * Returns non-zero if daemon has TLS enabled or zero otherwise
+ */
+#  define mhd_D_HAS_TLS(d) (((d)->tls) ? (! 0) : (0))
+#else
+/**
+ * Returns non-zero if daemon has TLS enabled or zero otherwise
+ */
+#  define mhd_D_HAS_TLS(d) (0)
+#endif
+
+/*
+ * Check whether the daemon support Digest Auth
+ */
+#ifdef MHD_SUPPORT_AUTH_DIGEST
+#  define mhd_D_HAS_AUTH_DIGEST(d) (NULL != (d)->auth_dg.nonces)
+#else
+#  define mhd_D_HAS_AUTH_DIGEST(d) (! ! 0)
+#endif
+
+#ifdef MHD_SUPPORT_HTTP2
+#  define mhd_D_IS_HTTP1_ENABLED(d)     (d->http_cfg.http1x)
+#  define mhd_D_IS_HTTP2_ENABLED(d)     (d->http_cfg.http2)
+#else  /* ! MHD_SUPPORT_HTTP2 */
+#  define mhd_D_IS_HTTP1_ENABLED(d)     (! 0)
+#  define mhd_D_IS_HTTP2_ENABLED(d)     (! ! 0)
+#endif /* ! MHD_SUPPORT_HTTP2 */
+
+
+#endif /* ! MHD_DAEMON_H */

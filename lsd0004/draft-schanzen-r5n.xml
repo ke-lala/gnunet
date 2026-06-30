@@ -1,0 +1,3836 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc [
+<!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2663 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2663.xml">
+<!ENTITY RFC2782 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3561 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3561.xml">
+<!ENTITY RFC3629 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC3986 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3986.xml">
+<!ENTITY RFC4634 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4634.xml">
+<!ENTITY RFC5234 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5234.xml">
+<!ENTITY RFC5245 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5245.xml">
+<!ENTITY RFC5869 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5891 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5891.xml">
+<!ENTITY RFC6781 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6781.xml">
+<!ENTITY RFC6895 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6940 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6940.xml">
+<!ENTITY RFC6979 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7748 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8032 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8032.xml">
+<!ENTITY RFC8126 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC9458 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9458.xml">
+<!ENTITY RFC9498 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9498.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-schanzen-r5n-07" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
+  <front>
+    <title abbrev="The R5N Distributed Hash Table">
+      The R5N Distributed Hash Table
+    </title>
+    <seriesInfo name="Internet-Draft" value="draft-schanzen-r5n-07"/>
+    <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+      <organization>Fraunhofer AISEC</organization>
+      <address>
+        <postal>
+          <street>Lichtenbergstrasse 11</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+      </address>
+    </author>
+    <author fullname="Christian Grothoff" initials="C." surname="Grothoff">
+      <organization>Berner Fachhochschule</organization>
+      <address>
+        <postal>
+          <street>Hoeheweg 80</street>
+          <city>Biel/Bienne</city>
+          <code>2501</code>
+          <country>CH</country>
+        </postal>
+        <email>grothoff@gnunet.org</email>
+      </address>
+    </author>
+    <author fullname="Bernd Fix" initials="B." surname="Fix">
+      <organization>GNUnet e.V.</organization>
+      <address>
+        <postal>
+          <street>Boltzmannstrasse 3</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>fix@gnunet.org</email>
+      </address>
+    </author>
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>distributed hash tables</keyword>
+    <abstract>
+      <t>
+        This document contains the R<sup>5</sup>N DHT technical specification.
+        R<sup>5</sup>N is a secure distributed hash table (DHT) routing algorithm
+        and data structure for decentralized applications.
+        It features an open peer-to-peer overlay routing mechanism which supports ad-hoc
+        permissionless participation and support for topologies in restricted-route
+        environments. Optionally, the paths data takes through the overlay can be
+	recorded, allowing decentralized applications to use the DHT to discover routes.
+      </t>
+      <t>
+        This document defines the normative wire format of protocol messages,
+        routing algorithms, cryptographic routines and security considerations for
+        use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have IETF
+        consensus. It is published here to guide implementation of R<sup>5</sup>N and to
+        ensure interoperability among implementations including the pre-existing
+        GNUnet implementation.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="introduction" numbered="true" toc="default">
+      <name>Introduction</name>
+      <t>
+        This specification describes the protocol of R<sup>5</sup>N.
+        R<sup>5</sup>N is a Distributed Hash Table (DHT). The name is an acronym for
+        "randomized recursive routing for restricted-route
+        networks" and its first academic description can be found in
+        <xref target="R5N"/>.
+      </t>
+      <t>
+        DHTs are a key data structure for the construction of decentralized applications
+        and generally provide a robust and efficient means to distribute the
+        storage and retrieval of key-value pairs.
+      </t>
+      <t>
+        The core idea behind R<sup>5</sup>N is to combine a randomized routing
+        algorithm with an efficient, deterministic closest-peer algorithm.
+        This allows us to construct an algorithm that is able to escape and circumvent
+        restricted route environments while at the same time allow for a logarithmically bounded
+        routing complexity.
+      </t>
+      <t>
+        R<sup>5</sup>N also includes advanced features like recording the path a
+	key-value pair took
+        through the network, response filters and on-path application-specific data
+        validation.
+      </t>
+      <t>
+        This document defines the normative wire format of peer-to-peer
+        messages, routing algorithms, cryptographic routines and security
+        considerations for use by implementors.
+      </t>
+      <section numbered="true" toc="default">
+        <name>Requirements Notation</name>
+        <t>
+          The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+          when, they appear in all capitals, as shown here.
+        </t>
+      </section>
+      <section numbered="true" toc="default">
+        <name>System Model</name>
+        <t>
+          DHTs usually operate as overlay networks consisting of peers
+          communicating over the existing Internet. Hence canonical
+          DHT designs often assume that the IP protocol provides the
+          peers of the overlay with unrestricted end-to-end pairwise
+          connectivity.  However, in practice, firewalls and network
+          address translation (NAT) <xref target="RFC2663"/> make it
+          difficult for peers operating on consumer end-devices to
+          communicate directly, especially in the absence of core
+          network infrastructure enabling NAT traversal via protocols
+          such as interactive connectivity establishment (ICE) <xref target="RFC5245"/>.
+        </t>
+        <t>
+          Furthermore, not all peer-to-peer networks consistently
+          operate over the Internet, such as mobile ad-hoc networks
+          (MANETs). While routing protocols have been designed for
+          such networks (<xref target="RFC3561"/>), these generally
+          have issues with security in the presence of malicious
+          participants, as they vulnerable to impersonation attacks.
+          The usual solution to these issues is to assert that the
+          entire MANET is a closed network and to require
+          authentication on all control messages. In contrast, the
+          system model for R<sup>5</sup>N is that of an open network
+          without any kind of authorities that could restrict access
+          to trusted participants.
+        </t>
+      </section>
+      <section numbered="true" toc="default" anchor="security_model">
+        <name>Security Model</name>
+        <t>
+          We assume that the network is open and thus a fraction of
+          the participating peers is malicious.  Malicious peers may
+          create, alter, delay or drop messages.  We also assume that
+          an adversary can control (or fake) many peers <xref target="Sybil"/>, thus any kind
+          of voting or punishment of malicious peers would be rather
+          pointless.
+        </t>
+        <t>
+          Honest peers are expected to establish and maintain many
+          connections. We assume that, as a result, the adversary is
+          generally unable to prevent honest peers from maintaining a
+          sufficient number of direct connections with other honest
+          peers to achieve acceptable performance.  As the number of
+          malicious peers and their connections increases, performance
+          of the system should gracefully degrade and
+          only collapse for peers that an adversary has fully isolated
+          from the benign network.
+        </t>
+        <t>
+          The main security objectives are to provide honest nodes with
+          correct results and to limit the propagation of invalid
+          data.  Invalid data includes both invalid key-value pairs as
+          well as invalid routing path data.
+          While malicious nodes may make up arbitrary
+          key-value pairs and paths within the adversary's domain,
+          invalid key-value pairs are ideally
+          discarded at the first honest node and path data
+          honestly states entry- and exit-points
+          from the honest network and the subset of malicious nodes.
+        </t>
+        <t>
+          Malicious nodes may attempt to exhaust the
+          storage capacity of honest nodes by distributing well-formed
+          but possibly otherwise useless application data. We assume
+          that storage space is relatively cheap compared to bandwidth
+          and that honest nodes also frequently republish the useful
+          data that they publish. As a result, an adversary
+          may reduce the effectiveness and longevity of
+          data cached in the DHT but is assumed to not be able to
+          effectively prevent publication and retrieval of application
+          data by honest nodes.
+        </t>
+      </section>
+    </section>
+    <section anchor="terminology">
+    <name>Terminology</name>
+    <dl>
+      <dt>Address</dt>
+      <dd>
+        <t>
+         An <em>address</em> is a UTF-8 <xref target="RFC3629"/> string which can be
+         used to address a <em>peer</em> through the Underlay (<xref target="underlay"/>).
+         The format of an address is not enforced by this specification
+         but it is expected that in most cases the address is a URI <xref target="RFC3986"/>.
+        </t>
+      </dd>
+      <dt>Applications</dt>
+      <dd>
+        <em>Applications</em> are higher-layer components which use the
+        <em>Core Operations</em> directly.
+        Possible <em>applications</em> include the GNU Name System
+        <xref target="RFC9498"/> and the GNUnet
+	Confidential Ad-hoc Decentralized End-to-End Transport (CADET)
+        <xref target="cadet"/>.
+      </dd>
+      <dt>Core Operations</dt>
+      <dd>
+        The <em>Core Operations</em> provide an interface to the
+        core operations of the DHT overlay to <em>applications</em>.
+        This includes storing <em>blocks</em> in the DHT and retrieving
+	<em>blocks</em> from the DHT.
+      </dd>
+      <dt>Block</dt>
+      <dd>
+        A unit of payload of variable-size stored in the DHT
+        under a <em>key</em>.
+        In the context of &quot;key-value stores&quot; this
+        refers to &quot;value&quot; stored under a <em>key</em>.
+      </dd>
+      <dt>Block Storage</dt>
+      <dd>
+        The <em>block storage</em> component is used to persist and manage
+        <em>blocks</em> stored by <em>peers</em>.
+        It includes logic for enforcing storage quotas, caching strategies and
+        block validation.
+      </dd>
+      <dt>Block Type</dt>
+      <dd>
+        A unique 32-bit value identifying the data format of a <em>block</em>.
+        <em>Block types</em> are public and applications that require
+        application-specific
+        block payloads are expected to register one or more
+        block types in the GANA Block-Type registry
+        (<xref target="gana_block_type"/>) and provide a specification
+        of the associated block operations (<xref
+        target="block_functions"/>) to implementors of
+        R<sup>5</sup>N.
+      </dd>
+      <dt>Bootstrapping</dt>
+      <dd>
+        <em>Bootstrapping</em> is the process of establishing a connection
+	to the peer-to-peer network.
+        It requires an initial, non-empty set of reachable <em>peers</em> and corresponding
+        <em>addresses</em> to connect to that are supported by the implementation.
+      </dd>
+      <dt>Initiator</dt>
+      <dd>
+        The <em>peer</em> that initially creates and sends a DHT protocol message (<xref target="p2p_hello"/>,
+        <xref target="p2p_put"/>, <xref target="p2p_get"/>, <xref target="p2p_result"/>).
+      </dd>
+      <dt>HELLO block</dt>
+      <dd>
+        A type of <em>block</em> that is used to store and retrieve <em>addresses</em> of a <em>peer</em>.
+        It is used by the peer discovery mechanism in <xref target="find_peer"/>.
+      </dd>
+      <dt>HELLO URL</dt>
+      <dd>
+        <tt>HELLO</tt> blocks represented as URLs.
+        They are used for out-of-band exchanges of <em>peer</em> <em>addresses</em>
+        and for signalling address updates to <em>neighbours</em>.
+        Implementation details and examples are in <xref target="hello_url"/>.
+      </dd>
+      <dt>Key</dt>
+      <dd>
+        The 512-bit identifier of a location in the DHT. Multiple <tt>blocks</tt> can be
+        stored under the same <em>key</em>. A <em>peer identity</em> is also a <tt>key</tt>.
+      </dd>
+      <dt>Message Processing</dt>
+      <dd>
+        The <em>message processing</em> component of the DHT implementation processes
+	requests from and generates responses to <em>applications</em>
+	and the <em>underlay interface</em>.
+      </dd>
+      <dt>Neighbor</dt>
+      <dd>
+        A neighbor is a <em>peer</em> which is directly able to communicate
+        with our <em>peer</em> via the <em>underlay interface</em>.
+      </dd>
+      <dt>Peer</dt>
+      <dd>
+        A host that is participating in the overlay by running an implementation
+	of the DHT protocol.  Each participating host is
+        responsible for holding some portion of the data that has been
+        stored in the overlay, and they are responsible for routing
+        messages on behalf of other <em>peers</em> by following the <em>routing
+        algorithm</em>.
+      </dd>
+      <dt>Peer Identity</dt>
+      <dd>
+        The identifier used on the overlay
+        to identify a <em>peer</em>.  It is a SHA-512 hash of the <em>peer public key</em>.
+      </dd>
+      <dt>Peer Public Key</dt>
+      <dd>
+        The the key used to authenticate
+        a <em>peer</em> in the underlay.
+      </dd>
+      <dt>Routing</dt>
+      <dd>
+        The <em>routing</em> component includes the routing table as well as
+        routing and <em>peer</em> selection logic. It facilitates R<sup>5</sup>N routing
+        by provoding the required data structures and algorithms.
+      </dd>
+      <dt>Underlay Interface</dt>
+      <dd>
+        The <em>underlay interface</em> is an abstraction layer on top of the
+        supported links of a <em>peer</em>. Peers may be linked by a variety of
+        different transports including "classical" protocols such as
+        TCP, UDP and TLS or higher-layer protocols such as GNUnet, I2P or Tor.
+	<!-- FIXME: add references to GNUnet/I2P/Tor here! -->
+      </dd>
+    </dl>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Motivation</name>
+      <section numbered="true" toc="default">
+        <name>Restricted-route topologies</name>
+        <t>
+          Restricted-route topologies emerge when a connected underlay
+          topology prevents or restricts direct connections between
+          some of the nodes.  This commonly occurs through the use of
+          NAT (<xref target="RFC2663"/>).  Nodes operated behind a NAT
+          cause common DHT routing algorithms such as Kademlia <xref
+          target="Kademlia"/> to exhibit degraded performance or even
+          to fail.  While excluding such nodes is an option, this
+          limits load distribution and is ineffective for some
+          networks such as MANETs.
+        </t>
+        <t>
+          In general, nodes may not be able to reach each other (for example
+          due to a firewall or NAT) despite being <em>neighbours</em>
+          according to the routing table construction algorithm of a
+          particular DHT.  For example, Kademlia uses the XOR metric
+          and would generally connect nodes that have peer identities
+          with a small XOR distance. However, the XOR distance between
+          randomly assigned peer identities is completely
+          divorced from the ability of the nodes to directly
+          communicate.  DHTs usually use greedy routing to store data
+          at the peer(s) closest to the key.  In cases where a DHT
+          cannot connect peers according to the construction rules of
+          its routing algorithm, the topology may end up with
+          multiple local minima for a given key.  Using canonical
+          greedy routing from a particular fixed location in the
+          network, a node may only be able to publish and
+          retrieve data in the proximity of its local minima.
+        </t>
+        <t>
+          R<sup>5</sup>N addresses this problem by doing a random
+          walk before a classical, deterministic XOR-based routing.
+          The optimal number of random hops
+          is equal to the mixing time of the graph, which is well known
+          for various graphs. For small-world
+          networks <xref target="Smallworld"/>, the mixing time has
+          been shown to be around <tt>O(log n)</tt> where <tt>n</tt>
+          is the number of nodes in the network
+          <xref target="Smallworldmix"/>.
+        </t>
+        <t>
+          Thus, if the network exhibits the properties of a small
+          world topology <xref target="Smallworld"/>, a random walk of
+          length <tt>O(log n)</tt> will cause the algorithm to land on
+          a random node in the network.  Consequently, the
+          deterministic part of the algorithm will encounter a random
+          local minimum.  It is then possible to repeat this process
+          in order to store or retrieve data in the context of all or
+          at least multiple local minima.  The ideal length of the
+          random walk and the number of repetitions expected to cover
+          all local minima depends on the network topology.  Our
+          design assumes that the benign subset of the network forms a
+          small-world topology <xref target="Smallworld"/> and then
+          obtains an estimate of the current number of nodes
+          <tt>n</tt> in the network and then uses <tt>log n</tt> for
+          the actual length of the random walk.
+        </t>
+      </section>
+      <section numbered="true" toc="default">
+        <name>Key differences to RELOAD</name>
+        <t>
+	  <xref target="RFC6940"/> specifies the RELOAD DHT.  The R<sup>5</sup>N DHT
+	  described in this document differs from RELOAD in its objectives
+	  and thus in its design.
+          The authors of RELOAD make the case that P2P networks are often established
+          among a set of peers that do not trust each other.
+          It addresses this issue by requiring that node identifiers
+          are either assigned by a central authority, or self-issued in the case of closed networks.
+          In other words, by enforcing the P2P network to be established among a set
+          of <em>trusted</em> peers.
+          This misses the point that this openness is a core requirement of efficient and
+          useful DHTs as they serve a fundamental part in a decentralized network
+          infrastructure.
+          R<sup>5</sup>N, by contrast, is intended for open
+	  overlay networks, and thus does not include a central enrollment server to
+	  certify participants and does not limit participation in another way.
+          As participants could be malicious, R<sup>5</sup>N
+	  includes on-path customizable key-value validation to delete malformed
+	  data and path randomiziation
+	  to help evade malicious peers. R<sup>5</sup>N also expects to perform
+	  over a network where not every peer can communicate with every other peer,
+	  and where thus its route discovery feature provides utility to higher-level
+	  applications.  As a result, both the features and the security properties
+	  of RELOAD and R<sup>5</sup>N are different, except in that both allow
+	  storing and retrieving key-value pairs.
+	        <!--
+          2023/08/20 CG: I believe the above text addresses the comments from MSC below ...
+
+          2022/12/23 MSC: I moved references to rfc6940 to security considerations.
+          I think we should talk about R5N in the positive here only, not about
+          RELOAD in the negative.
+
+          - Lean. Can be implemented. Not overengineered.
+          - Path tracking (more difficult) -> Not built in
+          - Certificates central server ?
+          - "self-signed certificates can be used in closed networks."
+          - "Security Framework:  A P2P network will often be established among a
+      set of peers that do not trust each other.  RELOAD leverages a
+      central enrollment server to provide credentials for each peer,
+      which can then be used to authenticate each operation.  This
+          greatly reduces the possible attack surface." bizarre statement.
+          - For a PUT, reload requires that
+          "Each element is signed by a credential which is authorized to
+      write this Kind at this Resource-ID.  If this check fails, the
+      request <bcp14>MUST</bcp14> be rejected with an Error_Forbidden error."
+        -->
+        <!--FIXME: Here we should also cite and discuss RELOAD (https://datatracker.ietf.org/doc/html/rfc6940)
+        and establish why we need this spec and are not a "Topology plugin"
+        in RELOAD. The argumentation revolves around the trust model (openness) and
+        security aspects (path signatures).-->
+
+        </t>
+      </section>
+    </section>
+    <section>
+      <name>Overview</name>
+      <t>
+        In R<sup>5</sup>N peers provide to their applications
+        the two fundamental core operations of any DHT:
+      </t>
+      <ul>
+        <li>
+          <tt>PUT</tt>: This operation stores a block
+	  under a key on one or more peers with
+          the goal of making the block availiable for queries using the <tt>GET</tt> operation.
+          In the classical definition of a dictionary interface, this operation would be
+          called "insert".
+        </li>
+        <li>
+          <tt>GET</tt>: This operation queries the network of peers for any number of blocks
+          previously stored under or near a key.
+          In the classical definition of a dictionary interface, this operation would be
+          called "find".
+        </li>
+      </ul>
+      <t>
+	An example for possible semantics of the above operations
+	provided as an API to applications by an implementation are
+	outlined in <xref target="overlay"/>.
+      </t>
+      <t>
+        A peer does not necessarily need to expose the above
+        operations to applications, but it commonly will.  A
+        peer that does not expose the above operations could
+        be a host purely used for bootstrapping,
+	routing or supporting
+        the overlay network with resources.
+      </t>
+      <t>
+	Similarly, there could be hosts on the network that
+	participate in the DHT but do not route traffic or store
+	data. Examples for such hosts would be mobile devices with
+	limited bandwidth, battery and storage capacity.  Such hosts
+	may be used to run applications that use the DHT. However, we
+	will not refer to such hosts as peers.
+      </t>
+      <t>
+        In a trivial scenario where there is only one peer (on the local host),
+        R<sup>5</sup>N operates similarly to a dictionary data structure.
+        However, the default use case is one where nodes communicate directly and
+        indirectly in order to realize a distributed storage mechanism.
+        This communication requires a lower-level peer addressing and message transport
+        mechanism such as TCP/IP.
+        R<sup>5</sup>N is agnostic to the underlying transport protocol which is why
+        this document defines a common addressing and messaging interface in
+        <xref target="underlay"/>.
+        The interface provided by this underlay is used across the specification of the
+        R<sup>5</sup>N protocol.
+        It also serves as a set of requirements of possible transport mechanisms that
+        can be used to implement R<sup>5</sup>N with.
+        That being said, common transport protocols such as TCP/IP or UDP/IP and their
+        interfaces are suitable R<sup>5</sup>N underlays and are used as such by existing
+        implementations.
+      </t>
+      <!-- consider moving some of this back into sec considerations -->
+      <t>
+        Specifics about the protocols of the underlays implementing
+        the underlay interface or the applications
+        using the DHT are out of the scope of this document.
+      </t>
+      <t>
+        To establish an initial connection to a network of
+        R<sup>5</sup>N peers, at least one initial, addressable
+        peer is required as part of the
+        bootstrapping process.  Further peers,
+        including neighbors, are then learned via a peer
+        discovery process as defined in <xref target="find_peer"/>.
+      </t>
+      <t>
+        Across this document, the functional components of an
+        R<sup>5</sup>N implementation are divided into
+        routing (<xref target="routing"/>), message
+        processing (<xref target="p2p_messages"/>) and
+        block storage (<xref target="blockstorage"/>).
+ <xref target="figure_r5n_arch"/> illustrates
+        the architectural overview of R<sup>5</sup>N.
+      </t>
+      <figure anchor="figure_r5n_arch" title="The R5N architecture.">
+        <artwork><![CDATA[
+             |  +-----------------+  +-------+
+Applications |  | GNU Name System |  | CADET |  ...
+             |  +-----------------+  +-------+
+-------------+------------------------------------ Core Operations
+             |  ^
+             |  |   +---------------+
+             |  |   | Block Storage |
+             |  |   +---------------+
+             |  |    ^
+R5N          |  v    v
+             | +--------------------+    +---------+
+             | | Message Processing |<-->| Routing |
+             | +--------------------+    +---------+
+             |  ^                          ^
+             |  v                          v
+-------------+------------------------------------ Underlay Interface
+             | +--------+  +--------+  +----------+
+             | |GNUnet  |  |IP      |  | QUIC     |
+Connectivity | |Underlay|  |Underlay|  | Underlay | ...
+             | |Link    |  |Link    |  | Link     |
+             | +--------+  +--------+  +----------+
+]]>
+        </artwork>
+      </figure>
+    </section>
+
+    <section anchor="underlay" numbered="true" toc="default">
+      <name>Underlay</name>
+      <t>
+        A peer <bcp14>MUST</bcp14> support one or more underlay
+        protocols.
+        Peers supporting multiple underlays effectively
+        create a bridge between different networks.  How peers are
+        addressed in a specific underlay is out of scope of this
+        document.  For example, a peer may have a TCP/IP address, or
+        expose a QUIC endpoint, or both.  While the specific addressing options
+        and mechanisms are out of scope for this document,
+        it is necessary to define a
+        universal addressing format in order to facilitate the
+        distribution of address information to other
+        peers in the DHT overlay.
+        This standardized format
+        is the HELLO block (described in <xref
+        target="hello_block"/>), which contains sets of addresses.
+        If the address is a URI, it may indicate which
+        underlay understands the respective address.
+      </t>
+      <!--
+        1) The current API is always fire+forget, it doesn't allow for flow
+        control. I think we need to add that, possibly for sending and receiving.
+
+        IDK.
+	CG: I think we should not have flow control for the DHT; overkill,
+	should instead simply define transmission as unreliable.
+
+        2) I'm not sure what to do with the crypto: mandate EdDSA or allow the
+        underlay to do whatever public keys it likes.
+
+        We need keys in the overlay. (Path signatures). Do they need to
+        be the same keys???
+
+        CG: I'd mandate EdDSA. CONG will have mitigation to establish
+	EdDSA keys over libp2p, even if libp2p does not use EdDSA. But,
+	that said, I'm not sure if we should even mandate AE on the
+	underlay.
+
+        3) I think we may want to mandate that the lower layer at least
+        authenticate the other peer (i.e. every UDP message could be in
+        cleartext, but would need to come with an EdDSA signature, alas 92 byte
+        overhead and a signature verification _required_).  Otherwise, I don't
+        see how we can offer even the most minimal protections against peer
+        impersonation attacks. WDYT?
+
+        CG: Yes, I think authentication should be mandatory, but not
+        any _specific_ type of encryption.
+
+        Security considerations? Prerequisites?
+      -->
+      <t>
+        It is expected that the underlay provides basic mechanisms to
+        manage peer connectivity and addressing.
+        The essence of the underlay interface is
+        captured by the following set of API calls:
+      </t>
+      <dl>
+        <dt>
+          <tt>TRY_CONNECT(P, A)</tt>
+        </dt>
+        <dd>
+          This call allows the DHT implementation to signal to the
+          underlay that the DHT wants to establish a connection to the
+          target peer <tt>P</tt> using the given address <tt>A</tt>.
+          If the connection attempt is successful, information on the
+          new peer connection will be offered through the
+          <tt>PEER_CONNECTED</tt> signal.
+       <!--
+          Underlay implementations
+          can ignore calls with addresses they do not support.
+        -->
+        </dd>
+        <dt>
+          <tt>HOLD(P)</tt>
+        </dt>
+        <dd>
+          This call tells the underlay to hold on to a connection
+          to a peer <tt>P</tt>.  Underlays are usually limited in the number
+	  of active connections.  With this function the DHT can indicate to the
+	  underlay which connections should preferably be preserved.
+        </dd>
+        <dt>
+          <tt>DROP(P)</tt>
+        </dt>
+        <dd>
+          This call tells the underlay to drop the connection to a
+          peer <tt>P</tt>.  This call is only there for symmetry and
+	  used during the peer's shutdown to release all of the remaining
+	  <tt>HOLDs</tt>.
+	  <!-- FIXME: are we supposed to call DROP if a peer disconnects?
+               NOTE: That would seem to be an implementation detail beyond what needs
+               to be in the RFC. An API may mandate DROP on disconnect, or
+               it may simply state that when the underlay signals a
+               disconnect, all holds are automatically dropped.
+          -->
+	  As R<sup>5</sup>N always prefers the longest-lived
+	  connections, it would never drop an active connection that it
+	  has called <tt>HOLD()</tt> on before. Nevertheless, underlay implementations
+	  should not rely on this always being true.  A call to <tt>DROP()</tt> also
+	  does not imply that the underlay must close the connection: it merely
+	  removes the preference to preserve the connection that was established
+	  by <tt>HOLD()</tt>.
+        </dd>
+        <dt>
+          <tt>SEND(P, M)</tt>
+        </dt>
+        <dd>
+          This call allows the local peer to send a protocol message
+          <tt>M</tt> to a peer <tt>P</tt>.  Sending messages is expected
+          to be done on a best-effort basis, thus the underlay does not
+          have to guarantee delivery or message ordering. If the underlay
+          implements flow- or congestion-control, it may
+          discard messages to limit its queue size.
+        </dd>
+        <dt>
+          <tt>ESTIMATE_NETWORK_SIZE() -> L2NSE</tt>
+        </dt>
+        <dd>
+          This call must return an estimate of the network size.  The
+          resulting <tt>L2NSE</tt> value must be the base-2 logarithm
+          of the <em>estimated</em> number of peers in the network.
+          This estimate is used by the routing algorithm.  If the underlay does
+          not support a protocol for network size estimation (such as
+          <xref target="NSE"/>) the value is assumed to be provided as
+          a configuration parameter to the underlay implementation.
+        </dd>
+      </dl>
+      <t>
+        The above calls are meant to be actively executed by the
+        implementation as part of the peer-to-peer protocol.  In
+        addition, the underlay creates <em>signals</em> to drive
+        updates of the routing table, local storage and message
+        processing (<xref target="p2p_messages"/>). Specifically,
+        the underlay is expected to emit the following
+        signals (usually implemented as callbacks) based on network
+        events observed by the underlay implementation:
+      </t>
+      <dl>
+        <dt>
+          <tt>PEER_CONNECTED -> P</tt>
+        </dt>
+        <dd>
+          This signal allows the DHT to react to a newly connected
+          peer <tt>P</tt>.  Such an event triggers, for example,
+          updates in the routing table and gossiping of HELLOs to that
+          peer.  Underlays may include meta-data about the connection,
+          for example to indicate that the connection is from a
+          resource-constrained host that does not intend to function
+          as a full peer and thus should not be considered
+          for routing.
+        </dd>
+        <dt>
+          <tt>PEER_DISCONNECTED -> P</tt>
+        </dt>
+        <dd>
+          This signal allows the DHT to react to a recently
+          disconnected peer.  Such an event primarily triggers updates
+          in the routing table.
+        </dd>
+        <dt>
+          <tt>ADDRESS_ADDED -> A</tt>
+        </dt>
+        <dd>
+          The underlay signals indicates that an address <tt>A</tt>
+          was added for our local peer and that henceforth the peer
+          may be reachable under this address.  This information is
+          used to advertise connectivity information about the local
+          peer to other peers.  <tt>A</tt> is an
+          address suitable for inclusion in a <tt>HELLO</tt> payload
+          <xref target="hello_block"/>.
+        </dd>
+        <dt>
+          <tt>ADDRESS_DELETED -> A</tt>
+        </dt>
+        <dd>
+          This underlay signal indicates that an address <tt>A</tt>
+          was removed from the set of addresses the local peer is
+          possibly reachable under. The signal is used
+          to stop advertising this address to other peers.
+        </dd>
+        <dt>
+          <tt>RECEIVE -> (P, M)</tt>
+        </dt>
+        <dd>
+          This signal informs the local peer that a protocol
+          message <tt>M</tt> was received from a peer <tt>P</tt>.
+        </dd>
+      </dl>
+    </section>
+    <section anchor="routing" numbered="true" toc="default">
+      <name>Routing</name>
+      <t>
+        To enable routing, any R<sup>5</sup>N implementation must keep
+	information about its current set of neighbors.
+        Upon receiving a connection notification from the
+	underlay interface through a
+        <tt>PEER_CONNECTED</tt> signal, information on the new neighbor
+        <bcp14>MUST</bcp14> be added to the routing table, except if the
+	respective <tt>k</tt>-bucket in the routing table is full or if meta-data
+	is present that indicates that the peer does not wish to participate
+	in routing.
+        Peers added to the routing table <bcp14>SHOULD</bcp14> be signalled to the
+        underlay as important connections using a <tt>HOLD()</tt> call.
+        Similarly when a disconnect is indicated by the underlay through
+        a <tt>PEER_DISCONNECTED</tt> signal, the peer
+        <bcp14>MUST</bcp14> be removed from the routing table.
+	  <!-- FIXME: are we supposed to call DROP if we called HOLD if a peer disconnects!?? -->
+      </t>
+      <t>
+        To achieve logarithmically bounded routing performance,
+        the data structure for managing neighbors and their
+        metadata <bcp14>MUST</bcp14> be implemented using the k-buckets concept of
+        <xref target="Kademlia"/>  as defined in <xref target="routing_table"/>.
+        Maintenance of the routing table (after bootstrapping) is
+        described in <xref target="find_peer"/>.
+      </t>
+      <t>
+        Unlike <xref target="Kademlia"/>, routing decisions in
+        R<sup>5</sup>N are also influenced by a Bloom filter in the message
+        that prevents routing loops. This data structure is discussed in
+	<xref target="routing_bloomfilter"/>.
+      </t>
+      <t>
+        In order to select peers which are suitable destinations for
+        routing messages, R<sup>5</sup>N uses a hybrid approach: Given
+        an estimated network size <tt>L2NSE</tt> retrieved using
+        <tt>ESTIMATE_NETWORK_SIZE()</tt>, the peer selection for the
+        first <tt>L2NSE</tt> hops is random. After the initial
+        <tt>L2NSE</tt> hops, peer selection follows an XOR-based peer
+        distance calculation.
+        <xref target="routing_functions"/>
+        describes the corresponding routing functions.
+      </t>
+      <t>
+        Finally, each <tt>ResultMessage</tt> is routed back along the
+        path that the corresponding <tt>GetMessage</tt> took
+        previously. This is enabled by tracking state per
+        <tt>GetMessage</tt> in the pending table described in
+        <xref target="pending_table"/>.
+      </t>
+      <section anchor="routing_table">
+        <name>Routing Table</name>
+        <t>
+          Whenever a <tt>PEER_CONNECTED</tt> signal is received from
+          the underlay, the respective peer is considered for
+          insertion into the routing table.  The routing table
+          consists of an array of <tt>k</tt>-buckets. Each
+          <tt>k</tt>-bucket contains a list of neighbors.
+          The i-th <tt>k</tt>-bucket stores neighbors whose peer
+          public keys are between XOR-distance 2<sup>i</sup> and
+          2<sup>i+1</sup> from the local peer; <tt>i</tt> can be
+          directly computed from the two peer identities using the
+          <tt>GetDistance()</tt> function.  System constraints will
+          typically force an implementation to impose some upper limit
+          on the number of neighbors kept per
+          <tt>k</tt>-bucket.  Upon insertion, the implementation
+          <bcp14>MUST</bcp14> call <tt>HOLD()</tt> on the respective
+          neighor.
+        </t>
+        <t>
+          Implementations <bcp14>SHOULD</bcp14> try to keep at least
+          5 entries per <tt>k</tt>-bucket.  Embedded systems that cannot manage
+          this number of connections <bcp14>MAY</bcp14> use connection-level
+          signalling to indicate that they are merely a client utilizing a
+          DHT and not able to participate in routing.  DHT peers receiving
+          such connections <bcp14>MUST NOT</bcp14> include connections to
+          such restricted systems in their <tt>k</tt>-buckets, thereby effectively
+	  excluding them when making routing decisions.
+        </t>
+        <t>
+          If a system hits constraints with respect to
+          the number of active connections, an implementation
+          <bcp14>MUST</bcp14> evict neighbours from those <tt>k</tt>-buckets with the
+          largest number of neighbors. The eviction strategy <bcp14>MUST</bcp14> be
+          to drop the shortest-lived connection per <tt>k</tt>-bucket first.
+        </t>
+        <t>
+          Implementations <bcp14>MAY</bcp14> cache valid addresses of disconnected
+          peers outside of the routing table and sporadically or periodically try to (re-)establish connection
+          to the peer by making <tt>TRY_CONNECT()</tt> calls to the underlay interface
+          if the respective <tt>k</tt>-bucket has empty slots.
+        </t>
+      </section>
+      <section anchor="find_peer">
+        <name>Peer Discovery</name>
+        <t>
+          Initially, implementations require at least one initial connection to a
+          neighbor (signalled through
+          <tt>PEER_CONNECTED</tt>).
+          The first connection <bcp14>SHOULD</bcp14> be established
+          by an out-of-band exchange of the information from a
+          <tt>HELLO</tt> block.
+          This is commonly achieved through the
+          configuration of hardcoded bootstrap peers or bootstrap
+          servers either for the underlay or the R<sup>5</sup>N
+          implementation.
+        </t>
+        <t>
+          Implementations <bcp14>MAY</bcp14> have other means to achieve this
+          initial connection.
+          For example, implementations could allow the application or
+          even end-user to provide a working <tt>HELLO</tt>
+          which is then in turn used to call <tt>TRY_CONNECT()</tt> on
+          the underlay in order to trigger a subsequent
+          <tt>PEER_CONNECTED</tt> signal from the underlay
+          interface.
+          <xref target="hello_url"/> specifies
+          a URL format for encoding HELLO blocks as text strings. The
+          URL format thus provides a portable, human-readable,
+          text-based serialization format that can, for example, be
+          encoded into a QR code for dissemination.
+          HELLO URLs <bcp14>SHOULD</bcp14> be supported by implementations for
+          both import and export of <tt>HELLOs</tt>.
+        </t>
+        <t>
+          To discover additional peers for its routing table, a peer
+          <bcp14>MUST</bcp14> initiate <tt>GetMessage</tt> requests
+          (see <xref target="p2p_get"/>) asking for blocks of type
+          <tt>HELLO</tt> using its own peer identity in the
+          <tt>QUERY_HASH</tt> field of the message.  The
+          <tt>PEER_BF</tt> field of the <tt>GetMessage</tt>
+          <bcp14>MUST</bcp14> be
+          initialized to filter the peer's own peer identity as well as the peer
+          identities of all currently connected
+          neighbors. These requests <bcp14>MUST</bcp14> use
+          the <tt>FindApproximate</tt> and
+          <tt>DemultiplexEverywhere</tt>
+          flags. <tt>FindApproximate</tt> will ensure that other peers
+          will reply with results where the keys are merely considered
+          close-enough, while <tt>DemultiplexEverywhere</tt> will
+          cause each peer on the path to respond if it has relevant
+          information. The combination of these flags is thus likely
+          to yield <tt>HELLOs</tt> of peers that are useful somewhere
+          in the initiator's routing table.  The <bcp14>RECOMMENDED</bcp14>
+          replication level to be set in the <tt>REPL_LVL</tt> field
+          is 4.  The size and format of the result filter is specified
+          in <xref target="hello_block"/>.  The <tt>XQUERY</tt>
+          <bcp14>MUST</bcp14> be empty.
+        </t>
+        <t>
+          In order to facilitate peers answering requests for
+          <tt>HELLOs</tt>, the underlay is expected to provide the
+          implementation with addresses signalled through
+          <tt>ADDRESS_ADDED</tt>. It is possible that no addresses are
+          provided if a peer can only establish outgoing connections
+          and is otherwise unreachable.  An implementation
+          <bcp14>MUST</bcp14> advertise its addresses periodically to
+          its neighbors through <tt>HelloMessages</tt>.  The
+          advertisement interval and expiration <bcp14>SHOULD</bcp14>
+          be configurable.
+          If the values are chosen at the discretion of the
+          implementation, it is <bcp14>RECOMMENDED</bcp14> to choose external
+          factors such as expiration of DHCP leases to determine the values.
+          The specific frequency of advertisements
+          <bcp14>SHOULD</bcp14> be smaller than the expiration
+          period.
+          It <bcp14>MAY</bcp14> additionally depend on available bandwidth,
+          the set of already connected neighbors, the workload of the system and
+          other factors which are at the discretion of the developer.
+	  If <tt>HelloMessages</tt> are not updated before they expire,
+	  peers might be unable to discover and connect to the respective
+	  peer, and thus miss out on quality routing table entries. This
+	  would degrade the performance of the DHT and <bcp14>SHOULD</bcp14>
+	  thus be avoided by advertising updated <tt>HELLOs</tt> before the
+	  previous one expires. When using unreliable underlays, an implementation
+	  <bcp14>MAY</bcp14> use higher frequencies and transmit
+	  more <tt>HelloMessages</tt> within an expiration interval
+	  to ensure that neighbours almost always have non-expired
+	  <tt>HelloMessages</tt> at their disposal even if some messages
+	  are lost.
+        </t>
+        <t>
+          Whenever a peer receives such a <tt>HelloMessage</tt>
+          from another peer that is already in the routing
+          table, it must cache it as long as that peer remains in its
+          routing table (or until the <tt>HELLO</tt> expires) and
+          serve it in response to <tt>GET</tt> requests for
+          <tt>HELLO</tt> blocks (see <xref
+          target="p2p_get_processing"/>).  This behaviour makes it
+          unnecessary for peers to initiate dedicated
+          <tt>PutMessages</tt> containing <tt>HELLO</tt> blocks.
+        </t>
+      </section>
+      <section anchor="routing_bloomfilter">
+        <name>Peer Bloom Filter</name>
+        <t>
+          As DHT <tt>GetMessages</tt> and <tt>PutMessages</tt>
+          traverse a random path through the network for the first
+          <tt>L2NSE</tt> hops, a key design objective of
+          R<sup>5</sup>N is to avoid routing loops.  The peer Bloom
+          filter is part of the routing metadata in messages to
+          prevent circular routes. It is updated at each hop where the
+          hop's peer identity derived from the peer's public key is
+          added to it.
+          The peer Bloom filter follows the definition in <xref target="bloom_filters"/>.
+          It <bcp14>MUST</bcp14> be <tt>L=1024</tt> bits
+          (128 bytes) in size and <bcp14>MUST</bcp14> set <tt>k=16</tt> bits per
+          element.
+          The set of elements <tt>E</tt> consists of of all possible 256-bit peer
+          public keys and the mapping function <tt>M</tt> is defined as follows:
+        </t>
+        <t>
+          <tt>M(e) -> SHA-512 (e) as uint32[]</tt>
+        </t>
+        <t>
+          The element <tt>e</tt> is the peer public key which is hashed using SHA-512.
+          The resulting 512-bit peer identity is interpreted as an array of k=16
+          32-bit integers in network byte order which are used to set and check the bits
+          in <tt>B</tt> using <tt>BF-SET()</tt> and <tt>BF-TEST()</tt>.
+        </t>
+        <t>
+          At this size, the Bloom filter reaches a false-positive rate of
+          approximately fifty percent at about 200 entries. For peer
+          discovery where the Bloom filter is initially populated with
+          peer identities from the local routing table, the 200
+          entries would still be enough for 40 buckets assuming 5
+          peers per bucket, which corresponds to an overlay network
+          size of approximately 1 trillion peers. Thus,
+          <tt>L=1024</tt> bits should suffice for all conceivable
+          use-cases.
+        </t>
+        <t>
+          For the next hop selection in both the random
+          and the deterministic case, any peer which is in the peer
+          Bloom filter for the respective message is excluded from the
+          peer selection process.
+          Any peer which is forwarding <tt>GetMessages</tt> or <tt>PutMessages</tt>
+          (<xref target="p2p_messages"/>) thus adds its own peer public key to the
+          peer Bloom filter.
+          This allows other peers to (probabilistically) exclude already
+          traversed peers when searching for the next hops in the routing table.
+        </t>
+        <t>
+	  We note that the peer Bloom filter may exclude peers due to false-postive
+	  matches.  This is acceptable as routing should nevertheless
+	  terminate (with high probability) in close vicinity of the key. Furthermore,
+	  due to the randomization of the first L2NSE hops, it is possible that
+	  false-positives will be different when a request is repeated.
+        </t>
+      </section>
+      <section anchor="routing_functions">
+        <name>Routing Functions</name>
+         <t>
+           Using the data structures described so far,
+	   the R<sup>5</sup>N routing component provides
+	   the following functions for
+	   message processing (<xref target="p2p_messages"/>):
+        </t>
+        <dl>
+          <dt>
+            <tt>GetDistance(A, B) -&gt; Distance</tt>
+          </dt>
+          <dd>
+            This function calculates the binary XOR between A and B.
+            The resulting distance is interpreted as an integer where
+            the leftmost bit is the most significant bit.
+          </dd>
+          <dt>
+            <tt>SelectClosestPeer(K, B) -&gt; N</tt>
+          </dt>
+          <dd>
+            This function selects the neighbor <tt>N</tt> from our
+            routing table with the shortest XOR-distance to the key <tt>K</tt>.
+            This means that for all other peers <tt>N'</tt> in the routing table
+            <tt>GetDistance(N, K) &lt; GetDistance(N',K)</tt>.
+            Peers with a positive test against the peer Bloom
+	    filter <tt>B</tt> are not considered.
+          </dd>
+          <dt>
+            <tt>SelectRandomPeer(B) -&gt; N</tt>
+          </dt>
+          <dd>
+            This function selects a random peer <tt>N</tt> from
+	    all neighbors.
+            Peers with a positive test in the peer Bloom
+	    filter <tt>B</tt> are not considered.
+          </dd>
+          <dt>
+            <tt>SelectPeer(K, H, B) -&gt; N</tt>
+          </dt>
+          <dd>
+            This function selects a neighbor <tt>N</tt> depending on the
+            number of hops <tt>H</tt> parameter.
+            If <tt>H &lt; NETWORK_SIZE_ESTIMATE</tt>
+            returns <tt>SelectRandomPeer(B)</tt>, and otherwise
+            returns <tt>SelectClosestPeer(K, B)</tt>.
+          </dd>
+          <dt>
+            <tt>IsClosestPeer(N, K, B) -&gt; true | false</tt>
+          </dt>
+          <dd>
+            This function checks if <tt>N</tt> is the closest peer for <tt>K</tt>
+            (cf. <tt>SelectClosestPeer(K, B)</tt>).
+            Peers with a positive test in the Bloom filter <tt>B</tt> are not considered.
+          </dd>
+          <dt>
+            <tt>ComputeOutDegree(REPL_LVL, HOPCOUNT, L2NSE) -&gt; Number</tt>
+          </dt>
+          <dd>
+	    <t>
+      This function computes the number of neighbors
+	    that a message should be forwarded to.  The arguments
+	    are the desired replication level (<tt>REPL_LVL</tt>),
+	    the <tt>HOPCOUNT</tt> of the message so far and
+	    and the current network size estimate (<tt>L2NSE</tt>)
+	    as provided by the underlay.
+            The result is the non-negative number of next hops to
+	    select.  The following figure gives the
+	    pseudocode for computing the number of neighbors
+	    the peer should attempt to forward the message to.
+	    </t>
+            <figure anchor="compute_out_degree" title="Computing the number of next hops.">
+              <artwork name="" type="" align="left" alt=""><![CDATA[
+ComputeOutDegree(REPL_LVL, HOPCOUNT, L2NSE):
+  if (HOPCOUNT > L2NSE * 4)
+    return 0;
+  if (HOPCOUNT > L2NSE * 2)
+    return 1;
+  if (0 = REPL_LEVL)
+    REPL_LEVL = 1
+  if (REPL_LEVEL > 16)
+    REPL_LEVEL = 16
+    RM1 = REPL_LEVEL - 1
+    FRAC = 1 + (RM1 / (L2NSE + RM1 * HOPCOUNT))
+  return PROUND(FRAC)
+]]></artwork>
+            </figure>
+  	    <t>
+          The above calculation of <tt>FRAC</tt> may yield values that are
+          not discrete.
+          The result is <tt>FRAC</tt> rounded probabilistically
+          (<tt>PROUND</tt>) to the nearest
+	      discrete value, using the fraction
+          as the probability for rounding up.
+          For example, a value of <tt>3.14</tt> is rounded up to <tt>4</tt> with
+          a probability of 14% and rounded down to <tt>3</tt> with a probability
+          of 86%.
+          This probabilistic rounding is necessary to achieve
+          the statistically expected value of the replication
+          level and average number of peers a message is forwarded to.
+	    </t>
+	  </dd>
+        </dl>
+      </section>
+      <section anchor="pending_table">
+        <name>Pending Table</name>
+	<t>
+	  R<sup>5</sup>N performs stateful routing where the messages
+	  only carry the query hash and do not encode the ultimate
+	  source or destination of the request.  Routing a request
+	  towards the key is done hop-by-hop using the routing table and the
+	  query hash.  The pending table is used to route responses
+	  back to the originator.  In the pending table each peer
+	  primarily maps a query hash to the associated
+	  originator of the request.  The pending table <bcp14>MUST</bcp14>
+	  store entries for the last <tt>MAX_RECENT</tt> requests
+    the peer has encountered.
+    To ensure that the peer does
+	  not run out of memory, information about older requests
+    <bcp14>MAY</bcp14> be discarded.
+    The value of <tt>MAX_RECENT</tt> <bcp14>MAY</bcp14> be configurable
+    at the host level to use available memory resources without
+    conflicting with other system requirements and limitations.
+    <tt>MAX_RECENT</tt> <bcp14>SHOULD</bcp14>
+    be at least 128 * 10<sup>3</sup>.
+    If the pending table is smaller, the likelihood grows that a peer
+    receives a response to a query but is unable to forward it to the
+    initiator because it forgot the predecessor.  Eventually, the
+    initiator would likely succeed by repeating the query.
+    However, this would be much more expensive than peers having an adequately
+    sized pending table.
+  </t>
+	<t>
+	  For each entry in the pending table, the DHT
+	  <bcp14>MUST</bcp14> track the query key, the peer identity
+	  of the previous hop, the extended query, requested block type,
+	  flags, and the result filter.  If the query did not provide
+	  a result filter, a fresh result filter <bcp14>MUST</bcp14>
+	  still be created to filter duplicate replies.  Details of
+	  how a result filter works depend on the type, as described
+	  in <xref target="block_functions"/>.
+	</t>
+	<t>
+	  When a second query from the same origin for the
+	  same query hash is received, the DHT <bcp14>MUST</bcp14>
+	  attempt to merge the new request with the state for
+	  the old request.  If this is not possible (say because
+	  the MUTATOR differs), the
+	  existing result filter <bcp14>MUST</bcp14> be
+	  discarded and replaced with the result
+	  filter of the incoming message.
+	</t>
+	<t>
+	  We note that for local applications, a fixed limit on
+	  the number of concurrent requests may be problematic.
+	  Hence, it is <bcp14>RECOMMENDED</bcp14> that implementations
+	  track requests from local applications separately and
+	  preserve the information about requests from local
+	  applications until the local application explicitly
+	  stops the request.
+	</t>
+      </section>
+    </section>
+    <section anchor="p2p_messages" numbered="true" toc="default">
+      <name>Message Processing</name>
+      <t>
+        An implementation will process
+        messages either because it needs to transmit messages as part of routing
+	table maintenance, or due to requests from local applications, or
+	because it received a message from a neighbor.
+        If instructed through an application-facing API such as the one outlined
+        in <xref target="overlay"/>, a peer acts as an initiator
+	of <tt>GetMessages</tt>
+        or <tt>PutMessages</tt>.
+        The status of initiator is relevant for peers when processing <tt>ResultMessages</tt>
+        due to the required handover of results to the application that requested
+        the respective result.
+      </t>
+      <t>
+        The implementation <bcp14>MUST</bcp14> listen for <tt>RECEIVE(P, M)</tt> signals
+        from the underlay and react to the respective messages sent by
+        the peer <tt>P</tt>.
+      </t>
+      <t>
+        Whether initiated locally or received from a neighbor, an implementation
+        processes messages according to the wire formats and the required
+        validations detailed in the following sections.
+        Where required, the local peer public key is referred to as <tt>SELF</tt>.
+      </t>
+      <section anchor="message_components">
+        <name>Message components</name>
+	<t>
+	  This section describes some data structures and fields shared
+	  by various types of messages.
+        </t>
+        <section anchor="route_flags">
+          <name>Flags</name>
+          <t>
+            Flags is an 8-bit vector representing binary options.
+            Each flag is represented by a bit in the field starting from 0 as
+            the rightmost bit to 7 as the leftmost bit.
+          </t>
+	  <dl>
+          <dt>0: DemultiplexEverywhere</dt>
+          <dd>
+	    This bit indicates that each peer along the way should process the request.
+            If the bit is not set, intermediate peers only route the message and only
+            peers which consider themselves closest to the key (based on their
+	    routing table) look for answers
+            in their local storage for <tt>GetMessages</tt>, or respectively cache the
+	    block in their local storage for <tt>PutMessages</tt> and <tt>ResultMessages</tt>.
+          </dd>
+          <dt>1: RecordRoute</dt>
+          <dd>
+            This bit indicates to keep track of the path that the message takes
+            in the P2P network.
+          </dd>
+          <dt>2: FindApproximate</dt>
+          <dd>
+            This bit asks peers to return results even if the key
+	    does not exactly match the query hash.
+          </dd>
+          <dt>3: Truncated</dt>
+          <dd>
+            This is a special flag which is set if a peer truncated the
+            recorded path.
+            This results in the first hop on the path to be given without a signature
+            to enable checking of the next signature.
+            This flag <bcp14>MUST NOT</bcp14> be set in
+            a <tt>GetMessage</tt>.
+          </dd>
+          <dt>4-7: Reserved</dt>
+          <dd>
+            The remaining bits are reserved for future use and
+	    <bcp14>MUST</bcp14> be set to zero when initiating an operation.
+	    If non-zero bits are received, implementations <bcp14>MUST</bcp14>
+	    preserve these bits when forwarding messages.
+          </dd>
+        </dl>
+      </section>
+
+      <section anchor="p2p_path">
+        <name>Path</name>
+        <t>
+          If the <tt>RecordRoute</tt> flag is set, the route of a <tt>PutMessage</tt>
+          or a <tt>ResultMessage</tt> through the overlay network is recorded in the
+          <tt>PATH</tt> field of the message. <tt>PATH</tt> is a list of path elements.
+          A new path element (<xref target="p2p_pathelement"/>) is appended to the
+          existing <tt>PATH</tt> before a peer sends the message to the next peer.
+        </t>
+        <t>
+          A path element contains a signature and the public key of the peer that
+          created the element. The signature is computed over the public keys of the
+          previous peer (from which the message was received) and next peer (the
+          peer the message is send to). A new message has no previous peer and
+          uses all <tt>ZEROs</tt> (32 NULL-bytes) in the
+          public key field when creating the signature.
+        </t>
+        <t>
+          Assuming peer A sends a new <tt>PUT</tt> message to peer B, which forwards
+          the message to peer C, which forwards to peer D which finally stores the data.
+          The <tt>PATH</tt> field of the message received at peer D contains three
+          path elements (build from top to bottom):
+        </t>
+        <figure anchor="figure_path" title="Example PATH">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
++---------------------+-------+
+| Sig A(ZEROs, Pub B) | Pub A |
++---------------------+-------+
++---------------------+-------+
+| Sig B(Pub A, Pub C) | Pub B |
++---------------------+-------+
++---------------------+-------+
+| Sig C(Pub B, Pub D) | Pub C |
++---------------------+-------+
+          ]]></artwork>
+        </figure>
+        <t>
+          Note that the wire format of <tt>PATH</tt> (<xref target="p2p_pathelement"/>)
+          will not include the last public key (Pub C in our example) as this will be
+          redundant; the receiver of a message can use the public key of the sender as
+          the public key to verify the last signature.
+        </t>
+        <t>
+          The <tt>PATH</tt> is stored along with the payload data from the <tt>PUT</tt>
+          message at the final peer. Note that the same payload stored at different
+          peers will have a different <tt>PATH</tt> associated with it.
+        </t>
+        <t>
+          When the storing peer delivers the data based on a <tt>GET</tt> request, it
+          initializes the <tt>PATH</tt> field with the stored path value and appends
+          a new path element. The first part of <tt>PATH</tt> in a <tt>GET</tt> response
+          message is called the <tt>PutPath</tt>, followed
+          by the <tt>GetPath</tt>. This way the combined <tt>PATH</tt> will record the
+          whole route of the payload from the originating peer (initial
+          <tt>PutMessage</tt>) to the requesting peer (initial <tt>GetMessage</tt>).
+        </t>
+        <t>
+          When receiving a message with flag <tt>RecordRoute</tt> and <tt>PATH</tt>,
+          a peer is encouraged to verify the integrity of <tt>PATH</tt> (if the
+          available resources of the peer allow this) by checking the signatures of
+          the path elements.
+        </t>
+        <t>
+          If an invalid signature is detected, the path is truncated keeping only
+          element fields following the faulty signature and setting the <tt>Truncated</tt>
+          flag. Assume that peer C detects a faulty signature from peer B,
+          the trunacted path has two entries:
+        </t>
+        <figure anchor="figure_path_truncated" title="Example truncated PATH">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
++-------+  +----------------------+-------+
+| Pub B |  | Sig C (Pub B, Pub D) | Pub C |
++-------+  +----------------------+-------+
+          ]]></artwork>
+        </figure>
+        <t>
+          The <tt>Truncated</tt> flag indicates that the first path element does not contain
+          a signature but only the public key of the peer where the signature fails.
+        </t>
+      </section>
+
+      <section anchor="p2p_pathelement">
+        <!-- TODO-GROTHOFF: Discuss this change again. The text is currently not correct
+             it is very difficult to understand. Is it worth 32 byte;
+	     CG: I've fixed the figures, tried to clarify the text. Is it OK now? -->
+        <name>Path Element</name>
+        <t>
+          A path element represents a hop in the path a message has taken
+          through the overlay network.
+          The wire format of a path element is illustrated in
+          <xref target="figure_pathelement"/>.
+        </t>
+        <figure anchor="figure_pathelement" title="The Wire Format of a path element.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   SIGNATURE                   |
+|                   (64 bytes)                  |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|             PRED PEER PUBLIC KEY              |
+|                  (32 bytes)                   |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+        </figure>
+        <t>where:</t>
+        <dl>
+          <dt>SIGNATURE</dt>
+          <dd>
+            is a 64 byte EdDSA signature <xref target="ed25519"/> created
+            using the current hop's private
+            key which affirms the public keys of the peers from the
+            previous and next hops.
+          </dd>
+          <dt>PRED PEER PUBLIC KEY</dt>
+          <dd>
+            is the EdDSA public key <xref target="ed25519"/> of the previous peer on the path.
+          </dd>
+        </dl>
+        <t>
+          An ordered list of path elements may be appended to any routed
+          <tt>PutMessages</tt> or <tt>ResultMessages</tt>.
+          The last signature (after which the peer public key is omitted)
+	  is created by the current hop only after the peer made its routing
+	  decision identifiying the successor peer. The peer public key is not
+	  included after the last signature as it must be that of the sender of
+	  the message and including it would thus be redundant.
+	  Similarly, the predecessor of the first element of
+            an untruncated path is not stated explicitly, as it must be <tt>ZERO</tt>
+            (32 NULL-bytes).
+        </t>
+        <t>
+          <xref target="figure_path_ex"/> shows the wire format of an example
+          path from peer A over peers B and C and D as it would be received by peer E in the
+          <tt>PUTPATH</tt> of a <tt>PutMessage</tt>, or as the combined
+          <tt>PUTPATH</tt> and <tt>GETPATH</tt> of a <tt>ResultMessage</tt>.
+          The wire format of the path elements allows a natural
+          extension of the <tt>PUTPATH</tt> along the route of the <tt>ResultMessage</tt>
+          to the destination forming the <tt>GETPATH</tt>.
+          The <tt>PutMessage</tt> would indicate in the <tt>PATH_LEN</tt> field
+          a length of 3.
+          The <tt>ResultMessage</tt> would indicate a path length of 3 as the
+          sum of the field values in <tt>PUTPATH_L</tt> and <tt>GETPATH_L</tt>.
+	  Basically, the last signature does not count for the path length.
+        </t>
+        <figure anchor="figure_path_ex" title="Example of a path as found in PutMessages or ResultMessages from Peer A to Peer D as transmitted by Peer D.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                  SIGNATURE A                  |
+|                  (64 bytes)                   |
+|                                               |
+|    (Over ZERO and PEER B signed by PEER A)    |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    PEER A                     |
+|                  (32 bytes)                   |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                  SIGNATURE B                  |
+|                  (64 bytes)                   |
+|                                               |
+|   (Over PEER A and PEER C signed by PEER B)   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    PEER B                     |
+|                  (32 bytes)                   |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                  SIGNATURE C                  |
+|                  (64 bytes)                   |
+|                                               |
+|   (Over PEER B and PEER D signed by PEER C)   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    PEER C                     |
+|                  (32 bytes)                   |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|             SIGNATURE D (last sig)            |
+|                  (64 bytes)                   |
+|                                               |
+|  (Over PEER C and receiver signed by PEER D)  |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+        </figure>
+
+        <t>
+          A path may be truncated in which case the signature of the truncated
+          path element is omitted leaving only the public key of the peer preceeding
+	  the truncation which is required for the
+          verification of the subsequent path element signature.
+          Such a truncated path is indicated with the respective
+	  truncated flag (<xref target="route_flags"/>).
+          For truncated paths, the peer public key of the signer of the last path element is
+	  again omitted as it must be that of
+          the sender of the <tt>PutMesssage</tt> or <tt>ResultMessage</tt>.  Similarly,
+	  the public key of the receiving peer used in the last path element is omitted as
+	  it must be SELF.
+          The wire format of a truncated example path from peers B over C and D to E
+          (possibly still originating at A, but the origin is unknowable to E due to truncation)
+	  is illustrated in <xref target="figure_path_ex_trunc"/>.
+          Here, a <tt>ResultMessage</tt> would indicate in the <tt>PATH_LEN</tt> field
+          a length of 1 while
+          a <tt>PutMessage</tt> would indicate a length of 1 as the sum of
+          <tt>PUTPATH_L</tt> and <tt>GETPATH_L</tt> fields.
+	  Basically, the truncated peer and the last signature do not count
+	  for the path length.
+        </t>
+        <figure anchor="figure_path_ex_trunc" title="Example of a truncated path from Peer B to Peer D as transmitted by Peer D.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|             PEER B (truncated)                |
+|                  (32 byte)                    |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                  SIGNATURE C                  |
+|                  (64 bytes)                   |
+|                                               |
+|   (Over PEER B and PEER D signed by PEER C)   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    PEER C                     |
+|                  (32 bytes)                   |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|            SIGNATURE D (last sig)             |
+|                  (64 byte)                    |
+|                                               |
+|  (Over PEER C and receiver signed by PEER D)  |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+        </figure>
+        <t>
+          The SIGNATURE field in a path element covers a 64-bit contextualization header, the
+          the block expiration, a hash of the block
+          payload, as well as the predecessor peer public key and the peer public key of the
+          successor that the peer making the signature is routing the
+	  message to.  Thus, the signature made by SELF basically says that
+          SELF received the block payload from PEER PREDECESSOR and has forwarded
+	  it to PEER SUCCESSOR.  The wire format is illustrated
+          in <xref target="figure_pathelewithpseudo"/>.
+        </t>
+        <figure anchor="figure_pathelewithpseudo" title="The Wire Format of the path element for Signing.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE         |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   EXPIRATION                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                  BLOCK HASH                   |
+|                  (64 byte)                    |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                PEER PREDECESSOR               |
+|                    (32 byte)                  |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 PEER SUCCESSOR                |
+|                    (32 byte)                  |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+        </figure>
+        <dl>
+          <dt>SIZE</dt>
+          <dd>
+            A 32-bit value containing the length of the signed data in bytes
+            in network byte order.
+            The length of the signed data <bcp14>MUST</bcp14> be 144 bytes.
+          </dd>
+          <dt>PURPOSE</dt>
+          <dd>
+            A 32-bit signature purpose flag. This field <bcp14>MUST</bcp14> be 6 (in network
+            byte order).
+          </dd>
+          <dt>EXPIRATION</dt>
+          <dd>
+            denotes the absolute 64-bit expiration date of the block
+            in microseconds since midnight (0 hour), January 1, 1970
+            UTC in network byte order.
+          </dd>
+          <dt>BLOCK HASH</dt>
+          <dd>
+            a SHA-512 hash over the block payload.
+          </dd>
+          <dt>PEER PREDECESSOR</dt>
+          <dd>
+            the peer public key of the previous hop. If the signing peer initiated
+            the PUT, this field is set to all zeroes.
+          </dd>
+          <dt>PEER SUCCESSOR</dt>
+          <dd>
+            the peer public key of the next hop (not of the signer).
+          </dd>
+        </dl>
+      </section>
+      </section>
+      <section anchor="p2p_hello" numbered="true" toc="default">
+        <name>HelloMessage</name>
+ 	<t>
+          When the underlay signals the implementation of added or
+          removed addresses through <tt>ADDRESS_ADDED</tt> and
+          <tt>ADDRESS_DELETED</tt> an implementation
+          <bcp14>MUST</bcp14> disseminate those changes to neighbors
+          using <tt>HelloMessages</tt> (as already discussed in
+          section <xref target="find_peer"/>).  <tt>HelloMessages</tt>
+          are used to inform neighbors of a peer about the sender's
+          available addresses. The recipients use these messages to
+          inform their respective underlays about ways to sustain the
+          connections and to generate <tt>HELLO</tt> blocks (see <xref
+          target="hello_block"/>) to answer peer discovery queries
+          from other peers.
+        </t>
+        <section anchor="p2p_hello_wire">
+          <name>Wire Format</name>
+          <figure anchor="figure_hellomsg" title="The HelloMessage Wire Format.">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|   MSIZE   |   MTYPE   |  VERSION  | NUM_ADDRS |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    SIGNATURE                  /
+/                   (64 bytes)                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    EXPIRATION                 |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/          ADDRESSES (variable length)          /
++-----+-----+-----+-----+-----+-----+-----+-----+
+]]></artwork>
+          </figure>
+          <t>where:</t>
+          <dl>
+            <dt>MSIZE</dt>
+            <dd>
+              denotes the size of this message in network byte order.
+            </dd>
+            <dt>MTYPE</dt>
+            <dd>
+              is the 16-bit message type.
+              It must be set to
+              the value 157 in network byte order as defined in the GANA "GNUnet Message Type" registry
+              (see <xref target="gana_message_type"/>).
+            </dd>
+            <dt>VERSION</dt>
+            <dd>
+              is a 16-bit field that indicates the version of the <tt>HelloMessage</tt>. Must be zero.
+              In the future, this may be used to extend or update the <tt>HelloMessage</tt> format.
+            </dd>
+            <dt>NUM_ADDRS</dt>
+            <dd>
+              is a 16-bit number in network byte order that gives the
+              total number of addresses encoded in the
+              <tt>ADDRESSES</tt> field.
+            </dd>
+            <dt>SIGNATURE</dt>
+            <dd>
+              is a 64 byte EdDSA signature <xref target="ed25519"/> using the sender's private
+              key affirming the information contained in the message.
+              The signature is signing exactly the same data that is being
+              signed in a <tt>HELLO</tt> block as described in <xref target="hello_block"/>.
+            </dd>
+            <dt>EXPIRATION</dt>
+            <dd>
+              denotes the absolute 64-bit expiration date of the content.
+              The value specified is microseconds since midnight (0 hour),
+              January 1, 1970, but must be a multiple of one million
+              (so that it can be represented in seconds in a <tt>HELLO</tt> URL).
+              Stored in network byte order.
+            </dd>
+            <dt>ADDRESSES</dt>
+            <dd>
+              A sequence of exactly <tt>NUM_ADDRS</tt>
+              addresses which can be used to contact the peer.
+              Each address <bcp14>MUST</bcp14> be 0-terminated.
+              If <tt>NUM_ADDRS = 0</tt> then this field is omitted (0 bytes).
+            </dd>
+          </dl>
+        </section>
+        <section anchor="p2p_hello_processing">
+          <name>Processing</name>
+          <t>
+            If the initiator of a <tt>HelloMessage</tt> is <tt>SELF</tt>, the message
+            is simply sent to all neighbors <tt>P</tt> currently in the routing table
+            using the <tt>SEND()</tt> function of the underlay as defined in
+            <xref target="underlay"/>.
+          </t>
+          <t>
+            Upon receiving a <tt>HelloMessage</tt> from a peer <tt>P</tt>
+            an implementation <bcp14>MUST</bcp14> process it step by step as follows:
+          </t>
+          <ol>
+            <li>
+              If <tt>P</tt> is not in its routing table, the message is discarded.
+            </li>
+            <li>
+              The signature is verified, including a check that the expiration time
+              is in the future. If the signature is invalid, the message is discarded.
+            </li>
+            <li>
+              The information contained in the <tt>HelloMessage</tt>
+              is used to synthesize a block of type <tt>HELLO</tt>
+              (<xref target="hello_block"/>).  The block is cached in
+              the routing table until it expires, or the peer is
+              removed from the routing table, or the information is
+              replaced by another message from the peer.  The
+              implementation <bcp14>SHOULD</bcp14> instruct the
+              underlay to connect to all now available addresses using
+              <tt>TRY_CONNECT()</tt> in order to make the underlay
+              aware of alternative addresses for this connection and
+              to maintain optimal connectivity.
+            </li>
+            <li>
+              Received <tt>HelloMessages</tt> <bcp14>MUST NOT</bcp14>
+              be forwarded.
+            </li>
+          </ol>
+        </section>
+      </section>
+      <section anchor="p2p_put" numbered="true" toc="default">
+        <name>PutMessage</name>
+	<t>
+	  <tt>PutMessages</tt> are used to store information at other
+	  peers in the DHT.  Any application-facing API which allows
+	  applications to initiate <tt>PutMessages</tt> to store data
+	  in the DHT needs to receive sufficient, possibly
+	  implementation-specific information to construct the initial
+	  <tt>PutMessage</tt>.  In general, application-facing APIs
+	  supporting multiple applications and block types need to be
+	  given the block type (<tt>BTYPE</tt>) and message
+	  <tt>FLAGS</tt> in addition to the actual <tt>BLOCK</tt>
+	  payload. The <tt>BLOCK_KEY</tt> could be provided
+	  explicitly, or in some cases might be derived using the
+	  <tt>DeriveBlockKey()</tt> function from the block type
+	  specific operations defined in <xref
+	  target="block_functions"/>.
+	</t>
+        <section anchor="p2p_put_wire">
+          <name>Wire Format</name>
+          <figure anchor="figure_putmsg" title="The PutMessage Wire Format.">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|   MSIZE   |   MTYPE   |         BTYPE         |
++-----+-----+-----+-----+-----+-----+-----+-----+
+| VER |FLAGS| HOPCOUNT  | REPL_LVL  | PATH_LEN  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   EXPIRATION                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     PEER_BF                   /
+/                   (128 byte)                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    BLOCK_KEY                  /
+/                    (64 byte)                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/       TRUNCATED ORIGIN (0 or 32 bytes)        /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/           PUTPATH (variable length)           /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/      LAST HOP SIGNATURE (0 or 64 bytes)       /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/            BLOCK (variable length)            /
++-----+-----+-----+-----+-----+-----+-----+-----+
+]]></artwork>
+          </figure>
+          <t>where:</t>
+          <dl>
+            <dt>MSIZE</dt>
+            <dd>
+              denotes the size of this message in network byte order.
+            </dd>
+            <dt>MTYPE</dt>
+            <dd>
+              is the 16-bit message type. Read-only.  It must be set
+              to the value 146 in network byte order as defined in the
+              GANA "GNUnet Message Type" registry <xref
+              target="gana_message_type"/>.
+            </dd>
+            <dt>BTYPE</dt>
+            <dd>
+              is a 32-bit block type in network byte order.  The block
+              type indicates the content type of the payload.  Set by
+              the initiator. Read-only.
+            </dd>
+            <dt>VER</dt>
+            <dd>
+              is a 8-bit protocol version.
+              Set to zero. May be used in future protocol versions.
+            </dd>
+            <dt>FLAGS</dt>
+            <dd>
+              is a 8-bit vector with binary options (see <xref target="route_flags"/>).
+              Set by the initiator. Read-only.
+            </dd>
+            <dt>HOPCOUNT</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating how
+              many hops this message has traversed to far.  Set by the
+              initiator to zero.  <bcp14>MUST</bcp14> be incremented by one
+              by each peer before forwarding the request.
+            </dd>
+            <dt>REPL_LVL</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              desired replication level of the data.  Set by the
+              initiator. Read-only.
+            </dd>
+            <dt>PATH_LEN</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              number of path elements recorded in <tt>PUTPATH</tt>.  As <tt>PUTPATH</tt>
+              is optional, this value may be zero.  If the <tt>PUTPATH</tt> is
+              enabled, set initially to zero by the initiator.  Updated
+              by processing peers to match the path length in the
+              message.
+            </dd>
+            <dt>EXPIRATION</dt>
+            <dd>
+              denotes the absolute 64-bit expiration date of the
+              content in microseconds since midnight (0 hour), January
+              1, 1970 in network byte order.  Set by the
+              initiator. Read-only.
+            </dd>
+            <dt>PEER_BF</dt>
+            <dd>
+              A peer Bloom filter to stop circular routes (see <xref
+              target="routing_bloomfilter"/>).  Set by the initiator
+              to contain the local peer and all neighbors it is
+              forwarded to.  Modified by processing peers to include
+              their own peer public key using <tt>BF-SET()</tt>.
+            </dd>
+            <dt>BLOCK_KEY</dt>
+            <dd>
+              The key under which the <tt>PutMessage</tt> wants to store content
+              under.
+              Set by the initiator. Read-only.
+            </dd>
+            <dt>TRUNCATED ORIGIN</dt>
+            <dd>
+              is only provided if the <tt>Truncated</tt> flag is set
+              in <tt>FLAGS</tt>. If present, this is the public key of
+              the peer just before the first entry on the
+              <tt>PUTPATH</tt> and the first peer on the
+              <tt>PUTPATH</tt> is not the actual origin of the
+              message.  Thus, to verify the first signature on the
+              <tt>PUTPATH</tt>, this public key must be used.  Note
+              that due to the truncation, this last hop cannot be
+              verified to exist.  Value is modified by processing
+              peers.
+            </dd>
+            <dt>PUTPATH</dt>
+            <dd>
+              the variable-length <tt>PUT</tt> path.
+              The path consists of a list of <tt>PATH_LEN</tt> path elements.
+              Set by the initiator to zero.
+              Incremented by processing peers.
+            </dd>
+            <dt>LAST HOP SIGNATURE</dt>
+            <dd>
+              is only provided if the <tt>RecordRoute</tt> flag
+              is set in <tt>FLAGS</tt>. If present, this is
+              an EdDSA signature <xref target="ed25519"/> by the sender of this message
+              (using the same format as the signatures in PUTPATH)
+              affirming that the sender forwarded the message from
+              the predecessor (all zeros if <tt>PATH_LEN</tt> is zero,
+              otherwise the last peer in <tt>PUTPATH</tt>) to
+              the target peer.
+              Modified by processing peers (if flag is set).
+            </dd>
+            <dt>BLOCK</dt>
+            <dd>
+              the variable-length block payload. The contents are
+              determined by the <tt>BTYPE</tt> field.  The length is
+              determined by <tt>MSIZE</tt> minus the size of all of
+              the other fields.  Set by the initiator. Read-only.
+            </dd>
+          </dl>
+        </section>
+        <section anchor="p2p_put_processing">
+          <name>Processing</name>
+          <t>
+            Upon receiving a <tt>PutMessage</tt> from a peer <tt>P</tt>,
+            or created through initiation by an overlay API,
+            an implementation <bcp14>MUST</bcp14> process it step by step as follows:
+          </t>
+          <ol>
+            <li>
+              The <tt>EXPIRATION</tt> field is evaluated.
+              If the message is expired, it <bcp14>MUST</bcp14> be discarded.
+            </li>
+            <li>
+              If the <tt>BTYPE</tt> is <tt>ANY</tt>, then the message
+              <bcp14>MUST</bcp14> be discarded.  If the <tt>BTYPE</tt>
+              is not supported by the implementation, no validation of
+              the block payload is performed and processing continues
+              at (5).  Else, the block <bcp14>MUST</bcp14> be
+              validated as defined in (3) and (4).
+            </li>
+            <li>
+              The message is evaluated using the block validation
+              functions matching the <tt>BTYPE</tt>. First, the client
+              attempts to derive the key using the respective
+              <tt>DeriveBlockKey</tt> procedure as described in <xref
+              target="block_functions"/>.  If a key can be derived and
+              does not match, the message <bcp14>MUST</bcp14> be
+              discarded.
+	    </li>
+	    <li>
+	      Next, the <tt>ValidateBlockStoreRequest</tt> procedure
+	      for the <tt>BTYPE</tt> as described in <xref
+	      target="block_functions"/> is used to validate the block
+	      payload. If the block payload is invalid, the message
+	      <bcp14>MUST</bcp14> be discarded.
+            </li>
+            <li>
+              The peer identity of the sender peer <tt>P</tt>
+              <bcp14>SHOULD</bcp14> be in <tt>PEER_BF</tt>.  If not,
+              the implementation <bcp14>MAY</bcp14> log an error, but
+              <bcp14>MUST</bcp14> continue.
+            </li>
+            <li>
+              If the <tt>RecordRoute</tt> flag is not set, the
+              <tt>PATH_LEN</tt> <bcp14>MUST</bcp14> be set to zero.
+              If the flag is set and <tt>PATH_LEN</tt> is non-zero,
+              the local peer <bcp14>SHOULD</bcp14> verify the
+              signatures from the <tt>PUTPATH</tt>.  Verification
+              <bcp14>MAY</bcp14> involve checking all signatures or
+              any random subset of the signatures.  It is
+              <bcp14>RECOMMENDED</bcp14> that peers adapt their
+              behavior to available computational resources so as to
+              not make signature verification a bottleneck.  If an
+              invalid signature is found, the <tt>PUTPATH</tt>
+              <bcp14>MUST</bcp14> be truncated to only include the
+              elements following the invalid signature.
+            </li>
+            <li>
+              If the local peer is the closest peer
+              (cf. <tt>IsClosestPeer(SELF, BLOCK_KEY,
+              PeerFilter)</tt>) or the <tt>DemultiplexEverywhere</tt>
+              flag ist set, the message <bcp14>SHOULD</bcp14> be
+              stored locally in the block storage if possible.  The
+              implementation <tt>MAY</tt> choose not store the block
+              if external factors or configurations prevent this, such
+              as limited (allotted) disk space.
+            </li>
+            <li>
+              If the <tt>BTYPE</tt> of the message indicates a
+              <tt>HELLO</tt> block, the peer <bcp14>MUST</bcp14> be
+              considered for the local routing table by using the peer
+              identity in <tt>BLOCK_KEY</tt>.  If neither the peer is
+              already connected nor the respective k-bucket is already
+              full, then the peer <bcp14>MUST</bcp14> try to establish
+              a connection to the peer indicated in the <tt>HELLO</tt>
+              block using the address information from the
+              <tt>HELLO</tt> block and the underlay's
+              <tt>TRY_CONNECT()</tt> function.  The implementation
+              <bcp14>MUST</bcp14> instruct the underlay to try to
+              connect to all provided addresses using
+              <tt>TRY_CONNECT()</tt> in order to make the underlay
+              aware of multiple addresses for this connection.  When a
+              connection can be established, the underlay's
+              <tt>PEER_CONNECTED</tt> signal will cause the peer to be
+              added to the respective k-bucket of the routing table
+              (<xref target="routing"/>).
+            </li>
+            <li>
+              Given the value in <tt>REPL_LVL</tt>, <tt>HOPCOUNT</tt>
+              and <tt>FALSE = IsClosestPeer(SELF, BLOCK_KEY,
+              PeerFilter)</tt> the number of peers to forward to
+              <bcp14>MUST</bcp14> be calculated using
+              <tt>ComputeOutDegree()</tt>.  The implementation
+              <bcp14>SHOULD</bcp14> select this number of peers
+              to forward the message to using the function
+              <tt>SelectPeer()</tt> (<xref
+              target="routing_functions"/>) using the
+              <tt>BLOCK_KEY</tt>, <tt>HOPCOUNT</tt>, and utilizing
+              <tt>PEER_BF</tt> as peer Bloom filter.  For each
+              selected peer <tt>PEER_BF</tt> is updated with that peer
+              in between calls to <tt>SelectPeer()</tt>.  The
+              implementation <bcp14>MAY</bcp14> forward to fewer or no
+              peers in order to handle resource constraints such as
+              limited bandwidth or simply because there are not enough
+              suitable connected peers.  For each selected peer with
+              peer identity <tt>P</tt> a dedicated
+              <tt>PutMessage_P</tt> is created containing the original
+              (and where applicable already updated) fields of the
+              received <tt>PutMessage</tt>.  In each message
+              <em>all</em> selected peer identities and the local peer
+              identity <bcp14>MUST</bcp14> be added to the
+              <tt>PEER_BF</tt> and the <tt>HOPCOUNT</tt>
+              <bcp14>MUST</bcp14> be incremented by one.  If the
+              <tt>RecordRoute</tt> flag is set, a new path element is
+              created using the predecessor peer public key and the
+              signature of the current peer.  The path element is
+              added to the <tt>PUTPATH</tt> fields and the
+              <tt>PATH_LEN</tt> field is incremented by one.  When
+              creating the path element signature, the successor must
+              be set to the recipient peer <tt>P</tt> of the
+              <tt>PutMessage_P</tt>.  The successor in the new path
+              element is the recipient peer <tt>P</tt>.  If the path
+              becomes too long for the resulting message to be
+              transmitted by the underlay, it <bcp14>MUST</bcp14> be
+              truncated.  Finally, the messages are sent using
+              <tt>SEND(P, PutMessage_P)</tt> to each recipient.
+            </li>
+          </ol>
+        </section>
+      </section>
+      <section anchor="p2p_get" numbered="true" toc="default">
+        <name>GetMessage</name>
+	<t>
+	  <tt>GetMessages</tt> are used to request information from
+	  other peers in the DHT.  An application-level API which
+	  allows applications to initiate <tt>GetMessages</tt> needs
+	  to provide sufficient, implementation-specific information
+	  needed to construct the initial <tt>GetMessage</tt>.  For
+	  example, implementations supporting multiple applications
+	  and blocks will need to be given the block type, message
+	  <tt>FLAG</tt> parameters and possibly an <tt>XQUERY</tt> in
+	  addition to just the <tt>QUERY_HASH</tt>. In some cases, it
+	  might also be useful to enable the application to assist in
+	  the construction of the <tt>RESULT_FILTER</tt> such that it
+	  can filter already known results.  Note that the
+	  <tt>RESULT_FILTER</tt> may need to be re-constructed every
+	  time the query is retransmitted by the initiator (details
+	  depending on the <tt>BTYPE</tt>) and thus a
+	  <tt>RESULT_FILTER</tt> can often not be passed directly as
+	  an argument by the application to an application API.
+	  Instead, applications would typically provide the set of
+	  results to be filtered, allowing the DHT to construct the
+	  <tt>RESULT_FILTER</tt> whenever it retransmits a
+	  <tt>GetMessage</tt> request as initiator.
+        </t>
+        <section anchor="p2p_get_wire">
+          <name>Wire Format</name>
+          <figure anchor="figure_getmsg" title="The GetMessage Wire Format.">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|   MSIZE   |   MTYPE   |         BTYPE         |
++-----+-----+-----+-----+-----+-----+-----+-----+
+| VER |FLAGS|  HOPCOUNT | REPL_LVL  |  RF_SIZE  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    PEER_BF                    /
+/                   (128 byte)                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   QUERY_HASH                  /
+/                   (64 byte)                   |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RESULT_FILTER                 /
+/               (variable length)               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/            XQUERY (variable length)           /
++-----+-----+-----+-----+-----+-----+-----+-----+
+]]></artwork>
+          </figure>
+          <t>where:</t>
+          <dl>
+            <dt>MSIZE</dt>
+            <dd>
+              denotes the size of this message in network byte order.
+            </dd>
+            <dt>MTYPE</dt>
+            <dd>
+              is the 16-bit message type. Read-only.  It must be set
+              to the value 147 in network byte order as defined in the
+              GANA "GNUnet Message Type" registry <xref
+              target="gana_message_type"/>.
+            </dd>
+            <dt>BTYPE</dt>
+            <dd>
+              is a 32-bit block type field in network byte order. The
+              block type indicates the content type of the
+              payload. Set by the initiator. Read-only.
+            </dd>
+            <dt>VER</dt>
+            <dd>
+              is a 8-bit protocol version.
+              Set to zero. May be used in future protocol versions.
+            </dd>
+            <dt>FLAGS</dt>
+            <dd>
+              is a 8-bit vector with binary options (see <xref target="route_flags"/>).
+              Set by the initiator. Read-only.
+            </dd>
+            <dt>HOPCOUNT</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating how
+              many hops this message has traversed to far.  Set by the
+              initiator to zero.  Incremented by each peer by one
+              per hop.
+            </dd>
+            <dt>REPL_LVL</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              desired replication level of the data.  Set by the
+              initiator. Read-only.
+            </dd>
+            <dt>RF_SIZE</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              length of the <tt>RESULT_FILTER</tt>.  Set by the
+              initiator. Read-only.
+            </dd>
+            <dt>PEER_BF</dt>
+            <dd>
+              A peer Bloom filter to stop circular routes (see <xref target="routing_bloomfilter"/>).
+              Set by the initiator to include itself and all connected neighbors in the routing table.
+              Modified by processing peers to include their own peer identity.
+            </dd>
+            <dt>QUERY_HASH</dt>
+            <dd>
+              The query used to indicate what the key is under which
+              the initiator is looking for blocks with this request.
+              The block type may use a different evaluation logic to
+              determine applicable result blocks.  Set by the
+              initiator. Read-only.
+            </dd>
+            <dt>RESULT_FILTER</dt>
+            <dd>
+              the variable-length result filter with <tt>RF_SIZE</tt>
+              bytes as described in <xref target="result_filter"/>.
+              Set by the initiator.  Modified by processing peers
+              based on results returned.
+            </dd>
+            <dt>XQUERY</dt>
+            <dd>
+              the variable-length extended query. Optional.
+              Set by the initiator. Read-only. The length is
+              determined by subtracting the length of all
+              other fields from <tt>MSIZE</tt>.
+            </dd>
+          </dl>
+        </section>
+	<section anchor="result_filter">
+          <name>Result Filter</name>
+	  <t>
+            A result filter is used to indicate to other peers which
+            results are not of interest when processing a
+            <tt>GetMessage</tt> (<xref target="p2p_get"/>).  Any peer
+            which is processing <tt>GetMessages</tt> and has a result
+            which matches the query key <bcp14>MUST</bcp14> check the
+            result filter and only send a reply message if the result
+            does not test positive under the result filter. Before
+            forwarding the <tt>GetMessage</tt>, the result filter
+            <bcp14>MUST</bcp14> be updated using the result of the
+            <tt>BTYPE</tt>-specific <tt>FilterResult</tt> (see <xref
+            target="block_functions"/>) function to filter out all
+            results already returned by the local peer.
+          </t>
+	  <t>
+            How a result filter is implemented depends on the block type
+	    as described in <xref target="block_functions"/>.
+	    Result filters may be probabilistic data structures. Thus,
+	    it is possible that a desireable result is filtered by a result
+	    filter because of a false-positive test.
+          </t>
+          <t>
+	    How exactly a block result is added to a result filter is
+	    specified as part of the definition of a block type
+	    (cf. <xref target="hello_block"/>).
+          </t>
+        </section>
+        <section anchor="p2p_get_processing">
+          <name>Processing</name>
+          <t>
+            Upon receiving a <tt>GetMessage</tt> from a peer <tt>P</tt>, or
+            created through initiation by the overlay API, an
+            implementation <bcp14>MUST</bcp14> process it step by step as follows:
+          </t>
+          <ol>
+            <li>
+              If the <tt>BTYPE</tt> is supported, the
+              <tt>QUERY_HASH</tt> and <tt>XQUERY</tt> fields are
+              validated as defined by the respective
+              <tt>ValidateBlockQuery()</tt> procedure for this type.  If
+              the result yields <tt>REQUEST_INVALID</tt>, the message
+              <bcp14>MUST</bcp14> be discarded and processing ends.
+              If the <tt>BTYPE</tt> is not supported, the message
+              <bcp14>MUST</bcp14> be forwarded (Skip to step 4).  If
+              the <tt>BTYPE</tt> is <tt>ANY</tt>, the message is
+              processed further without validation.
+            </li>
+            <li>
+              The peer identity of the sender peer <tt>P</tt>
+              <bcp14>SHOULD</bcp14> be in the <tt>PEER_BF</tt> peer
+              Bloom filter. If not, the implementation
+              <bcp14>MAY</bcp14> log an error, but <bcp14>MUST</bcp14>
+              continue.
+            </li>
+            <li>
+              <t>
+                The local peer <bcp14>SHOULD</bcp14> try to produce a
+                reply in any of the following cases: (1) If the local
+                peer is the closest peer (cf. <tt>IsClosestPeer(SELF,
+                QueryHash, PeerFilter)</tt>, or (2) if the
+                <tt>DemultiplexEverywhere</tt> flag is set, or (3) if
+                the local peer is not the closest and a previously
+                cached <tt>ResultMessage</tt> also matches this
+                request (<xref target="p2p_result_processing"/>).
+              </t>
+              <t>
+                The reply is produced (if one is available) using the following
+                steps:
+              </t>
+              <ol type="%c)">
+                <li>
+                  If the <tt>BTYPE</tt> is <tt>HELLO</tt>, the
+                  implementation <bcp14>MUST</bcp14> only consider
+                  synthesizing its own addresses and the addresses it
+                  has cached for the peers in its routing table as
+                  <tt>HELLO</tt> block replies.  Otherwise, if the
+                  <tt>BTYPE</tt> does not indicate a request for a
+                  <tt>HELLO</tt> block or <tt>ANY</tt>, the
+                  implementation <bcp14>MUST</bcp14> only consider
+                  blocks in the local block storage and previously
+                  cached <tt>ResultMessages</tt>.
+                </li>
+                <li>
+                  If the <tt>FLAGS</tt> field includes the flag
+                  <tt>FindApproximate</tt>, the peer
+                  <bcp14>SHOULD</bcp14> respond with the closest block
+                  (smallest value of <tt>GetDistance(QUERY_HASH,
+                  BLOCK_KEY)</tt>) it can find that is not filtered by
+                  the <tt>RESULT_BF</tt>.  Otherwise, the peer
+                  <bcp14>MUST</bcp14> respond with the block with a
+                  <tt>BLOCK_KEY</tt> that matches the
+                  <tt>QUERY_HASH</tt> exactly and that is not filtered
+                  by the <tt>RESULT_BF</tt>.
+                </li>
+                <li>
+                  Any resulting (synthesized) block is encapsulated in
+                  a <tt>ResultMessage</tt>.  The
+                  <tt>ResultMessage</tt> <bcp14>SHOULD</bcp14> be
+                  transmitted to the neighbor from which the request
+                  was received.
+                </li>
+              </ol>
+	      <t>
+                Implementations <bcp14>MAY</bcp14> not reply if they
+                are resource-constrained.  However,
+                <tt>ResultMessages</tt> <bcp14>MUST</bcp14> be given
+                the highest priority among competing transmissions.
+              </t>
+              <t>
+	       If the <tt>BTYPE</tt> is supported and
+	       <tt>ValidateBlockReply</tt> for the given query has
+	       yielded a status of <tt>FILTER_LAST</tt>, processing
+	       <bcp14>MUST</bcp14> end and not continue with
+	       forwarding of the request to other peers.
+              </t>
+            </li>
+            <li>
+              The implementation <tt>MUST</tt> create (or merge) an
+              entry in the pending table (see <xref
+              target="pending_table"/>) for the query represented by
+              this <tt>GetMessage</tt>.  The pending table
+              <bcp14>MUST</bcp14> store the last <tt>MAX_RECENT</tt>
+              requests, and peers thus <bcp14>MUST</bcp14> discard the
+              oldest existing request if memory constraints on the
+              pending table are encountered. Note that peers
+              <bcp14>MUST</bcp14> clean up state for queries that had
+              response with a status of <tt>FILTER_LAST</tt> even if
+              they are not the oldest query in the pending table.
+            </li>
+            <li>
+              Using the value in <tt>REPL_LVL</tt>, the number of
+              peers to forward to <bcp14>MUST</bcp14> be calculated
+              using <tt>ComputeOutDegree()</tt>.  If there is at least
+              one peer to forward to, the implementation
+              <bcp14>SHOULD</bcp14> select up to this number of peers
+              to forward the message to. Furthermore, the
+              implementation <bcp14>SHOULD</bcp14> select up to this
+              number of peers to using the function
+              <tt>SelectPeer()</tt> (from <xref
+              target="routing_functions"/>) using the
+              <tt>QUERY_HASH</tt>, <tt>HOPCOUNT</tt>, and the
+              <tt>PEER_BF</tt>.  The implementation <bcp14>MAY</bcp14>
+              forward to fewer or no peers in order to handle resource
+              constraints such as bandwidth.  Before forwarding, the
+              peer Bloom filter <tt>PEER_BF</tt> <bcp14>MUST</bcp14>
+              be updated to filter all selected peers and the local
+              peer identity <tt>SELF</tt>.  For all peers with peer
+              identity <tt>P</tt> chosen to forward the message to,
+              <tt>SEND(P, GetMessage_P)</tt> is called.  Here,
+              <tt>GetMessage_P</tt> is the original message with the
+              updated fields for <tt>HOPCOUNT</tt> (incremented by
+              one), updated <tt>PEER_BF</tt> and updated
+              <tt>RESULT_FILTER</tt> (based on results already
+              returned).
+            </li>
+          </ol>
+        </section>
+      </section>
+      <section anchor="p2p_result" numbered="true" toc="default">
+        <name>ResultMessage</name>
+	<t>
+	  <tt>ResultMessages</tt> are used to return information to
+	  other peers in the DHT or to applications using the overlay
+	  API that previously initiated a <tt>GetMessage</tt>.  The
+	  initiator of a <tt>ResultMessage</tt> is a peer triggered
+	  through the processing of a <tt>GetMessage</tt>.
+	</t>
+        <section anchor="p2p_result_wire">
+          <name>Wire Format</name>
+          <figure anchor="figure_resmsg" title="The ResultMessage Wire Format">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|   MSIZE   |   MTYPE   |        BTYPE          |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  RESERVED | VER |FLAGS| PUTPATH_L | GETPATH_L |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   EXPIRATION                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   QUERY_HASH                  /
+/                   (64 byte)                   |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/       TRUNCATED ORIGIN (0 or 32 bytes)        /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                    PUTPATH                    /
+/                (variable length)              /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                    GETPATH                    /
+/                (variable length)              /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/      LAST HOP SIGNATURE (0 or 64 bytes)       /
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                     BLOCK                     /
+/               (variable length)               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+]]></artwork>
+          </figure>
+          <t>where:</t>
+          <dl>
+            <dt>MSIZE</dt>
+            <dd>
+              denotes the size of this message in network byte order.
+            </dd>
+            <dt>MTYPE</dt>
+            <dd>
+              is the 16-bit message type. Set by the
+              initiator. Read-only.  It must be set to the value 148
+              in network byte order as defined in the GANA "GNUnet
+              Message Type" registry (see <xref
+              target="gana_message_type"/>).
+            </dd>
+            <dt>BTYPE</dt>
+            <dd>
+              is a 32-bit block type field in network byte order. The
+              block type indicates the content type of the payload.
+              Set by the initiator. Read-only.
+            </dd>
+            <dt>RESERVED</dt>
+            <dd>
+              is a 16-bit value. Implementations <bcp14>MUST</bcp14>
+              set this value to zero when originating a result message.
+              Implementations <bcp14>MUST</bcp14> forward
+              this value unchanged even if it is non-zero.
+            </dd>
+            <dt>VER</dt>
+            <dd>
+              is a 8-bit protocol version in network byte order.
+              Set to zero. May be used in future protocol versions.
+            </dd>
+            <dt>FLAGS</dt>
+            <dd>
+              is a 8-bit vector with binary options (see <xref
+              target="route_flags"/>).  Set by the initiator of the
+              response based on the flags retained from the original
+              <tt>PutMessage</tt>, possibly setting the
+              <tt>Truncated</tt> bit if the initiator is forced to
+              truncate the path.  For <tt>HELLO</tt> blocks, the
+              <tt>FLAGS</tt> should simply be cleared.
+            </dd>
+            <dt>PUTPATH_L</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              number of path elements recorded in <tt>PUTPATH</tt>. As
+              <tt>PUTPATH</tt> is optional, this value may be zero
+              even if the message has traversed several peers.  Set by
+              the initiator to the <tt>PATH_LEN</tt> of the
+              <tt>PutMessage</tt> from which the block originated.
+              Modified by processing peers in case of path truncation.
+            </dd>
+            <dt>GETPATH_L</dt>
+            <dd>
+              is a 16-bit number in network byte order indicating the
+              number of path elements recorded in <tt>GETPATH</tt>. As
+              <tt>GETPATH</tt> is optional, this value may be zero
+              even if the message has traversed several peers.
+              <bcp14>MUST</bcp14> be set to zero by the initiator.
+              Modified by processing peers to match the path length in
+              the message.
+            </dd>
+            <dt>EXPIRATION</dt>
+            <dd>
+              denotes the absolute 64-bit expiration date of the
+              content in microseconds since midnight (0 hour), January
+              1, 1970 in network byte order.  Set by the initiator to
+              the expiration value as recorded from the
+              <tt>PutMessage</tt> from which the block originated.
+              Read-only.
+            </dd>
+            <dt>QUERY_HASH</dt>
+            <dd>
+              the query hash corresponding to the <tt>GetMessage</tt>
+              which caused this reply message to be sent.  Set by the
+              initiator using the value of the <tt>GetMessage</tt>.
+              Read-only.
+            </dd>
+            <dt>TRUNCATED ORIGIN</dt>
+            <dd>
+              is only provided if the <tt>Truncated</tt> flag is set
+              in <tt>FLAGS</tt>. If present, this is the public key of
+              the peer just before the first entry on the
+              <tt>PUTPATH</tt> and the first peer on the
+              <tt>PUTPATH</tt> is not the actual origin of the
+              message.  Thus, to verify the first signature on the
+              <tt>PUTPATH</tt>, this public key must be used.  Note
+              that due to the truncation, this last hop cannot be
+              verified to exist.  Set by processing peers.
+            </dd>
+            <dt>PUTPATH</dt>
+            <dd>
+              the variable-length PUT path.  The path consists of a
+              list of <tt>PUTPATH_L</tt> path elements.  Set by the
+              initiator to the the <tt>PUTPATH</tt> of the
+              <tt>PutMessage</tt> from which the block originated.
+              Modified by processing peers in case of path truncation.
+            </dd>
+            <dt>GETPATH</dt>
+            <dd>
+              the variable-length PUT path.  The path consists of a
+              list of <tt>GETPATH_L</tt> path elements.  Set by
+              processing peers.
+            </dd>
+            <dt>LAST HOP SIGNATURE</dt>
+            <dd>
+              is only provided if the <tt>RecordRoute</tt> flag is set
+              in <tt>FLAGS</tt>. If present, this is an EdDSA
+              signature <xref target="ed25519"/> by the sender of this
+              message (using the same format as the signatures in
+              <tt>PUTPATH</tt>) affirming that the sender forwarded
+              the message from the predecessor (all zeros if
+              <tt>PATH_LEN</tt> is zero, otherwise the last peer in
+              <tt>PUTPATH</tt>) to the target peer.
+            </dd>
+            <dt>BLOCK</dt>
+            <dd>
+              the variable-length resource record data payload.  The
+              contents are defined by the respective type of the
+              resource record.  Set by the initiator. Read-only.
+            </dd>
+          </dl>
+        </section>
+        <section anchor="p2p_result_processing">
+          <name>Processing</name>
+          <t>
+            Upon receiving a <tt>ResultMessage</tt> from a connected
+            peer or triggered by the processing of a
+            <tt>GetMessage</tt>, an implementation <bcp14>MUST</bcp14>
+            process it step by step as follows:
+          </t>
+          <ol>
+            <li>
+              First, the <tt>EXPIRATION</tt> field is evaluated.  If
+              the message is expired, it <bcp14>MUST</bcp14> be
+              discarded.
+            </li>
+            <li>
+              If the <tt>BTYPE</tt> is supported, then the
+              <tt>BLOCK</tt> <bcp14>MUST</bcp14> be validated against
+              the requested <tt>BTYPE</tt>.  To do this, the peer
+              checks that the block is valid using
+              <tt>ValidateBlockStoreRequest</tt>.  If the result is
+              <tt>BLOCK_INVALID</tt>, the message <bcp14>MUST</bcp14>
+              be discarded.
+            </li>
+            <li>
+              If the <tt>PUTPATH_L</tt> or the <tt>GETPATH_L</tt> are
+              non-zero, the local peer <bcp14>SHOULD</bcp14> verify
+              the signatures from the <tt>PUTPATH</tt> and the
+              <tt>GETPATH</tt>.  Verification <bcp14>MAY</bcp14>
+              involve checking all signatures or any random subset of
+              the signatures.  It is <bcp14>RECOMMENDED</bcp14> that
+              peers adapt their behavior to available computational
+              resources so as to not make signature verification a
+              bottleneck.  If an invalid signature is found, the path
+              <bcp14>MUST</bcp14> be truncated to only include the
+              elements following the invalid signature.  In
+              particular, any invalid signature on the
+              <tt>GETPATH</tt> will cause <tt>PUTPATH_L</tt> to be set
+              to zero.
+            </li>
+	    <li>
+	      The peer also attempts to compute the key using
+	      <tt>DeriveBlockKey</tt>.  This may result in
+	      <tt>NONE</tt>.  The result is used later.  Note that
+	      even if a key was computed, it does not have to match
+	      the <tt>QUERY_HASH</tt>.
+	    </li>
+            <li>
+              If the <tt>BTYPE</tt> of the message indicates a
+              <tt>HELLO</tt> block, the peer <bcp14>SHOULD</bcp14> be
+              considered for the local routing table by using the peer
+              identity computed from the block using
+              <tt>DeriveBlockKey</tt>.  An implementation
+              <bcp14>MAY</bcp14> choose to ignore the <tt>HELLO</tt>,
+              for example because the routing table or the respective
+              k-bucket is already full.  If the peer is a suitable
+              candidate for insertion, the local peer
+              <bcp14>MUST</bcp14> try to establish a connection to the
+              peer indicated in the <tt>HELLO</tt> block using the
+              address information from the <tt>HELLO</tt> block and
+              the underlay's <tt>TRY_CONNECT()</tt> function.  The
+              implementation <bcp14>MUST</bcp14> instruct the underlay
+              to connect to all provided addresses using
+              <tt>TRY_CONNECT()</tt> in order to make the underlay
+              aware of multiple addresses for this connection.  When a
+              connection is established, the signal
+              <tt>PEER_CONNECTED</tt> will cause the peer to be added
+              to the respective k-bucket of the routing table (see
+              <xref target="routing"/>).
+            </li>
+            <li>
+              If the <tt>QUERY_HASH</tt> of this
+              <tt>ResultMessage</tt> does not match an entry in the
+              pending table (<xref target="pending_table"/>), then the
+              message is discarded and processing ends.  Otherwise,
+              processing continues for each entry in the table as
+              follows.
+            </li>
+            <li>
+	      <ol type="%c)">
+		<li>
+		  If the <tt>FindApproximate</tt> flag was not set in
+		  the query and the <tt>BTYPE</tt> enabled the
+		  implementation to compute the key from the block,
+		  the computed key must exactly match the
+		  <tt>QUERY_HASH</tt>, otherwise the result does not
+		  match the pending query and processing continues
+		  with the next pending table entry.
+                </li>
+		<li>
+                  If the <tt>BTYPE</tt> is supported, result block
+                  <bcp14>MUST</bcp14> be validated against the
+                  specific query using the respective
+                  <tt>FilterBlockResult</tt> function. This function
+                  <bcp14>MUST</bcp14> update the result filter if a
+                  result is returned to the originator of the query.
+                </li>
+	        <li>
+		  If the <tt>BTYPE</tt> is not supported, filtering of
+		  exact duplicate replies <bcp14>MUST</bcp14> still be
+		  performed before forwarding the reply.  Such
+		  duplicate filtering <bcp14>MAY</bcp14> be
+		  implemented probabilistically, for example using a
+		  Bloom filter.  The result of this duplicate
+		  filtering is always either <tt>FILTER_MORE</tt> or
+		  <tt>FILTER_DUPLICATE</tt>.
+                </li>
+		<li>
+		  If the <tt>RecordRoute</tt> flag is set in
+		  <tt>FLAGS</tt>, the local peer identity
+		  <bcp14>MUST</bcp14> be appended to the
+		  <tt>GETPATH</tt> of the message and the respective
+		  signature <bcp14>MUST</bcp14> be set using the query
+		  origin as the <tt>PEER SUCCESSOR</tt> and the
+		  response origin as the <tt>PEER PREDECESSOR</tt>.
+		  If the flag is not set, the <tt>GETPATH_L</tt> and
+		  <tt>PUTPATH_L</tt> <bcp14>MUST</bcp14> be set to
+		  zero when forwarding the result.
+                </li>
+                <li>
+		  If the result filter result is either
+		  <tt>FILTER_MORE</tt> or <tt>FILTER_LAST</tt>, the
+		  message is forwarded to the origin of the query as
+		  defined in the entry which may either be the local
+		  peer or a remote peer.  In case this is a query of
+		  the local peer the result may have to be provided to
+		  applications through the overlay API.  Otherwise,
+		  the result is forwarded using <tt>SEND(P,
+		  ResultMessage')</tt> where <tt>ResultMessage'</tt>
+		  is the now modified message.  If the result was
+		  <tt>FILTER_LAST</tt>, the query <bcp14>MUST</bcp14>
+		  be removed from the pending table.
+	        </li>
+              </ol>
+            </li>
+	    <li>
+	      Finally, the implementation <bcp14>SHOULD</bcp14> cache
+	      <tt>ResultMessages</tt> in order to provide already seen
+	      replies to future <tt>GetMessages</tt>.  The
+	      implementation <bcp14>MAY</bcp14> choose not no cache
+	      any or a limited number of <tt>ResultMessages</tt> for
+	      reasons such as resource limitations.
+            </li>
+          </ol>
+        </section>
+      </section>
+    </section>
+    <section anchor="blockstorage" numbered="true" toc="default">
+      <name>Blocks</name>
+      <t>
+	This section describes various considerations R<sup>5</sup>N
+	implementations must consider with respect to blocks.
+	Specifically, implementations <bcp14>SHOULD</bcp14> be validate and persist
+  blocks.
+  Implementations
+	<bcp14>MAY</bcp14> not support validation for all types
+    of blocks.
+    For example, on some devices, storing blocks is impossible due to lack of
+  storage capacity.
+  Block storage improves lookup performance for local applications and also
+  other peers. Not storing blocks results in degraded performance.
+      </t>
+      <t>
+        The block type determines the format and handling of the block
+        payload by peers in <tt>PutMessages</tt> and
+        <tt>ResultMessages</tt>.  Applications can and should define
+        their own block types.  Block types <bcp14>MUST</bcp14> be
+        registered with GANA (see <xref target="gana_block_type"/>).
+        Especially when new block types are introduced, some peers
+        <bcp14>MAY</bcp14> lack support for the respective block
+        operations.
+      </t>
+      <t>
+      </t>
+      <section anchor="block_functions">
+        <name>Block Operations</name>
+          <t>
+            Block validation operations are used as part of message
+            processing (see <xref target="p2p_messages"/>) for all
+            types of DHT messages.  To enable these validation
+            operations, any block type specification
+            <bcp14>MUST</bcp14> define the following functions:
+          </t>
+          <dl>
+            <dt>ValidateBlockQuery(Key, XQuery)
+	        -&gt; RequestEvaluationResult</dt>
+            <dd>
+	      <t>
+              is used to evaluate the request for a block as part of
+              <tt>GetMessage</tt> processing. Here, the block payload is unkown,
+              but if possible the <tt>XQuery</tt> and <tt>Key</tt>
+              <bcp14>SHOULD</bcp14> be verified.  Possible values for
+	      the <tt>RequestEvaluationResult</tt> are:
+              </t>
+              <dl>
+               <dt>REQUEST_VALID</dt>
+               <dd>
+                 The query is valid.
+               </dd>
+               <dt>REQUEST_INVALID</dt>
+               <dd>
+		 The query format does not match the block type. For example,
+		 a mandatory <tt>XQuery</tt> was not provided, or of
+		 the size of the <tt>XQuery</tt> is not appropriate
+		 for the block type.
+               </dd>
+              </dl>
+            </dd>
+            <dt>DeriveBlockKey(Block) -&gt; Key | NONE</dt>
+            <dd>
+              is used to synthesize the block key from the block
+              payload as part of <tt>PutMessage</tt> and
+              <tt>ResultMessage</tt> processing.  The special return
+              value of <tt>NONE</tt> implies that this block type does
+              not permit deriving the key from the block.  A
+              <tt>Key</tt> may be returned for a block that is
+              ill-formed.
+            </dd>
+            <dt>ValidateBlockStoreRequest(Block)
+	        -&gt; BlockEvaluationResult</dt>
+            <dd>
+	      <t>
+                is used to evaluate a block payload as part of
+                <tt>PutMessage</tt> and <tt>ResultMessage</tt>
+                processing.  Possible values for the
+                <tt>BlockEvaluationResult</tt> are:
+              </t>
+              <dl>
+               <dt>BLOCK_VALID</dt>
+               <dd>
+                 The block is valid.
+               </dd>
+               <dt>BLOCK_INVALID</dt>
+               <dd>
+                 The block payload does not match the block type.
+               </dd>
+              </dl>
+            </dd>
+            <dt>SetupResultFilter(FilterSize, Mutator) -&gt; RF</dt>
+            <dd>
+	      is used to setup an empty result filter.  The arguments
+	      are typically the size of the set of results that must
+	      be filtered at the initiator, and a <tt>Mutator</tt>
+	      value which <bcp14>MAY</bcp14> be used to
+	      deterministically re-randomize probabilistic data
+	      structures.  <tt>RF</tt> <bcp14>MUST</bcp14> be a byte
+	      sequence suitable for transmission over the network.
+            </dd>
+            <dt>FilterResult(Block, Key, RF, XQuery) -&gt; (FilterEvaluationResult, RF')</dt>
+            <dd>
+	      <t>
+	      is used to filter results against specific queries.
+	      This function does not check the validity of
+	      <tt>Block</tt> itself or that it matches the given key,
+	      as this must have been checked earlier.  Locally
+	      stored blocks from previously observed
+	      <tt>ResultMessages</tt> and <tt>PutMessages</tt> use
+	      this function to perform filtering based on the request
+	      parameters of a particular GET operation.  Possible
+	      values for the <tt>FilterEvaluationResult</tt> are:
+  	      </t>
+              <dl>
+              <dt>FILTER_MORE</dt>
+              <dd>
+                <tt>Block</tt> is a valid result, and there may be more.
+              </dd>
+              <dt>FILTER_LAST</dt>
+              <dd>
+                The given <tt>Block</tt> is the last possible valid result.
+              </dd>
+              <dt>FILTER_DUPLICATE</dt>
+              <dd>
+                <tt>Block</tt> is a valid result, but considered to be
+                a duplicate (was filtered by the <tt>RF</tt>) and
+                <bcp14>SHOULD NOT</bcp14> be returned to the previous
+                hop.  Peers that do not understand the block type
+                <bcp14>MAY</bcp14> return such duplicate results
+                anyway and implementations must take this into account.
+              </dd>
+              <dt>FILTER_IRRELEVANT</dt>
+              <dd>
+                <tt>Block</tt> does not satisfy the constraints
+                imposed by the <tt>XQuery</tt>. The result
+                <bcp14>SHOULD NOT</bcp14> be returned to the previous
+                hop.  Peers that do not understand the block type
+                <bcp14>MAY</bcp14> return such irrelevant results
+                anyway and implementations must take this into account.
+              </dd>
+              </dl>
+	      <t>
+	        If the main evaluation result is <tt>FILTER_MORE</tt>,
+	        the function also returns an updated result filter
+	        where the <tt>Block</tt> is added to the set of
+	        filtered replies.  An implementation is not expected
+	        to actually differenciate between the
+	        <tt>FILTER_DUPLICATE</tt> and
+	        <tt>FILTER_IRRELEVANT</tt> return values: in both
+	        cases the <tt>Block</tt> is ignored for this query.
+	      </t>
+            </dd>
+          </dl>
+        </section>
+        <section anchor="hello_block">
+          <name>HELLO Blocks</name>
+          <t>
+            For bootstrapping and peer discovery, the DHT
+            implementation uses its own block type called "HELLO".
+            <tt>HELLO</tt> blocks are the only type of block that
+            <bcp14>MUST</bcp14> be supported by every R<sup>5</sup>N
+            implementation. A block with this block type contains the
+            peer public key of the peer that published the
+            <tt>HELLO</tt> together with a set of addresses of this
+            peer. The key of a <tt>HELLO</tt> block is the SHA-512
+            hash <xref target="RFC4634"/> of the peer public key and
+            thus the peer's identity in the DHT.
+          </t>
+          <t>
+            The <tt>HELLO</tt> block type wire format is illustrated
+            in <xref target="figure_hello"/>. A query for block of
+            type <tt>HELLO</tt> <bcp14>MUST NOT</bcp14> include
+            extended query data (XQuery). Any implementation
+            encountering a request for a <tt>HELLO</tt> with non-empty
+            XQuery data <bcp14>MUST</bcp14> consider the request
+            invalid and ignore it.
+          </t>
+          <figure anchor="figure_hello" title="The HELLO Block Format.">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                PEER PUBLIC KEY                |
+|                    (32 byte)                  |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   SIGNATURE                   |
+|                   (64 byte)                   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   EXPIRATION                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                   ADDRESSES                   /
+/               (variable length)               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+                ]]></artwork>
+          </figure>
+          <dl>
+            <dt>PEER PUBLIC KEY</dt>
+            <dd>
+              is the public key of the peer to which the
+              <tt>ADDRESSES</tt> belong. This is also the public key
+              needed to verify the <tt>SIGNATURE</tt>.
+            </dd>
+            <dt>EXPIRATION</dt>
+            <dd>
+              denotes the absolute 64-bit expiration date of the
+              content.  The value specified is microseconds since
+              midnight (0 hour), January 1, 1970 in network byte
+              order, but must be a multiple of one million (so that it
+              can be represented in seconds in a <tt>HELLO</tt> URL).
+            </dd>
+            <dt>ADDRESSES</dt>
+            <dd>
+              is a list of UTF-8 addresses (<xref target="terminology"/>)
+              which can be used to contact the peer.
+              Each address <bcp14>MUST</bcp14> be 0-terminated.
+              The set of addresses <bcp14>MAY</bcp14> be empty, for example
+              if the peer knows that it cannot be reached from the outside (i.e. NAT).
+            </dd>
+            <dt>SIGNATURE</dt>
+            <dd>
+	    <t>
+              is the EdDSA signature <xref target="ed25519"/> of the
+              <tt>HELLO</tt> block.  The signature covers various
+              information derived from the actual data in the
+              <tt>HELLO</tt> block.  The data signed over includes the
+              block expiration time, a constant that uniquely
+              identifies the purpose of the signature, and a hash of
+              the addresses with 0-terminators in the same order as
+              they are present in the <tt>HELLO</tt> block.  The
+              format is illustrated in <xref
+              target="figure_hellowithpseudo"/>.
+          </t>
+          <figure anchor="figure_hellowithpseudo" title="The Wire Format of the HELLO for Signing.">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |        PURPOSE        |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                   EXPIRATION                  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    H_ADDRS                    |
+|                   (64 byte)                   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+          </figure>
+          <dl>
+            <dt>SIZE</dt>
+            <dd>
+              A 32-bit value containing the length of the signed data
+              in bytes in network byte order.  The length of the
+              signed data <bcp14>MUST</bcp14> be 80 bytes.
+            </dd>
+            <dt>PURPOSE</dt>
+            <dd>
+              A 32-bit signature purpose flag. This field
+              <bcp14>MUST</bcp14> be 7 in network byte order.
+            </dd>
+            <dt>EXPIRATION</dt>
+            <dd>
+              denotes the absolute 64-bit expiration date of the
+              <tt>HELLO</tt> in microseconds since midnight (0 hour),
+              January 1, 1970 in network byte order.
+            </dd>
+            <dt>H_ADDRS</dt>
+            <dd>
+              a SHA-512 hash over the addresses in the <tt>HELLO</tt>.
+              <tt>H_ADDRS</tt> is generated over the
+              <tt>ADDRESSES</tt> field as provided in the
+              <tt>HELLO</tt> block using SHA-512 <xref
+              target="RFC4634"/>.
+            </dd>
+          </dl>
+            </dd>
+          </dl>
+          <t>
+            The <tt>HELLO</tt> block operations <bcp14>MUST</bcp14> be
+            implemented as follows:
+          </t>
+          <dl>
+          <dt>ValidateBlockQuery(Key, XQuery)
+	        -&gt; RequestEvaluationResult</dt>
+          <dd>
+            To validate a block query for a <tt>HELLO</tt> is to
+            simply check that the <tt>XQuery</tt> is empty. If it is empty,
+            <tt>REQUEST_VALID</tt> ist returned. Otherwise,
+            <tt>REQUEST_INVALID</tt> is returned.
+          </dd>
+          <dt>DeriveBlockKey(Block) -&gt; Key | NONE</dt>
+          <dd>
+            To derive a block key for a <tt>HELLO</tt> is to simply
+            hash the <tt>PEER PUBLIC KEY</tt> from the <tt>HELLO</tt>. The
+            result of this function is thus always the SHA-512 hash over
+            the <tt>PEER PUBLIC KEY</tt>.
+          </dd>
+          <dt>ValidateBlockStoreRequest(Block)
+	        -&gt; BlockEvaluationResult</dt>
+          <dd>
+	    To validate a block store request is to verify the EdDSA
+	    <tt>SIGNATURE</tt> over the hashed <tt>ADDRESSES</tt>
+	    against the public key from the <tt>PEER PUBLIC KEY</tt>
+	    field.  If the signature is valid <tt>BLOCK_VALID</tt> is
+	    returned.  Otherwise <tt>BLOCK_INVALID</tt> is returned.
+          </dd>
+          <dt>SetupResultFilter(FilterSize, Mutator) -&gt; RF</dt>
+          <dd>
+	  <t>
+	    The <tt>RF</tt> for <tt>HELLO</tt> blocks is implemented
+	    using a Bloom filter following the definition from <xref
+	    target="bloom_filters"/> and consists of a variable number
+	    of bits <tt>L</tt>.  <tt>L</tt> depends on the
+            <tt>FilterSize</tt> which will be the number of
+	    connected peers <tt>|E|</tt> known to the peer creating a
+	    <tt>HELLO</tt> block from its own addresses: <tt>L</tt> is
+	    set to the minimum of 2<sup>18</sup> bits (2<sup>15</sup>
+	    bytes) and the lowest power of 2 that is strictly larger
+	    than <tt>2*K*|E|</tt> bits (<tt>K*|E|/4</tt> bytes).
+          </t>
+          <t>
+            The <tt>k</tt>-value for the Bloom filter
+            <bcp14>MUST</bcp14> be 16.  The elements used in the Bloom
+            filter consist of an XOR between the <tt>H_ADDRS</tt>
+            field (as computed using SHA-512 over the
+            <tt>ADDRESSES</tt>) and the SHA-512 hash of the
+            <tt>MUTATOR</tt> field from a given <tt>HELLO</tt> block.
+            The mapping function M(<tt>H_ADDRS XOR MUTATOR</tt>) is
+            defined as follows:
+          </t>
+          <t>
+            <tt>M(e = H_ADDR XOR MUTATOR) -> e as uint32[]</tt>
+          </t>
+          <t>
+            <tt>M</tt> is an identity function and returns the 512-bit
+            XOR result unmodified.  This resulting byte string is
+            interpreted as k=16 32-bit integers in network byte order
+            which are used to set and check the bits in <tt>B</tt>
+            using <tt>BF-SET()</tt> and <tt>BF-TEST()</tt>.  The
+            32-bit <tt>MUTATOR</tt> is prepended to the L-bit Bloom filter
+            field <tt>HELLO_BF</tt> containing <tt>B</tt> to create
+            the result filter for a <tt>HELLO</tt> block:
+          </t>
+          <figure anchor="hello_rf" title="The HELLO Block Result Filter.">
+            <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|        MUTATOR        |      HELLO_BF         /
++-----+-----+-----+-----+  (variable length)    /
+/                                               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+]]></artwork>
+          </figure>
+          <t>where:</t>
+          <dl>
+            <dt>MUTATOR</dt>
+            <dd>
+              The 32-bit mutator for the result filter.
+            </dd>
+            <dt>HELLO_BF</dt>
+            <dd>
+              The L-bit Bloom filter array.
+            </dd>
+          </dl>
+          <t>
+	    The <tt>MUTATOR</tt> value is used to additionally
+	    "randomize" the computation of the Bloom filter while
+	    remaining deterministic across peers.  It is only ever set
+	    by the peer initiating the GET request, and changed every
+	    time the GET request is repeated.  Peers forwarding GET
+	    requests <bcp14>MUST</bcp14> not change the mutator value
+	    included in the <tt>RESULT_FILTER</tt> as they might not
+	    be able to recalculate the result filter with a different
+	    <tt>MUTATOR</tt> value.
+          </t>
+	  <t>
+	    Consequently, repeated requests have statistically
+	    independent probabilities of creating false-positives in a
+	    result filter. Thus, even if for one request a result
+	    filter may exclude a result as a false-positive match,
+	    subsequent requests are likely to not have the same
+	    false-positives.
+          </t>
+	  <t>
+	    <tt>HELLO</tt> result filters can be merged if the Bloom
+	    filters have the same size and <tt>MUTATOR</tt> by setting
+	    all bits to 1 that are set in either Bloom filter.  This
+	    is done whenever a peer receives a query with the same
+	    <tt>MUTATOR</tt>, predecessor and Bloom filter size.
+	  </t>
+          </dd>
+            <dt>FilterResult(Block, Key, RF, XQuery) -&gt; (FilterEvaluationResult, RF')</dt>
+            <dd>
+             The <tt>H_ADDRS</tt> field is XORed with the SHA-512 hash
+             of the <tt>MUTATOR</tt> field from the <tt>HELLO</tt>
+             block and the resulting value is checked against the
+             Bloom filter in <tt>RF</tt>.  Consequently,
+             <tt>HELLOs</tt> with completely identical sets of
+             addresses will be filtered and <tt>FILTER_DUPLICATE</tt>
+             is returned.  Any small variation in the set of addresses
+             will cause the block to no longer be filtered (with high
+             probability) and <tt>FILTER_MORE</tt> is returned.
+            </dd>
+          </dl>
+        </section>
+        <section>
+        <name>Persistence</name>
+        <t>
+          An implementation <bcp14>SHOULD</bcp14> provide a local
+          persistence mechanism for blocks.  Embedded systems that
+          lack storage capability <bcp14>MAY</bcp14> use
+          connection-level signalling to indicate that they are merely
+          a client utilizing a DHT and are not able to participate
+          with storage.  The local storage <bcp14>MUST</bcp14> provide
+          the following functionality:
+        </t>
+        <dl>
+          <dt>Store(Key, Block)</dt>
+          <dd>
+            Stores a block under the specified key. If an block with identical
+	    payload exists already under the same key, the meta data should
+	    be set to the maximum expiration time of both blocks and use the
+	    corresponding <tt>PUTPATH</tt> (and if applicable
+            <tt>TRUNCATED ORIGIN</tt>) of that version of the block.
+          </dd>
+          <dt>Lookup(Key) -&gt; Set of Blocks</dt>
+          <dd>
+            Retrieves blocks stored under the specified key.
+          </dd>
+          <dt>LookupApproximate(Key) -&gt; List of Blocks</dt>
+          <dd>
+            Retrieves the blocks stored under the specified key and
+            any blocks under keys close to the specified key, in order
+            of decreasing proximity.
+          </dd>
+        </dl>
+        <section anchor="approx_search">
+          <name>Approximate Search Considerations</name>
+        <t>
+          Over time a peer may accumulate a significant number of blocks
+          which are stored locally in the persistence layer.
+          Due to the expected high number of blocks, the method to
+          retrieve blocks close to the specified lookup key in the
+          <tt>LookupApproximate</tt> API must be implemented with care
+          with respect to efficiency.
+        </t>
+        <t>
+          It is <bcp14>RECOMMENDED</bcp14> to limit the number of
+          results from the <tt>LookupApproximate</tt> procedure to a
+          result size which is easily manageable by the local system.
+          The <bcp14>RECOMMENDED</bcp14> default is to return blocks
+          with the four closest keys.  Note that filtering by the
+          <tt>RF</tt> will be done by the DHT afterwards and it is
+          <bcp14>NOT RECOMMENDED</bcp14> to fetch additional records
+          even if all four closest keys are filtered by the
+          <tt>RF</tt>.  The main reason for this is to ensure peers do
+          not spend extensive resources to process approximate
+          lookups.  In particular, implementations <bcp14>MUST</bcp14>
+          limit the worst-case effort they spent on approximate
+          lookups.
+        </t>
+        <t>
+          In order to efficiently find a suitable result set, the
+          implementation <bcp14>SHOULD</bcp14> follow the following
+          procedure:
+        </t>
+        <ol>
+          <li>
+            Sort all blocks by the block key in ascending (decending) order.
+            The block keys are interpreted as integers.
+          </li>
+          <li>
+            Alternatingly select a block with a key larger and smaller
+            from the sortings.  The resulting set is then sorted by
+            the XOR distance to the query.  The selection process
+            continues until the upper bound for the result set is
+            reached and both sortings do not yield any closer blocks.
+          </li>
+        </ol>
+        <t>
+          An implementation <bcp14>MAY</bcp14> decide to use a custom
+          algorithm in order to find the closest blocks in the local
+          storage.  But, especially for more primitive approaches
+          (such as only comparing XOR distances for all blocks in the
+          storage), more simplistic procedures may become ineffective
+          for large data sets and care <bcp14>MUST</bcp14> be taken
+          to strictly bound the maximum effort expended per query.
+        </t>
+        </section>
+        <section>
+          <name>Caching Strategy Considerations</name>
+          <t>
+            An implementation <bcp14>MUST</bcp14> implement an
+            eviction strategy for blocks stored in the block storage
+            layer.
+          </t>
+          <t>
+            In order to ensure the freshness of blocks, an implementation
+            <bcp14>MUST</bcp14> evict expired blocks in favor of
+            new blocks.
+          </t>
+          <t>
+            An implementation <bcp14>MAY</bcp14> preserve blocks which
+            are often requested.  This approach can be expensive as it
+            requires the implementation to keep track of how often a
+            block is requested.
+          </t>
+          <t>
+            An implementation <bcp14>MAY</bcp14> preserve blocks which
+            are close to the local peer public key.
+          </t>
+          <t>
+            An implementation <bcp14>MAY</bcp14> provide configurable
+            storage quotas and adapt its eviction strategy based on
+            the current storage size or other constrained resources.
+          </t>
+        </section>
+      </section>
+    </section>
+    <section anchor="security" numbered="true" toc="default">
+      <name>Security Considerations</name>
+      <!-- FIXME: Here we should (again) discuss how the system is open and
+        does not have/require a trust anchor a priori. This is (again) in contrast
+      to RELOAD -->
+      <t>
+        If an upper bound to the maximum number of neighbors in a
+        k-bucket is reached, the implementation <bcp14>MUST</bcp14>
+        prefer to preserve the oldest working connections instead of
+        new connections.  This makes Sybil attacks <xref
+        target="Sybil"/> less effective as an adversary would have to
+        invest more resources over time to mount an effective attack.
+      </t>
+      <t>
+	The <tt>ComputeOutDegree</tt> function limits the
+	<tt>REPL_LVL</tt> to a maximum of 16. This imposes
+	an upper limit on bandwidth amplification an attacker
+	may achieve for a given network size and topology.
+      </t>
+      <section>
+        <name>Disjoint Underlay or Application Protocol Support</name>
+      <t>
+        We note that peers
+	implementing disjoint sets of underlay protocols may
+	experience difficulties communicating (unless other peers
+	bridge the respective underlays). Similarly, peers that
+	do not support a particular application will not be able
+	to validate application-specific payloads and may thus be
+	tricked into storing or forwarding corrupt blocks.
+      </t>
+      </section>
+      <section>
+        <name>Approximate Result Filtering</name>
+        <t>
+          When a <tt>FindApproximate</tt> flag is encountered in a
+          query, a peer will try to respond with the closest block it
+          has that is not filtered by the result Bloom filter
+          (<tt>RF</tt>).  Implementations <bcp14>MUST</bcp14> ensure
+          that the cost of evaluating any such query is reasonably
+          small.  For example, implementations <bcp14>SHOULD</bcp14>
+          consider ways to avoid an exhaustive search of their
+          database.  Not doing so can lead to denial of service
+          attacks as there could be cases where too many local results
+          are filtered by the result filter.
+        </t>
+      </section>
+      <section>
+        <name>Access Control</name>
+        <t>
+          By design R<sup>5</sup>N does not rely on strict admission
+          control through the use of either centralized enrollment
+          servers or pre-shared keys.  This is a key distintion over
+          protocols that do rely on this kind of access control such
+          as <xref target="RFC6940"/> which, like R<sup>5</sup>N,
+          provides a peer-to-peer (P2P) signaling protocol with
+          extensible routing and topology mechanisms.  Some
+          decentralized applications, such as the GNU Name System
+          (<xref target="RFC9498"/>), require an open system that
+          enables ad-hoc participation.
+        </t>
+      </section>
+      <section>
+        <name>Block-level confidentiality and privacy</name>
+        <t>
+          Applications using the DHT APIs to store application-specific
+          block types may have varying security and privacy requirements.
+          R<sup>5</sup>N does NOT provide any kind confidentiality or
+          privacy for blocks, for example through the use of cryptography.
+          This must be provided by the application as part of the block
+          type design.
+          One example where confidentiality and privacy are required are
+          GNS records and their record blocks as defined in
+          <xref target="RFC9498"/>.
+          Other possibilities to protect the block objects may be implemented
+          using ideas from other efforts such as Oblivious HTTP and its
+          encapsulation of HTTP requests and responses <xref target="RFC9458"/>.
+        </t>
+      </section>
+      <section>
+        <name>Protocol extensions and cryptographic agility</name>
+        <t>
+          R<sup>5</sup>N makes heavy use of the Ed25519 cryptosystem.
+          It cannot be ruled out that the relevant primitives
+          are broken at any point in the future.
+          In this case, the R<sup>5</sup>N design can be reused by modifying
+          the messages and related artifacts defined in
+          <xref target="message_components"/>.
+          In order to extend and modify the R<sup>5</sup>N protocol
+          in general and to replace cryptographic primitives in particular,
+          new message types (<tt>MTYPE</tt> fields) can be registered in
+          <xref target="GANA"/> and the message formats updated accordingly.
+          Peers processing messages <bcp14>MUST NOT</bcp14>
+          modify the <tt>MTYPE</tt> field in order to prevent
+          possible security downgrades.
+        </t>
+      </section>
+      <section>
+        <name>Availability versus security tradeoffs in routing table evictions</name>
+        <t>
+          R<sup>5</sup>N does not implement locality-sensitive as it does not
+          preferentially evict distant nodes (where distance is a metric based
+          on closeness in the physical network).
+          Locality-sensitive routing table eviction may offer performance improvements
+          especially if the local network and its resources can be leveraged
+          more efficiently.
+          Similarly, if requests (and responses) can be contained to the local
+          network, this can offer better privacy.
+          But, this an important security trade-off when choosing network locality over
+          R<sup>5</sup>N's eviction strategy (<xref target="routing_table"/>):
+          "Flash mob"-style attackers that quickly spin up a large number of nodes
+          a target node's proximity are displacing legitimate, benign neighbours.
+          In case of the R<sup>5</sup>N eviction strategy these will likely not
+          degrade the routing table to the same degree because long-lived connections
+          are preferred.
+          This in turn forces an attacker to run their nodes for a long time to run a
+          successful attack.
+        </t>
+        <t>
+          It is important to highlight that in order to address the R<sup>5</sup>N threat
+          and security model (<xref target="security_model"/>), the routing starts with a
+          random walk.
+          Should all nodes implement a locality sensitive eviction strategy, the theoretical
+          effectiveness of this measure would drastically decrease.
+          R<sup>5</sup>N puts security and availability under its threat model, over performance
+          and privacy.
+        </t>
+        <t>
+          It should be noted that any reasonable locality metric will choose nodes
+          that implicitly provide more stable network connections than distant nodes as
+          the probability for network failures grows with physical distance.
+          As a consequence it can be assumed that a locality-sensitive metric and
+          R<sup>5</sup>N's eviction strategy eventually converge into a similar
+          situation where a node primarily maintains a routing table consisting of
+          long-lived and somewhat local connections.
+        </t>
+      </section>
+
+
+    </section>
+    <section anchor="iana" numbered="true" toc="default">
+      <name>IANA Considerations</name>
+      <t>
+	IANA maintains a registry called the "Uniform Resource Identifier
+	(URI) Schemes" registry.
+	The registry should be updated to include
+	an entry for the 'gnunet' URI scheme.  IANA is requested to
+	update that entry to reference this document when published
+	as an RFC.
+      </t>
+    </section>
+
+    <section anchor="gana" numbered="true" toc="default">
+    <name>GANA Considerations</name>
+      <section anchor="gana_block_type" numbered="true" toc="default">
+      <name>Block Type Registry</name>
+      <t>
+        GANA <xref target="GANA"/>
+        is requested to create a "DHT Block Types" registry.
+        The registry shall record for each entry:
+      </t>
+      <ul>
+        <li>Name: The name of the block type (case-insensitive ASCII
+          string, restricted to alphanumeric characters</li>
+        <li>Number: 32-bit</li>
+        <li>Comment: Optionally, a brief English text describing the purpose of
+          the block type (in UTF-8)</li>
+        <li>Contact: Optionally, the contact information of a person to contact for
+          further information</li>
+        <li>References: Required, references (such as an RFC) specifying the block type and its block functions</li>
+      </ul>
+      <t>
+        The registration policy for this sub-registry is "First Come First
+        Served", as described in <xref target="RFC8126"/>.
+        GANA created the registry as follows:
+      </t>
+      <!-- NOTE: changed GNS Reference to This.I-D because we either need to define it here
+           or in the GNS RFC. And I think here is better or in a separate document
+           => not in here. Use separate document for NAMERECORD draft.
+           -MSC -->
+      <figure anchor="figure_btypenums" title="The Block Type Registry.">
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+Number| Name           | References | Description
+------+----------------+------------+-------------------------
+0       ANY              [This.I-D]   Reserved
+13      DHT_HELLO        [This.I-D]   Address data for a peer
+
+Contact: r5n-registry@gnunet.org
+]]></artwork>
+      </figure>
+      </section>
+
+      <section anchor="gana_gnunet_url" numbered="true" toc="default">
+      <name>GNUnet URI Schema Subregistry</name>
+      <t>
+        GANA <xref target="GANA"/>
+        is requested to create a "gnunet://" sub-registry.
+        The registry shall record for each entry:
+      </t>
+      <ul>
+        <li>Name: The name of the subsystem (case-insensitive ASCII
+          string, restricted to alphanumeric characters)</li>
+        <li>Comment: Optionally, a brief English text describing the purpose of
+          the subsystem (in UTF-8)</li>
+        <li>Contact: Optionally, the contact information of a person to contact for
+          further information</li>
+        <li>References: Optionally, references describing the syntax of the URL
+          (such as an RFC or LSD)</li>
+      </ul>
+      <t>
+        <!-- FIXME: See GNS wording for this which is already improved / ISE compliant -->
+        The registration policy for this sub-registry is "First Come First
+        Served", as described in <xref target="RFC8126"/>.
+        GANA created this registry as follows:
+      </t>
+      <figure anchor="figure_gnunetscheme" title="GNUnet scheme Subregistry.">
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+Name           | References | Description
+---------------+------------+-------------------------
+HELLO            [This.I-D]   How to contact a peer.
+ADDRESS          N/A          Network address.
+Contact: gnunet-registry@gnunet.org
+]]></artwork>
+      </figure>
+      </section>
+
+      <section anchor="gana_signature_purpose" numbered="true" toc="default">
+      <name>GNUnet Signature Purpose Registry</name>
+      <t>
+        GANA amended the "GNUnet Signature Purpose" registry
+        as follows:
+      </t>
+      <figure anchor="figure_purposenums" title="The Signature Purpose Registry Entries.">
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+Purpose | Name            | References | Description
+--------+-----------------+------------+---------------
+6         DHT PATH ELEMENT  [This.I-D]   DHT message routing data
+7         HELLO PAYLOAD     [This.I-D]   Peer contact information
+]]></artwork>
+      </figure>
+      </section>
+
+      <section anchor="gana_message_type" numbered="true" toc="default">
+      <name>GNUnet Message Type Registry</name>
+      <t>
+        GANA is requested to amend the "GNUnet Message Type" registry
+        as follows:
+      </t>
+      <figure anchor="figure_messagetypeenums" title="The Message Type Registry Entries.">
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+Type    | Name            | References | Description
+--------+-----------------+------------+---------------
+146       DHT PUT          [This.I-D]    Store information in DHT
+147       DHT GET          [This.I-D]    Request information from DHT
+148       DHT RESULT       [This.I-D]    Return information from DHT
+157       HELLO Message    [This.I-D]    Peer contact information
+
+]]></artwork>
+      </figure>
+      </section>
+    </section>
+      <section anchor="implementation_deployment" numbered="true" toc="default">
+      <name>Implementation and deployment status</name>
+       <t>
+         There are two implementations conforming to this specification written
+         in C and Go, respectively. The C implementation as part of GNUnet
+         <xref target="GNUnetGNS"/> represents the original
+         and reference implementation. The Go implementation
+         <xref target="GoGNS"/> demonstrates how two implementations of GNS are
+         interoperable if they are built on top of the same underlying
+         DHT storage.
+       </t>
+       <t>
+         Currently, the GNUnet peer-to-peer network <xref target="GNUnet"/>
+         is an active deployment of R<sup>5</sup>N.
+         It's primary but not only purpose is to provide the storage underlay
+         for the GNU Name System <xref target="RFC9498"/>.
+         The <xref target="GoGNS"/> implementation shows how R<sup>5</sup>N implementations
+         can interoperate.
+       </t>
+    </section>
+    <!-- gana -->
+    <!--<section anchor="testvectors">
+      <name>Test Vectors</name>
+    </section>-->
+  </middle>
+  <back>
+    <references>
+      <name>Normative References</name>
+
+        &RFC2119;
+        &RFC2663;
+        &RFC3561;
+        &RFC3629;
+        &RFC3986;
+        &RFC4634;
+        &RFC5234;
+        &RFC5245;
+        &RFC6940;
+        &RFC8126;
+        &RFC8174;
+        &RFC9458;
+        &RFC9498;
+
+      <reference anchor="ed25519" target="http://link.springer.com/chapter/10.1007/978-3-642-23951-9_9"><front><title>High-Speed High-Security Signatures</title><author initials="D." surname="Bernstein" fullname="Daniel Bernstein"><organization>University of Illinois at Chicago</organization></author><author initials="N." surname="Duif" fullname="Niels Duif"><organization>Technische Universiteit Eindhoven</organization></author><author initials="T." surname="Lange" fullname="Tanja Lange"><organization>Technische Universiteit Eindhoven</organization></author><author initials="P." surname="Schwabe" fullname="Peter Schwabe"><organization>National Taiwan University</organization></author><author initials="B." surname="Yang" fullname="Bo-Yin Yang"><organization>Academia Sinica</organization></author><date year="2011"/></front></reference>
+
+      <reference anchor="GANA" target="https://gana.gnunet.org/"><front><title>GNUnet Assigned Numbers Authority (GANA)</title><author><organization>GNUnet e.V.</organization></author><date month="April" year="2020"/></front></reference>
+
+
+
+    </references>
+    <references>
+      <name>Informative References</name>
+      <reference anchor="R5N" target="https://doi.org/10.1109/ICNSS.2011.6060022">
+        <front>
+          <title>R5N: Randomized recursive routing for restricted-route networks</title>
+          <author initials="N. S." surname="Evans" fullname="Nathan S. Evans">
+            <organization>Technische Universität München</organization>
+          </author>
+          <author initials="C." surname="Grothoff" fullname="Christian Grothoff">
+            <organization>Technische Universität München</organization>
+          </author>
+          <date year="2011"/>
+        </front>
+      </reference>
+      <reference anchor="NSE" target="https://doi.org/10.1007/978-3-642-30045-5_23">
+        <front>
+          <title>Efficient and Secure Decentralized Network Size Estimation</title>
+          <author initials="N. S." surname="Evans" fullname="Nathan S. Evans">
+            <organization>Technische Universität München</organization>
+          </author>
+          <author initials="B." surname="Polot" fullname="Bartlomiej Polot">
+            <organization>Technische Universität München</organization>
+          </author>
+          <author initials="C." surname="Grothoff" fullname="Christian Grothoff">
+            <organization>Technische Universität München</organization>
+          </author>
+          <date year="2012"/>
+        </front>
+      </reference>
+      <reference anchor="Kademlia" target="http://css.csail.mit.edu/6.824/2014/papers/kademlia.pdf">
+        <front>
+          <title>Kademlia: A peer-to-peer information system based on the xor metric.</title>
+          <author initials="P." surname="Maymounkov" fullname="Petar Maymounkov">
+          </author>
+          <author initials="D." surname="Mazieres" fullname="David Mazieres">
+          </author>
+          <date year="2002"/>
+        </front>
+      </reference>
+      <reference anchor="Sybil" target="https://link.springer.com/chapter/10.1007/3-540-45748-8_24">
+        <front>
+          <title>The Sybil Attack</title>
+          <author initials="J." surname="Douceur" fullname="John R. Douceur">
+          </author>
+          <date year="2002"/>
+        </front>
+      </reference>
+      <reference anchor="Smallworldmix" target="https://api.semanticscholar.org/CorpusID:44240877">
+        <front>
+          <title>A Measurement of Mixing Time in Social Networks</title>
+          <author initials="M." surname="Dell'Amico" fullname="Matteo Dell'Amico">
+          </author>
+          <date year="2009"/>
+        </front>
+      </reference>
+      <reference anchor="Smallworld" target="https://www.nature.com/articles/35022643">
+        <front>
+          <title>Navigation in a small world</title>
+          <author initials="J." surname="Kleinberg" fullname="Jon M. Kleinberg">
+          </author>
+          <date year="2000"/>
+        </front>
+      </reference>
+      <reference anchor="cadet" target="https://doi.org/10.1109/MedHocNet.2014.6849107">
+        <front>
+          <title>CADET: Confidential ad-hoc decentralized end-to-end transport</title>
+          <author initials="B." surname="Polot" fullname="Bartlomiej Polot">
+            <organization>Technische Universität München</organization>
+          </author>
+          <author initials="C." surname="Grothoff" fullname="Christian Grothoff">
+            <organization>Technische Universität München</organization>
+          </author>
+          <date year="2014"/>
+        </front>
+      </reference>
+       <reference anchor="GNUnet" target="https://gnunet.org">
+         <front>
+           <title>The GNUnet Project</title>
+          <author>
+            <organization>GNUnet e.V.</organization>
+          </author>
+        </front>
+       </reference>
+       <reference anchor="GNUnetGNS" target="https://git.gnunet.org/gnunet.git/tree/src/gns">
+         <front>
+           <title>The GNUnet GNS Implementation</title>
+          <author>
+            <organization>GNUnet e.V.</organization>
+          </author>
+        </front>
+       </reference>
+
+       <reference anchor="GoGNS" target="https://github.com/bfix/gnunet-go/tree/master/src/gnunet/service/gns">
+         <front>
+           <title>The Go GNS Implementation</title>
+          <author initials="B." surname="Fix" fullname="Bernd Fix">
+          </author>
+        </front>
+       </reference>
+
+    </references>
+    <section anchor="bloom_filters" numbered="true" toc="default">
+      <name>Bloom filters in R<sup>5</sup>N</name>
+      <t>
+	R<sup>5</sup>N uses Bloom filters in several places.  This section
+	gives some general background on Bloom filters and defines functions
+	on this data structure shared by the various use-cases in R<sup>5</sup>N.
+      </t>
+      <t>
+        A Bloom filter (BF) is a space-efficient probabilistic datastructure
+        to test if an element is part of a set of elements.
+        Elements are identified by an element ID.
+        Since a BF is a probabilistic datastructure, it is possible to have
+        false-positives: when asked if an element is in the set, the answer from
+        a BF is either "no" or "maybe".
+      </t>
+      <t>
+        Bloom filters are defined as a string of <tt>L</tt> bits.
+        The bits are initially always empty, meaning that the bits are set to
+        zero.
+        There are two functions which can be invoked on the Bloom filter "bf":
+        BF-SET(bf, e) and BF-TEST(bf, e) where "e" is an element that is to
+        be added to the Bloom filter or queried against the set.
+      </t>
+      <t>
+        A mapping function M is used to map each ID of each element from the set to a
+        subset of k bits.
+        In the original proposal by Bloom, M is non-injective and can thus map the same
+        element multiple times to the same bit.
+        The type of the mapping function can thus be described by the following
+        mathematical notation:
+      </t>
+      <figure anchor="figure_bf_func" title="Bloom filter mapping function.">
+        <artwork><![CDATA[
+        ------------------------------------
+        # M: E->B^k
+        ------------------------------------
+        # L = Number of bits
+        # B = 0,1,2,3,4,...L-1 (the bits)
+        # k = Number of bits per element
+        # E = Set of elements
+        ------------------------------------
+        Example: L=256, k=3
+        M('element-data') = {4,6,255}
+]]>
+        </artwork>
+      </figure>
+      <t>
+        When adding an element to the Bloom filter <tt>bf</tt> using
+        <tt>BF-SET(bf, e)</tt>, each integer <tt>n</tt> of the mapping
+        <tt>M(e)</tt> is interpreted as a bit offset <tt>n mod L</tt> within
+        <tt>bf</tt> and set to 1.
+      </t>
+      <t>
+        When testing if an element may be in the Bloom filter <tt>bf</tt> using
+        <tt>BF-TEST(bf,e)</tt>, each bit offset <tt>n mod L</tt> within
+        <tt>bf</tt> <bcp14>MUST</bcp14> have been set to 1.
+        Otherwise, the element is not considered to be in the Bloom filter.
+      </t>
+    </section>
+  <section anchor="overlay" numbered="true" toc="default">
+      <name>Overlay Operations</name>
+      <t>
+        An implementation of this specification commonly exposes the two overlay
+        operations "GET" and "PUT".
+        The following are non-normative examples of APIs for those operations.
+        Their behaviour is described prosaically in order to give implementers a fuller
+        picture of the protocol.
+      </t>
+      <section>
+        <name>GET operation</name>
+        <t>
+          A basic GET operation interface may be exposed as:
+        </t>
+        <t>
+          <tt>GET(Query-Key, Block-Type) -> Results as List</tt>
+        </t>
+        <t>
+          The procedure typically takes at least two arguments to initiate a lookup:
+        </t>
+        <dl>
+          <dt><tt>QueryKey</tt>:</dt>
+          <dd>
+            is the 512-bit key to look for in the DHT.
+          </dd>
+          <dt>Block-Type:</dt>
+          <dd>
+            is the type of block to look for, possibly "any".
+          </dd>
+        </dl>
+        <t>
+          The GET procedure may allow additional optional parameters in order to
+          control or modify the query:
+        </t>
+        <dl>
+          <dt>Replication-Level:</dt>
+          <dd>
+            is an integer which controls how many nearest peers the request
+            should reach.
+          </dd>
+          <dt>Flags:</dt>
+          <dd>
+            is an 8-bit vector which indicates certain
+            processing requirements for messages.
+            Any combination of flags as defined in <xref target="route_flags"/>
+            may be specified.
+          </dd>
+          <dt>eXtended-Query (XQuery):</dt>
+          <dd>
+            is medatadata which may be
+            required depending on the respective <tt>Block-Type</tt>.
+            A <tt>Block-Type</tt> must define if the <tt>XQuery</tt> can or must
+            be used and what the specific format of its contents should be.
+            Extended queries are in general used to implement domain-specific filters.
+            These might be particularly useful in combination with FindApproximate
+            to add a well-defined filter by an application-specific distance.
+            Regardless, the DHT does not define any particular semantics for an XQuery.
+            See also <xref target="blockstorage"/>.
+          </dd>
+          <dt>Result-Filter:</dt>
+          <dd>
+            is data for a <tt>Block-type</tt>-specific filter
+	    which allows applications to
+	    indicate results which are
+	    not relevant anymore to the
+            caller (see <xref target="result_filter"/>).
+          </dd>
+        </dl>
+        <t>
+          The GET procedure should be implemented as an asynchronous
+	  operation that returns individual results as they are found
+	  in the DHT.  It should terminate only once the application
+	  explicitly cancels the operation.  A single result commonly
+	  consists of:</t>
+        <dl>
+          <dt>Block-Type:</dt>
+          <dd>
+            is the desired type of block in the result.
+          </dd>
+          <dt>Block-Data:</dt>
+          <dd>
+            is the application-specific block payload. Contents are
+            specific to the <tt>Block-Type</tt>.
+          </dd>
+          <dt>Block-Expiration:</dt>
+          <dd>
+            is the expiration time of the block. After this time, the result should no
+	    longer be used.
+          </dd>
+          <dt>Key:</dt>
+          <dd>
+            is the key under which the block was stored. This may be different from the
+            key that was queried if the flag <tt>FindApproximate</tt> was set.
+          </dd>
+          <dt>GET-Path:</dt>
+          <dd>
+            is a signed path of the public keys of peers which the
+            query traversed through the network. The DHT will try to
+            make the path available if the <tt>RecordRoute</tt> flag
+            was set by the application calling the PUT procedure. The
+            reported path may have been truncated from the beginning.
+            The API <bcp14>SHOULD</bcp14> signal truncation by exposing
+            the <tt>Truncated</tt> flag.
+          </dd>
+          <dt>PUT-Path:</dt>
+          <dd>
+            is a signed path of the public keys of peers which the
+            result message traversed.  The DHT will try to make the
+            path available if the <tt>RecordRoute</tt> flag was set
+            for the GET procedure.  The reported path may have been
+            truncated from the beginning. The API
+            <bcp14>SHOULD</bcp14> signal truncation by exposing the
+            <tt>Truncated</tt> flag.  As the block was cached by the
+            node at the end of this path, this path is more likely to
+            be stale compared to the <tt>GET-Path</tt>.
+          </dd>
+          <dt>Truncated:</dt>
+          <dd>
+            is true if the <tt>GET-Path</tt> or <tt>PUT-Path</tt>
+            was truncated, otherwise false.
+          </dd>
+        </dl>
+      </section>
+      <section>
+        <name>PUT operation</name>
+        <t>
+          A PUT operation interface may be exposed as:
+        </t>
+        <t>
+          <tt>PUT(Key, Block-Type, Block-Expiration, Block-Data)</tt>
+        </t>
+        <t>
+          The procedure typically takes at least four parameters:
+        </t>
+        <dl>
+          <dt>Key:</dt>
+          <dd>is the key under which to store the block.</dd>
+          <dt>Block-Type:</dt>
+          <dd>is the type of the block to store.</dd>
+          <dt>Block-Expiration:</dt>
+          <dd>specifies when the block should expire.</dd>
+          <dt>Block-Data:</dt>
+          <dd>is the application-specific payload of the block to store.</dd>
+        </dl>
+        <t>
+          The PUT procedure may accept additional optional parameters that
+          control or modify the operation:
+        </t>
+        <dl>
+          <dt>Replication-Level:</dt>
+          <dd>
+            is an integer which controls how many nearest peers the request
+            should reach.
+          </dd>
+          <dt>Flags:</dt>
+          <dd>
+            is a bit-vector which indicates certain processing
+            requirements for messages.  Any combination of flags as
+            defined in <xref target="route_flags"/> may be specified.
+          </dd>
+        </dl>
+        <t>
+          The PUT procedure does not necessarily yield any information.
+        </t>
+      </section>
+    </section>
+  <section anchor="hello_url">
+        <name>HELLO URLs</name>
+        <t>
+	  The general format of a <tt>HELLO</tt> URL uses "gnunet://"
+          as the scheme, followed by "hello/" for the name
+          of the GNUnet subsystem, followed by "/"-separated values
+          with the GNS Base32 encoding <xref target="RFC9498"/> of
+          the peer public key, a Base32-encoded EdDSA signature
+          <xref target="ed25519"/>, and an expiration
+          time in seconds since the UNIX Epoch in decimal format.
+	  After this a "?" begins a list of key-value pairs where the key
+          is the URI scheme of one of the peer's addresses and the value
+          is the URL-escaped payload of the address URI without the "://".
+        </t>
+        <t>
+          The general syntax of <tt>HELLO</tt> URLs specified using
+          Augmented Backus-Naur Form (ABNF) of <xref target="RFC5234"/> is:
+        </t>
+	<figure>
+	  <artwork type="abnf"><![CDATA[
+hello-URL = "gnunet://hello[:version]/" meta [ "?" addrs ]
+version = *(DIGIT)
+meta = pid "/" sig "/" exp
+pid = *bchar
+sig = *bchar
+exp = *DIGIT
+addrs = addr *( "&" addr )
+addr = addr-name "=" addr-value
+addr-name = scheme
+addr-value = *pchar
+bchar = *(ALPHA / DIGIT)
+]]>
+        </artwork>
+        </figure>
+	<t>
+         'scheme' is defined in <xref target="RFC3986" /> in Section 3.1.
+         'pchar' is defined in <xref target="RFC3986" />, Appendix A.
+        </t>
+        <t>
+          For example, consider the following URL:
+        </t>
+	<figure>
+	  <artwork type="abnf"><![CDATA[
+          gnunet://hello/1MVZC83SFHXMADVJ5F4
+          S7BSM7CCGFNVJ1SMQPGW9Z7ZQBZ689ECG/
+          CFJD9SY1NY5VM9X8RC5G2X2TAA7BCVCE16
+          726H4JEGTAEB26JNCZKDHBPSN5JD3D60J5
+          GJMHFJ5YGRGY4EYBP0E2FJJ3KFEYN6HYM0G/
+          1708333757?foo=example.com&bar+baz=1.2.3.4%3A5678%2Ffoo
+]]>
+        </artwork>
+        </figure>
+	<t>
+    It specifies that the peer with the <tt>pid</tt> "1MVZ..."
+          is reachable via "foo" at "example.com" and "bar+baz" at
+          "1.2.3.4" on port 5678 until
+          1708333757 seconds after the Epoch.  Note that "foo"
+	  and "bar+baz" here are underspecified and just used as a simple example.
+	  In practice, the <tt>addr-name</tt> refers to a scheme supported by a
+	  DHT underlay.
+        </t>
+      </section>
+    </back>
+</rfc>

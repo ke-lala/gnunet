@@ -1,0 +1,11 @@
+prefix=/home/user/ndk-sysroot/arm64-v8a/gnunet
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: gnunetregexblock
+Description: Library with common function to manipulate blocks stored by regex in the DHT
+URL: https://www.gnunet.org
+Version: show
+Requires.private: gnunetutil, libsodium >= 1.0.18, libgcrypt
+Libs: -L${prefix}/lib -lgnunetregexblock
+Cflags: -I${includedir}

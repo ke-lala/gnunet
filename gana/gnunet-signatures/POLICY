@@ -1,0 +1,11 @@
+Policy
+^^^^^^
+
+Developers working on GNUnet or packages based on GNUnet should
+feel free to extend this registry. Entries may be deleted if
+no code using them is still expected to be in production anywhere.
+
+Updating the name of the package or subsystem is allowed provided
+that the code using the signature is being moved, as those fields
+are merely informational or used for code generation.
+

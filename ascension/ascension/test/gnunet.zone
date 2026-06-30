@@ -1,0 +1,23 @@
+$TTL	3600
+@	IN	SOA	ns1.gnunet.gnu. root.gnunet.gnu. (
+			      2018090830		; Serial
+			 3600		; Refresh
+			  1800		; Retry
+			604800 		; Expire
+			 3600 )		; Negative Cache TTL
+@	IN	NS	ns1.gnunet.gnu.
+@	IN	A	127.0.0.1
+foo	IN	AAAA	2002::
+asdf	IN	CNAME	www
+$TTL	300
+ns1	IN	A	127.0.0.1
+ns2	IN	A	37.35.124.161
+www	IN	A	127.0.0.1
+$TTL	7200
+owncloud	IN	A	127.0.0.1
+nextcloud	IN	A	127.0.0.1
+mail	IN	MX	10	mail.gnunet.gnu.
+mail	IN	A 	127.0.0.1
+multiple.subzones.dns   IN  A   127.0.0.1
+subzones.dns   IN  A   127.1.1.1
+trying.dns  IN  CNAME   mail

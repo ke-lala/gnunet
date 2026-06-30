@@ -1,0 +1,11 @@
+Entries
+^^^^^^^
+
+.. list-table:: GNS Service Ports
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Number
+     - References
+     - Comment

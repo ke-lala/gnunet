@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC1928 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1928.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!--<!ENTITY RFC2693 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2693.xml">-->
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3629 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC4033 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
+<!ENTITY RFC5237 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5237.xml">
+<!--<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">-->
+<!ENTITY RFC5869 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5895.xml">
+<!ENTITY RFC6066 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
+<!ENTITY RFC6761 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7363 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7363.xml">
+<!ENTITY RFC8806 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8806.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8244 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8244.xml">
+<!ENTITY RFC8324 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8324.xml">
+<!ENTITY RFC8499 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8499.xml">
+<!ENTITY RFC9106 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9106.xml">
+<!ENTITY RFC9180 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9180.xml">
+<!ENTITY I-D.ietf-dnsop-alt-tld PUBLIC '' "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-alt-tld.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="info"
+     docName="draft-schanzen-pils-00"
+     ipr="trust200902"
+     obsoletes="" updates=""
+     submissionType="independent" 
+     xml:lang="en"
+     version="3">
+  <!-- xml2rfc v2v3 conversion 2.26.0 -->
+  <front>
+    <title abbrev="PILS">
+      The Peer Identity Lifecycle Service (PILS)
+    </title>
+    <seriesInfo name="Internet-Draft" value="draft-schanzen-pils-00"/>
+    <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+      <organization>Fraunhofer AISEC</organization>
+      <address>
+        <postal>
+          <street>Lichtenbergstrasse 11</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+      </address>
+    </author>
+    <author fullname="ch3" initials="" surname="ch3">
+      <organization>GNUnet e.V.</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>Lenggries</city>
+          <code></code>
+          <country>DE</country>
+        </postal>
+        <email>ch3@mailbox.org</email>
+      </address>
+    </author>
+
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>transport protocols</keyword>
+    <abstract>
+      <t>
+        This document contains the GNUnet peer lifecycle service
+        specification.
+      </t>
+      <t>
+        This document defines the normative wire format of peer identity lifecycle protocols,
+        cryptographic routines and security
+        considerations for use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to inform readers about the
+        function of GNUnet peer identity lifecycles, guide future implementations, and ensure
+        interoperability among implementations including with the pre-existing
+        GNUnet implementation.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="introduction" numbered="true" toc="default">
+      <name>Introduction</name>
+      <t>
+        Consider the following scenario: You use your GNUnet peer day-to-day from home.
+        One day, you decide to take a trip. With your device, and GNUnet peer.
+        Let's assume you take that trip by plane to Oceania.
+        It may be dangerous for you, depending on your activities and occupation at home,
+        if your GNUnet peer would reconnect to the network when you arrive on Oceania and
+        advertise your Peer ID because it would be linkable to the your peer's activities
+        back home.
+      </t>
+      <t>
+        More generally, we would like some degree of Peer unlinkability, depending on the
+        context in which we run our peer.
+        Ideally, the Peer ID changes when the context changes.
+      </t>
+      <t>
+        Changing PeerID requires further considerations than simply unlinkability.
+        For example it may seem prudent to use dedicated, randomly generated public key per address.
+        The reason why this is a bad idea is hidden in requirements from higher layers:
+        Having the peer handle multiple peer identities for each endpoint address will cause the connectivity on the DHT overlay to deteriorate.
+        The same physical node in the network may be reachable on N different endpoints.
+        If each of those endpoints is associated with a random peer identity (and advertised as such) other peers
+        may populate their routing tables with more than one of those addresses, in the worst case all N of them.
+        However, any connection establishment to the same node in the network does not improve connectivity and
+        resiliance of the overlay network.
+        Likely, connectivity will degrade and if the peer is no longer reachable (churn / peer offline) more than one
+        entry in the routing table will have to be replaced with new connections that in turn will again possibly
+        only be connections to the same local node in the network.
+      </t>
+      <t>
+        This document details a method to deterministically derive a peer identity from the current set of
+        endpoint addresses the peer is available at currently.
+        This provides a reasonable tradeoff between unlinkability for certain use cases, and stability for higher
+        layers in the GNUnet protocol stack.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to guide implementers
+        and ensure interoperability among implementations.
+      </t>
+      <section numbered="true" toc="default">
+        <name>Requirements Notation</name>
+        <t>
+          The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+          when, they appear in all capitals, as shown here.
+        </t>
+      </section>
+    </section>
+    <section anchor="notation" numbered="true" toc="default">
+      <name>Notation</name>
+      <t>
+        We use the notation and terminology of <xref target="RFC9180"/> throughout
+        this document.
+      </t>
+    </section>
+    <section anchor="address_hash" numbered="true" toc="default">
+      <name>Address hash</name>
+      <t>
+        The address hash is calculated over the concatenation of all
+        address strings (URIs) using SHA-512.
+        The addresses <bcp14>MUST</bcp14> be sorted alphanumerically.
+        The byte 0x00 is used as a separator between URIs in the hash input.
+        Consequently the hash may simply be calculated over the full C strings
+        including their 0-terminator.
+        Due to the flexibility of possible URI values this prevents any kind of odd
+        common-prefix case in which hashes may collide.
+      </t>
+    </section>
+    <section anchor="pid_derivation" numbered="true" toc="default">
+      <name>Peer ID Derivation</name>
+      <t>
+        Given an address hash h_addr and an initial key seed, the
+        deterministic address-derived peer ID is calculated using HKDF (<xref target="RFC5869"/>) as:
+      </t>
+      <figure anchor="figure_key_schedule" title="The Key Schedule.">
+          <artwork name="" type="" align="left" alt=""><![CDATA[
+prk = HKDF-Extract(h_addr,seed)
+sk  = HKDF-Expand(prk, "gnunet-pils-contextual-peer-key", 32)
+          ]]></artwork>
+      </figure>
+      <t>
+        "." shows the argument position of the input variable from the incoming arrow.
+      </t>
+      <t>
+        FIXME: Possibly needs algorithm for Elligator to iteratively try secret keys that can be
+        used.
+      </t>
+    </section>
+    <section>
+      <name>Security and Privacy Considerations</name>
+      <t>
+        TODO: Crypto considerations.
+      </t>
+      <t>
+        While the approach provides some privacy in certain use cases, it is not a general solution
+        to prevent peer identity linkability.
+        For example, if the peer is configured a permanent, static and global address it will be trivially
+        linkable even if PILS derives different peer identities.
+        As such, the peer identity derivation is aimed to protect common use cases for the average user
+        where it is to be expected that no such global and static address is availalble as outlined in the
+        introduction.
+      </t>
+      <t>
+        It may seem odd why GNUnet does not use a dedicated, randomly generated public key per address.
+        The reason is hidden in requirements from higher layers: Having the peer handle multiple peer identities
+        for each endpoint will cause the connectivity on the DHT overlay to deteriorate.
+        The same physical node in the network may be reachable on N different endpoints.
+        If each of those endpoints is associated with a random peer identity (and advertised as such) other peers
+        may populate their routing tables with more than one of those addresses, in the worst case all N of them.
+        However, any connection establishment to the same node in the network does not improve connectivity and
+        resiliance of the overlay network.
+        Likely, connectivity will degrade and if the peer is no longer reachable (churn / peer offline) more than one
+        entry in the routing table will have to be replaced with new connections that in turn will again possibly
+        only be connections to the same local node in the network.
+      </t>
+    </section>
+    <!-- gana -->
+    <section>
+      <name>Implementation and Deployment Status</name>
+      <t>
+      There is one implementation conforming to this specification, written in C. 
+      The implementation is part of <xref target="GNUnet"/> and represents the original and reference implementation.
+      </t>
+      <t>
+        FIXME test vectors
+      </t>
+    </section>
+    <section>
+      <name>Test Vectors</name>
+      <t>
+        The following test vectors can be used by implementations to test
+        for conformance with this specification. Unless indicated otherwise,
+        the test vectors are provided as hexadecimal byte arrays.
+      </t>
+      <section>
+        <name>PID Derivation</name>
+        <artwork name="" type="" align="left" alt="">
+          <![CDATA[
+Addresses (sorted):
+gnunet+udp://6.7.8.9
+gnunet+tcp://1.2.3.4
+gnunet+https://example.gnu
+
+Address hash:
+6c57def87391551d
+2d5b16abb8072e42
+dc389a3a85723fcb
+a26afdcaccaea027
+3af57a3e0e1d8777
+8099afb0e9a00995
+c444927a120f0170
+732d4fe0f50e3cb2
+
+Seed key:
+50d7b652a4efeadf
+f37396909785e595
+2171a02178c8e7d4
+50fa907925fafd98
+
+Derived key:
+9b8d17711be50a07
+e7d984bd9c1e6d9c
+f5492cfb2713f8cb
+42eaf251573f39d7
+           ]]>
+        </artwork>
+      </section>
+    </section>
+    <!-- <section>
+    <name>Acknowledgements</name>
+    <t>
+    FIXME
+    </t>
+    </section> -->
+  </middle>
+  <back>
+    <references>
+      <name>Normative References</name>
+      &RFC2119;
+      &RFC5869;
+      &RFC8174;
+      &RFC9180;
+
+    </references>
+    <references>
+      <name>Informative References</name>
+    <reference anchor="GNUnet" target="https://git.gnunet.org/gnunet.git">
+        <front>
+          <title>gnunet.git - GNUnet core repository</title>
+          <author initials="GNUnet e.V." surname=""
+                  fullname="">
+          </author>
+          <date month="" year="2023" />
+        </front>
+    </reference>
+    </references>
+  </back>
+</rfc>

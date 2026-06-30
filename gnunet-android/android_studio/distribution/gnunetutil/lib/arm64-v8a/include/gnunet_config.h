@@ -1,0 +1,58 @@
+/*
+      This file is part of GNUnet
+      Copyright (C) 2022 GNUnet e.V.
+
+      GNUnet is free software: you can redistribute it and/or modify it
+      under the terms of the GNU Affero General Public License as published
+      by the Free Software Foundation, either version 3 of the License,
+      or (at your option) any later version.
+
+      GNUnet is distributed in the hope that it will be useful, but
+      WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+      Affero General Public License for more details.
+
+      You should have received a copy of the GNU Affero General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+
+#ifndef GNUNET_CONFIG_H
+#define GNUNET_CONFIG_H
+
+/**
+ * @author Martin Schanzenbach
+ *
+ * @file
+ * Convenience header including public (!) information on the
+ * installed GNUnet configuration.
+ *
+ */
+
+/* The version of GNUnet */
+#define GNUNET_VERSION "0.24.1-19-gf8d2003a0"
+
+/* Major version */
+#define GNUNET_MAJOR_VERSION 0
+
+/* Micro version */
+#define GNUNET_MINOR_VERSION 24
+
+/* Mico version */
+#define GNUNET_MICRO_VERSION 1
+
+/* Set to 1 is this is an experimental build */
+#define GNUNET_EXPERIMENTAL 0
+
+/* Set to 1 if GnuTLS has DANE support */
+#define GNUNET_CURL_GNUTLS 0
+
+/**
+ * Set to 1 if file-sharing meta data parsing is built with
+ * libextractor, which means that callers to the API must use also use
+ * libextractor.
+ */
+#define GNUNET_FS_EXTRACTOR_ENABLED 0
+
+#endif

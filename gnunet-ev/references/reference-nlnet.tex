@@ -1,0 +1,109 @@
+\documentclass[DIN, pagenumber=false, parskip=half,
+               fromalign=right, fromphone=false, fromfax=false, frombank=true,
+               yourmail=false,
+               yourref=false,
+               fromrule=false]{scrlttr2}
+
+
+%\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{longtable}
+\usepackage{eurosym}
+
+\LoadLetterOption{template}
+
+\newcommand{\stdlohn}[0]{11 \euro}
+
+\renewcommand*{\raggedsignature}{\raggedright}
+
+\setkomavar{fromname}{GNUnet e. V.}
+\setkomavar{fromaddress}{Boltzmannstraße 3 \\ 85748 Garching bei München}
+%\setkomavar{frombank}{IBAN: DE67830654080004822650 \\ BIC: GENODEF1SLR}
+
+\setkomavar{subject}[]{Recommendation for nlnet for the EC's NGI initiative}
+%\setkomavar{yourmail}[Ihre Angebots-Nr.]{2011012631}
+%\setkomavar{yourref}[Ihre Kundennummer]{263}
+\setkomavar{date}[Datum]{\today}
+
+
+%===================================
+% footer
+\firstfoot{
+	\parbox[t]{\textwidth}{\footnotesize
+
+	\begin{tabular}[t]{l@{}}
+		 \multicolumn{1}{@{}l@{}}{Association:}\\
+		 GNUnet e. V. \\
+		 Boltzmannstraße 3, 85748 Garching bei München \\ \\
+		 E-Mail: ev@gnunet.org \\
+	\end{tabular}
+	\hfill{}
+	\begin{tabular}[t]{l@{}}
+	        \multicolumn{1}{@{}l@{}}{\usekomavar*{frombank}:}\\
+	        \usekomavar{frombank}
+	\end{tabular}
+ }}
+
+\begin{document}
+
+
+%===================================
+% receiver
+\begin{letter}{
+        To whom it may concern \\
+}
+
+\opening{\ }
+\vspace{-1.5cm}
+
+%===================================
+
+GNUnet e.V. is an association dedicated to supporting research,
+development and education in the area of secure decentralized
+networking.  We are excited to learn that NLnet will apply for funding
+from the EC's NGI initiative, and are happy to lend them our strongest
+support.
+
+Various community members of GNUnet e.V. have worked with NLnet over
+the last decade, and we have found their funding process to be
+reasonably uncomplicated and effective.  In terms of knowledgeable and
+result-oriented mechanisms for grantmaking, NLnet is comparable with
+the (less specialized) Emmy Noether Programme of the DFG, except that
+it's decision making speed is even faster.  We also have experience
+with H2020, FP7, KTI and NSF funding proceedures, which are all more
+complicated and generally result in lower quality expert reviews (of
+both applications and deliverables).  We can also attest that NLnet is
+well known in the larger community of people building modern,
+privacy-preserving network applications and services, so we predict
+that they will have no problem attracting a substantial number of
+quality applications.
+
+We thus think that it is a really good idea for NLnet to coordinate
+funding in this area: many promising projects are unable to directly
+meet the requirements to receive EU funding, in particular given the
+complex application and reporting procedures.  Furthermore, NLnet's
+plan to create a shared infrastructure would add some of the
+professionalism that is currently lacking in this space.  As GNUnet
+e.V., we see particularly strong value in infrastructure to address
+usability, accessibility, continuous integration and reproducible
+builds, as these are not currently adequately covered for us by the
+GNU project.
+
+Thus, as one of the larger and older efforts in the space of
+reinventing the Internet, GNUnet e.V. would really like to see NLnet
+to be responsible for managing the NGI and selecting the right
+(sub)projects.  Having them as an intermediary will be hugely
+beneficial as we know that they can adapt to the needs of the
+people that might actually make a difference.
+
+
+\vspace{3cm}
+Prof. Dr. Christian Grothoff\\
+President, GNUnet e. V. \\
+{\texttt grothoff@gnunet.org}
+
+
+\end{letter}
+\end{document}

@@ -1,0 +1,360 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC8174 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC9106 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9106.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-schanzen-gns-21" ipr="*trust200902" obsoletes="" updates="" submissionType="independent" xml:lang="en" version="3">
+ <!-- xml2rfc v2v3 conversion 2.26.0 -->
+ <front>
+  <title abbrev="The GNS DID Method">
+   The GNU Name System DID Method
+  </title>
+  <seriesInfo name="Internet-Draft" value="draft-schanzen-didgns-00"/>
+  <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+   <organization>Fraunhofer AISEC</organization>
+   <address>
+    <postal>
+     <street>Lichtenbergstrasse 11</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+   </address>
+  </author>
+  <author fullname="Tristan Schwieren" initials="T." surname="Schwieren">
+   <organization>Technische Universität München</organization>
+   <address>
+    <postal>
+     <street>Boltzmannstraße 15</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>tristan.schwieren@tum.de</email>
+   </address>
+  </author>
+  <author fullname="Thomas Bellebaum" initials="T." surname="Bellebaum">
+   <organization>Fraunhofer AISEC</organization>
+   <address>
+    <postal>
+     <street>Lichtenbergstrasse 11</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>thomas.bellebaum@aisec.fraunhofer.de</email>
+   </address>
+  </author>
+
+  <!-- Meta-data Declarations -->
+  <area>General</area>
+  <workgroup>GNUnet Living Standards</workgroup>
+  <keyword>name systems</keyword>
+  <abstract>
+    <t>
+      This document contains the GNU Name System (GNS) Decentralized Identifier(DID)
+      technical specification.
+    </t>
+  </abstract>
+ </front>
+ <middle>
+   <section>
+     <name>Introduction</name>
+     <t>
+       GNS is a decentralized, censorship-resistant name system <xref target="I-D.draft-schanzen-gns"/>.
+       It allows users to register zones and resolve the names of other users
+       in a petname-like manner.
+       GNS is a suitable mechanism for a DID Document registry and DID method
+       identifier due to it's inherent suitability as a public-key infrastructure.
+     </t>
+     <section numbered="true" toc="default">
+       <name>Requirements Notation</name>
+       <t>
+         The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+         "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+         "OPTIONAL" in this document are to be interpreted as described in
+         BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+         when, they appear in all capitals, as shown here.
+       </t>
+     </section>
+   </section>
+   <section>
+     <name>Method name</name>
+     <t>
+       The namestring that shall identify this DID method is "gns".
+       A DID that uses this method MUST begin with the prefix "did:gns:".
+       Per <xref target="W3C.did-core"/>, this string MUST be in lowercase.
+       The remainder of the DID, after the prefix, is specified below.
+     </t>
+   </section>
+   <section>
+     <name>Method-specific identifier</name>
+     <t>
+       Each identity in GNS has a single public-private zone key pair.
+       An ego should not be confused with a user. A user can have multiple egos.
+       The GNS DID method utilizes the GNU Name System (GNS) and its zone key.
+       It allows us to store a DID document in a GNS zone.
+     </t>
+     <t>
+       The method-specific identifier is the public zone key <tt>zk</tt> of an
+       identity, Base32GNS-encoded as defined in Appendix C of
+       <xref target="I-D.draft-schanzen-gns"/>. GNS DIDs are considered equal
+       if their method-specific identifiers decode to the same symbols.
+     </t>
+     <figure anchor="figure_did" title="The GNS DID format">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+gns-did = "did:gns:" ego-pubkey
+ego-pubkey = Base32GNS(zk)
+         ]]></artwork>
+     </figure>
+     <t>
+       For example:
+     </t>
+     <figure anchor="figure_did_ex" title="Non-normative examples of GNS-DIDs">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+did:gns:000G006K2TJNMD9VTCYRX7BRVV3HAEPS15E6NHDXKPJA1KAJJEG9AFF884
+did:gns:000G057G3NM5FCGEDF35DBE6Y1R7QEFF7GJA9KXVK9KMT336XWKBY1M2XC
+         ]]></artwork>
+     </figure>
+   </section>
+   <section>
+     <name>Method operations</name>
+     <section>
+       <name>Create (Register)</name>
+       <t>
+         In order to create and register a new GNS DID, a new GNS zone key
+         must be created as defined in Section 4 of <xref target="I-D.draft-schanzen-gns"/>.
+         The zone can then be populated with an DID Document.
+         DID Documents are stored as records of type <tt>DID_DOCUMENT</tt>.
+         DID Document records are published under the Apex Label.
+         Record expiration must be chosen carefully in order to facilitate
+         deletion (revocation) and updates of the DID Document and depends on
+         the use case and user preference.
+       </t>
+     </section>
+     <section>
+       <name>Read (Resolve)</name>
+       <t>
+         In order to resolve a GNS DID, the public zone key is extracted
+         from the the DID as the Base32GNS-decoded value of the method-specific
+         identifier. Note that the decoding procedure of Base32GNS decodes
+         several characters to the same symbol, thereby implicitly adding
+         normalization to GNS DIDs.
+         The zone key is used in combination with the Apex Label in order to
+         resolve a resource record of type <tt>DID_DOCUMENT</tt> as defined in
+         Section 7 of <xref target="I-D.draft-schanzen-gns"/>.
+       </t>
+     </section>
+     <section>
+       <name>Update</name>
+       <t>
+         In order to update the DID Document of a GNS DID, the resource record
+         data of the DID is updated.
+         The updated DID Document will be available through GNS as soonn as
+         the old records expire in GNS or the updated records are disseminated
+         through the network.
+       </t>
+     </section>
+     <section>
+       <name>Delete (Revoke)</name>
+       <t>
+         In order to revoke a DID, the registered DID Document resource record
+         is removed from the zone and no longer published.
+         It will cease to be available as soon as it reaches its expiration
+         date.
+         In this case, the DID may be "revived" at a later point in time
+         should the zone owner choose to do so.
+       </t>
+       <t>
+         Alternatively, the zone itself may be revoked according to Section 4.2
+         of <xref target="I-D.draft-schanzen-gns"/>.
+         However, this also prevents any future use of the zone keys.
+       </t>
+       <t>
+         For temporary deletion of a DID, the depublication of the resource
+         record is recommended.
+         For revocation of a DID, the zone revocation mechanism in GNS
+         is recommended.
+       </t>
+     </section>
+   </section>
+   <section anchor="security">
+     <name>Security and Privacy Considerations</name>
+     <!-- The Security Considerations section MUST document the following forms of attack for the DID 
+operations defined in the DID method specification: eavesdropping, replay, message insertion, 
+deletion, modification, denial of service, amplification, and man-in-the-middle. Other known 
+forms of attack SHOULD also be documented.-->
+     <t>
+       Record data in GNS is encrypted and signed using the private key which
+       corresponds to the public key in the DID.
+       This ensures that no message insertion or modification is possible and
+       authenticity of the DID Documents is ensured.
+       Only compromised private key material is a threat to the integrity
+       and authenticity of the DID.
+       Denial of service attacks are difficult due to the common use of
+       distributed hash tables as part of GNS implementations.
+     </t>
+     <!-- The Security Considerations section MUST discuss residual risks, such as the risks from compromise 
+in a related protocol, incorrect implementation, or cipher after threat mitigation was deployed. -->
+     <t>
+       An incorrect implementation of the digital signature validation algorithm
+       in GNS could make it possible for an attacker to impersonate any other ego.
+       Leakage of the private zone key allows anyone to create or delete DID
+       Documents.
+       GNS itself provides crypto-agility and the possibility of extending the
+       protocol with new cryptographic schemes should the need arise.
+       In such cases, existing identities will need to be revoked and new DIDs
+       created.
+     </t>
+     <!--The Security Considerations section MUST discuss the policy mechanism by which DIDs are proven to 
+be uniquely assigned. -->
+     <t>
+       The DIDs are statistically unique because they consist of a public key
+       corresponding to a GNS zone.
+       The chance for two users to generate the same private key and derive the
+       same public key is negligible.
+     </t>
+     <!--If a protocol incorporates cryptographic protection mechanisms, the DID method specification MUST 
+clearly indicate which portions of the data are protected and by what protections, and it SHOULD 
+give an indication of the sorts of attacks to which the cryptographic protection is susceptible. 
+Some examples are integrity only, and endpoint authentication.-->
+     <t>
+       The GNS DID method uses digital signatures.
+       The security of the DID method depends on the assumption that a user can
+       keep the private zone key secret.
+       Any records containing DID Documents published in GNS are encrypted using
+       a derived symmetric key as defined in Section 5.1 of
+       <xref target="I-D.draft-schanzen-gns"/> and signed using a private key
+       derived from the zone private key.
+     </t>
+     <!-- Data which is to be held secret (keying material, random seeds, and so on) should be clearly labeled.-->
+     <t>
+       The GND DID method never exposes the private zone key.
+       The user can however use and display the DIDs private key locally.
+     </t>
+     <!-- DID method specifications should explain and specify the implementation of signatures on DID documents, 
+if applicable. -->
+     <t>
+       DID documents are not signed directly but instead stored in the apex of
+       GNS zones.
+       Every record in a GNS zone is signed by the zone owner's private key.
+     </t>
+     <!-- Where DID methods use peer-to-peer computing resources, such as with all known DLTs, the expected 
+burdens of those resources SHOULD be discussed in relation to denial of service. -->
+     <t>
+       The underlying storage layer used by the DID method is the GNS.
+       A Distributed Ledger Technology is not used.
+       GNS does need resources such as for relaying messages and storing records.
+       However, a given peer is not required to provide these resources.
+       A peer may use more resources than it provides.
+     </t>
+     <!-- Privacy-->
+     <t>
+       Any given set of two GNS DIDs cannot be correlated.
+       Every DID uses a distinct private-public key pair.
+       The identity's privacy may be compromised if the user decides to use a
+       custom unique DID Document which contains compromising metadata.
+       The user can not be identified through a DID as the DID doesn't contain
+       any identifying information.
+       The user cannot prevent others to share a DID and DID Document as they
+       are essentialy public records.
+       The GNS DID method does not reveal any information that could harm the
+       users reputation.
+       Users only reveal their DID document. However, the user has no control
+       over how others handle that data.
+     </t>
+   </section>
+   <section anchor="gana" numbered="true" toc="default">
+       <name>GANA Considerations</name>
+       <t>
+         GANA <xref target="GANA" />
+         manages the "GNU Name System Record Types" registry.
+       </t>
+       <t>
+         GANA is asked to register the record types defined in this
+         specification in the "GNU Name System Record Types" registry
+         as listed in <xref target="figure_rrtypenums"/>.
+       </t>
+       <figure anchor="figure_rrtypenums" title="The GANA Resource Record Registry Modification.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+Number | Name          | Contact | References | Comment
+-------+---------------+---------+------------+-------------
+65566  | DID_DOCUMENT  | N/A     | [This.I-D] | DID Document
+           ]]></artwork>
+       </figure>
+       <t>
+         The <tt>DID_DOCUMENT</tt> resource record payload wire format consists
+         of a single string representing a DID Document.
+       </t>
+     </section>
+ </middle>
+   <back>
+     <references>
+       <name>Normative References</name>
+
+         &RFC2119;
+         &RFC8174;
+      <reference anchor="I-D.draft-schanzen-gns" target="https://datatracker.ietf.org/doc/draft-schanzen-gns/">
+        <front>
+          <title>The GNU Name System</title>
+          <author initials="M." surname="Schanzenbach" fullname="Martin Schanzenbach">
+            <organization>GNUnet e.V.</organization>
+          </author>
+          <author initials="C." surname="Grothoff" fullname="Christian Grothoff">
+            <organization>GNUnet e.V.</organization>
+          </author>
+          <author initials="B." surname="Fix" fullname="Bernd Fix">
+            <organization>GNUnet e.V.</organization>
+          </author>
+          <date year="2021"/>
+        </front>
+      </reference>
+      <reference anchor="W3C.did-core" target="https://www.w3.org/TR/did-core/">
+        <front>
+          <title>Decentralized Identifiers (DIDs)</title>
+          <author initials="M." surname="Sporny" fullname="Manu Sporny">
+            <organization>Digital Bazaar</organization>
+          </author>
+          <author initials="D." surname="Longley" fullname="Dave Longley">
+            <organization>Digital Bazaar</organization>
+          </author>
+          <author initials="M." surname="Sabadello" fullname="Markus Sabadello">
+            <organization>Danube Tech</organization>
+          </author>
+          <author initials="D." surname="Reed" fullname="Drummond Reed">
+            <organization>Evernym/Avast</organization>
+          </author>
+          <author initials="O." surname="Steele" fullname="Orie Steele">
+            <organization>Transmute</organization>
+          </author>
+          <author initials="C." surname="Allen" fullname="Christopher Allen">
+            <organization>Blockchain Commons</organization>
+          </author>
+          <date year="2022"/>
+        </front>
+      </reference>
+      <reference anchor="GANA" target="https://gana.gnunet.org/">
+         <front>
+           <title>GNUnet Assigned Numbers Authority (GANA)</title>
+           <author><organization>GNUnet e.V.</organization>
+           </author>
+           <date month="April" year="2020" />
+         </front>
+       </reference>
+
+
+     </references>
+     <references>
+       <name>Informative References</name>
+     </references>
+   </back>
+ </rfc>

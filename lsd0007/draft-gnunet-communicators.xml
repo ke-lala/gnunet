@@ -1,0 +1,1641 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC1928 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1928.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!--<!ENTITY RFC2693 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2693.xml">-->
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3629 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC4033 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
+<!ENTITY RFC5237 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5237.xml">
+<!--<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">-->
+<!ENTITY RFC5869 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5895.xml">
+<!ENTITY RFC6066 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
+<!ENTITY RFC6234 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6234.xml">
+<!ENTITY RFC6761 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7363 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7363.xml">
+<!ENTITY RFC8806 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8806.xml">
+<!ENTITY RFC7748 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8032 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8032.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8244 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8244.xml">
+<!ENTITY RFC8324 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8324.xml">
+<!ENTITY RFC8499 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8499.xml">
+<!ENTITY RFC9114 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9114.xml">
+<!ENTITY RFC9106 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9106.xml">
+<!ENTITY RFC9180 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9180.xml">
+<!ENTITY I-D.ietf-dnsop-alt-tld PUBLIC '' "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-alt-tld.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="info"
+     docName="draft-gnunet-communicators-00"
+     ipr="trust200902"
+     obsoletes="" updates=""
+     submissionType="independent" 
+     xml:lang="en"
+     version="3">
+ <!-- xml2rfc v2v3 conversion 2.26.0 -->
+ <front>
+  <title abbrev="The GNUnet communicators">
+   The GNUnet communicators
+  </title>
+  <seriesInfo name="Internet-Draft" value="draft-gnunet-communicators-00"/>
+  <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+   <organization>Fraunhofer AISEC</organization>
+   <address>
+    <postal>
+     <street>Lichtenbergstrasse 11</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+   </address>
+  </author>
+  <author fullname="Christian Grothoff" initials="C." surname="Grothoff">
+   <organization>Berner Fachhochschule</organization>
+   <address>
+    <postal>
+     <street>Hoeheweg 80</street>
+     <city>Biel/Bienne</city>
+     <code>2501</code>
+     <country>CH</country>
+    </postal>
+    <email>christian.grothoff@bfh.ch</email>
+   </address>
+  </author>
+  <author fullname="Pedram Fardzadeh" initials="P." surname="Fardzadeh">
+    <organization>Technischen Universität München</organization>
+   <address>
+    <postal>
+     <street>Boltzmannstrasse 3</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>pedram.fardzadeh@tum.de</email>
+   </address>
+  </author>
+  <author fullname="ch3" initials="" surname="ch3">
+    <organization>GNUnet e.V.</organization>
+    <address>
+      <postal>
+        <street></street>
+        <city>Lenggries</city>
+        <code></code>
+        <country>DE</country>
+      </postal>
+      <email>ch3@mailbox.org</email>
+    </address>
+  </author>
+
+
+  <!-- Meta-data Declarations -->
+  <area>General</area>
+  <workgroup>Independent Stream</workgroup>
+  <keyword>transport protocols</keyword>
+  <abstract>
+    <t>
+      This document contains the GNUnet communicator
+      specification.
+    </t>
+    <t>
+      This document defines the normative wire format of communicator protocols,
+      cryptographic routines and security
+      considerations for use by implementers.
+    </t>
+    <t>
+      This specification was developed outside the IETF and does not have
+      IETF consensus.  It is published here to inform readers about the
+      function of GNUnet communicators, guide future communicator implementations, and ensure
+      interoperability among implementations including with the pre-existing
+      GNUnet implementation.
+    </t>
+  </abstract>
+ </front>
+ <middle>
+   <section anchor="introduction" numbered="true" toc="default">
+     <name>Introduction</name>
+     <t>
+       This document defines the normative wire format of resource
+       records, resolution processes, cryptographic routines and
+       security considerations for use by implementers.
+     </t>
+     <t>
+       This specification was developed outside the IETF and does not have
+       IETF consensus.  It is published here to guide GNS implementers
+       and to ensure interoperability among implementations.
+     </t>
+     <section numbered="true" toc="default">
+       <name>Requirements Notation</name>
+       <t>
+         The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+         "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+         "OPTIONAL" in this document are to be interpreted as described in
+         BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+         when, they appear in all capitals, as shown here.
+       </t>
+     </section>
+   </section>
+   <section>
+     <name>Terminology</name>
+     <dl>
+       <dt>Communicator</dt>
+       <dd>
+         What is a communicator?
+       </dd>
+       <dt>Peer Identity</dt>
+       <dd>
+         Peer IDs in GNUnet are Ed25519 public keys as defined <xref target="RFC8032"/>
+         and serialized accordingly.
+       </dd>
+     </dl>
+   </section>
+   <section>
+     <name>Notation</name>
+     <t>
+       We use the notation from <xref target="RFC9180"/> and <xref target="LSD0011"/>.
+       In addition, we define:
+     </t>
+     <dl>
+       <dt>(skXed, pkXed)</dt>
+       <dd>
+         A key pair is used in role X, where X is one of S as sender or R as recipient, respectively;
+         skXed is the Ed25519 private key and pkXed is the Ed25519 public key as defined in
+         <xref target="RFC8032"/>.
+       </dd>
+     </dl>
+   </section>   <section anchor="overview" numbered="true" toc="default">
+     <name>Overview</name>
+     <t>
+       Each communicator must specify its (global) communication characteristics,
+       which for now only say whether the communication is reliable (e.g., TCP, HTTPS)
+       or unreliable (e.g., UDP, WLAN).
+       Each communicator must specify a unique address prex, or NULL if the
+       communicator cannot establish outgoing connections (for example, because
+       it is only acting as a TCP server).
+       A communicator must tell TRANSPORT which addresses it is reachable under.
+       Addresses may be added or removed at any time.
+       A communicator may have zero addresses (transmission only).
+       Addresses do not have to match the address prefix.
+     </t>
+     <t>
+       TRANSPORT may ask a communicator to try to connect to another address.
+       TRANSPORT will only ask for connections where the address matches the
+       communicator’s address prefix that was provided when the connection was
+       established.
+       Communicators should then attempt to establish a connection.
+       No response is provided to TRANSPORT service on failure.
+       The TRANSPORT service has to ask the communicator explicitly to retry.
+     </t>
+     <t>
+       If a communicator succeeds in establishing an outgoing connection for
+       transmission, or if a communicator receives an incoming bi-directional
+       connection, the communicator must inform the TRANSPORT service that a
+       message queue (MQ) for transmission is now available.
+       For that MQ, the communicator must provide the peer identity claimed by
+       the other end.
+       It must also provide a human-readable address (for debugging) and a
+       maximum transfer unit (MTU).
+       A MTU of zero means sending is not supported, SIZE_MAX should be used for
+       no MTU. The communicator should also tell TRANSPORT what network type is
+       used for the queue.
+       The communicator may tell TRANSPORT anytime that the queue was deleted
+       and is no longer available.
+     </t>
+     <t>
+       The communicator API also provides for flow control.
+       First, communicators exhibit backpressure on TRANSPORT:
+       the number of messages TRANSPORT may add to a queue for transmission will
+       be limited.
+       So, by not draining the transmission queue, backpressure is provided to
+       TRANSPORT.
+       In the other direction, communicators may allow TRANSPORT to give
+       backpressure towards the communicator by providing a non-NULL
+       GNUNET_TRANSPORT_MessageCompletedCallback argument to the
+       GNUNET_TRANSPORT_communicator_receive function.
+       In this case, TRANSPORT will only invoke this function once it has
+       processed the message and is ready to receive more.
+       Communicators should then limit how much traffic they receive based on
+       this backpressure.
+       Note that communicators do not have to provide a
+       GNUNET_TRANSPORT_MessageCompletedCallback;
+       for example, UDP cannot support backpressure due to the nature of the
+       UDP protocol.
+       In this case, TRANSPORT will implement its own TRANSPORT-to-TRANSPORT
+       flow control to reduce the sender’s data rate to acceptable levels.
+     </t>
+     <t>
+       TRANSPORT may notify a communicator about backchannel messages TRANSPORT
+       received from other peers for this communicator.
+       Similarly, communicators can ask TRANSPORT to try to send a backchannel
+       message to other communicators of other peers.
+       The semantics of the backchannel message are up to the communicators
+       who use them.
+       TRANSPORT may fail to transmit backchannel messages, and TRANSPORT will
+       not attempt to retransmit them.
+     </t>
+   </section>
+   <section anchor="primitives" numbered="true" toc="default">
+     <name>Cryptographic dependencies</name>
+   <section anchor="elligator_dhkem" numbered="true" toc="default">
+   <name>Elligator DHKEM</name>
+      <t>
+        GNUnet communicators utilize en Elligator KEM for the encoding and decoding
+        the ephemeral public keys.
+        While standard Diffie-Hellman-based KEMs securely establish a secret between
+        two parties, an observer can easily identify the encapsulation as a public key.
+        In the presence of an active attacker, this could lead to packet dropping based on this information,
+        preventing communication between peers.
+        The UDP and TCP communicators use the Elligator KEM defined in
+        <xref target="LSD0011"/>.
+        This leaves the attacker with the option to either do nothing or intercept all random-looking packets,
+        thereby potentially disrupting a large part of today's internet communication.
+      </t>
+      <t>
+        We use the KEMs and their notations as defined in <xref target="RFC9180"/> and
+        <xref target="LSD0011"/>.
+      </t>
+   </section>
+   <section anchor="key_derivation" numbered="true" toc="default">
+     <name>Key derivation</name>
+      <t>
+        We use a hash-based key derivation function (HKDF) as defined in
+        <xref target="RFC5869" />, using SHA-256 <xref target="RFC6234"/> for the extraction
+        phase and SHA-256 <xref target="RFC6234"/> for the expansion phase.
+        We derive the master secret as a uniform symmetric key
+        from the X25519 result "Z" and the ephemeral public key "A" in a
+        "HKDF-Extract" step and then derive context-specific keys through "HKDF-Expand" as needed.
+        </t>
+        <t>
+        Peer IDs in GNUnet are Ed25519 public keys as defined <xref target="RFC8032"/>.
+        In order to use such keys in our X25519-based KEMs (including the Elligator KEM), those
+        keys must be converted to Curve25519 public keys, which is generally possible.
+        </t>
+   </section>
+   </section>
+  <section anchor="udp_comm" numbered="true" toc="default">
+     <name>UDP communicator</name>
+     <t>
+   The UDP communicator implements an encryption layer that protects both the payload and the communicator's
+   specific metadata (not to be confused with the UDP header). In particular, any message sent by the communicator
+   is indistinguishable from random payload to an outside observer, with the exception of broadcast messages.
+    </t>
+    <t>
+   For any new connection to a target peer, the communicator attempts to establish a shared secret using the
+   KEM defined in <xref target="elligator_dhkem"/>.
+   The communicator initiating the connection sends the resulting Elligator representative, the authentication tag
+   and the encrypted data to the receiving peer.
+   Since the GCM authentication tag and the encrypted data in the key exchange message also appear random,
+   the entire message is computationally indistinguishable from a random byte stream.
+   Independent of the payload, each message includes the sender's peer identity, a monotonic timestamp, and a
+   signature over the session metadata.
+   Receivers <bcp14>MUST</bcp14> keep track of the monotonic timestamps of key exchanges with each peer
+   to prevent replay attacks.
+   For each subsequent message the same procedure is used with a new encapsulation.
+   While the communicator may always fall back to this type of encryption, it is inefficient for
+   high-volume data transfer because a new key exchange is required for every message.
+   However, sometimes we may have no other choice, for example, if there is only bi-directional connectivity
+   to the receiving peer.
+    </t>
+    <t>
+    If the target peer is able to acknowledge the reception of a message, the employed key can be reused.
+    Such acknowledgments can be sent either via a bi-directional UDP connection or a backchannel connection provided
+    by TRANSPORT.
+    This acknowledgment prompts the communicator to offer a new queue to TRANSPORT, which has a higher priority
+    than the default queue but starts with limited capacity.
+    The capacity increases whenever the communicator receives an acknowledgment for a transmission.
+    This queue is suitable for high-volume data transfer, and TRANSPORT will prioritize it if available.
+    </t>
+    <t>
+   There are three distinct message types that are sent and received by UDP communicators: KX, BOX and BROADCAST.
+   For KX and BOX messages, their metadata is chosen such that they are indistinguishable from random. This property
+   does not hold for BROADCAST messages and is not necessary, as they are only sent within a local area network.
+    </t>
+
+    <section anchor="Key_exchange" numbered="true" toc="default">
+       <name>Key exchange</name>
+       <t>
+       Independent of the type of message queue, a key exchange is initiated at least once by the sending peer.
+       In cases where the receiving peer cannot acknowledge the reception of messages, a key exchange is performed for every message.
+       Two key pairs are needed for the KEM: An ephemeral key pair generated as part of the encapsulation procedure
+       <tt>Encap(pkR) -> (MSK,enc)</tt> and the peer identity of the receiving communciator.
+       The algorithm in use for the KEM is <tt>DHKEM(X25519+Elligator, HKDF-SHA256)</tt> <xref target="LSD0011"/>.
+       The peer identity of the receiving communicator is an Ed25519 public key <tt>pkRed</tt>.
+       In order to use it compliantly with a X25519-based DHKEM as defined in <xref target="LSD0011"/> and <xref target="RFC9180"/>, the
+       curve point must first be converted from Edwards into its birationally equivalent Montgomery form
+       <tt>pkR</tt>.
+       The encapsulation <tt>enc</tt> is transferred via a key exchange (KX) message, as defined in <xref target="figure_udp_initialkx"/>.
+        </t>
+        <figure anchor="figure_udp_initialkx" title="The binary representation of the KX message.">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24    
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    ENC                        |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    GCM TAG                    |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                 ENCRYPTED DATA                /
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+     </figure>
+       <dl>
+         <dt>ENC</dt>
+         <dd>
+           The 256-bit serialized encapsulation result <tt>enc</tt> of the KEM.
+         </dd>
+         <dt>GCM TAG</dt>
+         <dd>
+           The 128-bit GCM tag is used to authenticate the ciphertext immediately following the header part of the KX message.
+         </dd>
+         <dt>ENCRYPTED DATA</dt>
+         <dd>
+           The remaining data (as indicated by SIZE) is AES-GCM encrypted using the current session key and authenticated
+           through the GCM TAG.
+         </dd>
+       </dl>
+        <t>
+         In order to prevent replay attacks for KX messages, the plaintext resulting from decryption of the encrypted data
+         <bcp14>MUST</bcp14> must start with a session-specific Confirmation header as defined in <xref target="figure_udp_confirmation"/>.
+         It includes the sender's peer identity and a monotonic timestamp, which the receiving peer <bcp14>MUST</bcp14>
+         keep track of each peer identity to reject possible replay attacks.
+       </t>
+<figure anchor="figure_udp_confirmation" title="The binary representation of the KX Confirmation header">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                                               |
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                                               |
+|                 SIGNATURE                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                PAYLOAD                        /
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+     </figure>
+       <dl>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>SIGNATURE</dt>
+         <dd>
+           The EdDSA signature is computed with the peer private key
+           over the session metadata, as detailed in <xref target="figure_udp_handshake_sig"/>.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+          A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+         <dt>PAYLOAD</dt>
+         <dd>
+           The message payload data.
+         </dd>
+       </dl>
+       <t>
+       The confirmation header also includes a signature over the session's metadata, which is signed with the corresponding private key of
+       the sender's peer identity. The data format over which the signature is computed is defined in <xref target="figure_udp_handshake_sig"/>
+       </t>
+       <figure anchor="figure_udp_handshake_sig" title="The wire format of the data structure over which the signature of the UDP Confirmation header is computed.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE (0x0X)  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RECEIVER PEER ID              |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 ENC                           |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 32-bit value containing the length of the signed data in bytes
+           in network byte order.
+         </dd>
+         <dt>PURPOSE</dt>
+         <dd>
+           A 32-bit signature purpose flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 33. It defines the context in which
+           the signature is created so that it cannot be reused in other parts
+           of the protocol, including possible future extensions.
+           The value of this field corresponds to an entry in the
+           GANA "GNUnet Signature Purpose" registry <xref target="GANA"/>.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>RECEIVER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkRed</tt>).
+         </dd>
+         <dt>ENC</dt>
+         <dd>
+           The 256-bit serialized encapsulation result <tt>enc</tt> of the KEM.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+       </dl>
+       <t>
+         Upon receiving a KX message, the receiving peer decapsulates the secret key <tt>MSK</tt> using
+         <tt>MSK &lt;- Decap(skR,enc)</tt>, where <tt>skR</tt> is the X25519 private key derived from
+         its Ed25519 counterpart <tt>skRed</tt>.
+         This <tt>Decap(skR, enc)</tt> procedure is defined in <xref target="LSD0011"/>.
+       Note that the exchange of the receiver peer identity is not within the scope of the UDP communicator's key
+       exchange and is already assumed to be known to the sending peer.
+       One way to exchange peer identities is through the UDP BROADCAST messages as described in
+       <xref target="udp_bc"/>.
+        </t>
+        <t>
+        The MSK is then used together with a sequence number SEQ to derive symmetric encryption key K and initialization
+        vector IV using the "SetupCipher" procedure outlined below.
+        Both the sending and the receiving peer <bcp14>SHOULD</bcp14> store the master shared secret MSK and attribute
+        it to the corresponding peer.
+        <!-- FIXME SEQ is increased by ACKs! -->
+        In case of an acknowledgment from the receiving peer, the established MSK can be reused by iteratively increasing
+        the sequence number SEQ for SetupCipher(MSK, SEQ).
+        </t>
+         <t>
+         Additional data might be inserted after the confirmation header as part of the encrypted data of the KX message.
+         <!-- Wat? -->
+         Padding may be necessary due to the use of AES-GCM.
+         Once a KX message is received and validated, the peer <bcp14>SHOULD</bcp14> try to acknowledge the established
+         MSK to switch to a stable session.
+         The details about the acknowledgment process and subsequent message exchange can be found in
+         <xref target="udp_message_exchange"/>.
+         </t>
+     </section>
+     <section anchor="udp_key_schedule" numbered="true" toc="default">
+       <name>Key schedule</name>
+       <t>
+       Once a shared secret MSK is established through the Elligator KEM, a symmetric key and
+       initialization vector are derived.
+       According to a key schedule from a 32-bit sequence number SEQ (in network byte order) and the MSK.
+       The initial value of the sequence number is 0.
+       </t>
+       <artwork anchor="setup_cipher" name="" type="" align="left" alt=""><![CDATA[
+SetupCipher(MSK,SEQ):
+  K := HKDF-Expand (MSK, "gnunet-communicator-udp-key"||SEQ, 32)
+  IV := HKDF-Expand (MSK, "gnunet-communicator-udp-iv"||SEQ, 12)
+  return K,IV
+       ]]></artwork>
+     <t>
+       SetupCipher returns a 256-bit AES key "K" as well as a 96-bit "IV" for use in AES-GCM.
+     </t>
+       <t>
+         Each derived key is uniquely identified using a separately derived
+         256-bit key ID (KID) derived in a similar fashion:
+       </t>
+       <artwork anchor="derive_kid" name="" type="" align="left" alt=""><![CDATA[
+DeriveKID(MSK,SEQ):
+  KID := HKDF-Expand (MSK, "gnunet-communicator-udp-kid"||SEQ, 32)
+  return KID
+  ]]></artwork>
+       <t>
+       The sequence number SEQ for any shared secret is initially 0 and incremented on the sender side for each 
+       successive encryption and on the receiver side for each decryption.
+       </t>
+     </section>
+     <section anchor="udp_message_exchange" numbered="true" toc="default">
+       <name>Message exchange</name>
+       <t>
+       KX messages, as presented in <xref target="Key_exchange"/>, are sufficient for transferring arbitrary amounts of data. This way of 
+       communicating is slow due to the establishment of a shared secret for each message using asymmetric cryptography. The UDP communicator 
+       offers a faster way of communicating by reusing a shared secret. For this purpose, the receiver of a message <bcp14>SHOULD</bcp14> 
+       acknowledge the reception to signal the sender that the same shared secret can be reused. The sender can then use the acknowledged shared 
+       secret and increment the utilized sequence number for each subsequent message to derive new symmetric key material. These messages are 
+       sent as BOX messages, which incorporate a KID as defined in <xref target="derive_kid"/> to identify both the master shared secret and 
+       sequence number. The wire format of a BOX message is depicted in <xref target="figure_udp_box"/>. 
+       </t>
+       <figure anchor="figure_udp_box" title="The binary representation of the UDP Box message.">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24    
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     KEY ID                    |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    GCM TAG                    |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                 ENCRYPTED DATA                /
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+     </figure>
+       <dl>
+         <dt>KEY ID</dt>
+         <dd>
+           A 256-bit value containing the KID of the symmetric key to
+           use for decryption as derived using DeriveKID as described in <xref target="derive_kid"/>.
+         </dd>
+         <dt>GCM TAG</dt>
+         <dd>
+           A 128-bit GCM tag used to authenticate the ciphertext immediately following this TCP Box header.
+         </dd>
+         <dt>ENCRYPTED DATA</dt>
+         <dd>
+           The remaining data (as indicated by SIZE) is AES-GCM encrypted using the
+           derived key and IV identified by the KID.
+         </dd>
+       </dl>
+       <t>
+       An acknowledgment can be sent in various ways is ultimately decided by TRANSPORT. If the target peer can also reach the sending peer via 
+       UDP messages, both KX messages or BOX messages could be utilized to send the acknowledgment as their payload. TRANSPORT could also choose 
+       to utilize another communicator type to send the acknowledgment (backchannel). Either way, acknowledgments are always sent in form of an 
+       ACK header. The wire format of the ACK header can be seen in <xref target="figure_udp_ack"/>.
+       </t>
+       <figure anchor="figure_udp_ack" title="The wire format of an ACK header.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0                       16
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       TYPE (0x0X)     |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SEQ ACK                       |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MSK HASH (fromerly CMAC)       |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this field MUST be 1460.
+         </dd>
+         <dt>SEQ ACK</dt>
+         <dd>
+           Sequence acknowledgment limit. Specifies the current maximum sequence number supported by the receiver.
+         </dd>
+         <dt>MSK HASH</dt>
+         <dd>
+           CMAC of the base key being acknowledged.
+         </dd>
+       </dl>
+       <t>
+       To avoid having to acknowledge every single message individually, the sender of an acknowledgment can specify the allowed sequence number for
+       the sender in the ACK header. 
+       The receiver <bcp14>MUST</bcp14> precalculate all derived keys and corresponding KIDs for which it has already sent ACKs. Consequently, for 
+       valid sequence numbers below the current ACK limit, KID should match one of the precalculated keys in the key cache, and the encrypted data 
+       can be decrypted. Otherwise, the message <bcp14>MUST</bcp14> be rejected.
+       </t>
+       <t>
+       Multiple shared secrets can be used simultaneously between the sending peer and target peer. Should the 
+       sending peer use up all acknowledgments for all its shared secrets, messages are sent through KX messages again.
+       </t>
+     </section>
+     <section anchor="udp_rekeying" numbered="true" toc="default">
+       <name>Rekeying</name>
+       <t>
+       The amount of data that can be encrypted with a shared secret <bcp14>MUST</bcp14> be limited. Before
+       the capacity of a shared secret is used up, the sender initiates rekeying by sending a new ephemeral public key
+       for a key exchange. As multiple shared secrets can be used simultaneously, rekeying doesn't necessarily delete the old shared secret if its 
+       capacity is not yet reached. The ephemeral public key is sent encrypted in a Rekey header as part of the payload of BOX message. Because the 
+       ephemeral public key is encrypted, there is no need to use Elligator's encoding function and we use the normal, unobfuscated
+       <tt>DHKEM(X25519, HKDF-SHA256)</tt>. The wire format of the Rekey header can 
+       be seen in <xref target="figure_udp_rekey"/>.
+       </t>
+       <figure anchor="figure_udp_rekey" title="The wire format of a Rekey header.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0                       16
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       TYPE (0x0X)     |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     ENC                       |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+       <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this field MUST be 1462.
+         </dd>
+         <dt>ENC</dt>
+         <dd>
+           The 256-bit serialized encapsulation result <tt>enc</tt> of the KEM.
+         </dd>
+       </dl>
+       <t>
+       Additional data might be inserted after the Rekey header as part of the encrypted data of the BOX message. Padding 
+       may be necessary due to the use of AES-GCM.
+       </t>
+     </section>
+     <section anchor="udp_bc" numbered="true" toc="default">
+       <name>Broadcast</name>
+       <t>
+       BROADCAST messages are sent by peers to announce their presence. Those messages are only distributed in the LAN and sent in cleartext.
+       </t>
+       <figure anchor="figure_udp_broadcast" title="The binary representation of the udp BROADCAST message">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                                               |
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                                               |
+|                 SIGNATURE                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+         ]]></artwork>
+     </figure>
+       <dl>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>SIGNATURE</dt>
+         <dd>
+           The EdDSA signature is computed with the announced peer private key
+           over the peer identity and address hash, as depicted in <xref target="figure_udp_broadcast_sig"/>.
+         </dd>
+       </dl>
+       <figure anchor="figure_udp_broadcast_sig" title="The wire format of the data structure over which the signature of the UDP BROADCAST message is computed.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE (0x0X)  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 ADDRESS HASH                  |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+        <dt>SIZE</dt>
+         <dd>
+           A 32-bit value containing the length of the signed data in bytes
+           in network byte order.
+         </dd>
+         <dt>PURPOSE</dt>
+         <dd>
+           A 32-bit signature purpose flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 34. It defines the context in which
+           the signature is created so that it cannot be reused in other parts
+           of the protocol, including possible future extensions.
+           The value of this field corresponds to an entry in the
+           GANA "GNUnet Signature Purpose" registry <xref target="GANA"/>.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>ADDRESS HASH</dt>
+         <dd>
+           Hash of the sender's UDP address.
+         </dd>
+       </dl>
+     </section>
+  </section>
+   <section anchor="tcp_comm" numbered="true" toc="default">
+     <name>TCP communicator</name>
+     <t>
+       TCP communicators always establish an encrypted and bi-directional communication channel. For 
+       each direction of communication, a dedicated shared secret is used to both encrypt and 
+       authenticate messages. These shared secrets are exchanged during the initial handshake. After a 
+       certain amount of data has been transmitted, rekeying occurs to renew the key material. 
+       Note that the rekeying process is triggered individually for each communication direction.
+     </t>
+     <t>
+       To achieve a zero-plaintext design, we <bcp14>MUST</bcp14> use the mac-then-encrypt approach to 
+       hide the message size on the wire. Extra caution needs to be taken due to the vulnerability of 
+       the mac-then-encrypt design to padding oracle attacks. To mitigate this issue, the TCP communicator 
+       uses AES-CTR for encryption, which does not require padding. Additionally, the use of ephemeral keys 
+       combined with monotonic timestamps limits an attacker's ability to exploit the oracle, as replay 
+       attacks are prevented.
+     </t>
+     <section anchor="tcp_handshake" numbered="true" toc="default">
+       <name>Handshake</name>
+      <t>
+      The main purpose of the handshake is to establish shared key material for each direction of the communication
+      channel.
+      The initiating TCP Communicator starts the handshake by sending an encapsulation from the Elligator KEM
+      defined in <xref target="elligator_dhkem"/>.
+      </t>
+      <t>
+      The encapsulation <bcp14>MUST</bcp14> be directly followed by an encrypted TCP handshake message, as shown in
+      <xref target="figure_tcp_handshake"/>.
+      In addition to the peer identity of the sender and a timestamp, it contains a nonce as a challenge for the
+      receiving TCP communicator.
+      All data is authenticated with a signature.
+      </t>
+       <figure anchor="figure_tcp_handshake" title="The binary representation of the TCP handshake message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SIGNATURE                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     NONCE                     |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>SIGNATURE</dt>
+         <dd>
+           A 512-bit EdDSA signature. The signature is calculated over
+           the data as defined in <xref target="figure_tcp_handshake_sig"/>.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+         <dt>NONCE</dt>
+         <dd>
+           A 256-bit random value used as a challenge to be signed in a TCP handshake acknowledgment message.
+         </dd>
+       </dl>
+       <t>
+       The data scheme used for computing the signature is depicted in <xref target="figure_tcp_handshake_sig"/>.
+       </t>
+       <figure anchor="figure_tcp_handshake_sig" title="The wire format used for creating the signature of the tcp handshake message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE (0x0X)  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RECEIVER PEER ID              |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                REPRESENTATIVE                 |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     NONCE                     |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 32-bit value containing the length of the signed data in bytes
+           in network byte order.
+         </dd>
+         <dt>PURPOSE</dt>
+         <dd>
+           A 32-bit signature purpose flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 31.  It defines the context in which
+           the signature is created so that it cannot be reused in other parts
+           of the protocol, including possible future extensions.
+           The value of this field corresponds to an entry in the
+           GANA "GNUnet Signature Purpose" registry <xref target="GANA"/>.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>RECEIVER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>REPRESENTATIVE</dt>
+         <dd>
+           The 256-bit serialized encapsulation result of the KEM.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+         <dt>NONCE</dt>
+         <dd>
+           A 256-bit random value.
+         </dd>
+       </dl>
+       <t>
+         Upon reception of the ephemeral public key, the receiving TCP communicator carries out the decapsulation step of the
+         key exchange and retrieves the shared key material. The subsequently received TCP handshake message is then decrypted and verified.
+         If the signature is invalid, the connection is dropped.
+         In the case of a valid signature, the receiving TCP communicator sends its own TCP handshake message to establish 
+         shared key material for outgoing messages and also replies with an encrypted TCP handshake acknowledgment message as defined 
+         in <xref target="figure_tcp_handshake_ack"/>. 
+       </t>
+       <figure anchor="figure_tcp_handshake_ack" title="The binary representation of the tcp handshake acknowledgment message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |        TYPE (0x0X)    |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RECEIVER PEER ID              |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SIGNATURE                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     NONCE                     | 
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes
+           in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 1453.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>RECEIVER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>Signature</dt>
+         <dd>
+           A 512-bit EdDSA signature. The signature is calculated over
+           the data as defined in <xref target="figure_tcp_handshake_ack_sig"/>.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+         <dt>NONCE</dt>
+         <dd>
+           A 256-bit random value.
+         </dd>
+       </dl>
+       <t>
+       The data scheme used for computing the signature for the acknowledgment message is depicted 
+       in <xref target="figure_tcp_handshake_ack_sig"/>.
+       </t>
+       <figure anchor="figure_tcp_handshake_ack_sig" title="The wire format used for creating the signature of the tcp handshake acknowledgment message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |        TYPE (0x0X)    |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RECEIVER PEER ID              |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                     NONCE                     | 
+|                                               |
+/                                               /
+/                                               /
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes
+           in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 39.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>RECEIVER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+         <dt>NONCE</dt>
+         <dd>
+           A 256-bit random value.
+         </dd>
+       </dl>
+      <t>
+       The initiating TCP communicator also replies with a TCP handshake acknowledgment message after receiving
+       a valid TCP handshake message. Lastly, each party verifies both the signature and the challenge within the received
+       TCP handshake acknowledgment message, thus completing the handshake.
+     </t>
+     </section>
+     <section anchor="tcp_KEM" numbered="true" toc="default">
+       <name>Key exchange</name>
+      <t>
+      During the initial handshake, each communication channel performs the Elligator KEM defined in
+      <xref target="elligator_dhkem"/>.
+      The resulting shared secret us used in an AES-CTR encryption with HMAC-SHA512.
+      Subsequent key exchanges are performed with each rekeying.
+      More about the initial handshake and rekeying can be found in <xref target="tcp_handshake"/> and
+      <xref target="tcp_rekeying"/>, respectively.
+      </t>
+      <t>
+      Let (REC_SK, REC_ID) be the receiver peer's EdDSA key pair.
+      The sender peer initiates the key exchange using the Elligator KEM from <xref target="elligator_dhkem"/>
+      resulting in an encapsulation and initial master secret key MSK.
+      MSK is used to derive a symmetric encryption and HMAC key as well as an initialization vector using
+      the procedure "SetupCipher":
+    </t>
+       <artwork anchor="setup_cipher_tcp" name="" type="" align="left" alt=""><![CDATA[
+SetupCipher(REC_ID, MSK):
+  K := HKDF-Expand (MSK, "gnunet-communicator-tcp-key", 32)
+  IV := HKDF-Expand (MSK, "gnunet-communicator-tcp-ctr, 16)
+  K_mac := HKDF-Expand (MSK, "gnunet-communicator-tcp-hmac, 64)
+  return K,IV,K_mac
+  ]]></artwork>
+       <t>
+       Note that the initiating TCP communicator can immediately encrypt the first TCP handshake message when
+       sending it.
+       As soon as the receiving TCP communicator receives and decapsulates the representative, it can decrypt the
+       following TCP handshake message.
+       The same applies to the TCP handshake message sent by the receiving TCP communicator.
+       </t>
+     </section>
+     <section anchor="tcp_message_exchange" numbered="true" toc="default">
+     <name>Message exchange</name>
+     <t>
+     Once the handshake is completed, actual payloads can be exchanged bi-directionally using TCP BOX messages. A TCP Box message
+     consists of a TCP BOX message, as defined in <xref target="figure_tcp_box"/>, followed by the payload. Both parts are encrypted
+     before being sent to the receiving peer.
+     </t>
+     <t>
+     TCP Box messages follow the mac-then-encrypt approach to hide the size of the payload and achieve a zero-plaintext design.
+     The HMAC utilizes SHA512 as the underlying hash function and is ratcheted after each operation. Given the mac-then-encrypt
+     approach, additional safeguards are needed to protect against Oracle padding attacks. Therefore, we <bcp14>MUST</bcp14> use 
+     a padding-free encryption scheme such as AES-CTR for encryption. Additionally, we restrict the attacker's ability to replay 
+     attacks by exchanging new key material after a randomly chosen amount of transferred data, as described in 
+     <xref target="tcp_rekeying"/>. The necessary key exchanges to establish the new key material are protected using monotonic 
+     timestamps. 
+     </t>
+     <figure anchor="figure_tcp_box" title="The binary representation of the TCP BOX message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |        TYPE (0x0X)    |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    HASHCODE                   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes
+           in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 1451.
+         </dd>
+         <dt>HASHCODE</dt>
+         <dd>
+           A 256-bit HMAC-SHA512 hashcode for the subsequently sent payload.
+         </dd>
+       </dl>
+       </section>
+   
+   <section anchor="tcp_rekeying" numbered="true" toc="default">
+     <name>Rekeying</name>
+     <t>
+     After each key exchange, up to 400 MB of data is transferred until rekeying is triggered by the sender of the communication direction. 
+     The actual amount of transferred data <bcp14>SHOULD</bcp14> be chosen randomly. If the chosen byte quantity is not reached after 
+     one day, rekeying is set off anyway. 
+     </t>
+     <t>
+     The receiving communicator is signaled about a rekeying through the dispatch of a TCP Rekey message, as defined in 
+     <xref target="figure_tcp_rekey"/>. The message <bcp14>MUST</bcp14> be encrypted with the current key. Due to the encryption of the message, 
+     the encoding of the new ephemeral public key with Elligator is not needed. Similarly to the initial handshake, the ephemeral public key
+     is used to perform a key exchange from which new key material for the encryption and authentication code scheme is derived. For further 
+     details, please refer to <xref target="tcp_KEM"/>. Note that the rekeying process doesn't involve an acknowledgment by the receiver of
+     a TCP Rekey message. So the sender might send new payload encrypted by the new key right after sending the TCP Rekey message. 
+     </t>
+     <figure anchor="figure_tcp_rekey" title="The binary representation of the TCP Rekey message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0           8           16          24
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |        TYPE (0x0X)    |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    HASHCODE                   |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                       ENC                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SIGNATURE                     |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the message in bytes
+           in network byte order.
+         </dd>
+         <dt>TYPE</dt>
+         <dd>
+           A 16-bit signature type flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 1450.
+         </dd>
+         <dt>HASHCODE</dt>
+         <dd>
+           A 256-bit HMAC-SHA512 hashcode of this TCP Rekey message. The hashcode is 
+           computed with the hashcode field initially set to zero and is inserted afterward.
+         </dd>
+         <dt>ENC</dt>
+         <dd>
+           The 256-bit serialized encapsulation result <tt>enc</tt> of the KEM.
+         </dd>
+         <dt>Signature</dt>
+         <dd>
+           A 512-bit EdDSA signature. The signature is calculated over
+           the data as defined in <xref target="figure_tcp_rekey_sig"/>.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+       </dl>
+       <figure anchor="figure_tcp_rekey_sig" title="The wire format used for creating the signature of the TCP Rekey message.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |       PURPOSE (0x0X)  |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 SENDER PEER ID                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 RECEIVER PEER ID              |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                      ENC                      |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                MONOTONIC TIMESTAMP            |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 32-bit value containing the length of the signed data in bytes
+           in network byte order.
+         </dd>
+         <dt>PURPOSE</dt>
+         <dd>
+           A 32-bit signature purpose flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be 32.  It defines the context in which
+           the signature is created so that it cannot be reused in other parts
+           of the protocol, including possible future extensions.
+           The value of this field corresponds to an entry in the
+           GANA "GNUnet Signature Purpose" registry <xref target="GANA"/>.
+         </dd>
+         <dt>SENDER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkSed</tt>).
+         </dd>
+         <dt>RECEIVER PEER ID</dt>
+         <dd>
+           A 256-bit EdDSA public key (<tt>pkRed</tt>).
+         </dd>
+         <dt>ENC</dt>
+         <dd>
+           The 256-bit serialized encapsulation result <tt>enc</tt> of the KEM.
+         </dd>
+         <dt>MONOTONIC TIMESTAMP</dt>
+         <dd>
+           A 64-bit value for the absolute time used by GNUnet, in microseconds and in network byte order.
+         </dd>
+       </dl>
+      </section>
+     </section>
+  <section anchor="http3_comm" numbered="true" toc="default">
+  <name>HTTP/3 communicator</name>
+  <t>
+  The HTTP/3 <xref target="RFC9114"/> communicator operates over a bidirectional communication channel,
+    with the client initiating the connection and the server on the receiving end.
+    Once the connection is successfully established, messages are transmitted via POST and GET requests,
+    and all communication is secured using TLS.
+  </t>
+  <t>
+    Upon successfully establishing an HTTP/3 connection, the client <bcp14>MUST</bcp14> immediately transmit
+    its <tt>PeerIdentity</tt> in a POST.
+    The server will store this PeerIdentity to identify the client.
+    Following this exchange, data exchange between the client and server can proceed.
+    </t>
+    <t>
+      When the client needs to send a message, it uses a POST request to transmit the data to the server.
+      While the server cannot initiate messages independently, it can include data in its response to a
+      client's POST request.
+    </t>
+    <t>
+      To enable the server to proactively send data when the client has no data to transmit,
+      long polling is used.
+      The client sends GET requests to the server, which <bcp14>MAY</bcp14> not immediately respond
+      but instead sets a timer for each request.
+      The server responds either when the timer expires or when there is data to send.
+      Upon receiving a response, the client immediately sends a new GET request to maintain an adequate
+      number of long polling requests with the server.
+      </t>
+      <figure anchor="figure_http3_msg" title="The wire format of exchanged messages.">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         SIZE          |         TYPE (0x0X)   |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 MESSAGE                       |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+           ]]></artwork>
+       </figure>
+       <dl>
+         <dt>SIZE</dt>
+         <dd>
+           A 16-bit value containing the length of the signed data in bytes
+           in network byte order.
+         </dd>
+         <dt></dt>
+         <dd>
+           A 16-bit type flag in network byte order. The value of this
+           field <bcp14>MUST</bcp14> be XY.
+           The value of this field corresponds to an entry in the
+           GANA "GNUnet Message Type" registry <xref target="GANA"/>.
+         </dd>
+         <dt>MESSAGE</dt>
+         <dd>
+           The message.
+         </dd>
+       </dl>
+       <t>
+         Example POST:
+       </t>
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+:method: POST
+:scheme: https
+:authority: PEER'S IP ADDRESS
+:path: /
+content-type: application/octet-stream
+content-length: LENGTH OF MESSAGE
+]]></artwork>
+       <t>
+         If server no data to send it will respond with HTTP status OK (200).
+         If server has data to send it will respond with HTTP status OK and
+         a response body with a message (<xref target="figure_http3_msg"/>) and
+         content type  <tt>application/octet-stream</tt>
+       </t>
+       <t>
+         GET request example (long polling):
+       </t>
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+:method: GET
+:scheme: https
+:authority: PEER'S IP ADDRESS
+:path: /
+       ]]></artwork>
+       <t>
+         If server no data to send and the long poll times out it will
+         respond with status 204.
+         If server has data to send it will respond with HTTP status OK (200)
+         a response body with a message (<xref target="figure_http3_msg"/>) and
+         content type <tt>application/octet-stream</tt>.
+       </t>
+     <section anchor="http3_handshake" numbered="true" toc="default">
+       <name>Handshake</name>
+       <t>
+         The public keys in the certificates in use as part of the TLS handshake
+         are not verified or evaluated against a trust store.
+         The initial message by the initiating peer (the HTTP/3 client) will
+         contain the peer identity.
+         In the future, the peer identity should be part of the TLS handshake instead.
+       </t>
+     </section>
+     </section>
+  <section anchor="libp2p_comm" numbered="true" toc="default">
+    <name>libp2p communicator</name>
+    <t>
+      The libp2p communicator uses libp2p as a means of communication.
+      libp2p is "a modular networking framework bundled together as a full stack
+      of protocols for peer-to-peer systems" and thus shares the general
+      approach and a similar vision.
+      The first goal would have been to integrate libp2p directly below core as
+      an alternative/addition to the transport service as a first step of trying
+      to get two different p2p networks and their implementations closer to each
+      other. The long term goal would be to make the two networks compatible
+      with each other and on the way learn from the respectively other network
+      and apply the learnings to the respective on network.
+      But it became soon clear that this was too ambitious for the short term
+      and the short term goal was simplified to make libp2p a communicator for
+      transport without loosing the perspective of integrating the two networks
+      further in the future.
+      Interesting insights include performance (in terms of throughput, memory
+      consumption, cpu usage, ...), capabilities (NAT traversal, peer discovery,
+      ...), different approaches to abstract similar underlying concepts, data
+      structures employed and the usage of different schemes itself.
+      If both networks would start to implement compatibilities to each other,
+      both could profit from elements only the other has implemented.
+    </t>
+    <t>
+      In order to address another peer and open a connecting, the libp2p
+      multiaddress of the other peer or peer discovery is required. A libp2p
+      multiaddress follows a very similar idea to a gnunet HELLO. Integrating
+      the one with the other or finding a common abstraction would make a lot of
+      sense in the mid to long term. For a libp2p communicator the easiest is to
+      integrate a libp2p multiaddress just as one of the underlying
+      transport/communicator addresses.
+      The documentation of the libp2p multiaddress can be found here:
+      https://docs.rs/libp2p/latest/libp2p/struct.Multiaddr.html
+    </t>
+    <t>
+      One of the first consideration, when connecting the two networks, is the
+      language. libp2p has implementations in many languages which all have
+      different capabilities. (An overview is provided at
+      https://libp2p.io/implementations.)
+      In order to decide on the implementation mainly two factors have to be
+      considered: Which features are needed and how difficult is the technical
+      connection of the implementation? Depending on the implementation
+      different wrappers and converters have to be implemented before being able
+      to use them.
+    </t>
+    <t>
+      Gnunet HELLO and libp2p multiaddress: The basic element to connect two
+      gnunet peers via their libp2p communicators would be to exchange their
+      libp2p multiaddress as part of a gnunet HELLO. Both represent a collection
+      of different, underlying protocols, the respective implementations
+      communicate over. Due to the similarity in representation, an adaption is
+      needed to either (a) properly embed the one in the other without parsing
+      issues, or (b) being able to directly parse both.
+      <!-- seems not to be parsed and displayed on the web representation:
+      For a better understanding, here is an exemplary libp2p multiaddress:
+      <artwork anchor="libp2p multiaddress" name="" type="" align="left" alt=""><![CDATA[
+/ip4/198.51.100/tcp/1234/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N
+      ]]></artwork>
+      ... and an exemplary printable (shortened and obfuscated) representaiton
+      of a gnunet HELLO:
+      <artwork anchor="gnunet HELLO" name="" type="" align="left" alt=""><![CDATA[
+        gnunet://hello/HFXP<...>Y0/WDV0<...>WE20/1754<...>40?udp=%5Bfe80%3A%3Ad284%3A<...>3A2086&udp=%5B2003%3Acb%3A<...>%5D%3A2086<...>&tcp=%5Bfe80%3A%3A<...>%5D%3A2086&tcp=192.168.2.135%3A2086
+      ]]></artwork>
+      -->
+      For the specification of libp2p multiaddresses see https://github.com/libp2p/specs/tree/master/addressing
+      For just connecting two gnunet nodes via libp2p communicators, the main
+      adaption needed is the compatibility between addressing schemes, as gnunet
+      internally processes (signs with its peer id) the underlying addresses in
+      order to exchange them via its bootstap system.
+    </t>
+    <t>
+      Peer IDs: While gnunet only uses a single cryptographic primitive (EdDSA
+      curve Ed25519) keys, libp2p has the option of using different keys. While
+      not necessary if the connection is only as a communicator below transport,
+      there might be the possibility of a direct compatibility at this level.
+      (Probably a conversion in encoding/representation has still to be done.)
+      The difference being that libp2p peer ids are stable, gnunet peer ids can
+      change.
+      For more see the libp2p spec on peer-ids:
+      https://github.com/libp2p/specs/blob/master/peer-ids/peer-ids.md
+    </t>
+    <t>
+      DHT: The Distributed Hash Tables of both networks are a bit different and
+      as such not directly compatible. libp2p implements Kademlia
+      (https://github.com/libp2p/specs/tree/master/kad-dht), whereas
+      gnunet implements R5N
+      (https://docs.gnunet.org/latest/users/subsystems.html#dht-distributed-hash-table).
+    </t>
+  </section>
+   <section anchor="security" numbered="true" toc="default">
+   <name>Security and Privacy Considerations</name>
+     <section anchor="security_kem" numbered="true" toc="default">
+     <name>Ed25519 KEM</name>
+       <t>
+        Communicators use a modified version of the standard X25519 key exchange described in
+        section 6.1 of <xref target="RFC7748"/>.
+        It deviates in that we use the Ed25519 key pair "x","X = x*G" of the peer identity as X25519 scalars
+        and curve points, respectively.
+        The safety of this use of a KEM has been investigated by <xref target="T21"/>.
+        </t>
+     </section>
+      </section>
+      <section anchor="work_in_progress" numbered="true" toc="default">
+       <name>Work in Progress</name>
+       <t>
+       TRANSPORT API: GNUNET_TRANSPORT_MessageCompletedCallback, GNUNET_TRANSPORT_communicator_receive, and 
+       GNUNET_TRANSPORT_MessageCompletedCallback should follow a generic API for all communicator types. 
+       </t>
+       <t>
+       UDP Communicator: RTT (Round-Trip Time) measurement is missing. Values such as the number of shared secrets could be adapted based on the RTT.
+       </t>
+       <t>
+       TCP Communicator: Currently, the only sanity check for a valid TCP handshake message is the verification of the signature. Additional checks, such as 
+       verifying the sender's peer identity, are needed. 
+       The use of the mac-then-encrypt approach within the TCP BOX messages should be analyzed further, specifically regarding padding-oracle attacks.
+       </t>
+    </section>
+   <!--  <section anchor="gana" numbered="true" toc="default">
+       <name>GANA Considerations</name>
+    </section>-->
+     <!-- gana -->
+    <!--<section>
+       <name>IANA Considerations</name>
+ </section>-->
+       <!-- <section>
+       <name>Implementation and Deployment Status</name>
+       <t>
+         FIXME
+       </t>
+     </section>
+     <section>
+        <name>Acknowledgements</name>
+        <t>
+          FIXME
+        </t>
+        </section>-->
+   </middle>
+   <back>
+     <references>
+       <name>Normative References</name>
+         &RFC2119;
+         &RFC5869;
+         &RFC6234;
+         &RFC7748;
+         &RFC8032;
+         &RFC8174;
+         &RFC9114;
+         &RFC9180;
+
+     </references>
+     <references>
+       <name>Informative References</name>
+       <reference anchor="T21" target="https://eprint.iacr.org/2021/509.pdf">
+       <front>
+         <title>On using the same key pair for Ed25519 and an X25519 based KEM</title>
+         <author initials="E." surname="Thormaker"
+                 fullname="Erik Thormarker">
+         </author>
+         <date month="April" year="2021" />
+     </front>
+  </reference>
+  <reference anchor="LSD0011" target="https://lsd.gnunet.org/lsd0011">
+       <front>
+         <title>The GNUnet communicators</title>
+         <author initials="M" surname="Schanzenbach"
+                 fullname="Martin Schanzenbach">
+         </author>
+         <author initials="P." surname="Fardzadeh"
+                 fullname="Pedram Fardzadeh">
+         </author>
+         <date month="July" year="2024" />
+     </front>
+  </reference>
+  <reference anchor="GANA" target="https://gana.gnunet.org">
+       <front>
+         <title>The GNUnet communicators</title>
+         <author fullname="GNUnet e.V.">
+         </author>
+         <date month="July" year="2024" />
+     </front>
+  </reference>     </references>
+   
+ 
+ </back>
+</rfc>

@@ -1,0 +1,78 @@
+\documentclass[DIN, pagenumber=false, parskip=half,
+               fromalign=right, fromphone=false, fromfax=false, frombank=true,
+               yourmail=false,
+               yourref=false,
+               fromrule=false]{scrlttr2}
+
+
+%\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{longtable}
+\usepackage{eurosym}
+
+\LoadLetterOption{template}
+
+\newcommand{\stdlohn}[0]{11 \euro}
+
+\renewcommand*{\raggedsignature}{\raggedright}
+
+\setkomavar{fromname}{GNUnet e. V.}
+\setkomavar{fromaddress}{Boltzmannstraße 3 \\ 85748 Garching bei München}
+\setkomavar{frombank}{IBAN: DE67830654080004822650 \\ BIC: GENODEF1SLR}
+
+\setkomavar{subject}[]{Invoice: Visit of Richard Stallman to Rennes 1}
+%\setkomavar{yourmail}[Ihre Angebots-Nr.]{2011012631}
+%\setkomavar{yourref}[Ihre Kundennummer]{263}
+\setkomavar{date}[Datum]{\today}
+
+
+%===================================
+% footer
+\firstfoot{
+	\parbox[t]{\textwidth}{\footnotesize
+
+	\begin{tabular}[t]{l@{}}
+		 \multicolumn{1}{@{}l@{}}{Association:}\\
+		 GNUnet e. V. \\
+		 Boltzmannstraße 3, 85748 Garching bei München \\ \\
+		 E-Mail: ev@gnunet.org \\
+	\end{tabular}
+	\hfill{}
+	\begin{tabular}[t]{l@{}}
+	        \multicolumn{1}{@{}l@{}}{\usekomavar*{frombank}:}\\
+	        \usekomavar{frombank}
+	\end{tabular}
+ }}
+
+\begin{document}
+
+
+%===================================
+% receiver
+\begin{letter}{
+        Valerie Guichon \\
+	University of Rennes 1 \\
+}
+
+\opening{\ }
+\vspace{-1.5cm}
+
+%===================================
+For expenses organizing Richard Stallman's trip to the University of Rennes 1,
+we hereby ask you to pay, as agreed, \EUR{1800} to our account
+
+\begin{center}
+  DE67830654080004822650 (BIC/SWIFT: GENODEF1SLR)
+\end{center}
+at the Deutsche Skatbank.  A receipt for our expenses is included in copy.
+
+
+\vspace{3cm}
+Matthias Wachs\\
+Vice President, GNUnet e. V.
+
+
+\end{letter}
+\end{document}

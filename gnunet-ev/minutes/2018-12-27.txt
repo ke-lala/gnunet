@@ -1,0 +1,56 @@
+# Gnunet e.V. Mitgliederversammlung 2018
+
+Leipzig, 35C3 - 21:00 - 21:32
+
+# Teilnehmer 
+
+  - Julius Buenger
+  - lurchi
+  - Bernd Fix
+  - xrs
+  - Christian Grothoff
+  - Florian Dold
+
+# Finanzbericht
+
+  - siehe finanzreport2018.tex
+  
+# Telekom
+
+  - Es gab insgesamt zwei Abmahnungen 
+  - Taler-System hat die Vorgaben erfüllt
+
+# Taler-System
+
+  - taler-buchführer hat uns in diesem jahr verlassen
+  - (gnunet e.v. ist anteilsaneigner)
+
+# Entlastung
+
+  - Es wurde einstimmig die Entlastung des Vorstands bestimmt.
+
+# Vorstandswahl
+
+  - neuer Finanzwart: Florian Dold
+  - neuer Präsident: Christian Grothoff
+  - neuer Vizepräsident: xrs
+  - neuer Beisitzer: lurchi
+  - einstimmig gewählt
+
+# Neuigkeiten / Berichte
+
+  - t3sserakt ist leider krank zum kongress und konnte auch keinen talk
+    einreichen 
+  - Der GNUnet-Talk auf dem 35c3 von t3sserakt wurde leider aufgrund von
+    Krankheit abgesagt. 
+  - luchi arbeitet zurzeit an GNUnet-Paket für NixOS
+  - Planung für 2019
+    - Neue Webseite weiterentwickeln
+    - Studienarbeit zur Continuous Integration für das GNUnet
+    - Tests für neues Transport-Modul (ch3)
+    - Taler
+  - Diskussion über Spenden
+    - Gegen das Einnehmen von Spenden faircoin gibt es grundsätzlich keine
+      Einwände. Spenden über faircoin oder bitcoin sind steuerlich
+      unproblematisch, wenn nicht in Euros umgetausch wird
+    - Ansonsten über die PEP-Foundation

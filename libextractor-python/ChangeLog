@@ -1,0 +1,12 @@
+Mon Aug 27 16:56:18 CEST 2012
+	Changing license to GPLv3+. -CG
+
+Fri Sep  9 21:09:47 CEST 2011
+	Updated Python binding to GNU libextractor 0.6-API. -CG
+
+Sun May	28 00:42:00 CEST 2006
+	Rewritten using ctypes.
+
+Mon Jul  4 17:19:33 CEST 2005
+	Moved python binding into separate package.
+

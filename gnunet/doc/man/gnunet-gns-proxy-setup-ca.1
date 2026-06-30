@@ -1,0 +1,95 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd March 6, 2019
+.Dt GNUNET-GNS-PROXY-SETUP-CA 1
+.Os
+.Sh NAME
+.Nm gnunet-gns-proxy-setup-ca
+.Nd generate an X509 certificate for gnunet-gns-proxy and install it
+.Sh SYNOPSIS
+.Nm
+.Op Fl hvtoV
+.Op Fl c Ar FILE
+.\".Op Fl f Ar FILE
+.Sh DESCRIPTION
+.Nm
+is a
+.Xr sh 1
+script to generate X509 certificates for your
+.Xr gnunet-gns-proxy 1
+and to install it for both GNUnet and your web browser.
+It currently supports Firefox and Chrome based browsers through the help of external helpers: certutil (nss) is used for the  import into webbrowsers, OpenSSL or GnuTLS are used to generated the CA.
+.Bl -tag -width indent
+.It Fl c Ar FILE
+Use the configuration file FILE.
+.\" .It Fl f
+.\" Perform expansions of the variables used in the config value of gns-proxy.
+.\" This will usually expand $GNUNET_DATA_HOME to represents its path.
+.It Fl h
+Print short help on options.
+.It Fl v
+Print the version.
+.It Fl V
+Be verbose.
+.It Fl t
+Run a small test on binaries (only interesting for developers of this tool).
+.It Fl o
+Show output of results.
+.El
+.Sh RETURN VALUES
+.Ex -std
+.Sh FILES
+.Pa gnunet.conf
+.Sh SEE ALSO
+.Xr gnunet-gns 1 ,
+.Xr gnunet-gns-proxy 1 ,
+.Xr gnunet.conf 5
+.sp
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Bd -literal -offset indent -compact
+        info gnunet
+.Ed
+should give you access to the complete handbook,
+.Bd -literal -offset indent -compact
+        info gnunet-c-tutorial
+.Ed
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also
+available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.Sh HISTORY
+This man page first appeared in GNUnet 0.11.1.
+.Sh AUTHORS
+This page was written by
+.An ng0 Aq Mt ng0@gnunet.org .
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt bug-gnunet@gnu.org .

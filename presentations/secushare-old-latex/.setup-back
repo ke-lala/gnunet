@@ -1,0 +1,9 @@
+#+BEGIN_LaTeX
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+\vspace*{50 pt}%
+{\setlength{\parindent}{0pt} \raggedright \normalfont
+\bfseries\Huge#1
+\par\nobreak\vspace{40 pt}}}
+\makeatother
+#+END_LaTeX

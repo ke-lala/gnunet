@@ -1,0 +1,450 @@
+/* SPDX-License-Identifier: LGPL-2.1-or-later OR (GPL-2.0-or-later WITH eCos-exception-2.0) */
+/*
+  This file is part of GNU libmicrohttpd.
+  Copyright (C) 2024-2025 Evgeny Grin (Karlson2k)
+
+  GNU libmicrohttpd is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  GNU libmicrohttpd is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  Alternatively, you can redistribute GNU libmicrohttpd and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of
+  the License, or (at your option) any later version, together
+  with the eCos exception, as follows:
+
+    As a special exception, if other files instantiate templates or
+    use macros or inline functions from this file, or you compile this
+    file and link it with other works to produce a work based on this
+    file, this file does not by itself cause the resulting work to be
+    covered by the GNU General Public License. However the source code
+    for this file must still be made available in accordance with
+    section (3) of the GNU General Public License v2.
+
+    This exception does not invalidate any other reasons why a work
+    based on this file might be covered by the GNU General Public
+    License.
+
+  You should have received copies of the GNU Lesser General Public
+  License and the GNU General Public License along with this library;
+  if not, see <https://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @file src/mhd2/mhd_atomic_counter.h
+ * @brief  The definition of the atomic counter type and related functions
+ *         declarations
+ * @author Karlson2k (Evgeny Grin)
+ */
+
+#ifndef MHD_ATOMIC_COUNTER_H
+#define MHD_ATOMIC_COUNTER_H 1
+
+#include "mhd_sys_options.h"
+
+#include "mhd_assert.h"
+
+#include "sys_sizet_type.h"
+
+/* Use 'size_t' to make sure it would never overflow when used for
+ * MHD needs. */
+
+/**
+ * The type used to contain the counter value.
+ * Always unsigned.
+ */
+#define mhd_ATOMIC_COUNTER_TYPE size_t
+/**
+ * The maximum counter value
+ */
+#define mhd_ATOMIC_COUNTER_MAX \
+        ((mhd_ATOMIC_COUNTER_TYPE) (~((mhd_ATOMIC_COUNTER_TYPE) 0)))
+
+#ifdef MHD_SUPPORT_THREADS
+
+#  if defined(MHD_SUPPORT_ATOMIC_COUNTERS) && ! defined(__STDC_NO_ATOMICS__)
+
+/**
+ * Atomic operations are based native compiler support for atomics
+ */
+#    define mhd_ATOMIC_NATIVE 1
+#  else
+/**
+ * Atomic operations are based on locks
+ */
+#    define mhd_ATOMIC_BY_LOCKS 1
+#  endif
+
+#else  /* ! MHD_SUPPORT_THREADS */
+
+/**
+ * Atomic because single thread environment is used
+ */
+#  define mhd_ATOMIC_SINGLE_THREAD 1
+#endif /* ! MHD_SUPPORT_THREADS */
+
+#if defined(mhd_ATOMIC_NATIVE)
+#  include <stdatomic.h>
+
+/**
+ * The atomic counter
+ */
+struct mhd_AtomicCounter
+{
+  /**
+   * Counter value.
+   */
+  volatile _Atomic mhd_ATOMIC_COUNTER_TYPE count;
+};
+
+#elif defined(mhd_ATOMIC_BY_LOCKS)
+#  include "mhd_locks.h"
+#  include "sys_bool_type.h"
+
+/**
+ * The atomic counter
+ */
+struct mhd_AtomicCounter
+{
+  /**
+   * Counter value.
+   * Must be read or written only with @a lock held.
+   */
+  volatile mhd_ATOMIC_COUNTER_TYPE count;
+  /**
+   * The mutex.
+   */
+  mhd_mutex lock;
+};
+
+#elif defined(mhd_ATOMIC_SINGLE_THREAD)
+
+/**
+ * The atomic counter
+ */
+struct mhd_AtomicCounter
+{
+  /**
+   * Counter value.
+   */
+  volatile mhd_ATOMIC_COUNTER_TYPE count;
+};
+
+#endif /* mhd_ATOMIC_SINGLE_THREAD */
+
+
+#if defined(mhd_ATOMIC_NATIVE)
+
+/**
+ * Initialise the counter to specified value.
+ * @param pcnt the pointer to the counter to initialise
+ * @param initial_value the initial value for the counter
+ * @return 'true' if succeed, "false' if failed
+ * @warning Must not be called for the counters that has been initialised
+ *          already.
+ */
+#  define mhd_atomic_counter_init(pcnt,initial_value) \
+        (atomic_init (&((pcnt)->count), (initial_value)), (! 0))
+
+/**
+ * Deinitialise the counter.
+ * @param pcnt the pointer to the counter to deinitialise
+ * @warning Must be called only for the counters that has been initialised.
+ */
+#  define mhd_atomic_counter_deinit(pcnt) ((void) 0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * The value may overflow and wrap back to zero.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+#    define mhd_atomic_counter_get_inc_wrap(pcnt)   \
+        atomic_fetch_add_explicit (&((pcnt)->count), \
+                                   1, memory_order_relaxed)
+
+#  ifdef NDEBUG
+/**
+ * Atomically increment the value of the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ */
+#    define mhd_atomic_counter_inc(pcnt)                   \
+        do { (void)                                         \
+             atomic_fetch_add_explicit (&((pcnt)->count), 1, \
+                                        memory_order_relaxed); } while (0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+#    define mhd_atomic_counter_get_inc(pcnt) \
+        mhd_atomic_counter_get_inc_wrap ((pcnt))
+
+/**
+ * Get the value of the counter and atomically decrement the counter.
+ * Counter underflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to decrement
+ * @return the counter value before the decrement
+ */
+#    define mhd_atomic_counter_get_dec(pcnt)        \
+        atomic_fetch_sub_explicit (&((pcnt)->count), \
+                                   1, memory_order_release)
+#  else  /* _DEBUG */
+/**
+ * Atomically increment the value of the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ */
+#    define mhd_atomic_counter_inc(pcnt)                      \
+        do { mhd_ATOMIC_COUNTER_TYPE old_val =                 \
+               atomic_fetch_add_explicit (&((pcnt)->count), 1,  \
+                                          memory_order_relaxed); \
+             mhd_assert (mhd_ATOMIC_COUNTER_MAX != old_val); } while (0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+mhd_static_inline mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_inc (struct mhd_AtomicCounter *pcnt)
+{
+  mhd_ATOMIC_COUNTER_TYPE ret;
+
+  ret = mhd_atomic_counter_get_inc_wrap (pcnt);
+
+  mhd_assert (mhd_ATOMIC_COUNTER_MAX != ret);
+
+  return ret;
+}
+
+
+/**
+ * Get the value of the counter and atomically decrement the counter.
+ * Counter underflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to decrement
+ * @return the counter value before the decrement
+ */
+mhd_static_inline mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_dec (struct mhd_AtomicCounter *pcnt)
+{
+  mhd_ATOMIC_COUNTER_TYPE ret;
+
+  ret = atomic_fetch_sub_explicit (&((pcnt)->count),1, memory_order_relaxed);
+
+  mhd_assert (0 != ret);
+
+  return ret;
+}
+
+
+#  endif /* _DEBUG */
+
+/**
+ * Atomically get the value of the counter.
+ * @param pcnt the pointer to the counter to get
+ * @return the counter value
+ */
+#  define mhd_atomic_counter_get(pcnt) \
+        (atomic_load_explicit (&((pcnt)->count), memory_order_relaxed))
+
+#elif defined(mhd_ATOMIC_BY_LOCKS)
+
+/**
+ * Initialise the counter to specified value.
+ * @param pcnt the pointer to the counter to initialise
+ * @param initial_value the initial value for the counter
+ * @return 'true' if succeed, "false' if failed
+ * @warning Must not be called for the counters that has been initialised
+ *          already.
+ */
+#  define mhd_atomic_counter_init(pcnt,initial_value) \
+        ((pcnt)->count = (initial_value),             \
+         mhd_mutex_init_short (&((pcnt)->lock)))
+
+/**
+ * Deinitialise the counter.
+ * @param pcnt the pointer to the counter to deinitialise
+ * @warning Must be called only for the counters that has been initialised.
+ */
+#  define mhd_atomic_counter_deinit(pcnt) \
+        mhd_mutex_destroy_chk (&((pcnt)->lock))
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * The value may overflow and wrap back to zero.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+MHD_INTERNAL mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_inc_wrap (struct mhd_AtomicCounter *pcnt);
+
+#ifdef NDEBUG
+
+/**
+ * Atomically increment the value of the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ */
+#  define mhd_atomic_counter_inc(pcnt)  do {   \
+          mhd_mutex_lock_chk (&((pcnt)->lock)); \
+          ++((pcnt)->count);                     \
+          mhd_mutex_unlock_chk (&((pcnt)->lock)); } while (0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+#define mhd_atomic_counter_get_inc(pcnt) mhd_atomic_counter_get_inc_wrap (pcnt)
+
+#else
+
+/**
+ * Atomically increment the value of the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ */
+#  define mhd_atomic_counter_inc(pcnt)  do {  \
+          mhd_ATOMIC_COUNTER_TYPE old_val;     \
+          mhd_mutex_lock_chk (&((pcnt)->lock)); \
+          old_val = (pcnt)->count++;             \
+          mhd_mutex_unlock_chk (&((pcnt)->lock)); \
+          mhd_assert (mhd_ATOMIC_COUNTER_MAX != old_val); } while (0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+MHD_INTERNAL mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_inc (struct mhd_AtomicCounter *pcnt);
+
+#endif
+
+/**
+ * Get the value of the counter and atomically decrement the counter.
+ * Counter underflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to decrement
+ * @return the counter value before the decrement
+ */
+MHD_INTERNAL mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_dec (struct mhd_AtomicCounter *pcnt);
+
+/**
+ * Atomically get the value of the counter.
+ * @param pcnt the pointer to the counter to get
+ * @return the counter value
+ */
+MHD_INTERNAL mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get (struct mhd_AtomicCounter *pcnt);
+
+#elif defined(mhd_ATOMIC_SINGLE_THREAD)
+
+/**
+ * Initialise the counter to specified value.
+ * @param pcnt the pointer to the counter to initialise
+ * @param initial_value the initial value for the counter
+ * @return 'true' if succeed, "false' if failed
+ * @warning Must not be called for the counters that has been initialised
+ *          already.
+ */
+#  define mhd_atomic_counter_init(pcnt,initial_value) \
+        ((pcnt)->count = (initial_value), (! 0))
+
+/**
+ * Deinitialise the counter.
+ * @param pcnt the pointer to the counter to deinitialise
+ * @warning Must be called only for the counters that has been initialised.
+ */
+#  define mhd_atomic_counter_deinit(pcnt) ((void) 0)
+
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * The value may overflow and wrap back to zero.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+#  define mhd_atomic_counter_get_inc_wrap(pcnt) ((pcnt)->count++)
+
+/**
+ * Atomically increment the value of the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ */
+#  define mhd_atomic_counter_inc(pcnt)  \
+        do { mhd_assert (mhd_ATOMIC_COUNTER_MAX != ((pcnt)->count)); \
+             ++((pcnt)->count); } while (0)
+
+#  ifdef NDEBUG
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+#    define mhd_atomic_counter_get_inc(pcnt) \
+        mhd_atomic_counter_get_inc_wrap ((pcnt))
+
+/**
+ * Get the value of the counter and atomically decrement the counter.
+ * Counter underflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to decrement
+ * @return the counter value before the decrement
+ */
+#  define mhd_atomic_counter_get_dec(pcnt) ((pcnt)->count--)
+
+#  else  /* _DEBUG */
+/**
+ * Get the value of the counter and atomically increment the counter.
+ * Counter overflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to increment
+ * @return the counter value before the increment
+ */
+mhd_static_inline mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_inc (struct mhd_AtomicCounter *pcnt)
+{
+  mhd_assert (mhd_ATOMIC_COUNTER_MAX != (pcnt->count));
+
+  return mhd_atomic_counter_get_inc_wrap (pcnt);
+}
+
+
+/**
+ * Get the value of the counter and atomically decrement the counter.
+ * Counter underflow is detected in debug builds.
+ * @param pcnt the pointer to the counter to decrement
+ * @return the counter value before the decrement
+ */
+mhd_static_inline mhd_ATOMIC_COUNTER_TYPE
+mhd_atomic_counter_get_dec (struct mhd_AtomicCounter *pcnt)
+{
+  mhd_assert (0 != ((pcnt)->count));
+
+  return ((pcnt)->count--);
+}
+
+
+#  endif /* _DEBUG */
+
+/**
+ * Atomically get the value of the counter.
+ * @param pcnt the pointer to the counter to get
+ * @return the counter value
+ */
+#  define mhd_atomic_counter_get(pcnt) ((pcnt)->count)
+
+#endif /* mhd_ATOMIC_SINGLE_THREAD */
+
+#endif /* ! MHD_ATOMIC_COUNTER_H */

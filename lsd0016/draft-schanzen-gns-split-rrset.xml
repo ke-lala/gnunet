@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">
+<!ENTITY RFC5869 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5891 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5891.xml">
+<!ENTITY RFC6781 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6781.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7748 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8032 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8032.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC9498 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9498.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-schanzen-gns-split-rrset-00" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
+ <!-- xml2rfc v2v3 conversion 2.26.0 -->
+ <front>
+  <title abbrev="gns_split_rrset">
+   The GNS Split Resource Record Set
+  </title>
+  <seriesInfo name="Internet-Draft" value="draft-schanzen-gns-split-rrset-00"/>
+  <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+   <organization>GNUnet e.V.</organization>
+   <address>
+    <postal>
+     <street>Boltzmannstrasse 3</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>schanzen@gnunet.org</email>
+   </address>
+  </author>
+  <author fullname="Thomas Bellebaum" initials="T." surname="Bellebaum">
+   <organization>Fraunhofer AISEC</organization>
+   <address>
+    <postal>
+     <street>Lichtenbergstrasse 11</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>thomas.bellebaum@aisec.fraunhofer.de</email>
+   </address>
+  </author>
+  <!-- Meta-data Declarations -->
+  <area>General</area>
+  <workgroup>Independent Stream</workgroup>
+  <keyword>gnu name system</keyword>
+  <abstract>
+   <t>This document contains the technical specification of the GNS Split Resource Record Set.</t>
+  </abstract>
+ </front>
+ <middle>
+   <section anchor="introduction" numbered="true" toc="default">
+     <name>Introduction</name>
+     <t>
+       In GNS <xref target="RFC9498"/>, resource record set sizes are limited by the underlying storage
+       component.
+       For example, in the current instantion in GNUnet on top of R<sup>5</sup>N,
+       Resource record sets must fit into around 64 kilobytes.
+       This includes all records in the set as well as signatures and encryption overhead
+       (e.g. the authentication tag).
+       This prohibits use cases that require some large records or a lot of small records, but also
+       makes post-quantum signature schemes more difficult to integrate.
+     </t>
+     <t>
+       This document defines a new record type that allows record sets to be split
+       across multiple record sets in GNS.
+       The new record type is backwards compatible with the existing GNS,
+       but resolver that do not conform to this specification will be unable to
+       fully retrieve the split record set.
+       In this case, the applicatin must take care and collect all entries of the record
+       set in the zone.
+     </t>
+     <t>
+       The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+       NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+       "OPTIONAL" in this document are to be interpreted as described
+       in <xref target="RFC2119"/>.
+     </t>
+   </section>
+   <section anchor="gnsrecords_split" numbered="true" toc="default">
+     <name>SPLIT</name>
+     <t>
+       This record consists of a list of resource record types that should
+       exist and belong to this record set.
+     </t>
+     <t>
+       A SPLIT resource record is expected to be found along with other resource
+       records.
+       A SPLIT DATA entry is illustrated in <xref target="figure_lehorecord"/>.
+     </t>
+     <figure anchor="figure_lehorecord" title="The SPLIT DATA Wire Format.">
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32
++-----+-----+-----+-----+
+|    RECORD TYPE 0      |
++-----------------------+
+|    RECORD TYPE 1      |
++-----------------------+
+/           ...         /
+/                       /
++-----------------------+
+|    RECORD TYPE N-1    |
++-----+-----+-----+-----+
+         ]]></artwork>
+     </figure>
+     <dl>
+       <dt>RECORD TYPE X</dt>
+       <dd>
+         The 32-bit record type number (as defined in GANA) in network byte order.
+       </dd>
+     </dl>
+     <t>
+       The record types indicate to the resolve that it <bcp14>SHOULD</bcp14> try to resolve
+       further resource record sets of the specified type(s) if the record type is being
+       asked for as part of the resolution.
+       Otherwise, the record type can be ignored.
+     </t>
+   </section>
+   <section numbered="true" toc="default">
+     <name>Resolver behaviour</name>
+     <t>
+       When a resolver encounters a SPLIT record in a record set for
+       a label L in zone Z, it <bcp14>SHOULD</bcp14> process it as follows.
+       For reach record type T encountered in the SPLIT record, and in the
+       set of record types that is currently of interest, calculate the
+       next label as L' := Base32-GNS(SHA-256(Z,T,L)).
+     </t>
+     <t>
+       The resolver then queries L' in Z to retrieve the next part of the
+       record set for this record type.
+       The resulting record set <bcp14>MAY</bcp14> contain other record types
+       than the record type indicated by the SPLIT record, but those records
+       should only consist of supplemental or auxiliary records.
+       Otherwise, efficient resolution of record types is not possible.
+     </t>
+   </section>
+
+   <section anchor="security" numbered="true" toc="default">
+     <name>Security Considerations</name>
+    <section anchor="resolver_loop" numbered="true" toc="default">
+      <name>Loops</name>
+      <t>
+        Resolvers must take care to avoid loops.
+        While statistically unlikely due to the use of a collision-resistant hash function
+        in the derivation label, a resolver could accidentally be caught in a resolution loop.
+      </t>
+   </section>
+   </section>
+   <section anchor="gana" numbered="true" toc="default">
+       <name>GANA Considerations</name>
+       <t>
+         GANA is requested to populate this registry as follows:
+       </t>
+       <figure anchor="figure_rrtypenums">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+Number: 65555
+Name: SPLIT
+Contact: gns-registry@gnunet.org
+References: [This.I-D]
+Description: SPLIT Record Set
+           ]]></artwork>
+       </figure>
+     </section>
+     <!-- gana -->
+     <section>
+       <name>Test Vectors</name>
+     </section>
+   </middle>
+   <back>
+     <references>
+       <name>Normative References</name>
+
+       &RFC2119;
+       &RFC9498;
+
+     </references>
+   </back>
+ </rfc>

@@ -1,0 +1,23 @@
+Verein zur Förderung von GNUnet e.V.
+====================================
+
+This repository contains the Satzung, list of members and other documents
+of the Verein zur Förderung von GNUnet e.V.
+
+
+To build the documents which can be build,
+on a Debian-based system:
+
+apt-get install texinfo \
+                install texlive \
+                texlive-lang-german \
+                texlive-latex-extra \
+                texlive-latex-extra \
+                texlive-publishers \
+                texlive-latex-humanities \
+                texlive-humanities
+
+cd gnunet-ev/
+make
+
+You will need around 200 MB (or more) for the dependencies.

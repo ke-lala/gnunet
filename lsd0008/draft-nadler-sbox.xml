@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+  <!ENTITY nbsp "&#160;">
+  <!ENTITY zwsp "&#8203;">
+  <!ENTITY nbhy "&#8209;">
+  <!ENTITY wj "&#8288;">
+]>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+  category="info"
+  docName="draft-nadler-sbox-1"
+  ipr="trust200902"
+  obsoletes=""
+  updates=""
+  sortRefs="false"
+  submissionType="independent"
+  symRefs="true"
+  tocDepth="3"
+  tocInclude="true"
+  xml:lang="en"
+  version="3">
+
+  <!-- xml2rfc v2v3 conversion 2.26.0 -->
+  <front>
+    <title abbrev="The GNS SBOX Record Type">The GNS SBOX Record Type</title>
+    <seriesInfo name="LSD" value="0008" />
+    <author fullname="Sebastian Nadler" initials="S." surname="Nadler">
+      <organization>Technische Universität München</organization>
+      <address>
+        <email>sebastian.nadler@tum.de</email>
+      </address>
+    </author>
+    <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+      <organization>Fraunhofer AISEC</organization>
+      <address>
+        <postal>
+          <street>Lichtenbergstrasse 11</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>Germany</country>
+        </postal>
+        <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+      </address>
+    </author>
+    <workgroup>GNUnet</workgroup>
+    <keyword>name systems</keyword>
+
+    <abstract>
+      <t> This document provides an extension to the GNU Name System (GNS) technical specification <xref
+          target="RFC9498" />. GNS is a decentralized and censorship-resistant domain name
+        resolution protocol that provides a privacy-enhancing alternative to the Domain Name System
+        (DNS) protocols. </t>
+      <t>
+        This document defines the normative wire format of an additional resource record
+        and a modified resolution processes for use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus. It is published here to inform readers about the
+        function of GNS, guide future GNS implementations, and ensure
+        interoperability among implementations (for example, pre-existing
+        GNUnet implementations).
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="introduction">
+      <name>Introduction</name>
+      <t> This specification describes additions to the GNU Name System (GNS) <xref target="RFC9498" />,
+        a censorship-resistant, privacy-preserving, and decentralized domain name resolution
+        protocol. GNS cryptographically secures the binding of names to arbitrary tokens, enabling
+        it to double in some respects as an alternative to some of today's public key
+        infrastructures. </t>
+      <t>
+        This LSD document is an extension to the GNS technical specification <xref target="RFC9498" />.
+        It is intended to be read in conjunction with the GNS technical specification. 
+      </t>
+      <t>
+        A new record type is defined to extend the GNS to support a wider range of underscore labels.
+        The new record type is called SBOX and is intended to handle all variations of underscore labels the BOX record type is not able to.
+      </t>
+      <t>
+        This document defines the normative wire format of the SBOX resource
+        record and resolution processes for use by implementers.
+      </t>
+      <section>
+        <name>Requirements Notation</name>
+        <t>The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>", "<bcp14>REQUIRED</bcp14>",
+          "<bcp14>SHALL</bcp14>", "<bcp14>SHALL NOT</bcp14>", "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD
+          NOT</bcp14>", "<bcp14>RECOMMENDED</bcp14>", "<bcp14>NOT RECOMMENDED</bcp14>", "<bcp14>MAY</bcp14>",
+          and "<bcp14>OPTIONAL</bcp14>" in this document are to be interpreted as described in
+          BCP&nbsp;14 <xref target="RFC2119" /> <xref target="RFC8174" /> when, and only when, they
+          appear in all capitals, as shown here.</t>
+      </section>
+    </section>
+    <section>
+      <name>Terminology</name>
+      <t>The terminology defined in <xref target="RFC9498" /> also applies to this document.</t>
+      <t>This document includes the following additional terms:</t>
+      <dl>
+      <dt>Underscore label:</dt>
+      <dd>
+        A label is considered an underscore label only if it begins with an underscore. (e.g., "_name")
+      </dd>
+      <dt>Underscore prefix:</dt>
+        <dd>
+          The underscore prefix contains the rightmost underscore label and all subsequent labels to its left.
+          For example, the underscore prefix of "_service._proto.example.gns.alt" is "_service._proto" and 
+          the underscore prefix of "c93f1e400.abcd._info.example.gns.alt" is "c93f1e400.abcd._info".
+       </dd>
+      </dl>
+    </section>
+    <section anchor="rrecords">
+      <name>Resource Records</name>
+      <section anchor="gnsrecords_other">
+        <name>Auxiliary Records</name>
+        <t> This section defines an additional auxiliary GNS record type. Any implementation <bcp14>
+          SHOULD</bcp14> be able to process the specified record types according to <xref
+            target="record_processing" />. </t>
+        <section anchor="gnsrecords_sbox">
+          <name>SBOX</name>
+          <t>
+            GNS lookups are expected to return all of the required useful
+            information in one record set. This avoids unnecessary additional
+            lookups and cryptographically ties together information that belongs
+            together, making it impossible for an adversarial storage entity to provide
+            partial answers that might omit information critical for security.
+          </t>
+          <t>
+            This general strategy is incompatible with the
+            special labels used by DNS for SRV and TLSA records. Thus, GNS
+            defines the BOX record format to box up SRV and TLSA records and
+            include them in the record set of the label they are associated
+            with.</t>
+          <t>This way of handling and storing restricts the allowed and processable underscore
+            prefixes to the format of "_SERVICE._PROTOCOL" as well as only services registered in
+            the corresponding IANA registry. A new SBOX record is proposed to enable the use of labels
+            such as "c93f1e400f26708f98cb19d936620da35eec8f72e57f9eec01c1afd6._smimecert" and other variations of 
+            underscore prefixes for SMIMEA/URI/SRV, and other records. The SBOX
+            record is supposed to handle all variations of underscore prefixes. The idea
+            is to store the string representation of the underscore prefix instead of the service and protocol numbers. 
+            A SBOX record boxes the record's type and data as well as the underscore prefix, and adds them to the record set
+            of the associated label. For example, a URI record for "_scheme._trust.example.gns.alt"
+            will be stored as an SBOX record in the record set of "example.gns.alt" with the underscore prefix
+            "_schema._trust" and record type URI and the URI records data.</t>
+          <t>For reference, see also <xref target="RFC8552" />.</t>
+          <t>A SBOX DATA entry is illustrated in <xref
+              target="figure_boxrecord" />.</t>
+          <figure anchor="figure_boxrecord">
+            <name>The SBOX DATA Wire Format</name>
+            <artwork name="" type="" alt="">
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|          TYPE         |         PREFIX        /
++-----------+-----------+                       /
+/                                               /
+/                                               /
++-----------------------------------------------+
+/                 RECORD DATA                   /
+/                                               /
++-----+-----+-----+-----+-----+-----+-----+-----+
+            </artwork>
+          </figure>
+          <dl newline="false">
+            <dt>TYPE:</dt>
+            <dd>
+              The 32-bit record type of the boxed record in network byte order.
+            </dd>
+            <dt>PREFIX:</dt>
+            <dd> A variable-length field containing the first GNS name prefix consisting of multiple
+              labels. The rightmost label <bcp14>MUST</bcp14> begin with an underscore.
+              PREFIX <bcp14>MUST</bcp14> be a zero terminated string.
+            </dd>
+            <dt>RECORD DATA:</dt>
+            <dd> A variable-length field containing the "DATA" format of TYPE as defined for the
+              respective TYPE. Thus, for TYPE values below 2<sup>16</sup>, the format is the same as
+              the respective record type's binary format in DNS. </dd>
+          </dl>
+          <section anchor="gnsrecords_sbox_box">
+            <name>Overlap of BOX and SBOX records</name>
+            <t>
+              Records saved as BOX records can also be saved as SBOX records. 
+              Thus, upon encountering underscore labels processable by BOX records, 
+              the resolver must store the labels as their protocol and service numbers, 
+              as well as the underscore prefix. This way, the resolver should be able to 
+              return all boxed records later, whether they are SBOX or BOX records. 
+              More on this in <xref target="resolution" />.
+              BOX records are more efficient for boxing resource records due to their smaller wire format.
+              Therefore, SBOX records are not a replacement for BOX records.
+            </t>
+          </section>
+        </section>
+      </section>
+    </section>
+    <section anchor="resolution">
+      <name>Name Resolution</name>
+      <section anchor="record_processing">
+        <name>Record Processing</name>
+        <t> The first step in processing the records remains the same as described in <xref
+            target="RFC9498" /> Section 7. </t>
+        <t> The next step depends on the context of the name being resolved. Case 3, as defined in <xref
+            target="RFC9498" /> Section 7.3, is modified here. All other cases and further processing steps remain the same.</t>
+        <dl newline="false">
+          <dt>Case 3:</dt>
+          <dd>If the record set contains SBOX records and the name to be resolved is an underscore prefix, 
+            the records in the matching SBOX records are part of the final result.
+            The recursion is processed as described in <xref
+              target="sbox_processing" />.
+            Additionally, it <bcp14>MUST</bcp14> be checked whether the record set contains BOX records and the underscore prefix is in the format "_SERVICE._PROTO".
+            If this is the case the matching BOX records are added to the final result.  The recursion is processed as described in <xref
+            target="box_processing" />.
+            The final result is the combination of the unboxed record sets of the matched SBOX and BOX records.
+          </dd>
+        </dl>
+        <section anchor="box_processing">
+          <name>BOX</name>
+          <t>
+            When a BOX record is received, a GNS resolver must unbox it if the
+            name to be resolved continues with "_SERVICE._PROTO".
+            Otherwise, the BOX record is to be left untouched. This way, TLSA
+            (and SRV) records do not require a separate network request, and
+            TLSA records become inseparable from the corresponding address
+            records.
+          </t>
+        </section>
+        <section anchor="sbox_processing">
+          <name>SBOX</name>
+          <t>
+            When a SBOX record is received, a GNS resolver must unbox it if the
+            name to be resolved continues with an underscore prefix.
+            Otherwise, the SBOX record is to be left untouched.
+          </t>
+        </section>
+      </section>
+    </section>
+    <section anchor="gana">
+      <name>GANA Considerations</name>
+      <section anchor="gana_gnsrr">
+        <name>GNS Record Types Registry</name>
+        <t> GANA <xref target="GANA" /> manages the "GNS Record Types" registry. </t>
+        <t> GANA has assigned a number for the record type SBOX defined in this specification in the
+          "GNS Record Types" registry as listed in <xref target="tab_rrtypenums" />. </t>
+
+        <table anchor="tab_rrtypenums">
+          <name>The GANA GNS Record Types Registry</name>
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>References</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>65547</td>
+              <td>SBOX</td>
+              <td>(*)</td>
+              <td>LSD 0008</td>
+              <td>SBOX records</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td align="left" colspan="5">(*): gns-registry@gnunet.org</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+    </section>
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative References</name>
+
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml" />
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml" />
+
+        <reference anchor="GANA" target="https://gana.gnunet.org/">
+          <front>
+            <title>GNUnet Assigned Numbers Authority (GANA)</title>
+            <author>
+              <organization>GNUnet e.V.</organization>
+            </author>
+            <date year="2023" />
+          </front>
+        </reference>
+      </references>
+      <references>
+        <name>Informative References</name>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8552.xml" />
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9498.xml" />
+
+      </references>
+    </references>
+  </back>
+</rfc>

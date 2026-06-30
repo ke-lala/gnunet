@@ -1,0 +1,13 @@
+Policy
+^^^^^^
+
+The "Label" must be unique in the entire registry.  The value must be a
+case insensitive `LDH label <https://www.rfc-editor.org/rfc/rfc5890#section-2.3.1>`__
+following the restrictions on DNS names.
+
+Adding records can be done on a first-come first-served basis after GANA
+committer review.
+
+The current contact(s) for review are reachable at
+alt-registry@gnunet.org.
+

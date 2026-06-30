@@ -1,0 +1,7 @@
+*.exe
+*.o
+*.lo
+*.la
+*.log
+*.trs
+*.exe.manifest

@@ -1,0 +1,70 @@
+# Ascension
+
+Tool to easily migrate existing DNS Zones into the GNU Name System using
+incremental zone transfers (AXFR/IXFR).
+
+## How to install
+To install the ascension simply execute one of the following commands in the
+freshly cloned directory:
+
+```bash
+# System wide installation
+sudo python3 setup.py install
+
+# Local installation through virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
+python3 setup.py install
+```
+
+## How to install (Developer)
+A developer installation is very handy when you are making changes to the source
+code as this way you don't need to re-run the installation procedure every time
+you make a change.
+
+```bash
+# installation through virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
+python3 setup.py develop
+```
+
+## How to use
+If you have installed it, simply execute ascension with one of several options.
+You can also just run the file ascension.py itself directly.
+
+Taken from the docstring of the ascension.py file:
+```
+Ascension
+
+Usage:
+    ascension <domain> [-d] [-p] [-s] [--minimum-ttl=<ttl>] [--dry-run]
+    ascension <domain> <port> [-d] [-p] [-s] [--minimum-ttl=<ttl>]
+    ascension <domain> -n <transferns> [-d] [-p] [-s] [--minimum-ttl=<ttl>] [--dry-run]
+    ascension <domain> -n <transferns> <port> [-d] [-p] [-s] [--minimum-ttl=<ttl>] [--dry-run]
+    ascension -p | --public
+    ascension -s | --debug
+    ascension -s | --standalone
+    ascension -h | --help
+    ascension -v | --version
+
+Options:
+    <domain>              Domain to migrate
+    <port>                Port for zone transfer
+    <transferns>          DNS Server that does the zone transfer
+    --minimum-ttl=<ttl>   Minimum TTL for records to migrate [default: 3600]
+    --dry-run             Only try if a zone transfer is allowed
+    -p --public           Make records public on the DHT
+    -s --standalone       Run ascension once
+    -d --debug            Enable debugging
+    -h --help         Show this screen.
+    -v --version      Show version.
+```
+
+Example use:
+```
+# Transfers the sy TLD from ns1.tld.sy.
+ascension sy -n ns1.tld.sy.
+# Transfers the nu TLD from zonedata.iis.se with debug options enabled
+ascension nu -n zonedata.iis.se. -d
+```

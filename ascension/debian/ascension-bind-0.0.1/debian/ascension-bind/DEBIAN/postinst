@@ -1,0 +1,105 @@
+#!/bin/sh
+# postinst script for ascension-bind
+#
+# see: dh_installdeb(1)
+# load debconf library
+. /usr/share/debconf/confmodule
+
+set -e
+
+db_get ascension-bind/zones
+echo "$RET" | sed 's/ //g' | sed 's/,/\n/g' > selectedzones
+readarray zones < selectedzones
+rm selectedzones
+# It is okay to just take the first element here
+trimmed=$(echo "$zones" | tr -d '\n')
+if [ -z $trimmed ]; then
+    echo "There are no zones to migrate"
+    exit 0
+fi
+
+zonestatus=true
+for ZONE in "${zones[@]}"
+do
+    ZONE=$( echo "$ZONE" | tr -d '\n')
+    ascension "$ZONE" -n localhost --dry-run
+    if [ $? -gt 0 ]; then
+        zonestatus=false
+    fi
+done
+
+if ! $zonestatus; then
+    echo "Some zones don't allow zone transfer"
+    if grep allow-transfer /etc/bind/named.conf* &> /dev/null; then
+        db_input high ascension-bind/transfer-allowed
+        db_go || true
+        exit 1
+    else
+        echo "Trying to allow zone transfer on localhost in global configuration"
+        sed -i.backup -r 's|(^[^\n\S]*options\s?\{)|\1 allow\-transfer { localhost; }; |g' /etc/bind/named.conf.options
+        deb-systemd-invoke restart bind9
+        zonestatus=true
+        for ZONE in "${zones[@]}"
+        do
+            ZONE=$( echo "$ZONE" | tr -d '\n')
+            ascension "$ZONE" -n localhost --dry-run
+            if [ $? -gt 0 ]; then
+                zonestatus=false
+                break
+            fi
+        done
+        if [ -z $zonestatus ]; then
+            db_fset ascension-bind/transfer-allowed seen false
+            db_input high ascension-bind/transfer-allowed
+            db_go || true
+            exit 1
+        fi
+        echo "Zone transfer possible, continuing"
+    fi
+fi
+
+echo "Everything okay, templating files"
+mkdir -p /etc/ascension.d/ || true
+for ZONE in "${zones[@]}"
+do
+    ZONE=$( echo "$ZONE" | tr -d '\n')
+    su -s /bin/sh -c "gnunet-identity -C $ZONE || true" ascension
+    ZONEPKEYLINE=$(su -s /bin/sh -c "gnunet-identity -dqe $ZONE" ascension)
+    ZONEPKEY=$( echo "$ZONEPKEYLINE" | tr -d '\n')
+    FILECONV=$( echo "$ZONE" | tr '.' '_')
+    echo "Creating systemd unit file."
+    cat > "/etc/ascension.d/ascension-bind-$FILECONV.service" << EOF
+[Unit]
+Description=Ascension-bind for $ZONE
+After=gnunet-ascension.service
+
+[Service]
+Environment=ZONEPKEY=$ZONEPKEY
+Type=simple
+User=ascension
+WorkingDirectory=/etc/ascension.d/
+ExecStart=/usr/bin/ascension $ZONE -n localhost -p
+[Install]
+WantedBy=multi-user.target
+EOF
+    ln -sf "/etc/ascension.d/ascension-bind-$FILECONV.service" "/lib/systemd/system/ascension-bind-$FILECONV.service"
+done
+
+for ZONE in "${zones[@]}"
+do
+    systemctl daemon-reload
+    ZONE=$( echo "$ZONE" | tr -d '\n')
+    FILECONV=$( echo "$ZONE" | tr '.' '_')
+    ZONEPKEYLINE=$(su -s /bin/sh -c "gnunet-identity -dqe $ZONE" ascension)
+    ZONEPKEY=$( echo "$ZONEPKEYLINE" | tr -d '\n')
+    echo "$ZONE's PKEY is $ZONEPKEY"
+    logger "$ZONE's PKEY is $ZONEPKEY"
+    echo "Starting and enabling ascension-bind-$FILECONV"
+    # Hacky solution but docker containers return 101 here
+    deb-systemd-helper enable "ascension-bind-$FILECONV" || true
+    deb-systemd-invoke start "ascension-bind-$FILECONV" || true
+    systemctl daemon-reload
+done
+
+exit 0
+

@@ -1,0 +1,10 @@
+e39447d26076db60f6e3af5fcc58d379  usr/bin/ascension
+9a1cca110e94552f9190fb1b0e3e5dad  usr/lib/python3/dist-packages/ascension-0.6.1.egg-info/PKG-INFO
+68b329da9893e34099c7d8ad5cb9c940  usr/lib/python3/dist-packages/ascension-0.6.1.egg-info/dependency_links.txt
+9cda1022e5fc72a3762b4bc09ee0ddb5  usr/lib/python3/dist-packages/ascension-0.6.1.egg-info/entry_points.txt
+d41d8cd98f00b204e9800998ecf8427e  usr/lib/python3/dist-packages/ascension-0.6.1.egg-info/requires.txt
+e616e4373e7b199db038fd8e938a3188  usr/lib/python3/dist-packages/ascension-0.6.1.egg-info/top_level.txt
+d41d8cd98f00b204e9800998ecf8427e  usr/lib/python3/dist-packages/ascension/__init__.py
+72903f16a50150eb3a2c7fb743650666  usr/lib/python3/dist-packages/ascension/ascension.py
+3211ad0ee8099a5512e496e8a4a39816  usr/man/man1/ascension.1
+a985f10ab342f34767aeb6f659f07d80  usr/share/doc/python3-ascension/changelog.Debian.gz

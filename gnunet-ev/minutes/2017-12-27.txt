@@ -1,0 +1,97 @@
+# Gnunet e.V. Mitgliederversammlung 2017
+
+Hamburg, 34C3 - 16:00 - 17:00
+
+
+# Teilnehmer
+## GNUNET e.V.-Mitglieder
+- Christian Grothoff
+- Martin Schanzenbach
+- mate
+- Nils Durner
+- Florian Dold
+- t3sserakt
+- xrs
+- lxnX
+- Julius Buenger
+- Christian Ulrich
+
+
+## Gäste
+- dvn
+- elx
+- mekeor
+- Matze
+- Hartmut
+- Johannes
+- Michael
+- Hernani
+
+
+# Finanzbericht
+siehe finanzreport2017.tex
+Entlastung Finanzwart Florian Dold: einstimmig
+
+
+# Vorstandswahl
+- neuer Finanzwart: Florian Dold
+- neuer Präsident: Christian Grothoff
+- neuer Vizepräsident: lynX
+- neuer Beisitzer: lurchi
+einstimmig gewählt
+
+
+# Neuigkeiten / Berichte
+- Grothoff ist jetzt in Biel
+- Tunesier will Taler-basiertes Zahlsystem in Tunesien einführen. Es ist keine
+  vertragliche Zusammenarbeit zustandegekommen.
+- GNUnet e.v. war Gastegeber des GHM
+- Potenzielle Investoren: Qwant, emundo
+- Potenzielle Partnerbank: Sveriges Riksbank (elektronisches Bezahlsystem
+  krona)
+
+
+# Infrastruktur
+Es ist geplant gnunet.org und taler.net künftig auf GuixSD zu betreiben.
+
+
+# Verwaltung
+Der Verein hat seinen Sitz an der TU München, wo bald keines der Mitglieder
+mehr studieren/arbeiten wird. Mögliche Lösungen:
+- Umwandlung in einen schweizer Verein mit Sitz an der BFH in Biel
+- Sitz an der Privatadresse von Matthias
+
+Beschluss: Sitz wird zukünftig die Privatadresse von Matthias.
+
+
+# Diskussion
+lynX wirbt dafür, den GNUnet-Code unter die AGPL (anstatt wie bisher GPL) zu
+stellen, wie bereits per Mail diskutiert. RMS hat keine Einwände.
+
+Vorteile:
+- Schutz vor Kontrollübernahme eines kommerziellen Anbieters durch Betrieb
+  einer "GNUnet-Cloud"
+
+Probleme:
+- Verfügbarmachen des Source-Codes für alle GNUnet-Nodes, wie von der AGPL
+  gefordert, könnte sich schwierig gestalten. Es ist fraglich, ob lynX'
+  Interpretation der AGPL (Bereitstellung des Source-Codes per URL
+  ausschließlich auf Nodes mit User-Interaktionen) sich rechtlich
+  aufrechterhalten lässt.
+
+Stimmungsbild:
+- mehr Zeit für Diskussionen gewünscht: 3
+- definitiv zur AGPL wechseln: 3
+- Rest ist sich unsicher
+
+Beschlüsse:
+- lynX soll offene Fragen präziser formulieren und von einem Anwalt
+  beantworten lassen.
+- Vorstand kann Wechsel zur AGPL beschließen, wenn Antworten des Anwalts und
+  Feedback der Mitglieder eindeutig sind.
+
+
+# Ankündigungen
+Die Dezentrale ist ein anarchisitscher Tagungsort auf dem Mont Soleil, der eine günstige
+Möglichkeit für Hacker-Treffen bietet (10 CHF am Tag pro Person). 2018
+(möglichst in den Semesterferien) ist dort ein GNUnet-Treffen angedacht.

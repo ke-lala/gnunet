@@ -1,0 +1,7 @@
+
+  {
+    /* {{Value}} */
+    .ec = TALER_EC_{{Name}},
+    .hint = "{{Description}}",
+    .http_code = MHD_HTTP_{{HttpStatus_Identifier}}
+  },

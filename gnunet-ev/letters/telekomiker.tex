@@ -1,0 +1,116 @@
+\documentclass[DIN, pagenumber=false, parskip=half,
+               fromalign=right, fromphone=false, fromfax=false, frombank=true,
+               yourmail=false,
+               yourref=false,
+               fromrule=false]{scrlttr2}
+
+
+%\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{longtable}
+\usepackage{eurosym}
+
+\LoadLetterOption{template}
+
+\newcommand{\stdlohn}[0]{11 \euro}
+
+\renewcommand*{\raggedsignature}{\raggedright}
+
+\setkomavar{fromname}{GNUnet e. V.}
+\setkomavar{fromaddress}{Boltzmannstraße 3 \\ 85748 Garching bei München}
+\setkomavar{frombank}{IBAN: DE67830654080004822650 \\ BIC: GENODEF1SLR}
+
+\setkomavar{subject}[]{1JD776.003884}
+%\setkomavar{yourmail}[Ihre Angebots-Nr.]{2011012631}
+%\setkomavar{yourref}[Ihre Kundennummer]{263}
+\setkomavar{date}[Datum]{\today}
+
+
+%===================================
+% footer
+\firstfoot{
+	\parbox[t]{\textwidth}{\footnotesize
+
+	\begin{tabular}[t]{l@{}}
+		 \multicolumn{1}{@{}l@{}}{Association:}\\
+		 GNUnet e. V. \\
+		 Boltzmannstraße 3, 85748 Garching bei München \\ \\
+		 E-Mail: ev@gnunet.org \\
+	\end{tabular}
+	\hfill{}
+	\begin{tabular}[t]{l@{}}
+	        \multicolumn{1}{@{}l@{}}{\usekomavar*{frombank}:}\\
+	        \usekomavar{frombank}
+	\end{tabular}
+ }}
+
+\begin{document}
+
+
+%===================================
+% receiver
+\begin{letter}{
+        Dr. Eva Fischbach \\
+	Alstertor 21 \\
+        20095 Hamburg
+}
+
+\opening{Sehr geehrte Frau Fischbach,}
+
+Nach eingehender Pr\"ufung und R\"ucksprache mit dem Rest des
+Vorstandes von GNUnet e.V. muss ich Ihnen mitteilen dass wir Ihre
+Abmahnung entschieden zur\"uckweisen, da GNUnet e.V. nicht am Hosting
+der Webseite \texttt{taler.net} beteiligt ist und auch keinen
+Einfluss auf die Registrierung der Bildmarke beim Marken- und Patentamt
+(EUTM 17871948) hat.  Weiterhin hat der Verein auch nicht die Absicht,
+die Bildmarke von Taler zu verwenden.
+
+Wir verstehen jedoch Ihre Verwirrung, da GNUnet e.V., als eine
+Organisation die an der Softwareentwicklung f\"ur Taler mitgewirkt hat,
+auf der Seite erw\"ahnt wird. Daher w\"urden wir Ihnen
+entgegenkommen und keine Kosten f\"ur unberechtigte Abmahnung
+in Rechnung stellen, sofern Sie ihre Abmahnung bis zum 7.5.2018 18 Uhr
+zur\"uckziehen.  Ansonsten m\"ussten wir unsererseits einen Anwalt
+beauftragen, und Ihnen ggf. die uns daraus entstehende Kosten in
+Rechnung stellen.
+
+Das \texttt{taler.net} bei Inria gehostet ist, sehen Sie
+wie folgt:
+\begin{verbatim}
+$ nslookup taler.net
+Name:	taler.net
+Address: 131.254.145.3
+
+$ nslookup 131.254.145.3
+3.145.254.131.in-addr.arpa
+name = tripwire.decentralise.rennes.inria.fr.
+\end{verbatim}
+
+Wie bereits in unserem Telefongespr\"ach erw\"ahnt, gibt es auch noch
+\texttt{gnutaler.org}.  Wir versichern hiermit explizit dass wir diese
+Domaine nicht betreiben, und dass uns die Identit\"at der Betreiber
+oder des Betreibers unbekannt ist.  Unter \texttt{gnutaler.org} findet
+ein Betrugsversuch unter Verletzung von Pers\"onlichkeitsrechten von
+GNUnet e.V. Mitgliedern sowie auch von Copyrights von GNUnet e.V.,
+Taler Systems SA und Inria statt.  Als Verein sind wir jedoch nicht in
+der Lage diese Verletzung effektiv zu verfolgen.
+
+Ein Vorgehen der DTAG gegen die tats\"achlichen Betreiber von
+\texttt{gnutaler.org} w\"urde daher von GNUnet e.V. explizit
+begr\"usst.  Da die DTAG der Meinung ist, dass das Taler-Logo auf
+\texttt{gnutaler.org} dem DTAG-Logo verwechselt werden k\"onnte,
+w\"are aus unserer Perspektive ein Vorgehen gegen diese kriminelle
+Seite sicherlich auch im Interesse ihrere Mandantin.
+
+
+Mit freundichen Gr\"ussen
+
+\vspace{3cm}
+Christian Grothoff\\
+President, GNUnet e. V.
+
+
+\end{letter}
+\end{document}

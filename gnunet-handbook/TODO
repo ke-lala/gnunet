@@ -1,0 +1,10 @@
+# TODOs
+
+  * Migrate FAQ from website here. Possibly in the root TOC
+  * Go over Developer Handbook for consistency/correctness/succinctness
+  * Key Concepts is very odd.
+  * Concepts under User Manual -> File-sharing is odd
+  * "Config leftovers" in texinfo is from previous migrations?? -> moved to "Advanced Configuration"
+  * Replace "Documentation" sites on website with links here
+  * Integrate REST API docs under Developer Handbook ?
+  * "Advanced Configuration" is a sess pool for anything config currently.

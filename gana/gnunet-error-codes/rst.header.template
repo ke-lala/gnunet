@@ -1,0 +1,11 @@
+Entries
+^^^^^^^
+
+.. list-table:: GNUnet Error Codes
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Value
+     - HttpStatus
+     - Description

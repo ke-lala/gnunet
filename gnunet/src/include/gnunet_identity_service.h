@@ -1,0 +1,385 @@
+/*
+     This file is part of GNUnet.
+     Copyright (C) 2013--2023 GNUnet e.V.
+
+     GNUnet is free software: you can redistribute it and/or modify it
+     under the terms of the GNU Affero General Public License as published
+     by the Free Software Foundation, either version 3 of the License,
+     or (at your option) any later version.
+
+     GNUnet is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+
+/**
+ * @addtogroup egos  Ego management
+ * @{
+ *
+ * @author Christian Grothoff
+ *
+ * @file
+ * Identity service; implements identity management for GNUnet
+ *
+ * @defgroup identity  Identity service
+ * Identity management.
+ *
+ * Egos in GNUnet are ECDSA keys.  You assume an ego by using (signing
+ * with) a particular private key.  As GNUnet users are expected to
+ * have many egos, we need an identity service to allow users to
+ * manage their egos.  The identity service manages the egos (private
+ * keys) of the local user; it does NOT manage egos of other users
+ * (public keys).  For giving names to other users and manage their
+ * public keys securely, we use GNS.
+ *
+ * @see [Documentation](https://gnunet.org/identity-subsystem)
+ *
+ * @{
+ */
+#ifndef GNUNET_IDENTITY_SERVICE_H
+#define GNUNET_IDENTITY_SERVICE_H
+
+#include "gnunet_common.h"
+#ifdef __cplusplus
+extern "C" {
+#if 0 /* keep Emacsens' auto-indent happy */
+}
+#endif
+#endif
+
+
+#include "gnunet_util_lib.h"
+
+
+/**
+ * Version number of GNUnet Identity API.
+ */
+#define GNUNET_IDENTITY_VERSION 0x00000100
+
+
+/**
+ * Handle to access the identity service.
+ */
+struct GNUNET_IDENTITY_Handle;
+
+/**
+ * Handle for a ego.
+ */
+struct GNUNET_IDENTITY_Ego;
+
+/**
+ * Handle for an operation with the identity service.
+ */
+struct GNUNET_IDENTITY_Operation;
+
+
+/**
+ * Obtain the ECC key associated with a ego.
+ *
+ * @param ego the ego
+ * @return associated ECC key, valid as long as the ego is valid
+ */
+const struct GNUNET_CRYPTO_BlindablePrivateKey *
+GNUNET_IDENTITY_ego_get_private_key (const struct GNUNET_IDENTITY_Ego *ego);
+
+
+/**
+ * Obtain the ego representing 'anonymous' users.
+ *
+ * @return handle for the anonymous user, MUST NOT be freed
+ */
+struct GNUNET_IDENTITY_Ego *
+GNUNET_IDENTITY_ego_get_anonymous (void);
+
+
+/**
+ * Get the identifier (public key) of an ego.
+ *
+ * @param ego identity handle with the private key
+ * @param pk set to ego's public key
+ */
+void
+GNUNET_IDENTITY_ego_get_public_key (struct GNUNET_IDENTITY_Ego *ego,
+                                    struct GNUNET_CRYPTO_BlindablePublicKey *pk)
+;
+
+
+/**
+ * Obtain the name associated with an ego.
+ *
+ * @param ego the ego
+ * @return associated name, valid as long as the ego is valid
+ */
+const char*
+GNUNET_IDENTITY_ego_get_name (const struct GNUNET_IDENTITY_Ego *ego);
+
+
+/**
+ * Method called to inform about the egos of this peer.
+ *
+ * When used with #GNUNET_IDENTITY_connect, this function is
+ * initially called for all egos and then again whenever a
+ * ego's name changes or if it is deleted.  At the end of
+ * the initial pass over all egos, the function is once called
+ * with 'NULL' for @a ego. That does NOT mean that the callback won't
+ * be invoked in the future or that there was an error.
+ *
+ * When used with #GNUNET_IDENTITY_create or #GNUNET_IDENTITY_get, this
+ * function is only called ONCE, and 'NULL' being passed in @a ego does
+ * indicate an error (for example because name is taken or no default value is
+ * known).  If @a ego is non-NULL and if '*ctx' is set in those callbacks, the
+ * value WILL be passed to a subsequent call to the identity callback of
+ * #GNUNET_IDENTITY_connect (if that one was not NULL).
+ *
+ * When an identity is renamed, this function is called with the
+ * (known) @a ego but the NEW @a name.
+ *
+ * When an identity is deleted, this function is called with the
+ * (known) ego and "NULL" for the @a name.  In this case,
+ * the @a ego is henceforth invalid (and the @a ctx should also be
+ * cleaned up).
+ *
+ * @param cls closure
+ * @param ego ego handle
+ * @param ctx context for application to store data for this ego
+ *                 (during the lifetime of this process, initially NULL)
+ * @param name name assigned by the user for this ego,
+ *                   NULL if the user just deleted the ego and it
+ *                   must thus no longer be used
+ */
+typedef void
+(*GNUNET_IDENTITY_Callback) (void *cls,
+                             struct GNUNET_IDENTITY_Ego *ego,
+                             void **ctx,
+                             const char *name);
+
+
+/**
+ * Connect to the identity service.
+ *
+ * @param cfg Configuration to contact the identity service.
+ * @param cb function to call on all identity events, can be NULL
+ * @param cb_cls closure for @a cb
+ * @return handle to communicate with identity service
+ */
+struct GNUNET_IDENTITY_Handle *
+GNUNET_IDENTITY_connect (const struct GNUNET_CONFIGURATION_Handle *cfg,
+                         GNUNET_IDENTITY_Callback cb,
+                         void *cb_cls);
+
+
+/**
+ * Function called once the requested operation has
+ * been completed.
+ *
+ * @param cls closure
+ * @param ec the #GNUNET_ErrorCode
+ */
+typedef void
+(*GNUNET_IDENTITY_Continuation) (void *cls,
+                                 enum GNUNET_ErrorCode ec);
+
+
+/**
+ * Disconnect from identity service.
+ *
+ * @param h identity service to disconnect
+ */
+void
+GNUNET_IDENTITY_disconnect (struct GNUNET_IDENTITY_Handle *h);
+
+
+/**
+ * Function called once the requested operation has
+ * been completed.
+ *
+ * @param cls closure
+ * @param pk private key, NULL on error
+ * @param ec the #GNUNET_ErrorCode
+ */
+typedef void
+(*GNUNET_IDENTITY_CreateContinuation) (
+  void *cls,
+  const struct GNUNET_CRYPTO_BlindablePrivateKey *pk,
+  enum GNUNET_ErrorCode ec);
+
+
+/**
+ * Create a new ego with the given name.
+ *
+ * @param id identity service to use
+ * @param name desired name
+ * @param privkey desired private key or NULL to create one
+ * @param ktype the type of key to create. Ignored if privkey != NULL.
+ * @param cont function to call with the result (will only be called once)
+ * @param cont_cls closure for @a cont
+ * @return handle to abort the operation
+ */
+struct GNUNET_IDENTITY_Operation *
+GNUNET_IDENTITY_create (struct GNUNET_IDENTITY_Handle *id,
+                        const char *name,
+                        const struct GNUNET_CRYPTO_BlindablePrivateKey *privkey,
+                        enum GNUNET_CRYPTO_BlindableKeyType ktype,
+                        GNUNET_IDENTITY_CreateContinuation cont,
+                        void *cont_cls);
+
+
+/**
+ * Renames an existing ego.
+ *
+ * @param id identity service to use
+ * @param old_name old name
+ * @param new_name desired new name
+ * @param cb function to call with the result (will only be called once)
+ * @param cb_cls closure for @a cb
+ * @return handle to abort the operation
+ */
+struct GNUNET_IDENTITY_Operation *
+GNUNET_IDENTITY_rename (struct GNUNET_IDENTITY_Handle *id,
+                        const char *old_name,
+                        const char *new_name,
+                        GNUNET_IDENTITY_Continuation cb,
+                        void *cb_cls);
+
+
+/**
+ * Delete an existing ego.
+ *
+ * @param id identity service to use
+ * @param name name of the identity to delete
+ * @param cb function to call with the result (will only be called once)
+ * @param cb_cls closure for @a cb
+ * @return handle to abort the operation
+ */
+struct GNUNET_IDENTITY_Operation *
+GNUNET_IDENTITY_delete (struct GNUNET_IDENTITY_Handle *id,
+                        const char *name,
+                        GNUNET_IDENTITY_Continuation cb,
+                        void *cb_cls);
+
+
+/**
+ * Cancel an identity operation.  Note that the operation MAY still
+ * be executed; this merely cancels the continuation; if the request
+ * was already transmitted, the service may still choose to complete
+ * the operation.
+ *
+ * @param op operation to cancel
+ */
+void
+GNUNET_IDENTITY_cancel (struct GNUNET_IDENTITY_Operation *op);
+
+
+/* ************* convenience API to lookup an ego ***************** */
+
+/**
+ * Function called with the result.
+ *
+ * @param cls closure
+ * @param ego NULL on error / ego not found
+ */
+typedef void
+(*GNUNET_IDENTITY_EgoCallback) (void *cls,
+                                struct GNUNET_IDENTITY_Ego *ego);
+
+/**
+ * Handle for ego lookup.
+ */
+struct GNUNET_IDENTITY_EgoLookup;
+
+
+/**
+ * Lookup an ego by name.
+ *
+ * @param cfg configuration to use
+ * @param name name to look up
+ * @param cb callback to invoke with the result
+ * @param cb_cls closure for @a cb
+ * @return NULL on error
+ */
+struct GNUNET_IDENTITY_EgoLookup *
+GNUNET_IDENTITY_ego_lookup (const struct GNUNET_CONFIGURATION_Handle *cfg,
+                            const char *name,
+                            GNUNET_IDENTITY_EgoCallback cb,
+                            void *cb_cls);
+
+
+/**
+ * Abort ego lookup attempt.
+ *
+ * @param el handle for lookup to abort
+ */
+void
+GNUNET_IDENTITY_ego_lookup_cancel (struct GNUNET_IDENTITY_EgoLookup *el);
+
+/**
+ * Function called with the result.
+ *
+ * @param cls closure
+ * @param ego NULL on error / ego not found
+ * @param ego_name NULL on error, name of the ego otherwise
+ */
+typedef void
+(*GNUNET_IDENTITY_EgoSuffixCallback) (
+  void *cls,
+  const struct GNUNET_CRYPTO_BlindablePrivateKey *priv,
+  const char *ego_name);
+
+
+/**
+ * Handle for suffix lookup.
+ */
+struct GNUNET_IDENTITY_EgoSuffixLookup;
+
+
+/**
+ * Obtain the ego with the maximum suffix match between the
+ * ego's name and the given domain name @a suffix.  For example, given
+ * a @a suffix "a.b.c" and egos with names "d.a.b.c", "b.c" and "c",
+ * we return the ego for "b.c".
+ *
+ * @param cfg configuration to use
+ * @param suffix for which domain name suffix is an identity wanted
+ * @param cb function to call with the result (will only be called once)
+ * @param cb_cls closure for @a cb
+ * @return handle to abort the operation
+ */
+struct GNUNET_IDENTITY_EgoSuffixLookup *
+GNUNET_IDENTITY_ego_lookup_by_suffix (
+  const struct GNUNET_CONFIGURATION_Handle *cfg,
+  const char *suffix,
+  GNUNET_IDENTITY_EgoSuffixCallback cb,
+  void *cb_cls);
+
+
+/**
+ * Abort ego suffix lookup attempt.
+ *
+ * @param el handle for lookup to abort
+ */
+void
+GNUNET_IDENTITY_ego_lookup_by_suffix_cancel (
+  struct GNUNET_IDENTITY_EgoSuffixLookup *el);
+
+
+#if 0 /* keep Emacsens' auto-indent happy */
+{
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+/* ifndef GNUNET_IDENTITY_SERVICE_H */
+#endif
+
+/** @} */ /* end of group identity */
+
+/** @} */ /* end of group addition */
+
+/* end of gnunet_identity_service.h */

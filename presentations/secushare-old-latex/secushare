@@ -1,0 +1,56 @@
+#+TITLE: Secure Share
+#+AUTHOR: Gabor Toth
+#+SETUPFILE: .setup
+
+#+BEGIN_LaTeX
+\frontmatter
+
+\begin{titlepage}
+  \centering
+  \vspace*{10\baselineskip}
+  \huge
+  {{{title}}} 
+  \large
+  \\[2\baselineskip]
+  A framework for secure social interaction
+  \\[4\baselineskip]
+  \Large
+  {{{author}}} \\[2\baselineskip]
+  \normalsize
+  \vfill
+  \normalsize
+  May 2012
+%  \monthname\ \the\year
+\end{titlepage}
+#+END_LaTeX
+
+*                                                                  :NOEXPORT:
+
+#+BEGIN_ABSTRACT
+#+INCLUDE abstract
+#+END_ABSTRACT
+
+#+BEGIN_LaTeX
+\renewcommand{\contentsname}{\vspace*{-1em} Contents}
+\tableofcontents
+\listoffigures
+#+END_LaTeX
+
+#+LaTeX: \mainmatter
+
+#+INCLUDE intro
+#+INCLUDE req
+#+INCLUDE arch
+#+INCLUDE impl
+#+INCLUDE clients
+#+INCLUDE conclusion
+
+#+INCLUDE: .setup-back
+#+BEGIN_LaTeX
+\backmatter
+\addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
+#+END_LaTeX
+
+#+INCLUDE: abbrevs
+#+INCLUDE: syntax

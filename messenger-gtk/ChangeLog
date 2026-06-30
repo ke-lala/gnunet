@@ -1,0 +1,64 @@
+## Version 0.12.0
+* Fixes compatibility with libgnunetchat 0.7.0
+* Accounts use generated secrets managed by libsecret to encrypt their key storage
+* Minor UI adjustments
+
+## Version 0.11.0
+* Utilize new features from libgnunetchat 0.6.0
+* Implement private notes chat
+* Update symbolic icons
+* Adjust appdata and user interface
+* Fix thread locking issues
+* Improve readability of invitations
+
+## Version 0.10.2
+* Fixes compatibility with libgnunetchat 0.5.2
+* Update appdata to current state
+* Implement notification sounds
+* List tags of contacts
+* Implement filtering by tags
+
+## Version 0.10.1
+* Utilize new function from libgnunetchat 0.5.1
+* Implement discourse panel to allow live chat streaming voice and video
+* Fix thread synchronization issues to reduce occasional crashes
+* Reduce background CPU usage
+* Fix minor UI issues
+
+## Version 0.10.0
+* Implement tagging and filtering messages
+* Adjust media previews and optimize memory footprint
+* Implement sharing profile attribute and profile picture with contacts
+* Fix several UI issues and memory leaks
+* Improve UI to waste less vertical space for smaller screens
+* Add localization for English, German and Spanish
+
+## Version 0.9.0
+* Fixes compatibility with libgnunetchat 0.3.0
+* Contacts can be blocked and unblocked
+* Fix message sorting and notification handling for recent only
+* Fix deletion and updating of previous messages
+* Use pipewire and libportal for GStreamer pipelines
+* Remove unreadable whispered messages
+* Invitations can be rejected via tagging
+* Sent private messages can be read from sender
+* Fix multiple memory and synchronization issues
+* Camera sensor can be selected for capturing QR codes
+
+## Version 0.8.0
+* Fixes multiple segmentation faults and crashes
+* Fixes issues regarding changes in header usage from GNUnet 0.19.0
+* Replaces build system finally with Meson increasing platform support
+* Dependency on zbar gets replaced with more stable GStreamer pipelines
+* Videos and audio files can be played with an embedded media viewer
+* Improve general software availability via snap and flatpak packaging
+
+## Version 0.7.0
+* The version iteration will be inherited by cadet-gtk as logical successor.
+>  More information here: https://gitlab.com/gnunet-messenger/cadet-gtk/-/issues/10
+* It is possible to create direct chats and group chats via physical or virtual exchange
+* Groups and contacts can be named, left, verified or deleted
+* Existing contacts can be invited to any private or public group
+* Chats allow sending text messages, voice recordings or files
+* Messages can be deleted with a custom delete or automatically
+* Switching between different accounts can be done during runtime

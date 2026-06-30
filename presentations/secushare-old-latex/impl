@@ -1,0 +1,392 @@
+* Implementation
+
+This chapter describes core concepts in PSYC, how they are applied in a
+peer-to-peer context and what changes we had to make to the federated PSYC
+\cite{psyc-paper} protocol to make it work in a peer-to-peer network.
+
+Federated PSYC is the existing implementation of the PSYC protocol designed for
+a federated architecture. It is implemented as a stand-alone daemon process
+written in the LPC language.
+
+P2P PSYC is the new implementation we have developed and the one we use in
+Secure Share. The messaging daemon -- called psycd -- is implemented in C as a
+service in the GNUnet framework. It uses GNUnet libraries for communication with
+the rest of GNUnet, and libpsyc for the parsing and rendering of PSYC packets.
+It stores data in an SQLite database.
+
+** Syntax
+
+PSYC is a text-based protocol with length prefixes for binary data, which makes
+it possible to transmit any kind of content in PSYC packets efficiently while
+keeping the protocol extensible. Its syntax is described in [[#syntax][Appendix 1]].
+
+An example packet looks like this:
+
+#+BEGIN_SRC psyc
+:_context	psyc://J61VSCQA:g/#test
+:_source_relay	psyc://I0GCD93U:g/
+70
+=_simple_var	value
+:_binary_var 5	value
+_method_name
+Packet
+body
+here.
+|
+#+END_SRC
+
+A packet contains a routing header, followed by the length of the rest of the packet,
+context state modifiers, the method name and the packet body.
+
+** Identifiers
+
+In federated PSYC a server is identified by its DNS domain name. A server hosts
+person and group entities, each of which can manage several channels. Uniforms
+serve as identifiers for entities or channels, described with a URI (Uniform
+Resource Identifier) syntax:
+
+: psyc://host[:port[transport]][/[entity-type]entity[#channel]]
+: psyc://example.net/~alice#friends
+
+In peer-to-peer PSYC DNS is not employed, a public key is used instead to
+identify node, person or group. GNUnet uses a SHA-512 hash of the public key as
+node identifiers, we use a similar method for identifying entities. The
+ASCII-encoded version of this hash becomes the host part of the uniform, with no
+port number and 'g' as transport identifier:
+
+: psyc://pubkey-hash:g[/[entity-type]entity[#channel]]
+: psyc://I0GC...L29G:g/#friends
+
+As these identifiers are very long and not user-friendly, they can be aliased to
+shorter nicknames. The aliases are only used in client applications, they do not
+appear on the protocol level.
+
+In the prototype version GNUnet's host keys are used for identifying person
+entities as well, this simplification allows only one person per node. A more
+elaborate identification scheme is to be implemented later.
+
+Each user will have a master key which serves as the identifier of the person,
+its purpose is to sign subkeys used by various devices of the person. If a
+subkey gets compromised, the master key can be used to prune messages sent with
+the compromised key.
+
+These subkeys are assigned to person entities. A GNUnet node can host one or
+more entities. When using the distance vector transport, node and entity IDs are
+added to the DV routing table, and nodes gossip about available peers and
+entities in a local neighborhood up to a limited number of hops away, in the
+social circle of users. When using the mesh service, user ID to current node ID
+mappings are stored in the DHT.
+
+** Circuits
+
+A circuit is a virtual connection between two PSYC nodes, packets are sent and
+received over circuits. When sending packets the circuit type is determined by
+the transport specified in the target uniform.
+
+In federated PSYC we had TCP, UDP and TLS transports. In P2P PSYC psycd
+implements two circuit types so far: TCP circuits for local clients and GNUnet
+circuits for remote peers. Unix sockets, TLS and possibly UDP circuits are
+planned for later.
+
+** Contacting peers
+
+In federated PSYC it was enough to know the uniform of a person or group to
+establish contact. The uniform contains the host name, port number and transport
+method, which is all the information needed to establish connection to the
+remote entity.
+
+When using PSYC over P2P, two nodes have to know each other's public key and
+know how to reach the node associated with the public key. GNUnet introduces
+nodes to each other using hello messages which contain a public key and various
+transport methods and addresses which can be used to establish contact with the
+node. In case of the DV transport a hello message contains the identifier of
+another node through which it can be reached. The DV routing protocol gossips
+about connected nodes and entities in the network so they become reachable by
+their social network.
+
+When two users want to talk to each other, they should have received a hello
+message from the other party beforehand. When using the DV transport they might
+already know about each other if they are connected through common friends and
+received a gossip message about the other node. If they are on the same network
+they would discover each other through IPv4 broadcast or IPv6 multicast, or when
+using the WLAN transport a WiFi mesh network is created from the present
+nodes. Otherwise a hello message can be exchanged manually between users, using
+e.g. email or a USB stick. When sending a hello message over an insecure channel
+it should be encrypted using a shared secret in order to maintain
+confidentiality and integrity of the information contained within. Usually it's
+enough to exchange hello messages manually once when establishing connection for
+the first time, after that more stable, longer running nodes would be available
+to bootstrap a reconnecting node.
+
+When connection is established between two users, they set appropriate trust
+levels for each other -- which can be used in routing decisions in the network --
+and they subscribe one or more channels of the other party.
+
+** Entities
+
+Entities are addressable objects in the PSYC network. Entity types include place
+entities which are used for group communication or news feeds, and person
+entities which can make friendships between each other and subscribe to other
+entities. Each entity manages one or more channels with different subscription
+lists.
+
+Psycd implements person entities enabling clients to link to their entity, send
+and receive messages and manage membership of various channels. It also has a
+simple implementation of place entities providing dedicated group messaging.
+
+** Multicast contexts
+
+PSYC uses multicast contexts for efficient distribution of messages. A context
+is managed by the context master at the top of the distribution tree. Context
+members send packets to the context master which distributes them to context
+slaves on the next level in the multicast tree, which distribute them further
+down the tree. Figure 4.1 shows such a tree.
+
+#+CAPTION: Multicast context distribution tree
+[[./context.png]]
+
+Entities manage multiple channels, each of which is a separate multicast context
+having different membership and multicast distribution tree. Social
+interactions, such as status updates, group and private messaging can be modeled
+using these channels. An entity manages membership of its channels, in case of a
+person entity this could be used to create different circles of friends using a
+channel for each of them, or provide different channels for various topics to
+which interested friends -- or if desired anyone who can contact the person --
+can subscribe to. Ad-hoc group and private chats with friends can be modeled as
+well with channels of a person entity.
+
+Federated PSYC only implemented manually configured multicast distribution trees
+so far, this should be made fully automatic in the peer-to-peer version. When
+multicast routing is added, every node becomes a multicast routing hop serving
+several multicast contexts. A node can join a multicast context at any other
+node already a member of that particular context. By adding encryption to
+multicast contexts any node can help in the multicast routing process without
+being able to decrypt message contents. This way receiving packets for a
+multicast context does not necessarily mean that the given node can decrypt the
+packets sent to it. In its simplest implementation multicast encryption involves
+a symmetric key distributed by the context master to all the members which has
+to be changed periodically, and when a member joins or leaves.
+
+In \cite{hordes} Hordes, an anonymity protocol based on IP multicast is
+suggested. While we're not using IP multicast, part of their analysis could be
+applied to application-level multicast implemented in a P2P network.
+
+The prototype does not implement actual multicast yet, multicast contexts are
+modeled but messages to contexts are distributed to each member by unicast.
+
+** Distributed state
+
+PSYC has the concept of distributed state, a set of key-value pairs -- state
+variables -- are assigned to each multicast context and distributed to every
+member. It is used to model profile data, context membership, or any other data
+related to a context. Advantage of this approach is that it avoids unnecessary
+request-response operations as members have an up-to-date version of the state
+data most of the time, and allows local browsing of profiles of contacts, even
+offline. We have implemented distributed state for P2P PSYC in psycd -- a feature
+federated PSYC has long planned for but still lacked.
+
+Context state is kept in sync using state modifiers provided by the PSYC syntax.
+A state modifier adds, removes or modifies a state variable. State changes are
+distributed to context members only once, which means it is very bandwidth
+efficient. Using state modifiers require reliable, in-order delivery of
+packets. Packet loss can be detected with the help of a =_counter= variable in
+the routing header of packets. As the name suggests, it is a counter incremented
+by one for every packet sent to the context. When there's a missed packet, a
+node can re-request it from its parent node in the multicast distribution
+tree. After a node has joined a context, a full state synchronization is
+necessary to bring the node up-to-date.
+
+Syntax of a state modifier in Augmented Backus-Naur Form (ABNF):
+
+#+BEGIN_SRC abnf
+entity-modifier = operator variable entity-arg
+entity-arg	= simple-arg / binary-arg / LF
+
+operator	= "=" / ":" / "+" / "-" / "?" / "!" / "@"
+variable	= 1*kwchar
+simple-arg	= HTAB text-data LF
+binary-arg	= SP length HTAB binary-data LF
+length		= 1*DIGIT
+binary-data	= *OCTET
+#+END_SRC
+
+Operators:
+- =:= (set) -- set variable just for the current packet, state is not modified
+- ~=~ (assign) -- assign value to state variable
+- =+= (augment) -- concatenate string or add list/dictionary element, depending
+  on type
+- =-= (diminish) -- remove list or dictionary element
+- =@= (update) -- update an item in a list or dictionary
+- =?= alone on a line: request state synchronization, all state variables are
+  returned in the response
+- ~=~ alone on a line: reset state, i.e. remove all previously stored state
+  variables
+- the rest of the operators are reserved for future use
+
+*** Syntax changes
+
+The state implementation involved some syntax changes: we have added a
+dictionary type in order to be able to store key-value pairs in a state
+variable, and modified the list syntax to make it consistent with the new
+dictionary syntax, allowing us to specify types for list elements as well. We
+have also added a new update modifier, which allows for updating individual list
+and dictionary elements.
+
+These syntax changes were necessary to represent more complex data structures,
+such as context members or alias mappings.
+
+*** List syntax
+
+A list is a list of ordered elements. Its syntax in ABNF is specified as the
+following:
+
+#+BEGIN_SRC abnf
+list	   = [ default-type ] *list-elem
+list-sep   = "|"
+list-elem  = list-sep [ "=" type ] [ SP list-value ]
+list-elem  =/ list-sep "=" type ":" ] [ length ] [ SP *OCTET ]
+list-value = %x00-7B / %x7D-FF	; any byte except "|"
+#+END_SRC
+
+Examples:
+#+BEGIN_SRC psyc
+=_list_one	_type| elem1| elem2| elem3
+=_list_two	|=_type1 elem1|=_type2 elem2|=_type3 elem3
+#+END_SRC
+
+**** Inserting list elements
+
+For inserting values before a specified index the =+= operator is used. Index of
+the first element is 1, index of the last is -1. 0 means the end of the list,
+which is the default if the index is omitted.
+
+Syntax of the value part:
+#+BEGIN_SRC abnf
+list-insert	= [ list-index SP ] list
+list-index	= "#" 1*DIGIT
+#+END_SRC
+
+#+LaTeX: \pagebreak
+
+Example:
+#+BEGIN_SRC psyc
++_list_fruits	| banana| mango
++_list_fruits	#0 | banana| mango
+#+END_SRC
+
+**** Removing list elements
+
+For removing elements the =-= operator is used. Parameters are the start index
+which defaults to -1, and the amount of elements to be removed which defaults to 1.
+
+Syntax of the value part:
+#+BEGIN_SRC abnf
+list-remove	= ( list-index SP uint | list-index | uint )
+#+END_SRC
+
+Example:
+#+BEGIN_SRC psyc
+-_list_fruits	#1
+-_list_fruits	#1 1
+#+END_SRC
+
+*** Dictionary syntax
+
+A dictionary is a set of key-value pairs. Its syntax specified in ABNF is:
+
+#+BEGIN_SRC abnf
+dict		= [ type ] *dict-item
+dict-item	= dict-item-key dict-item-value
+dict-item-key	= "{" ( dict-key / length SP *OCTET) "}"
+dict-item-value	= type [ SP dict-value ]
+dict-item-value =/ [ length ] [ ":" type ] [ SP *OCTET ]
+dict-key	= %x00-7C / %x7E-FF	; any byte except "{"
+dict-value	= %x00-7A / %x7C-FF	; any byte except "}"
+#+END_SRC
+
+=type= is the default type for elements which do not have a type specified.
+
+Examples:
+#+BEGIN_SRC psyc
+=_dict_one	_type{4 key1}6 value1{key2} value2{key3}6 value3
+=_dict_two	{4 key1}=_type1:6 val1{key2}=_type2 val2{key3}6 val3
+
+=_dict_avatars	_picture{alice}3 \o/{bob}7 \oXoXo/
+#+END_SRC
+
+The =struct= type can be used to define dictionary values with less
+repetition. The structure is first defined once, then used for one or all
+elements. It works like a C struct, a list of types are defined in a specific
+order, after that we don't have to specify the types again when specifying the values.
+
+#+BEGIN_SRC psyc
+=_struct_member	|=_nick|=_picture
+=_dict_members	_struct_member{13 psyc://alice/}12 | alice| \o/
+=_dict_members	{psyc://alice/}=_struct_member | alice| \o/
+#+END_SRC
+
+**** Adding dictionary entries
+
+The =+= operator is used for adding entries to an existing dictionary. The syntax
+is equivalent to the initial assignment of entries. If a key already exists in
+the dictionary, its value is overwritten.
+
+**** Removing entries from a dictionary
+
+The =-= operator is used for removing entries, syntax is the same as assignment
+but only the keys are listed.
+
+Example, removing 2 entries:
+#+BEGIN_SRC psyc
+-_dict_members	{psyc://alice/}{psyc://bob/}
+#+END_SRC
+
+*** Update syntax
+
+For updating specific entries in a list or dictionary the =@= operator is used. It
+has the following syntax:
+
+#+BEGIN_SRC abnf
+update		= 1*index SP op [ type ] [ ":" length] [SP value]
+index		= ( dict-item-key / index-list / index-struct )
+index-list	= "#" 1*DIGIT
+index-struct	= "." type
+#+END_SRC
+
+Examples:
+#+BEGIN_SRC psyc
+@_list_gallery	#-1 =_picture:7 \oXoXo/
+@_list_gallery	#-1 =:7 \oXoXo/
+@_list_fruits	#1 = pear
+@_list_prices	#2 =_int 1000
+
+@_dict_gallery	{alice} =_picture:7 \oXoXo/
+@_dict_gallery	{alice} =:7 \oXoXo/
+@_dict_members	{psyc://alice/}._nick = Alice
+@_dict_members	{psyc://bob/}._nick + Bob
+@_dict_members	{psyc://foo/}._int_score + 2
+#+END_SRC
+
+** Storage
+
+Incoming and outgoing packets, state variables and channel configuration are
+stored in an SQLite database. This allows for persistent storage of context
+state as well, which is restored after a restart of the node. Packets are stored
+for two purposes: it provides a message history for contexts and it can be used
+later to resend lost packets to nodes requesting it.
+
+SQLite is used mainly because of its efficient memory handling and wide platform
+support.
+
+The database consists of two tables with the following schema:
+- *contexts* (*uni* blob primary key, *state* blob, *config* blob,
+  *created* timestamp default current_timestamp)
+- *packets* (*context* blob, *source* blob, *target* blob, *counter* unsigned int,
+  *fragment* unsigned int, *packet* blob,
+  *created* timestamp default current_timestamp,\\
+  *primary key* (context, source, target, counter, fragment))
+
+We store information about subscribed and hosted contexts in these tables.
+The contexts table is used for storing configuration and state of contexts,
+whereas the packets table is for storing packet history. All this information
+is stored in PSYC packet format in the database.

@@ -1,0 +1,47 @@
+  {
+    .name = NULL,
+    .number = 0
+  }
+};
+
+uint16_t
+GNUNET_GNS_protocol_name_to_number (const char *name);
+
+uint16_t
+GNUNET_GNS_protocol_name_to_number (const char *name)
+{
+  int i = 0;
+  while (NULL != GNUNET_GNS_Protocols[i].name)
+  {
+    if (0 == strcmp (name, GNUNET_GNS_Protocols[i].name))
+      return GNUNET_GNS_Protocols[i].number;
+    i++;
+  }
+  return 0;
+}
+
+const char*
+GNUNET_GNS_protocol_number_to_name (uint16_t number);
+
+const char*
+GNUNET_GNS_protocol_number_to_name (uint16_t number)
+{
+  int i = 0;
+  while (NULL != GNUNET_GNS_Protocols[i].name)
+  {
+    if (number == GNUNET_GNS_Protocols[i].number)
+      return GNUNET_GNS_Protocols[i].name;
+    i++;
+  }
+  return NULL;
+}
+
+
+#if 0 /* keep Emacsens' auto-indent happy */
+{
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#endif

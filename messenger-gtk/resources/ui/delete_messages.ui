@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2021‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkListStore" id="delay_store">
+    <columns>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name value -->
+      <column type="gulong"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Off</col>
+        <col id="1">0</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">4 weeks</col>
+        <col id="1">2419200</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1 week</col>
+        <col id="1">604800</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1 day</col>
+        <col id="1">86400</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">8 hours</col>
+        <col id="1">28800</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1 hour</col>
+        <col id="1">3600</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5 minutes</col>
+        <col id="1">300</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">30 seconds</col>
+        <col id="1">30</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkDialog" id="delete_messages_dialog">
+    <property name="title" translatable="yes">Delete Messages</property>
+    <property name="modal">1</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="cancel_button">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="confirm_button">
+                <property name="label" translatable="yes">Confirm</property>
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">1</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="border-width">8</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">1</property>
+                <property name="label" translatable="yes">When do you want those messages to be deleted?</property>
+                <property name="wrap">1</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="position">-1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="delay_combobox">
+                <property name="visible">1</property>
+                <property name="model">delay_store</property>
+                <property name="active">0</property>
+                <child>
+                  <object class="GtkCellRendererText"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="hide_checkbox">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="draw-indicator">1</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">1</property>
+                    <property name="label" translatable="yes">Hide this dialog in the future</property>
+                    <property name="ellipsize">end</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,21 @@
+variables:
+
+stages:
+  - container
+  - build
+
+build-container:
+  stage: container
+  image: docker:dind
+  only:
+    - master
+  script:
+    - docker build -f .ci/Dockerfile -t libextractor-python .
+
+build-libextractor-python:
+  stage: build
+  image: libextractor-python:latest
+  only:
+    - master
+  script:
+    - pip3 install --no-deps --verbose .

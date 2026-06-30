@@ -1,0 +1,7 @@
+For 30c3 slides see separate tg-rp repository.
+
+Needs: apt-get install graphviz
+
+sdedit is a binary jar blob that creates graphics,
+but it isn't necessary for the slides.
+

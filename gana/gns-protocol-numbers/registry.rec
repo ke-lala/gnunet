@@ -1,0 +1,22 @@
+# -*- mode: rec -*-
+#
+# Registry for GNS protocols
+#
+
+%rec: GnsProtocol
+%key: Number
+%type: Number int
+%mandatory: Number
+%typedef: Name_t regexp /^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]*$/
+%type: Name Name_t
+%unique: Name
+%mandatory: Name
+%mandatory: Comment
+%allowed: Contact
+%allowed: References
+%sort: Number Name Contact References
+
+Number: 49152
+Name: trust
+Comment: LIGHTest trust policy scheme
+References: TODO

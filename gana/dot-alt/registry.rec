@@ -1,0 +1,36 @@
+# -*- mode: rec -*-
+#
+# Registry for ".ALT" Top-Level-Domain
+#
+
+%rec: AltTld
+%key: Label
+%typedef: Label_t regexp /^[abcdefghijklmnopqrstuvwxyz0123456789][abcdefghijklmnopqrstuvwxyz0123456789-]*$/
+%type: Label Label_t
+%unique: Label
+%mandatory: Label
+%mandatory: Description
+%allowed: Contact
+%allowed: References
+%allowed: UnicodeLabel
+%sort: Name Contact References
+
+Label: gns
+UnicodeLabel: gns
+Contact: Martin Schanzenbach <schanzen@gnunet.org>
+References: RFC 9498
+Description: The .alt subdomain for GNS
+
+Label: i2p
+UnicodeLabel: i2p
+Contact: zzz <zzz AT i2pmail DOT org>
+References: https://geti2p.net/en/docs/naming
+Description: I2P is a P2P network implementing its own name resolution mechanism
+
+# Unreserved unicode example
+Label: xn--fsq
+UnicodeLabel: 例
+Contact: Martin Schanzenbach <schanzen@gnunet.org>
+References: None
+Description: Unreserved unicode example
+

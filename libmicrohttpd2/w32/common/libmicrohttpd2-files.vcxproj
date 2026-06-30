@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MhdSrc)include\microhttpd2.h" />
+    <ClInclude Include="$(MhdSrc)include\microhttpd2_portability.h" />
+    <ClInclude Include="$(MhdSrc)incl_priv\mhd_sys_options.h" />
+    <ClInclude Include="$(MhdW32Common)mhd_config.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\autoinit_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_offsetof.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_null_macro.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_base_types.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_bool_type.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sockets_types.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sockets_headers.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_ip_headers.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_errno.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_file_fd.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_malloc.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_select.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_poll.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_sendfile.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\compat_calloc.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_w32_ver.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_align.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_bithelpers.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_byteorder.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_assert.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_unreachable.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_cntnr_ptr.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_arr_num_elems.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_tristate.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_status_code_int.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_type.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sockets_macros.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sockets_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_error_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_socket_error.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_atomic_counter.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_bool.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str_macros.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_str_types.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_buffer.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_limits.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_iovec.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dbg_print.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_panic.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init_impl.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_lib_init_auto.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dlinked_list.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_conn_socket.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_connection.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_stream.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_locks.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_itc.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_itc_types.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_threads.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sys_thread_entry_type.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_mono_clock.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_mempool.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_read_file.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_recv.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_send.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_daemon.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_public_api.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_request.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_reply.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_response.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\http_method.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\http_prot_ver.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\http_status_str.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_action.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_dcc_action.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\events_process.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_logger.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_logger_default.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_options.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_add_conn.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\daemon_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\extr_events_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_process.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_recv.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\conn_data_send.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\conn_mark_ready.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\request_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\request_get_value.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\respond_with_error.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_from.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_add_header.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_destroy.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_set_options.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_options.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\stream_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_states.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_request.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\stream_process_reply.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\http_post_enc.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_post_parser.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_post_result.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_postfield_int.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\post_parser_funcs.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\request_auth_get.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\auth_basic.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_digest_auth_data.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_auth_digest_hdr.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\response_auth_digest.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\auth_digest.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\md5_int.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_md5.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sha256_int.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sha256.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\sha512_256_int.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_sha512_256.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\mhd_upgrade.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\upgrade_prep.h" />
+    <ClInclude Include="$(MhdSrc)mhd2\upgrade_proc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_sockets_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_socket_error_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_atomic_counter.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_str.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_panic.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_lib_init.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\lib_get_info.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_itc.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_threads.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_mono_clock.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_mempool.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_read_file.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_recv.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\mhd_send.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\http_status_str.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\action.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\dcc_action.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\events_process.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_logger.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_logger_default.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_set_options.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_create.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_start.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_get_info.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_add_conn.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\daemon_event_update.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\extr_events_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_process.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_recv.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\conn_data_send.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\conn_get_info.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\request_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\request_get_value.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\request_resume.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\respond_with_error.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\request_get_info.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_from.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_add_header.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_destroy.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_set_options.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\stream_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_states.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_request.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\stream_process_reply.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\stream_get_info.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\compat_calloc.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\post_parser_funcs.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\request_auth_get.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\auth_basic.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_auth_basic.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\response_auth_digest.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\auth_digest.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\md5_int.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\sha256_int.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\sha512_256_int.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\upgrade_prep.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\upgrade_proc.c" />
+    <ClCompile Include="$(MhdSrc)mhd2\upgraded_net.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(MhdW32Common)microhttpd2.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(MhdW32Common)microhttpd2.rc.in">
+      <FileType>Document</FileType>
+      <Command>PowerShell.exe -Version 3.0 -NonInteractive -NoProfile -ExecutionPolicy Bypass -File "$(MhdW32Common)gen_dll_res.ps1" -BasePath "$(MhdW32Common)\"</Command>
+      <Message>Generating .dll description resource</Message>
+      <Outputs>$(MhdW32Common)microhttpd2.rc</Outputs>
+      <AdditionalInputs>$(MhdW32Common)gen_dll_res.ps1;$(MhdRoot)configure.ac</AdditionalInputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MhdSrc)mhd2\cpp.hint" />
+  </ItemGroup>
+</Project>

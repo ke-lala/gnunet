@@ -1,0 +1,17 @@
+Proper postinst with authselect:
+
+%post
+mkdir -p /%{_sysconfdir}/%{name}
+touch /%{_sysconfdir}/%{name}/gnunet.conf
+mkdir -p ~/.config
+touch ~/.config/gnunet.conf
+# FIXME: This needs to be done using authselect
+# See also https://fedoraproject.org/wiki/Changes/Make_Authselect_Mandatory#Detailed_Description
+#cp -p %{_libdir}/%{name}/nss/libnss_gns.so.2 %{_libdir}/%{name}/
+#cp -p %{_libdir}/%{name}/nss/libnss_gns4.so.2 %{_libdir}/%{name}/
+#cp -p %{_libdir}/%{name}/nss/libnss_gns6.so.2 %{_libdir}/%{name}/
+#authselect select -f sssd
+#touch /%{_sysconfdir}/authselect/user-nsswitch.conf
+#awk -i inplace '/hosts:      files/ && !x {print "hosts:      files gns [NOTFOUND=return] dns mdns4_minimal mdns4"; x=1} 1' /%{_sysconfdir}/authselect/user-nsswitch.conf
+#authselect apply-changes
+

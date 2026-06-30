@@ -1,0 +1,16 @@
+[Unit]
+Description=GNUnet GNS Registrar
+After=network.target
+
+[Service]
+Type=forking
+User=gnunet
+Group=gnunet
+WorkingDirectory=/home/gnunet
+RuntimeDirectory=gnunet-gns-registrar
+RuntimeDirectoryPreserve=restart
+LogsDirectory=gnunet-gns-registrar
+ExecStart=/home/gnunet/gnunet-gns-registrar/gnunet-gns-registrar -L WARNING
+
+[Install]
+WantedBy=multi-user.target

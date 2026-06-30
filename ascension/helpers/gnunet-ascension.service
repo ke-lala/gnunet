@@ -1,0 +1,14 @@
+[Unit]
+Description=Starting GNUnet peer for ascension
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=ascension
+ExecStart=/usr/bin/gnunet-arm -s
+ExecStop=/usr/bin/gnunet-arm -e
+ExecReload=/usr/bin/gnunet-arm -r
+
+[Install]
+WantedBy=multi-user.target

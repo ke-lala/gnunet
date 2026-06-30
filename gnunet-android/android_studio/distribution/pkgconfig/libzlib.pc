@@ -1,0 +1,13 @@
+prefix=/home/user/AndroidStudioProjects/gnunet-android/android_studio/distribution/zlib/lib/arm64-v8a
+exec_prefix=${prefix}
+libdir=${exec_prefix}
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.11
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

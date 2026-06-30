@@ -1,0 +1,450 @@
+/* SPDX-License-Identifier: LGPL-2.1-or-later OR (GPL-2.0-or-later WITH eCos-exception-2.0) */
+/*
+  This file is part of GNU libmicrohttpd.
+  Copyright (C) 2022-2024 Evgeny Grin (Karlson2k)
+
+  GNU libmicrohttpd is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  GNU libmicrohttpd is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  Alternatively, you can redistribute GNU libmicrohttpd and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of
+  the License, or (at your option) any later version, together
+  with the eCos exception, as follows:
+
+    As a special exception, if other files instantiate templates or
+    use macros or inline functions from this file, or you compile this
+    file and link it with other works to produce a work based on this
+    file, this file does not by itself cause the resulting work to be
+    covered by the GNU General Public License. However the source code
+    for this file must still be made available in accordance with
+    section (3) of the GNU General Public License v2.
+
+    This exception does not invalidate any other reasons why a work
+    based on this file might be covered by the GNU General Public
+    License.
+
+  You should have received copies of the GNU Lesser General Public
+  License and the GNU General Public License along with this library;
+  if not, see <https://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @file src/mhd2/stream_funcs.h
+ * @brief  The declaration of the stream internal functions
+ * @author Karlson2k (Evgeny Grin)
+ */
+
+#ifndef MHD_STREAM_FUNCS_H
+#define MHD_STREAM_FUNCS_H 1
+
+#include "mhd_sys_options.h"
+#include "sys_base_types.h"
+#include "sys_bool_type.h"
+
+
+struct MHD_Connection; /* forward declaration */
+
+
+/**
+ * The stage of input data processing.
+ * Used for out-of-memory (in the pool) handling.
+ */
+enum MHD_FIXED_ENUM_ MHD_ProcRecvDataStage
+{
+  MHD_PROC_RECV_INIT,        /**< No data HTTP request data have been processed yet */
+  MHD_PROC_RECV_METHOD,      /**< Processing/receiving the request HTTP method */
+  MHD_PROC_RECV_URI,         /**< Processing/receiving the request URI */
+  MHD_PROC_RECV_HTTPVER,     /**< Processing/receiving the request HTTP version string */
+  MHD_PROC_RECV_HEADERS,     /**< Processing/receiving the request HTTP headers */
+  MHD_PROC_RECV_COOKIE,      /**< Processing the received request cookie header */
+  MHD_PROC_RECV_BODY_NORMAL, /**< Processing/receiving the request non-chunked body */
+  MHD_PROC_RECV_BODY_CHUNKED,/**< Processing/receiving the request chunked body */
+  MHD_PROC_RECV_FOOTERS      /**< Processing/receiving the request footers */
+};
+
+/**
+ * Allocate memory from connection's memory pool.
+ * If memory pool doesn't have enough free memory but read or write buffer
+ * have some unused memory, the size of the buffer will be reduced as needed.
+ * @param connection the connection to use
+ * @param size the size of allocated memory area
+ * @return pointer to allocated memory region in the pool or
+ *         NULL if no memory is available
+ */
+MHD_INTERNAL void *
+mhd_stream_alloc_memory (struct MHD_Connection *restrict connection,
+                         size_t size)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * Shrink stream read buffer to the zero size of free space in the buffer
+ * @param c the connection whose read buffer is being manipulated
+ */
+MHD_INTERNAL void
+mhd_stream_shrink_read_buffer (struct MHD_Connection *restrict c)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * Allocate the maximum available amount of memory from MemoryPool
+ * for write buffer.
+ * @param c the connection whose write buffer is being manipulated
+ * @return the size of the free space in the write buffer
+ */
+MHD_INTERNAL size_t
+mhd_stream_maximize_write_buffer (struct MHD_Connection *restrict c)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * Fully deallocate write buffer, if it was allocated previously.
+ * The write buffer must have no unsent data.
+ * @param c the connection whose write buffer is being manipulated
+ */
+MHD_INTERNAL void
+mhd_stream_release_write_buffer (struct MHD_Connection *restrict c)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * Select the HTTP error status code for "out of receive buffer space" error.
+ * @param c the connection to process
+ * @param stage the current stage of request receiving
+ * @param add_element_size the size of the @a add_element;
+ *                         zero if @a add_element is NULL
+ * @param add_element the optional pointer to the element failed to be processed
+ *                    or added, the meaning of the element depends on
+ *                    the @a stage. Could be not zero-terminated and can
+ *                    contain binary zeros. Can be NULL.
+ * @return the HTTP error code to use in the error reply
+ */
+MHD_INTERNAL unsigned int
+mhd_stream_get_no_space_err_status_code (struct MHD_Connection *restrict c,
+                                         enum MHD_ProcRecvDataStage stage,
+                                         size_t add_element_size,
+                                         const char *restrict add_element)
+MHD_FN_PAR_NONNULL_ (1) MHD_FN_PAR_IN_SIZE_ (4,3);
+
+/**
+ * Switch connection from recv mode to send mode.
+ *
+ * Current request header or body will not be read anymore,
+ * response must be assigned to connection.
+ * @param c the connection to prepare for sending.
+ */
+MHD_INTERNAL void
+mhd_stream_switch_from_recv_to_send (struct MHD_Connection *c)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * Finish request serving.
+ * The stream will be re-used or closed.
+ *
+ * @param c the connection to use.
+ */
+MHD_INTERNAL void
+mhd_stream_finish_req_serving (struct MHD_Connection *restrict c,
+                               bool reuse)
+MHD_FN_PAR_NONNULL_ALL_;
+
+/**
+ * The reason to close the connection
+ */
+enum mhd_ConnCloseReason
+{
+  /* Hard problem while receiving */
+  /**
+   * Client sent data that cannot be interpreted as HTTP data
+   */
+  mhd_CONN_CLOSE_CLIENT_HTTP_ERR_ABORT_CONN
+  ,
+  /**
+   * No space in the connection pool memory for receiving or processing
+   * the request
+   */
+  mhd_CONN_CLOSE_NO_POOL_MEM_FOR_REQUEST
+  ,
+  /**
+   * The client shut down send before complete request sent
+   */
+  mhd_CONN_CLOSE_CLIENT_SHUTDOWN_EARLY
+  ,
+  /**
+   * The client shut down send before complete request sent
+   */
+  mhd_CONN_CLOSE_H2_PREFACE_MISSING
+  ,
+
+  /* Hard problem while sending */
+
+  /**
+   * No space in the connection pool memory for the reply
+   */
+  mhd_CONN_CLOSE_NO_POOL_MEM_FOR_REPLY
+  ,
+  /**
+   * No memory to create error response
+   */
+  mhd_CONN_CLOSE_NO_MEM_FOR_ERR_RESPONSE
+  ,
+  /**
+   * Application behaves incorrectly
+   */
+  mhd_CONN_CLOSE_APP_ERROR
+  ,
+  /**
+   * Application requested abort of the stream
+   */
+  mhd_CONN_CLOSE_APP_ABORTED
+  ,
+  /**
+   * File-backed response too large (unsupported by OS) file offset
+   */
+  mhd_CONN_CLOSE_FILE_OFFSET_TOO_LARGE
+  ,
+  /**
+   * Error reading file-backed response
+   */
+  mhd_CONN_CLOSE_FILE_READ_ERROR
+  ,
+  /**
+   * File-backed response has file smaller than specified by application
+   */
+  mhd_CONN_CLOSE_FILE_TOO_SHORT
+  ,
+#ifdef MHD_SUPPORT_AUTH_DIGEST
+  /**
+   * Error generating nonce for Digest Auth
+   */
+  mhd_CONN_CLOSE_NONCE_ERROR
+  ,
+#endif /* MHD_SUPPORT_AUTH_DIGEST */
+
+  /* Hard problem while receiving or sending */
+  /**
+   * MHD internal error.
+   * Should never appear.
+   */
+  mhd_CONN_CLOSE_INT_ERROR
+  ,
+  /**
+   * Failed to register the connection for the external event monitoring
+   */
+  mhd_CONN_CLOSE_EXTR_EVENT_REG_FAILED
+  ,
+  /**
+   * No system resources available to handle connection
+   */
+  mhd_CONN_CLOSE_NO_SYS_RESOURCES
+  ,
+  /**
+   * The TCP or TLS connection is broken or aborted due to error on socket
+   * or TLS
+   */
+  mhd_CONN_CLOSE_SOCKET_ERR
+  ,
+  /**
+   * The daemon is being shut down, all connection must be closed
+   */
+  mhd_CONN_CLOSE_DAEMON_SHUTDOWN
+  ,
+
+  /* Could be hard or soft error depending on connection state */
+  /**
+   * Timeout detected when receiving request
+   */
+  mhd_CONN_CLOSE_TIMEDOUT
+  ,
+
+  /* Soft problem */
+  /**
+   * The connection must be closed after error response as the client
+   * violates HTTP specification
+   */
+  mhd_CONN_CLOSE_ERR_REPLY_SENT
+  ,
+
+#ifdef MHD_SUPPORT_UPGRADE
+
+  /* Transition to another protocol */
+  /**
+   * The connection stopped HTTP communication and will be used for another
+   * protocol.
+   * The socket is not being closed.
+   */
+  mhd_CONN_CLOSE_UPGRADE
+  ,
+#endif /* MHD_SUPPORT_UPGRADE */
+
+  /* Graceful closing */
+  /**
+   * Close connection after graceful completion of HTTP communication
+   */
+  mhd_CONN_CLOSE_HTTP_COMPLETED
+
+#ifdef MHD_SUPPORT_HTTP2
+  ,
+  /**
+   * Graceful closing after finishing HTTP/2 communication.
+   * The HTTP/2 itself could be closed by error.
+   */
+  mhd_CONN_CLOSE_H2_CLOSE_SOFT
+  ,
+  /**
+   * Hard closing after finishing HTTP/2 communication.
+   */
+  mhd_CONN_CLOSE_H2_CLOSE_HARD
+#endif /* MHD_SUPPORT_HTTP2 */
+};
+
+
+/**
+ * Start non-HTTP/2 closing of the connection.
+ *
+ * Application is notified about connection closing (if callback is set),
+ * the socket is shut downed for sending and the connection is marked for
+ * closing. The real resource deallocation and socket closing are performed
+ * later.
+ *
+ * As no resources are deallocated by this function, it is safe to call it
+ * "deep" in the code. Upon return all connection resources still could be used,
+ * pointers can be dereferenced etc. The real cleanup is performed when
+ * connection state is processed by #mhd_conn_process_data().
+ *
+ * @param c the connection for pre-closing
+ * @param reason the reason for closing
+ * @param log_msg the message for the log
+ */
+MHD_INTERNAL void
+mhd_conn_start_closing (struct MHD_Connection *restrict c,
+                        enum mhd_ConnCloseReason reason,
+                        const char *log_msg)
+MHD_FN_PAR_NONNULL_ (1) MHD_FN_PAR_CSTR_ (3);
+
+/**
+ * Abort the stream and log message
+ */
+#ifdef MHD_SUPPORT_LOG_FUNCTIONALITY
+#  define mhd_STREAM_ABORT(c,r,m) (mhd_conn_start_closing ((c),(r),(m)))
+#else  /* ! MHD_SUPPORT_LOG_FUNCTIONALITY */
+#  define mhd_STREAM_ABORT(c,r,m) (mhd_conn_start_closing ((c),(r),NULL))
+#endif /* ! MHD_SUPPORT_LOG_FUNCTIONALITY */
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "aborted by application"
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_app_abort(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_APP_ABORTED, NULL)
+
+
+#ifdef MHD_SUPPORT_LOG_FUNCTIONALITY
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "socket error"
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_ext_event_failed(c) \
+        mhd_conn_start_closing ((c), \
+                                mhd_CONN_CLOSE_EXTR_EVENT_REG_FAILED, \
+                                "The application failed to register FD for " \
+                                "the external events monitoring.")
+#else  /* ! MHD_SUPPORT_LOG_FUNCTIONALITY */
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "socket error"
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_ext_event_failed(c) \
+        mhd_conn_start_closing ((c), \
+                                mhd_CONN_CLOSE_EXTR_EVENT_REG_FAILED, NULL)
+#endif /* ! MHD_SUPPORT_LOG_FUNCTIONALITY */
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "socket error"
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_skt_err(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_SOCKET_ERR, NULL)
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "request finished"
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_req_finished(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_HTTP_COMPLETED, NULL)
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "timed out".
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_timedout(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_TIMEDOUT, NULL)
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "daemon shutdown".
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_d_shutdown(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_DAEMON_SHUTDOWN, NULL)
+
+/**
+ * Perform initial clean-up and mark for closing.
+ * Set the reason to "no system resources".
+ * @param c the connection for pre-closing
+ */
+#define mhd_conn_start_closing_no_sys_res(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_NO_SYS_RESOURCES, NULL)
+
+#ifdef MHD_SUPPORT_UPGRADE
+/**
+ * Perform initial clean-up and prepare for HTTP Upgrade.
+ * Set the reason to "upgrading".
+ * @param c the connection for preparing
+ */
+#  define mhd_conn_pre_upgrade(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_UPGRADE, NULL)
+#endif /* MHD_SUPPORT_UPGRADE */
+
+#ifdef MHD_SUPPORT_HTTP2
+#  define mhd_conn_start_closing_h2_soft(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_H2_CLOSE_SOFT, NULL)
+#  define mhd_conn_start_closing_h2_hard(c) \
+        mhd_conn_start_closing ((c), mhd_CONN_CLOSE_H2_CLOSE_HARD, NULL)
+#endif /* MHD_SUPPORT_HTTP2 */
+
+
+/**
+ * Perform first part of the initial connection cleanup.
+ * This function is used for both standard connection cleanup and for transition
+ * to HTTP-Upgraded connection.
+ * This cleanup should be performed in the same thread that processes
+ * the connection recv/send/data.
+ * @param c the connection to perform the first part of for pre-cleaning
+ */
+MHD_INTERNAL void
+mhd_conn_pre_clean_part1 (struct MHD_Connection *restrict c)
+MHD_FN_PAR_NONNULL_ (1);
+
+/**
+ * Perform initial connection cleanup after start of the connection closing
+ * procedure.
+ * This cleanup should be performed in the same thread that processes
+ * the connection recv/send/data.
+ * @param c the connection for pre-cleaning
+ */
+MHD_INTERNAL void
+mhd_conn_pre_clean (struct MHD_Connection *restrict c)
+MHD_FN_PAR_NONNULL_ (1);
+
+#endif /* ! MHD_STREAM_FUNCS_H */

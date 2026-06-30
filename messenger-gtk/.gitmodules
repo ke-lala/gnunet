@@ -1,0 +1,3 @@
+[submodule "submodules/gnome-characters"]
+	path = submodules/gnome-characters
+	url = https://gitlab.gnome.org/GNOME/gnome-characters.git

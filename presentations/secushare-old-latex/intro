@@ -1,0 +1,25 @@
+* Introduction
+
+The Internet is getting more and more centralized with users' personal data
+hosted on servers of large service providers, which involves serious privacy
+concerns. As in most cases these systems do not provide end-to-end
+confidentiality, server operators have full access to user data and users are
+often unaware of how much data is stored about them or with whom their data is
+shared with. Such systems include email and instant messaging services like
+GMail and GTalk, social network services like Facebook, Google+ and Twitter, or
+file storage and sharing services like Dropbox.
+
+It is possible to implement social sharing and messaging in a privacy protecting
+way. Chapter 2 describes previous attempts at this by federated social networks,
+problems with that approach and our requirements for secure communication.
+
+We suggest a peer-to-peer architecture as a better basis for a social network
+system in Chapter 3. We show how social interactions would work in such
+a network while maintaining privacy of users.
+
+In Chapter 4 we introduce core concepts of PSYC and show how we integrated it
+with P2P technology provided by the GNUnet framework, and tell more about
+implementation details of the prototype of Secure Share.
+
+Chapter 5 describes the clients we have implemented and shows extension
+possibilities of Secure Share.

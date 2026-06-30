@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if command -v mandoc >/dev/null 2>&1;
+then
+    for f in `find . -name \*\.[1-9]`;
+    do
+        mandoc -T html $f > $f.html;
+    done
+fi

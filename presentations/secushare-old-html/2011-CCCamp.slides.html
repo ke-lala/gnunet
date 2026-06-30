@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Scalable &amp; Paranoid: Secure Share</title>
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="20110814" />
+<meta name="author" content="Carlo v. Loesch" />
+<meta name="company" content="symlynX.com" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="http://www.psyc.eu/papers/ui/psyced/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="http://www.psyc.eu/papers/ui/psyced/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="http://www.psyc.eu/papers/ui/psyced/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="http://www.psyc.eu/papers/ui/psyced/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- S5 JS -->
+<script src="http://www.psyc.eu/papers/ui/psyced/slides.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer">
+&nbsp; Scalable &amp; Paranoid: Secure Share
+</div>
+
+</div>
+
+
+<div class="presentation">
+
+<div class="slide">
+<h2>Scalable &amp; Paranoid: Secure Share</h2>
+<ul>
+<li>Carlo v. Loesch (symlynX)</li>
+<li>Gabor Toth (PSYC)</li>
+<li>Mathias Baumann (PSYC)</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>A Perfectionist's Social Network</h1>
+<h2>Overview of the Talk</h2>
+<ul>
+<li>Safety of Virtual Machines</li>
+<li>How Much Privacy Is Enough?</li>
+<li>Social Onion Routing</li>
+<li>More Desired Features</li>
+<li>Architecture, Protocols</li>
+<li>How to Beat Faceboogle</li>
+<li>The 'Secure Share' App</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Don't Trust Virtual Machines</h1>
+<h2>Commodity Servers are VMs</h2>
+<ul class="incremental">
+<li>vulnerable cryptography</li>
+<li>memory can be monitored</li>
+<li>controlling system accessible by observers</li>
+<li>automated monitoring of federated social networks</li>
+<li>anti-terror legislation possible</li>
+<li>even if <em>your</em> server is at home</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Privacy vs. Paranoia</h1>
+<h2>How Much Privacy Is Enough? 1/2</h2>
+<ul class="incremental">
+<li>just to the intended recipients (e2e encryption)</li>
+<li>packet size padding (unobservability)</li>
+<li>flexible number of anonymization hops</li>
+<li>optional intentional delay</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Privacy vs. Paranoia</h1>
+<h2>How Much Privacy Is Enough? 2/2</h2>
+<ul class="incremental">
+<li>forward secrecy</li>
+<li>deniability (a log is no proof of nothing)</li>
+<li>private subscription lists (not on a server)</li>
+<li>robust and resilient against attacks</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>It's A Question Of Trust</h1>
+<h2>Social Onion Routing</h2>
+<ul class="incremental">
+<li>trust relationship between nodes</li>
+<li>multihop provides anonymization</li>
+<li>motivation to provide "servers" as fast routers</li>
+<li>"P2P" a lot faster over servers</li>
+<li>irony: role switch between servers and routers</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Portability &amp; Acceptance</h1>
+<h2>Lightweight Daemon</h2>
+<ul class="incremental">
+<li>personal devices and home routers</li>
+<li>lightweight for embedded and mobile</li>
+<li>lightweight for background daemon use</li>
+<li>compiled language</li>
+<li>more likely to get included in OS distros</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Architecture</h1>
+<h2>Technology</h2>
+<ul class="incremental">
+<li>looking for the best framework...</li>
+<li>GnuNet, Maidsafe, A3 or Tonika?</li>
+<li>socially enhanced DHT?</li>
+<li>payload syntax: efficient, binary capable, extensible</li>
+<li>Multicast distribution for scalability (later)</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Flexibility</h1>
+<h2>Framework Architecture</h2>
+<ul class="incremental">
+<li>a truly private messaging backend</li>
+<li>social applications to be built on top</li>
+<li>emulations of the 'open standards' possible</li>
+<li>OStatus, WebID, RDF, even the Twitter API</li>
+<li>optional modules for XMPP, IRC?</li>
+<li>Activity Streams</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Dissemination</h1>
+<h2>Hard to beat Faceboogle</h2>
+<ul class="incremental">
+<li>since we need to go onto every computer anyway..</li>
+<li>offer something Faceboogle can't provide?</li>
+<li>exchanging files between friends sucks</li>
+<li>USB sticks, e-mail, file hosters, skype, MSN</li>
+<li>WTF is 'Secure Share' ?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Desktop Integration</h1>
+<h2>'Secure Share' Function</h2>
+<ul class="incremental">
+<li>right mouse button click (context menu)</li>
+<li>share a file to a channel of subscribers</li>
+<li>appears in their file system soon</li>
+<li>realtime or delayed notification</li>
+<li>no permission dialogs</li>
+<li>shipped by default in your free OS?</li>
+</ul>
+</div>
+
+<!--
+
+<div class="slide">
+<h1>One Too Many</h1>
+<h2>Multicasting for Scalability</h2>
+<ul class="incremental">
+<li>social interactions are one-to-many or many-to-many</li>
+<li>HTTP is one-to-one</li>
+<li>round robin distribution is slow (SMTP)</li>
+<li>IP Multicast doesn't do the job (router table overflow)</li>
+<li>IRC and NNTP do/did multicast, but had other problems</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>One Too Many</h1>
+<h2>Multicasting with XMPP?</h2>
+<ul class="incremental">
+<li>70% of S2S XMPP messages is presence updates (5 years ago)</li>
+<li>XMPP has limited support for one-to-many communications</li>
+<li>XMPP can be improved, but: trust problem with multicast</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>One Too Many</h1>
+<h2>Multicasting with HTTP?</h2>
+<ul class="incremental">
+<li>fundamentally feasible</li>
+<li>unnatural: HTTP is not bidirectional</li>
+<li>requires trust in a federated architecture</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Possible Solution Part 1</h1>
+<h2>New Architecture?</h2>
+<ul class="incremental">
+<li>"Enhanced" P2P with servers as agnostic routers</li>
+<li>Options: GNUnet, Maidsafe, A3, Tonika</li>
+<li>Less possibly: I2P, Diaspora</li>
+<li>Features: Unobservability, End-To-End ...</li>
+<li>What's missing?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Possible Solution Part 2</h1>
+<h2>Things to add on top</h2>
+<ul class="incremental">
+<li>multicast routing option</li>
+<li>social trust metrics</li>
+<li>... applied for routing</li>
+<li>flexible payload syntax</li>
+<li>standard formats may be portable</li>
+<li>web interface still likely</li>
+</ul>
+</div>
+
+-->
+
+<!-- div class="slide">
+</div -->
+
+<div class="slide">
+<h1>If you like what we do</h1>
+<h2>We need support</h2>
+<ul>
+<li>Manpower</li>
+<li>Alliances</li>
+<li>Finances</li>
+<li>Publicity</li>
+</ul>
+<br/>
+<br/>
+Thank you.<br/>
+</div>
+
+<div class="slide">
+<h1>Cross That Bridge As We Get There?</h1>
+<h2>Let's just get started with something!</h2>
+<ul class="incremental">
+<li>The Mediocre is the Enemy of the Good</li>
+<li>Historic Examples:</li>
+<li>HTTP.. HTTP/NG?, SPDY!?</li>
+<li>SMTP.. What? Faceboogle!?</li>
+<li>XML.. What? JSON!?</li>
+<!-- li>SQL..</li -->
+</ul>
+</div>
+
+</html>

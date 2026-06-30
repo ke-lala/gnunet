@@ -1,0 +1,2 @@
+R5N, 2011 paper:
+The paper says "Our design also includes topology augmentation using a combination of distance-vector and onion-routing, a novel replication strategy and an API to verify content integrity.". This is false, as what is used is onion encryption (layered encryption) for the distance-vector path, but not onion routing (as the topology augmentation uses distance-vector routing).

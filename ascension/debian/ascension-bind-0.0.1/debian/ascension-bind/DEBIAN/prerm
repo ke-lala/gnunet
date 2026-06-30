@@ -1,0 +1,40 @@
+#!/bin/bash
+# prerm script for ascension-bind
+#
+# see: dh_installdeb(1)
+# load debconf library
+. /usr/share/debconf/confmodule
+
+set -e
+
+# only get the values set during configuration, defaults otherwise
+db_get ascension-bind/zones
+echo "$RET" | sed 's/ //g' | sed 's/,/\n/g' > selectedzones
+readarray zones < selectedzones
+rm selectedzones
+trimmed=$(echo $zones | tr -d '\n')
+if [ -z $trimmed ]; then
+    echo "There are no zones to migrate"
+    exit 0
+fi
+
+if [ -f "/etc/bind/named.conf.options.backup" ]; then
+    mv "/etc/bind/named.conf.options.backup" "/etc/bind/named.conf.options" || true
+fi
+deb-systemd-invoke restart bind9
+
+for ZONE in "${zones[@]}"
+do
+    systemctl daemon-reload
+    ZONE=$( echo "$ZONE" | tr -d '\n')
+    FILECONV=$( echo "$ZONE" | tr '.' '_')
+    echo "Stopping and disabling ascension-bind-$FILECONV"
+    deb-systemd-invoke disable "ascension-bind-$FILECONV"
+    deb-systemd-invoke stop "ascension-bind-$FILECONV"
+    unlink "/lib/systemd/system/ascension-bind-$FILECONV.service" || true
+    rm "/etc/ascension.d/ascension-bind-$FILECONV.service" || true
+    systemctl daemon-reload
+done
+
+exit 0
+

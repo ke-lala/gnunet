@@ -1,0 +1,8 @@
+GNS Service Ports
+-----------------
+
+This registry is for service-to-port mappings for GNS names that are BOXed.
+
+Some "_"-labels map to service ports (RFC 6335), but others do not.
+For common "_"-labels, we provide a number mapping in this registry.
+

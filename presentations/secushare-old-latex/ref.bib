@@ -1,0 +1,116 @@
+@PhdThesis {gnunet-decrouting,
+	author = {Nathan S. Evans},
+	title = {Methods for Secure Decentralized Routing in Open Networks},
+	volume = {Dr. rer. nat.},
+	year = {2011},
+	month = {08/2011},
+	pages = {234},
+	school = {Technische Universit{\"a}t M{\"u}nchen},
+	address = {Garching bei M{\"u}nchen},
+	abstract = {  The contribution of this thesis is the study and improvement of secure, decentralized, robust routing algorithms for open networks including ad-hoc networks and peer-to-peer (P2P) overlay networks. The main goals for our secure routing algorithm are openness, efficiency, scalability and resilience to various types of attacks. Common P2P routing algorithms trade-off decentralization for security; for instance by choosing whether or not to require a centralized authority to allow peers to join the network. Other algorithms trade scalability for security, for  example employing random search or flooding to prevent certain types of attacks.  Our design attempts to meet our security goals in an open system, while limiting the performance penalties incurred.
+
+  The first step we took towards designing our routing algorithm was an analysis of the routing algorithm in Freenet.  This algorithm is relevant because it achieves efficient (order O(log n)) routing in realistic network topologies in a fully decentralized open network.  However, we demonstrate why their algorithm is not secure, as malicious participants are able to severely disrupt the operation of the network.  The main difficulty with the Freenet routing algorithm is that for performance it relies on information received from untrusted peers.  We also detail a range of proposed solutions, none of which we found to fully fix the problem.
+
+ A related problem for efficient routing in sparsely connected networks is the difficulty in sufficiently populating routing tables.  One way to improve connectivity in P2P overlay networks is by utilizing modern NAT traversal techniques.  We employ a number of standard NAT traversal techniques in our approach, and also developed
+and experimented with a novel method for NAT traversal based on ICMP and UDP hole punching.  Unlike other NAT traversal techniques ours does not require a trusted third party.
+
+Another technique we use in our implementation to help address the connectivity problem in sparse networks is the use of distance vector routing in a small local neighborhood. The distance vector variant used in our system employs onion routing to secure the resulting indirect connections. Materially to this design, we discovered a  serious vulnerability in the Tor protocol which allowed us to use a DoS attack to reduce the anonymity of the users of this extant anonymizing P2P network.  This vulnerability is based on allowing paths of unrestricted length for onion routes through the network. Analyzing Tor and implementing this attack gave us valuable knowledge
+which helped when designing the distance vector routing protocol for our system.
+
+  Finally, we present the design of our new secure randomized routing algorithm that does not suffer from the various problems we discovered in previous designs. Goals for the algorithm include providing efficiency and robustness in the presence of malicious participants for an open, fully decentralized network without trusted authorities. We provide a mathematical analysis of the algorithm itself and have created and deployed an implementation of this algorithm in GNUnet. In this thesis we also provide a detailed overview of a distributed
+emulation framework capable of running a large number of nodes using our full code base as well as some of the challenges encountered in creating and using such a testing framework.  We present extensive experimental results showing that our routing algorithm outperforms the dominant DHT design in target topologies, and performs comparably in other scenarios.
+},
+	keywords = {DHT, Freenet, GNUnet, NAT, R5N, Tor},
+	isbn = {3-937201-26-2},
+	issn = {1868-2642},
+	attachments = {https://gnunet.org/sites/default/files/NET-2011-08-1.pdf},
+	url = {https://gnunet.org/nate2011thesis},
+}
+
+@Conference {gnunet-gap,
+	author = {Krista Bennett and Christian Grothoff},
+	title = {gap - Practical Anonymous Networking},
+	booktitle = {Designing Privacy Enhancing Technologies},
+	year = {2003},
+	pages = {141{\textendash}160},
+	publisher = {Springer-Verlag},
+	organization = {Springer-Verlag},
+	abstract = {This paper describes how anonymity is achieved in GNUnet, a framework for anonymous distributed and secure networking.
+
+The main focus of this work is gap, a simple protocol for anonymous transfer of data which can achieve better anonymity guarantees than many traditional indirection schemes and is additionally more efficient.  gap is based on a new perspective on how to achieve anonymity.  Based on this new perspective it is possible to relax the requirements stated in traditional indirection
+schemes, allowing individual nodes to balance anonymity with efficiency according to their specific needs.},
+	keywords = {anonymity, GNUnet, installation},
+	attachments = {https://gnunet.org/sites/default/files/aff.pdf},
+	url = {https://gnunet.org/gap},
+}
+
+@Misc {dark-freenet,
+	author = {Clarke, Ian and Sandberg, Oskar and Toseland, Matthew and Verendel, Vilhelm},
+	title = {Private Communication Through a Network of Trusted Connections: The Dark Freenet},
+	url = {https://freenetproject.org/papers/freenet-0.7.5-paper.pdf},
+}
+
+@article {hordes,
+	author = {Brian Neil Levine and Clay Shields},
+	title = {Hordes {\textendash}- A Multicast Based Protocol for Anonymity},
+	journal = {Journal of Computer Security},
+	volume = {10},
+	number = {3},
+	year = {2002},
+	pages = {213{\textendash}240},
+	abstract = {With widespread acceptance of the Internet as a public medium for communication and information retrieval, there has been rising concern that the personal privacy of users can be eroded by cooperating network entities. A technical solution to maintaining privacy is to provide anonymity. We present a protocol for initiator anonymity called Hordes, which uses forwarding mechanisms similar to those used in previous protocols for sending data, but is the first protocol to make use of multicast routing to anonymously receive data. We show this results in shorter transmission latencies and requires less work of the protocol participants, in terms of the messages processed. We also present a comparison of the security and anonymity of Hordes with previous protocols, using the first quantitative definition of anonymity and unlinkability.},
+	keywords = {anonymity, Hordes, multicast, routing},
+	issn = {0926-227X},
+	url = {http://portal.acm.org/citation.cfm?id=603406},
+	attachments = {https://gnunet.org/sites/default/files/Levine-2002.pdf},
+}
+
+@InProceedings {drac,
+	author = {George Danezis and Claudia Diaz and Carmela Troncoso and Ben Laurie and Google Inc},
+	title = {Drac: An architecture for anonymous low-volume communications},
+	booktitle = {Privacy Enhancing Technologies, volume 6205 of Lecture Notes in Computer Science},
+	year = {2010},
+	pages = {202--219},
+	publisher = {Springer}
+}
+
+@InProceedings {lifesocial,
+	title = {LifeSocial.KOM: A secure and P2P-based solution for online social networks},
+	author = {Graffi, K. and Gross, C. and Stingl, D. and Hartung, D. and Kovacevic, A. and Steinmetz, R.},
+	booktitle = {Consumer Communications and Networking Conference (CCNC), 2011 IEEE},
+	pages = {554--558},
+	year = {2011},
+	organization = {IEEE},
+	attachments = {http://www.cs.uni-paderborn.de/fileadmin/Informatik/FG-TI/Graffi/Publications/Kalman.Graffi_2011_IEEE.CCNC.11_LifeSocial.KOM.A.Secure.and.P2P.based.Solution.for.OSNs.pdf}
+}
+
+@Misc {psyc-paper,
+	author = {Carlo v. Loesch},
+	title = {Protocol for Synchronous Conferencing},
+	year = {2007},
+	url = {http://www.psyc.eu/whitepaper/white.en.html},
+}
+
+@Misc {psyc-bench,
+	title = {Libpsyc Performance Benchmarks},
+	url = {http://lib.psyc.eu/bench}
+}
+
+@Misc {js-crypto,
+	author = {Nate Lawson},
+	title = {Final post on Javascript crypto},
+	year = {2010},
+	url = {http://rdist.root.org/2010/11/29/final-post-on-javascript-crypto/},
+}
+
+@Conference {fsw-paranoia,
+	author = {Carlo v. Loesch and Gabor Toth and Mathias Baumann},
+	title = {Scalability \& Paranoia in a Decentralized Social Network},
+	booktitle = {Federated Social Web conference},
+	year = {2011},
+	month = {06/2011},
+	address = {Berlin, Germany},
+	abstract = {There{\textquoteright}s a lot of buzz out there about "replacing" Facebook with a privacy-enhanced, decentralized, ideally open source something. In this talk we{\textquoteright}ll focus on how much privacy we should plan for (specifically about how we cannot entrust our privacy to modern virtual machine technology) and the often underestimated problem of getting such a monster network to function properly. These issues can be considered together or separately: Even if you{\textquoteright}re not as concerned about privacy as we are, the scalability problem still persists. },
+	keywords = {GNUnet, privacy, social networks},
+	url = {http://secushare.org/2011-FSW-Scalability-Paranoia},
+}

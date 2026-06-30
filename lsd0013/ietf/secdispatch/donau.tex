@@ -1,0 +1,176 @@
+\documentclass[aspectratio=169,t]{beamer}
+\input taler-macros
+
+\graphicspath{{images/}}
+
+\newcommand{\TITLE}{NEXT \\ GENERATION \\ INTERNET}
+\newcommand{\SUB}{The ``donau'' scheme (draft-grothoff-donau)}
+\newcommand{\AUTHOR}{Christian Grothoff}
+\newcommand{\SPEAKER}{Christian Grothoff}
+\newcommand{\INST}{The GNU Project}
+\newcommand{\DATE}{IETF 125: DISPATCH}
+
+% Do not edit this part
+\title{\TITLE}
+\subtitle{\SUB}
+\date{\DATE}
+\author[\SPEAKER]{\AUTHOR}
+\institute{\INST}
+
+\begin{document}
+
+\begin{frame}[plain]
+\maketitle
+\end{frame}
+
+\begin{frame}{{\tt donau} URI scheme}
+{\url{https://lsd.gnunet.org/lsd0013/}}
+\begin{itemize}
+\item Donations to charities are often tax-deductable
+\item Filing taxes with unstructured paper-receipts is messy
+\item Taxes are often still filed on paper
+\item[$\Rightarrow$] {\tt donau://} as a QR-code compatible
+  proof of tax-deductable donations
+\end{itemize}
+\vfill
+The URI contains the amount donated, the corresponding year, the
+tax id number and the donation statement signature.
+\end{frame}
+
+
+\begin{frame}{Validation}
+  \center
+  \begin{tikzpicture}
+    \node (image) at (0,0) {\includegraphics[width=0.1\textwidth]{stickman}};
+    \node at (0,-1.8) {Donor};
+    %arrow
+    \draw [-latex] (1,-0.5) -- (7,-0.5);
+    %QR-Code
+    \draw (2.7,2.5) -- (3.4,0.9);
+    \draw (4.9,2.5) -- (4.2,0.9);
+    \node (image) at (3.8,2) {\includegraphics[width=0.05\textwidth]{gold_wax}};
+    \node at (3.8,2) {\small{16}};
+    \node at (3.8,2.5) {\tiny{7560001010000}};
+    \node at (3.8,1.3) {\small{2024}};
+    \node (image) at (3.8,0.2) {\includegraphics[width=0.1\textwidth]{qr-donau}};
+    %server
+    \node (image) at (8.5,0) {
+    \includegraphics[width=0.1\textwidth]{stickman}};
+    \node at (8.5,-1.8) {Tax Auditor};
+  \end{tikzpicture}\vspace{0.4cm}
+  \begin{itemize}
+  \item The tax auditor is able to view the data and check the
+    signature using the provided smartphone app.
+  \end{itemize}
+\end{frame}
+%%%---------------------------------------
+
+
+\begin{frame}{Discussions at IETF}
+  \begin{itemize}
+    \item uri-review: \url{https://mailarchive.ietf.org/arch/msg/uri-review/tSTAIyY9ZRCYmTt4LlYOwpnoIN4/}
+      \begin{itemize}
+        \item Good inputs from Ted Hardie
+        \item All points made were addressed
+        \item[$\Rightarrow$] IANA provisional registration exists
+      \end{itemize}
+    \item Draft includes OCR-friendly Base32-encoding inspired by
+      Crockford but allowing {\bf u $\equiv$ {\bf v}} (also used by
+      RFC 9498). 
+    \item[$\Rightarrow$] Separtion was suggested, if anyone wants this?
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Context}
+  This is part of a larger protocol effort (\url{https://git-www.taler.net/}):
+  \begin{itemize}
+  \item Enable {\em anonymous} donations
+  \item Ensure only approved charities can sign donation statements
+  \item Make total amount of donations received per charity transparent to authorities
+  \item Free software for citizens, charities, and tax authorities exists
+  \end{itemize}
+%  However, {\tt donau} URI scheme is deliberately independent of the
+%  specific protocol used to obtain the proof of donation.
+
+  This is part of an even larger protocol effort:
+  \begin{itemize}
+  \item Taler protocol enables {\em anonymous} digital cash
+  \item Complex protocol with giving change, refunds, age-restrictions, etc.
+  \item Already birthed RFC 8905.
+  \end{itemize}  
+\end{frame}
+
+\begin{frame}{Options for next steps}
+  \begin{itemize}
+    \item Leave it at {\tt donau} draft
+    \item Send {\tt donau} draft to ISE for informational track (separation of appendix?)
+    \item Create payment BOF and charter WG for payment protocols\footnote{Note: No blockchains/DLTs involved here.}
+  \end{itemize}
+\ 
+  \vfill
+  \begin{center}
+    GNU Taler\\
+    \vspace{0.1em}
+    \url{https://taler.net}\\
+    \vspace{0.1em}
+    {\tiny
+    \texttt{grothoff@taler.net}\\
+    }
+  \end{center}
+\end{frame}
+
+\appendix
+
+\begin{frame}{References}
+  \begin{enumerate}
+ \item{Özgür Kesim, Christian Grothoff, Florian Dold and Martin Schanzenbach.
+      {\em Zero-Knowledge Age Restriction for GNU Taler}.
+       {\bf 27th European Symposium on Research in Computer Security (ESORICS), 2022}.}
+ \item{David Chaum, Christian Grothoff and Thomas Moser.
+       {\em How to issue a central bank digital currency}.
+       {\bf SNB Working Papers, 2021}.}
+ \item{Christian Grothoff, Bart Polot and Carlo von Loesch.
+       {\em The Internet is broken: Idealistic Ideas for Building a GNU Network}.
+       {\bf W3C/IAB Workshop on Strengthening the Internet Against Pervasive Monitoring (STRINT)}, 2014.}
+ \item{Jeffrey Burdges, Florian Dold, Christian Grothoff and Marcello Stanisci.
+       {\em Enabling Secure Web Payments with GNU Taler}.
+       {\bf SPACE 2016}.}
+  \end{enumerate}
+\end{frame}
+
+
+
+
+% This should be last...
+\begin{frame}{Acknowledgments}
+
+  \begin{minipage}{0.45\textwidth} \ \\
+    {\tiny Funded by the European Union (Project 101135475).}
+
+    \begin{center}
+      \includegraphics[width=0.5\textwidth]{../bandera.jpg}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\textwidth}
+    {\tiny Funded by SERI (HEU-Projekt 101135475-TALER).}
+
+    \begin{center}
+      \includegraphics[width=0.65\textwidth]{../sbfi.jpg}
+    \end{center}
+  \end{minipage}
+
+  \vfill
+
+  {\tiny
+
+    Views and opinions expressed are however those of the author(s) only
+    and do not necessarily reflect those of the European Union. Neither the
+    European Union nor the granting authority can be held responsible for
+    them.
+
+  }
+\end{frame}
+
+\end{document}

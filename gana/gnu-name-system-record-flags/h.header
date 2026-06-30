@@ -1,0 +1,49 @@
+/*
+     This file is part of GNUnet
+     Copyright (C) 2012-2022 GNUnet e.V.
+
+     GNUnet is free software: you can redistribute it and/or modify it
+     under the terms of the GNU Affero General Public License as published
+     by the Free Software Foundation, either version 3 of the License,
+     or (at your option) any later version.
+
+     GNUnet is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+#ifndef GNU_NAME_SYSTEM_RECORD_FLAGS_H
+#define GNU_NAME_SYSTEM_RECORD_FLAGS_H
+
+/**
+ * WARNING:
+ * This header is generated!
+ * In order to add GNS record flags, you must register
+ * them in GANA, and then use the header generation script
+ * to create an update of this file. You may then replace this
+ * file with the update.
+ */
+
+/**
+ * Flags that can be set for a record.
+ * The numbers in the registry correspond to the bit index as specified in
+ * LSD0001 Chapter "Resource Records".
+ * Each enum member represents the 16-bit integer value of the flags field if
+ * only that particular flag was set.
+ * The value can be used to efficiently compare the bitmask setting for the
+ * record flag in C.
+ * WARNING: The values are in host byte order! In order to correctly check
+ * against the flags field a record, the respective fields must
+ * also be converted to HBO (or the enum value to NBO).
+ */
+enum GNUNET_GNSRECORD_Flags
+{
+  /**
+   * Entry for no flags / cleared flags.
+   */
+  GNUNET_GNSRECORD_RF_NONE = 0,

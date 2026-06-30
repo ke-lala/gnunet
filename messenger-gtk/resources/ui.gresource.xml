@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/org/gnunet/Messenger">
+		<file compressed="true">ui/about.ui</file>
+		<file compressed="true">ui/account_entry.ui</file>
+		<file compressed="true">ui/accounts.ui</file>
+		<file compressed="true">ui/chat_entry.ui</file>
+		<file compressed="true">ui/chat_title.ui</file>
+		<file compressed="true">ui/chat.ui</file>
+		<file compressed="true">ui/contact_entry.ui</file>
+		<file compressed="true">ui/contact_info.ui</file>
+		<file compressed="true">ui/contacts.ui</file>
+		<file compressed="true">ui/delete_messages.ui</file>
+		<file compressed="true">ui/discourse_panel.ui</file>
+		<file compressed="true">ui/discourse.ui</file>
+		<file compressed="true">ui/files.ui</file>
+		<file compressed="true">ui/file_entry.ui</file>
+		<file compressed="true">ui/file_load_entry.ui</file>
+		<file compressed="true">ui/invite_contact.ui</file>
+		<file compressed="true">ui/media_preview.ui</file>
+		<file compressed="true">ui/message_content.ui</file>
+		<file compressed="true">ui/message.ui</file>
+		<file compressed="true">ui/message-sent.ui</file>
+		<file compressed="true">ui/message-status.ui</file>
+		<file compressed="true">ui/messenger.ui</file>
+		<file compressed="true">ui/new_account.ui</file>
+		<file compressed="true">ui/new_contact.ui</file>
+		<file compressed="true">ui/new_group.ui</file>
+		<file compressed="true">ui/new_lobby.ui</file>
+		<file compressed="true">ui/new_platform.ui</file>
+		<file compressed="true">ui/new_tag.ui</file>
+		<file compressed="true">ui/picker.ui</file>
+		<file compressed="true">ui/play_media.ui</file>
+		<file compressed="true">ui/send_file.ui</file>
+		<file compressed="true">ui/settings.ui</file>
+		<file compressed="true">ui/tag.ui</file>
+	</gresource>
+</gresources>

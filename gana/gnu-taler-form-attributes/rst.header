@@ -1,0 +1,14 @@
+GNU Taler KYC Attributes
+---------------------
+
+Entries
+^^^^^^^
+
+.. list-table:: GNU Taler KYC Attributes
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Value
+     - HTTP Status
+     - Description

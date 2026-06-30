@@ -1,0 +1,104 @@
+.\" This file is part of Ascension.
+.\" Copyright (C) 2018-2020 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" ``FDL-1.3''.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" ``GPL3''.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html.
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd October 2022
+.Dt ASCENSION 1
+.Os
+.Sh NAME
+.Nm Ascension
+.Nd migrate existing DNS zones into the GNU Name System
+.Sh SYNOPSIS
+.Op -h
+.Op -n NAMESERVER
+.Op -P PORT
+.Op -k KEYFILE
+.Op -l LOGLEVEL
+.Op -t TTL
+.Op -s
+.Op -p
+.Op -g
+.Op -V
+domain
+.Sh DESCRIPTION
+.Nm
+is a tool to migrate existing DNS Zones into the GNU Name System (GNS) using incremental zone transfers (AXFR/IXFR).
+To achieve this it calls the GNUnet REST API which relies on GNUnet,
+.Xr gnunet-arm 1
+must be installed and running.
+.Bl -tag -width Ds
+.It Ar domain
+Domain to be migrated into GNS
+.It Fl n | \-nameserver Ar NAMESERVER
+Nameserver to use for zone transfer
+.It Fl P | \-port Ar PORT
+Use the specified port when contacting the nameserver to transfer the zone
+.It Fl k | \-keyfile Ar KEYFILE
+DNS TSIG File containing a BIND compatible public key to authenticate for zone transfer
+.It Fl l | \-loglevel Ar LOGLEVEL
+Loglevel to use, 10 Debug, 20 Info, 30 Warning, 40 Error, 50 Critical
+.It Fl t | \-ttl Ar TTL
+Sets the minimum ttl of records added to GNS in seconds
+.It Fl s | \-standalone
+Migrate a zone once and then exit
+.It Fl p | \-public
+Set the public flag for records and publish them on the DHT. When in possession
+of the public key of the zone in BASE32 format anyone can resolve a record
+within the zone provided they also know the label under which the recorset is
+stored.
+.It Fl g | \-dryrun
+Checks whether or not the domains nameserver supports zone transfer for the
+given domain. When a nameserver is specified it will be checked instead.
+.It Fl h | \-help
+Show the usage and argument syntax of Ascension.
+.It Fl V | \-version
+Show the current version number
+.El
+.\" .Sh FILES
+.Sh EXAMPLES
+.Pp
+To test if the given domains nameserver supports zone transfers for that zone:
+.Pp
+.Dl $ ascension nu -n zonedata.iis.se. -d
+.Sh SEE ALSO
+.Xr gnunet-arm 1 ,
+.Xr gnunet-gns 1 ,
+.Xr gnunet-identity 1 ,
+.Xr gnunet-namestore 1
+.Sh HISTORY
+The
+.Nm
+tool was designed and written in 2018-2022 by
+.An rexxnor Aq Mt rexxnor+gnunet@brief.li .
+.Sh AUTHORS
+This man page was written by
+.An ng0 Aq Mt ng0@gnunet.org
+and updated by
+.An rexxnor Aq Mt rexxnor+gnunet@brief.li
+it first appeared in
+.Nm
+0.5.1.
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt bug-gnunet@gnu.org .

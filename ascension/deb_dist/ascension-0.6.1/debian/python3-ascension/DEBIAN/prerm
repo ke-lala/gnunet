@@ -1,0 +1,29 @@
+#!/bin/sh
+# prerm script for ascension-bind
+#
+# see: dh_installdeb(1)
+# load debconf library
+set -e
+
+mkdir -p /etc/ascension.d/
+
+# remove systemd stuff
+deb-systemd-invoke stop gnunet-ascension
+deb-systemd-invoke disable gnunet-ascension
+
+# remove the systemd files
+unlink /lib/systemd/system/gnunet-ascension.service
+rm /etc/ascension.d/gnunet-ascension.service
+
+exit 0
+
+# Automatically added by dh_python3:
+if which py3clean >/dev/null 2>&1; then
+	py3clean -p python3-ascension 
+else
+	dpkg -L python3-ascension | perl -ne 's,/([^/]*)\.py$,/__pycache__/\1.*, or next; unlink $_ or die $! foreach glob($_)'
+	find /usr/lib/python3/dist-packages/ -type d -name __pycache__ -empty -print0 | xargs --null --no-run-if-empty rmdir
+fi
+
+# End automatically added section
+

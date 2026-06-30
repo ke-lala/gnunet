@@ -1,0 +1,6 @@
+}
+
+impl ErrorCode {
+    pub fn metadata(&self) -> (u16, &'static str) {
+        use ErrorCode::*;
+        match self {

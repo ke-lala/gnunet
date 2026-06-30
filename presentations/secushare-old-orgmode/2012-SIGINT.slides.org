@@ -1,0 +1,168 @@
+#+TITLE:     Introduction to SecuShare
+#+AUTHOR:    Daniel Reusche
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+#+startup: oddeven
+
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+latex_header: \mode<beamer>{\usetheme{Pittsburgh}}
+#+latex_header: \setbeamertemplate{navigation symbols}{}
+#+BEAMER_FRAME_LEVEL: 2
+
+* Introduction
+** Introduction
+   [[file:./img/unicast.png]]
+*** unicast 							   :NOEXPORT:
+- natural communication  
+  - this is where we want to go
+
+** Introduction
+   [[file:./img/cloud.png]]
+*** server 							   :NOEXPORT:
+- this is where we are now
+  - servers
+  - clouds
+  - clusters
+- all more or less centrally owned
+
+
+* Goals
+** Goals
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Transfer Anything}}
+#+End_Center
+*** Transfer 							   :NOEXPORT:
+- Arbitrary stuff
+  - messages
+  - subscription lists, etc.
+  - files
+- future:
+  - push to talk
+  - television
+   
+** Goals
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Resilience}}
+#+End_Center
+*** Resilience 							   :NOEXPORT:
+- Do not get rid of servers but:
+  - Make nodes/content/servers easily exchangeable.
+- It is no problem if a server goes down, because traffic is rerouted.
+- If we put up another server, traffic gets quickly routed over it again.
+
+** Goals 
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Privacy}}
+#+End_Center
+*** Privacy 							   :NOEXPORT:
+- Only intended recipients get the content. 
+- public stuff unencrypted
+- Make sure of this by end-to-end encryption
+- Groups and one-on-one chat
+  - goal mpotr
+    - encrypted
+    - authenticated
+    - repudiable
+- maybe even anonymity later:
+  - play with packet padding and timing
+  - onion routing possible
+    
+** Goals
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Scalability}}
+#+End_Center
+*** Scalability 						   :NOEXPORT:
+- not only adsl nodes
+  - servers for routing, buffering
+    - bandwith, cpu, memory
+    - everything is encrypted, so no problem
+- Round Robin slow
+  - Carlos Mailverteiler
+  - vor 5 jahren 70% XMPP traffic presence messages
+  - http://about.psyc.eu/XMPP#Scalability
+- multicast distribution trees scale well
+  - psyc: several hundred instances of up to 10k users each
+
+** Goals
+   [[file:./img/multicast.png]]
+*** notes 							   :NOEXPORT:
+- this is what we want to do 
+- make the first scale on large networks
+
+** Goals
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{API}}
+#+End_Center
+*** API 							   :NOEXPORT:
+- Ease of use for developers = more applications
+- we need gread (Easily adaptable) interfaces
+  - our grandmothers have to be able to use it
+- The developers will never be able to keep up with all the needs of the users
+* How Not To Do It
+** How Not To Do It
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Trust in Servers}}
+#+End_Center
+*** notes 							   :NOEXPORT:
+- Can be seized 
+- server unfriendly legislation can be passed, eg liability
+- In current architectures, lots of data resides there
+- federation:
+  - data is visible, accessible on even more servers
+  - you have to trust even more admins
+- Central points of failure
+  - even with crypto, the data is not lost but the communication channels are
+- Servers are vulnerable to:
+  - Memory analysis
+- VPSs are vulnerable to :
+  - Being fed bad random data -> weak crypto
+
+** How Not To Do It
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{Encryption in the Browser}}
+#+End_Center
+*** notes 							   :NOEXPORT:
+- trust in integrity of whatever code you get from the server required
+- server compromised, all users compromised 
+- ssl ca system broken
+
+* Technologies
+** Technologies
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{GNUnet}}
+#+End_Center
+*** GNUnet 							   :NOEXPORT:
+- Use it for routing and encryption.
+- anonymous filehosting
+- TUM, in the heritage of freenet
+
+** Technologies
+#+Begin_Center
+#+LaTeX: \textbf{\Huge{PSYC}}
+#+End_Center
+*** PSYC 							   :NOEXPORT:
+- Use it for multicast binary transport and trust graph.
+- Scales well, several hundred instances with 10k users each 
+
+* About Us
+** Contributors
+- Carlo von lynX
+- Gabor Toth
+- Matthias Baumann
+- Daniel Reusche
+** URL
+#+Begin_Center                        
+#+LaTeX: \textbf{\Huge{secushare.org}}
+#+End_Center
+
+
+   
+
+

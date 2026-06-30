@@ -1,0 +1,119 @@
+# Payto Payment Target Type for Ethereum-compatible Blockchain Addresses
+
+## Target Type "eth"
+
+Name: eth
+
+Description:  Ethereum-compatible Blockchain Address
+
+  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+  NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+  "MAY", and "OPTIONAL" in this document are to be interpreted as
+  described in RFC 2119 and RFC 8174.
+
+  The path consists of two components: The chain ID and the
+  Ethereum-compatible Mixed-case checksum address.
+
+  This is used to uniquely identify both the chain and the account
+  on the chain. The chain ID is used to prevent replay attacks
+  between different chains. If the checksum is invalid, the address
+  and corresponding URI is invalid and the payment should not be sent.
+  Connecting to the chain is out of scope for this specification. If
+  the chain is not available, the payment should not be sent, but the
+  URI is still valid.
+
+  The currency type can be omitted from the amount option, leaving
+  a simple decimal number with a maximum of 8 decimal places.
+  If the currency type (as part of the amount) is not present,
+  the currency is assumed to be the native currency of the chain.
+  If the currency is present, it must be a valid ERC-55 address
+  pointing to a valid ERC-20 token contract on the chain. If the
+  currency is not a valid ERC-20 token, then the URI is invalid.
+  This includes three-letter currency codes, which are not valid
+  ERC-20 token addresses.
+
+
+Syntax:
+     payto-eth-URI = "payto://eth/" addr [ "@" chain_id ] [ "?" opts ]
+
+  'addr' is an Ethereum-compatible Mixed-case checksum address
+  as defined in [ERC-55](https://eips.ethereum.org/EIPS/eip-55).
+  It MUST not be the zero address, and the checksum MUST be valid.
+  If either of these conditions is not met, the URI is invalid.
+
+  'chain_id' is an Ethereum chain ID as defined in 
+  [EIP-155](https://eips.ethereum.org/EIPS/eip-155).
+  If not present, it MUST default to 1 (mainnet).
+
+  'opts' is defined in
+  [Section 2 of RFC 8905](https://tools.ietf.org/html/rfc8905#section-2).
+
+
+Examples:
+
+      payto://eth/0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1
+      payto://eth/0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1@11155111
+      payto://eth/0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1?amount=1.23
+      payto://eth/0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1?amount=0x6b175474e89094c44da98b954eedeac495271d0f:1.23
+    
+    The first address requests that payment be sent to the
+    mainnet address '0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1'.
+
+    The second address requests that payment be sent to the
+    Sepolia testnet address
+    '0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1'.
+
+    The third address requests that 1.23 ETH (1230000000000000000
+    wei) be sent to the mainnet address
+    '0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1'.
+
+    The fourth address requests that 1.23 DAI (1230000000000000000
+    base units of DAI, since DAI has 18 ERC-20 decimals) be sent
+    to the mainnet address '0x84af3D5824F0390b9510440B6ABB5CC02BB68ea1'.
+
+
+Motivation - not normative
+
+This syntax is modeled after the ERC-681 URL format
+for transaction requests, commonly used in Ethereum
+wallets and DApps. The function and function parameters
+are not included in this URI type, since they are not
+needed for payment requests.
+
+The chain ID is included in the URI, to prevent replay
+attacks between different chains. The checksum address
+is included in the URI, to prevent typos and other
+errors in the address. The checksum address is also
+included in the URI, to prevent phishing attacks by
+displaying the address in a different case than the
+one used to create the address.
+
+The currency is included in the URI, to allow payments
+to be made in any ERC-20 token. Three-letter currency
+codes are not included, since they are not valid ERC-20
+token addresses. Should sending traditional currencies
+be desired, Stablecoins are often ERC-20 tokens, and are
+therefore valid currencies for this URI type.
+
+
+Contact:  <gavinnjohn@gmail.com>
+
+
+Normative References
+
+* [ERC-20] Token Standard
+  <https://eips.ethereum.org/EIPS/eip-20>
+
+* [ERC-55] Mixed-case checksum address encoding
+  <https://eips.ethereum.org/EIPS/eip-55>
+
+* [EIP-155] Simple replay attack protection
+  <https://eips.ethereum.org/EIPS/eip-155>
+
+* [RFC 8905] The 'payto' URI Scheme for Payments
+  <https://tools.ietf.org/html/rfc8905>
+
+Informative References
+
+* [EIP-681] URL Format for Transaction Requests
+  <https://eips.ethereum.org/EIPS/eip-681>

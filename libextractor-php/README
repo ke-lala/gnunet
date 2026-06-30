@@ -1,0 +1,11 @@
+This code only works with GNU libextractor < 0.5 and not with the current version!
+
+
+I found this at:
+
+http://blog.thinkphp.de/archives/12-My-first-PHP-Extension..html
+
+Note that there maybe a licensing issue here.
+
+libextractor is released under the GNU GPL, which according to the FSF (IANAL, but they have some) is incompatible with the PHP License.  Now, before you even ask if I could make an exception for you guys, I must tell you that I cannot, simply because libextractor uses plenty of GPL'ed code that I did not write -- and the authors of some of that code have already declined to LGPL it. 
+So while I personally will certainly not go after any _free_ software using my code, you're on rather shaky ground and other people (namely the author of xpdf) could theoretically (see also: FUD) give you trouble here.  You might want to put your code under the GPL to avoid this -- and of course you might want to consider to lobby within the PHP community to make their licenses GPL-compatible (again), for example by putting the code under two licenses... :-).

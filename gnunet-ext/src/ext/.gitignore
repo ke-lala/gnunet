@@ -1,0 +1,6 @@
+.deps/
+.libs/
+ext.conf
+gnunet-ext
+gnunet-service-ext
+test_ext_api

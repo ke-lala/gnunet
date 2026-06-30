@@ -1,0 +1,8 @@
+*.c
+*.kt
+*.h
+*.tmp
+*.ts
+*.json
+*.go
+*.rs

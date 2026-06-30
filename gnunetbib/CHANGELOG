@@ -1,0 +1,12 @@
+0.0.1 UNRELEASED
+	Initial gnunetbib release, based on
+	131da09232bd9f3d1a71d2bf35ac5c867df718f2 of anonbib.
+	Adjusted the python2.7 code to pylint.
+	Added support for @booklet and @conference.
+	Import and overhaul of our own Drupal-based bibliography, which
+	involves some hacks in place due to the BibTeX implementation
+	used in anonbib and the non-standard BibTeX exports by Drupal.
+	HTML templates now use HTML5.
+	We now use some functions from future to work towards python2
+	+ python3 support.
+	individual .bib files are produced which can be downloaded

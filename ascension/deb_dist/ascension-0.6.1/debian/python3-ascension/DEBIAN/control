@@ -1,0 +1,30 @@
+Package: python3-ascension
+Source: ascension
+Version: 0.6.1-1
+Architecture: all
+Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+Installed-Size: 59
+Depends: python3-coverage, python3-dnspython, python3-docopt, python3-mock, python3-pbr, python3-six, python3:any (>= 3.3.2-2~)
+Section: python
+Priority: optional
+Description: Tool to migrate DNS Zones to the GNU Name System
+ # Ascension
+ .
+ Tool to easily migrate existing DNS Zones into the GNU Name System using
+ incremental zone transfers (AXFR/IXFR).
+ .
+ ## How to install
+ To install the ascension simply execute one of the following commands in the
+ freshly cloned directory:
+ .
+ ```bash
+ # System wide installation
+ sudo python3 setup.py install
+ .
+ # Local installation through virtualenv
+ python3 -m venv .venv
+ source .venv/bin/activate
+ python3 setup.py install
+ ```
+ .
+ ## How to install (Developer)

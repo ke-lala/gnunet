@@ -1,0 +1,23 @@
+Tue Sep 25 16:25:05 CEST 2012
+        Releasing GNU libextractor-java 1.0.0. 
+
+Mon Aug 27 16:56:18 CEST 2012
+	Changing license to GPLv3+, following license change in main
+	GNU libextractor library.
+
+Wed Jan 13 17:15:32 CET 2010
+	Releasing libextractor-java 0.6.0.
+
+Fri Jan  1 00:22:43 CET 2010
+	Changing API and implementation to work with libextractor 0.6.
+	Changing package to 'org.gnu.libextractor' to avoid conflicts
+	with previous versions (and to fit the package better as well).
+
+Sat Apr 21 17:09:03 MDT 2007
+	Added method to support extracting data from in-memory
+	byte array.  Changed API to use ArrayList instead of Vector.
+	Releasing libextractor-java 0.5.18.
+
+Mon Jul  4 16:58:53 CEST 2005
+	Moved Java code out of main libextractor tree.
+	This ChangeLog started.

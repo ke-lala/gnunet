@@ -1,0 +1,10 @@
+etc/gnunet.conf
+usr/bin/
+usr/lib/*/gnunet/libexec/gnunet-cmds-helper
+usr/lib/*/gnunet/
+usr/lib/*/*.so.*
+usr/share/applications/gnunet-uri.desktop
+usr/share/man/
+usr/share/info/
+usr/share/doc/gnunet/
+usr/share/gnunet/

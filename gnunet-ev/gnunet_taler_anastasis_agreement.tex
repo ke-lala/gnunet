@@ -1,0 +1,173 @@
+\documentclass[12pt, a4paper, bibliography=totocnumbered]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{ngerman}
+\usepackage{multicol}
+\usepackage{setspace}
+\usepackage[hyphens]{url}
+\usepackage[T1]{fontenc}
+\usepackage{enumitem}
+\usepackage{tikz}
+%\usepackage{arev}
+\usepackage{newcent} % Schriftart
+\usepackage{microtype} % Optimiere Rand und Trennstellen
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{tabularx}
+%\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage[breaklinks,colorlinks=true,allcolors=blue]{hyperref}
+\usepackage[square,numbers]{natbib}
+\bibliographystyle{plainnat}
+\setcitestyle{authoryear,open={},close={}}
+\geometry{a4paper,left=2cm, right=2cm, top=2cm,bottom=2cm}
+\usepackage{gb4e}
+\begin{document}
+\setstretch{1,5} % Ab hier: 1.5er Zeilenabstand
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+\Large{\textbf{GNUnet e.V. \& Taler Systems SA \& Anastasis SARL \\ Agreement\\ on Licensing and Collaborative Development \\ of the GNUnet code}}\\
+\end{center}
+\normalsize
+\section*{Preamble}
+GNUnet e.V., Taler Systems SA and Anastasis SARL have understood
+the importance of privacy, freedom of information and free speech in
+the digital age, specifically following the Snowden revelations ongoing since
+June 2013. They all are collaboratively working on the Free Software
+applications, frameworks or libraries originating from the GNUnet Project
+under the premises of the GNU GPL license.
+
+With this agreement they want to ensure that this collaborative
+development does not create any obstacles for the respective project's
+goals with respect to licensing and distribution.  Given the
+interdependencies between the GNUnet code, the Taler code and the
+Anastasis code, the objective is to arrive at a well-engineered system
+where functionality is moved to the component where it makes sense
+from an engineering perspective, irrespective of the identity of the
+contributor.
+
+Additionally, our goal is that Anastasis SARL, Taler Systems SA and
+GNUnet e.V.  are free to engage in all activities necessary to help
+Anastasis, Taler and GNUnet technologies to become spread and widely
+used Free Software.
+
+\section*{Involved parties}
+This agreement is being made between
+\begin{itemize}
+\item GNUnet e.V., a German association of GNUnet developers registered in Munich and seated in Garching, which holds all rights on the code contributed to the GNUnet project (``GNUnet code'') and
+\item Taler Systems SA, seated 7 rue de Mondorf, L-5421 Erpeldange, Luxembourg, and
+\item Anastasis SARL,, seated 7 rue de Mondorf, L-5421 Erpeldange, Luxembourg
+\end{itemize}
+
+\section*{Shareholder clause}
+
+GNUnet e.V. obtained voting shares in the Taler Systems SA company as
+per the Taler Systems SA shareholder agreement.  Taler Systems SA
+obtained voting shares in Anastasis SARL as per the Anastasis SARL shareholder agreement.
+
+\section*{Mutual Ownership Transfer clause}
+
+GNUnet e.V. agrees
+\begin{itemize}
+\item that contributions by its GNUnet contributors to the Taler code will be owned by Taler Systems SA.
+\item that contributions by its GNUnet contributors to the Anastasis code will be owned by Anastasis SARL.
+\end{itemize}
+Taler Systems SA agrees
+\begin{itemize}
+\item that contributions it makes to the GNUnet code will be owned by GNUnet e.V.
+\item that contributions it makes to the Anastasis code will be owned by Anastasis SARL
+\end{itemize}
+
+\section*{Multi-Licensing clause}
+
+GNUnet e.V. agrees that Anastasis SARL and Taler Systems SA are
+allowed to distribute those parts of the GNUnet code that Taler or
+Anastasis depends upon (currently libgnunetutil, libgnunetpq,
+libgnunetcurl and libgnunetjson) under other licenses than the GNU
+GPLv3 license (or any later version), as long as all of the following
+conditions are met:
+
+\begin{itemize}
+\item All copies of GNUnet code and any changes made to it are always made publicly available under the GPLv3 license (or any later version).
+\item Taler Systems SA and Anastasis SARL have the right to relicense the GNUnet code and any changes made to it under other licenses than the GNU GPLv3 (or any later version).
+\item Any license other than the GNU GPLv3 license (or any later version) used to relicense GNUnet code by Anastasis SARL or Taler Systems SA must have the nature that no modifications to the code are allowed by the licensee. Any licensee shall not make or cause to be made, nor permit, modifications, further developments or create derivative works of GNUnet code.
+\item Finally, licensees of Anastasis SARL or Taler Systems SA are only allowed to make copies of the GNUnet code they got licensed from Taler Systems SA. Any sub-licensee shall not make or cause to be made, nor permit, modification, further developments or create derivate works of GNUnet code.
+\end{itemize}
+
+\section*{``RMS wants you to advocate against evil'' clause}
+
+Taler Systems SA and Anastasis SARL make sure all software they
+distribute and copy under other licenses than the GNU GPLv3 license
+(or any later version) contains a reference to its development
+ressources, stating clearly that the same software is also available
+as Free Software under the GNU GPLv3 license (or any later version);
+the same ressource includes detailed build instructions and directions
+on how to run the binaries created for each platform concerned.
+
+\section*{``RMS is as paranoid as you are'' clause}
+
+Taler Systems SA and Anastasis SARL will make sure that non-GPLv3
+distributions will use protect the user's security and privacy as much
+as technically possible.  In particular, this includes enabling users
+to verify that binaries match the GPLv3 source code (i.e. by using
+determinstic builds).
+
+\section*{No holding in Abeyance clause}
+
+GNUnet e.V. expresses its interest in continuous development of
+Anastasis and Taler and its expedited deployment. To assure this,
+Taler Systems SA and Anastasis SARL agree to assign GNUnet e.V. shared
+ownership of Taler Systems SA's Taler code base should the development
+on Taler or Anastasis cease for more than 12 months of
+time. Development is defined to have ceased if the annual
+contributions from to the public code base reflect an effort of less
+than that of 12 person months in the first 3 years of launching
+Anastasis or Taler, and less than that of 2 person months for 5 years
+thereafter.
+
+\section*{Joint press release}
+
+All parties, GNUnet e.V. and Anastasis SARL and Taler Systems SA agree
+in creating a joint press release to inform the public about this
+agreement, which itself may be publicly disclosed by either party.
+
+\section*{Applicable law}
+This agreement is subject to Swiss law.
+\section*{Signatures}
+\begin{tabularx}{\textwidth}{ XXXX }
+GNUnet e.V. & & & Taler Systems SA \\
+& & &\\
+& & &\\
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}&&&
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\\
+& & &\\
+& & &\\
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}&&&
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\\
+& & &\\
+Date:~~\dots{}\dots{}\dots{}\dots{} & & &Date:~~\dots{}\dots{}\dots{}\dots{}\\
+\end{tabularx}
+\begin{tabularx}{\textwidth}{ XXXX }
+Anastasis SARL & & & \\
+& & &\\
+& & &\\
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}&&&
+%\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}
+\\
+& & &\\
+& & &\\
+\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}&&&
+%\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}\dots{}
+\\
+& & &\\
+Date:~~\dots{}\dots{}\dots{}\dots{} & & &
+%Date:~~\dots{}\dots{}\dots{}\dots{}\\
+\end{tabularx}
+%\bibliographystyle{plainnat}
+%\begin{flushleft}
+%\footnotesize
+%\bibliography{ref}
+%\normalsize
+%\end{flushleft}
+\end{document}

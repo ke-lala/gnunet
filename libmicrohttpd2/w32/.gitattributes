@@ -1,0 +1,5 @@
+*.c		text eol=crlf diff=cpp
+*.h		text eol=crlf diff=cpp
+*.h.in		text eol=crlf diff=cpp
+*.c.in		text eol=crlf diff=cpp
+*.rc.in		text eol=crlf

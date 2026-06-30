@@ -1,0 +1,70 @@
+December 4th 2022, 10:00 CET
+Gnunet e.V. Mitgliederversammlung 2022 (General Assembly)
+
+Online-meeting, gnunet.org Mumble
+
+
+# Teilnehmer
+
+    Guests:
+
+    Members: schanzen, grothoff, flo, thejackiemonster, t3sserakt, htgoebel
+
+    Schriftfuehrer: flo
+
+# Finanzbericht
+
+    https://fdold.eu/bilanz2022.pdf (und in gnunet-ev.git/bilanz2022.tex)
+
+# Vorstandsbericht:
+
+    Satzungsänderungen von GA 2020 noch nicht rechtskraeftig umgesetzt
+    weil nicht Satzungskonform eingeladen worden war. Ist dieses mal
+    erfolgt mit rechtzeitiger Einladung und neuer Satzungsfassung.
+
+    Diverse NGI Foerderungen bekommen.  GNS RFC im IETF Limbo, Martin
+    plant Novelle zum Thema.  Martin verbringt Vaterschaftsurlaub mit
+    (Code-)Aufraeumen.  Taler Systems SA continues to be funded.
+
+# Entlastung
+
+    Es wurde einstimmig fuer die Entlastung des Vorstands gestimmt.
+
+# Anträge
+
+    Hartmut wird zum Wahlleiter nominiert. Er nimmt an.
+
+    Änderungen Satzung.  Die Änderungen sind im git-Repository. Kernpunkte:
+
+    * Vereinsanschrift wird geändert 2021 auf Lenggries b. MUC
+    * Jaehrliche MV von moeglichst "beim CCC" auf moeglichst "online"
+
+    Die Änderungen werden einstimmig angenommen.
+
+
+# Zusammenarbeit mit pEp
+
+    Es gab bisher keine positiven Ergebnisse. Es sind in naechster Zeit auch keine
+    zu erwarten, gerade mit der aktuellen pEp Firmenleitung.
+
+    Der Vorstand wird beauftragt, die Vereinbarung mit pEp Foundation zu kündigen
+    und die Kuendigung im gnunet-ev Git zu hinterlegen.
+
+    Der Antrag wurde einstimmig ohne Enthaltungen angenommen.
+
+
+# Vorstandswahl
+
+    - neuer Finanzwart: Florian Dold
+    - neuer Präsident: Martin Schanzenbach
+    - neuer Vizepräsident: t3sserakt
+    - neuer Beisitzer: Christian Grothoff
+    - neuer Beisitzer: Jacki
+
+    Einstimmig gewählt.
+
+
+# Sonstiges
+
+    Florian soll das Protokoll unterschreiben, zum Notar gehen, und dann
+    zum Amtsgericht um die Aenderungen eintragen zu lassen.

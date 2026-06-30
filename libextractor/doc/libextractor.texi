@@ -1,0 +1,1008 @@
+\input texinfo                  @c -*- Texinfo -*-
+@c % The structure of this document is based on the
+@c % Texinfo manual from libgcrypt by Werner Koch and 
+@c % and Moritz Schulte.
+@c %**start of header
+@setfilename libextractor.info
+@include version.texi
+@settitle The GNU libextractor Reference Manual
+@c Unify all the indices into concept index.
+@syncodeindex fn cp
+@syncodeindex vr cp
+@syncodeindex ky cp
+@syncodeindex pg cp
+@syncodeindex tp cp
+@c %**end of header
+@copying
+This manual is for GNU libextractor
+(version @value{VERSION}, @value{UPDATED}), a library for metadata
+extraction.
+
+Copyright @copyright{} 2007, 2010, 2012 Christian Grothoff
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts.  A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+@end quotation
+@end copying
+
+@dircategory Software libraries
+@direntry
+* Libextractor: (libextractor).    Metadata extraction library.
+@end direntry
+
+
+
+@c
+@c Titlepage
+@c
+@titlepage
+@title The GNU libextractor Reference Manual
+@subtitle Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author Christian Grothoff (@email{christian@@grothoff.org})
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@summarycontents
+@contents
+
+
+@ifnottex
+@node Top
+@top The GNU libextractor Reference Manual
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::                 What is GNU libextractor.
+* Preparation::                  What you should do before using the library.
+* Generalities::                 General library functions and data types.
+* Extracting meta data::         How to use GNU libextractor to obtain meta data.
+* Language bindings::            How to use GNU libextractor from languages other than C.
+* Utility functions::            Utility functions of GNU libextractor.
+* Existing Plugins::             What plugins are available.
+* Writing new Plugins::          How to write new plugins for GNU libextractor.
+* Internal utility functions::   Utility functions of GNU libextractor for writing plugins.
+* Reporting bugs::               How to report bugs or request new features.
+
+Appendices
+
+* GNU Free Documentation License::  Copying this manual.
+
+Indices
+
+* Index::                       Index
+@c * Function and Data Index::     Index of functions, variables and data types.
+@c * Type Index::                  Index of data types.
+
+@end menu
+
+
+
+@c **********************************************************
+@c *******************  Introduction  ***********************
+@c **********************************************************
+@node Introduction
+@chapter Introduction
+
+@cindex error handling
+GNU libextractor is GNU's library for extracting meta data from
+files.  Meta data includes format information (such as mime type,
+image dimensions, color depth, recording frequency), content
+descriptions (such as document title or document description) and
+copyright information (such as license, author and contributors).
+Meta data extraction is an inherently uncertain business --- a parse
+error can be a corrupt file, an incompatibility in the file format
+version, an entirely different file format or a bug in the parser.  As
+a result of this uncertainty, GNU libextractor deliberately
+avoids to ever report any errors.  Unexpected file contents simply
+result in less or possibly no meta data being extracted.  
+
+@cindex plugin
+GNU libextractor uses plugins to handle various file formats.
+Technically a plugin can support multiple file formats; however, most
+plugins only support one particular format.  By default,
+GNU libextractor will use all plugins that are available and found
+in the plugin installation directory.  Applications can
+request the use of only specific plugins or the exclusion of
+certain plugins.
+
+GNU libextractor is distributed with the @command{extract} 
+command@footnote{Some distributions ship @command{extract} in a
+seperate package.} which is a command-line tool for extracting
+meta data.  @command{extract} is given a list of filenames and 
+prints the resulting meta data to the console.  The @command{extract}
+source code also serves as an advanced example for how to use
+GNU libextractor.  
+
+This manual focuses on providing documentation for writing software
+with GNU libextractor.  The only relevant parts for end-users
+are the chapter on compiling and installing GNU libextractor
+(@xref{Preparation}.).  Also, the chapter on existing plugins maybe of
+interest (@xref{Existing Plugins}.).  Additional documentation for
+end-users can be find in the man page on @command{extract} (using
+@verb{|man extract|}).
+
+@cindex license
+GNU libextractor is licensed under the GNU General Public License,
+specifically, since version 0.7, GNU libextractor is licensed under GPLv3
+@emph{or any later version}.
+
+@node Preparation
+@chapter Preparation
+
+This chapter first describes the general build instructions that
+should apply to all systems.  Specific instructions for known problems
+for particular platforms are then described in individual sections
+afterwards.
+
+Compiling GNU libextractor follows the standard GNU autotools build process
+using @command{configure} and @command{make}.  For details on the GNU
+autotools build process, read the @file{INSTALL} file and query
+@verb{|./configure --help|} for additional options.  
+
+GNU libextractor has various dependencies, most of which are optional. 
+Instead of specifying the names of the software packages, we
+will give the list in terms of the names of the respective
+Debian (wheezy) packages that should be installed.
+
+You absolutely need:
+
+@itemize @bullet
+@item
+libtool
+@item
+gcc
+@item
+make
+@item
+g++ 
+@item
+libltdl7-dev
+@end itemize
+
+Recommended dependencies are:
+@itemize @bullet
+@item
+zlib1g-dev
+@item
+libbz2-dev
+@item
+libgif-dev
+@item
+libvorbis-dev
+@item
+libflac-dev
+@item
+libmpeg2-4-dev
+@item
+librpm-dev
+@item
+libgtk2.0-dev or libgtk3.0-dev
+@item
+libgsf-1-dev
+@item
+libqt4-dev
+@item
+libpoppler-dev
+@item
+libexiv2-dev
+@item
+libavformat-dev
+@item
+libswscale-dev
+@item
+libgstreamer1.0-dev
+@end itemize
+
+For Subversion access and compilation one also needs:
+@itemize @bullet
+@item
+subversion
+@item
+autoconf
+@item
+automake
+@end itemize
+
+Please notify us if we missed some dependencies (note that the list is
+supposed to only list direct dependencies, not transitive
+dependencies).
+
+Once you have compiled and installed GNU libextractor, you should have a file
+@file{extractor.h} installed in your @file{include/} directory.  This
+file should be the starting point for your C and C++ development with
+GNU libextractor.  The build process also installs the @file{extract} binary and
+man pages for @file{extract} and GNU libextractor.  The @file{extract} man page
+documents the @file{extract} tool.  The GNU libextractor man page gives a brief
+summary of the C API for GNU libextractor.
+
+@cindex packageing
+@cindex directory structure
+@cindex plugin
+@cindex environment variables
+@vindex LIBEXTRACTOR_PREFIX
+When you install GNU libextractor, various plugins will be
+installed in the @file{lib/libextractor/} directory.  The main library
+will be installed as @file{lib/libextractor.so}.  Note that
+GNU libextractor will attempt to find the plugins relative to the
+path of the main library.  Consequently, a package manager can move
+the library and its plugins to a different location later --- as long
+as the relative path between the main library and the plugins is
+preserved.  As a method of last resort, the user can specify an
+environment variable @verb{|LIBEXTRACTOR_PREFIX|}.  If
+GNU libextractor cannot locate a plugin, it will look in
+@verb{|LIBEXTRACTOR_PREFIX/lib/libextractor/|}.
+
+
+@section Installation on GNU/Linux
+
+Should work using the standard instructions without problems.
+
+
+@section Installation on FreeBSD
+
+Should work using the standard instructions without problems.
+
+
+@section Installation on OpenBSD
+
+OpenBSD 3.8 also doesn't have CODESET in @file{langinfo.h}.  CODESET
+is used in GNU libextractor in about three places.  This causes problems
+during compilation.
+
+
+@section Installation on NetBSD
+
+No reports so far.
+
+
+@section Installation using MinGW
+
+Linking -lstdc++ with the provided libtool fails on Cygwin, this
+is a problem with libtool, there is unfortunately no flag to tell
+libtool how to do its job on Cygwin and it seems that it cannot be the
+default to set the library check to 'pass_all'.  Patching libtool may
+help.
+
+Note: this is a rather dated report and may no longer apply.
+
+
+@section Installation on OS X
+
+libextractor has two installation methods on Mac OS X: it can be
+installed as a Mac OS X framework or with the standard
+@command{./configure; make; make install} shell commands. The
+framework package is self-contained, but currently omits some of the
+extractor plugins that can be compiled in if libextractor is installed
+with @command{./configure; make; make install} (provided that the
+required dependencies exist.)
+
+@subsection Installing and uninstalling the framework
+
+The binary framework is distributed as a disk image (@file{Extractor-x.x.xx.dmg}).
+Installation is done by opening the disk image and clicking @file{Extractor.pkg}
+inside it. The Mac OS X installer application will then run. The framework
+is installed to the root volume's @file{/Library/Frameworks} folder and installing
+will require admin privileges.
+
+The framework can be uninstalled by dragging @*
+@file{/Library/Frameworks/Extractor.framework} to the @file{Trash}.
+
+
+@subsection Using the framework
+
+In the framework, the @command{extract} command line tool can be found at @*
+@file{/Library/Frameworks/Extractor.framework/Versions/Current/bin/extract}
+
+The framework can be used in software projects as a framework or as a dynamic
+library. 
+
+When using the framework as a dynamic library in projects using autotools,
+one would most likely want to add  @*
+"-I/Library/Frameworks/Extractor.framework/Versions/Current/include"
+to CPPFLAGS and @*
+"-L/Library/Frameworks/Extractor.framework/Versions/Current/lib"
+to LDFLAGS.
+
+
+@subsection Example for using the framework
+
+@example
+@verbatim
+// hello.c
+#include <Extractor/extractor.h>
+
+int
+main (int argc, char **argv)
+{
+  struct EXTRACTOR_PluginList *el;
+  el = EXTRACTOR_plugin_load_defaults (EXTRACTOR_OPTION_DEFAULT_POLICY);
+  // ...
+  EXTRACTOR_plugin_remove_all (el);
+  return 0;
+}
+@end verbatim
+@end example
+
+You can then compile the example using
+
+@verbatim
+$ gcc -o hello hello.c -framework Extractor
+@end verbatim
+
+@subsection Example for using the dynamic library
+
+@example
+@verbatim
+// hello.c
+#include <extractor.h>
+int main()
+{
+  struct EXTRACTOR_PluginList *el;
+  el = EXTRACTOR_plugin_load_defaults (EXTRACTOR_OPTION_DEFAULT_POLICY);
+  // ...
+  EXTRACTOR_plugin_remove_all (el);
+  return 0;
+}
+@end verbatim
+@end example
+
+You can then compile the example using
+
+@verbatim
+$ gcc -I/Library/Frameworks/Extractor.framework/Versions/Current/include \
+  -o hello hello.c \
+  -L/Library/Frameworks/Extractor.framework/Versions/Current/lib \
+  -lextractor
+@end verbatim
+
+Notice the difference in the @code{#include} line.
+
+
+
+
+
+
+@section Note to package maintainers
+
+The suggested way to package GNU libextractor is to split it into
+roughly the following binary packages:
+
+@itemize @bullet
+@item
+libextractor (main library only, only hard dependency for other packages depending on GNU libextractor)
+@item
+extract (command-line tool and man page extract.1)
+@item
+libextractor-dev (extractor.h header and man page libextractor.3)
+@item
+libextractor-doc (this manual)
+@item
+libextractor-plugins (plugins without external dependencies; recommended but not required by extract and libextractor package)
+@item
+libextractor-plugin-XXX (plugin with dependency on libXXX, for example for XXX=mpeg this would be @file{libextractor_mpeg.so})
+@item
+libextractor-plugins-all (meta package that requires all plugins except experimental plugins)
+@end itemize
+
+This would enable minimal installations (i.e. for embedded systems) to
+not include any plugins, as well as moderate-size installations (that
+do not trigger GTK and X11) for systems that have limited resources.
+Right now, the MP4 plugin is experimental and does nothing and should
+thus never be included at all; QuickTime, MP4, M4A and 3GPP files are
+instead handled by the @file{libextractor_qt.so} plugin, which only
+depends on zlib and is part of libextractor-plugins.  The gstreamer plugin is experimental
+but largely works with the correct version of gstreamer and can thus
+be packaged (especially if the dependency is available on the target
+system) but should probably not be part of libextractor-plugins-all.
+
+
+@node Generalities
+@chapter Generalities
+
+@section Introduction to the ``extract'' command
+
+The @command{extract} command takes a list of file names as arguments,
+extracts meta data from each of those files and prints the result to
+the console.  By default, @command{extract} will use all available
+plugins and print all (non-binary) meta data that is found.
+
+The set of plugins used by @command{extract} can be controlled using
+the ``-l'' and ``-n'' options.  Use ``-n'' to not load all of the
+default plugins.  Use ``-l NAME'' to specifically load a certain
+plugin.  For example, specify ``-n -l mime'' to only use the MIME
+plugin.
+
+Using the ``-p'' option the output of @command{extract} can be limited
+to only certain keyword types.  Similarly, using the ``-x'' option,
+certain keyword types can be excluded.  A list of all known keyword
+types can be obtained using the ``-L'' option.
+
+The output format of @command{extract} can be influenced with the
+``-V'' (more verbose, lists filenames), ``-g'' (grep-friendly, all
+meta data on a single line per file) and ``-b'' (bibTeX style)
+options.
+
+@section Common usage examples for ``extract''
+
+@example
+$ extract test/test.jpg
+comment - (C) 2001 by Christian Grothoff, using gimp 1.2 1
+mimetype - image/jpeg
+
+$ extract -V -x comment test/test.jpg
+Keywords for file test/test.jpg:
+mimetype - image/jpeg
+
+$ extract -p comment test/test.jpg
+comment - (C) 2001 by Christian Grothoff, using gimp 1.2 1
+
+$ extract -nV -l png.so -p comment test/test.jpg test/test.png
+Keywords for file test/test.jpg:
+Keywords for file test/test.png:
+comment - Testing keyword extraction
+@end example
+
+
+@section Introduction to the libextractor library
+
+Each public symbol exported by GNU libextractor has the prefix
+@verb{|EXTRACTOR_|}.  All-caps names are used for constants.  For the
+impatient, the minimal C code for using GNU libextractor (on the
+executing binary itself) looks like this:
+
+@verbatim
+#include <extractor.h>
+
+int 
+main (int argc, char ** argv) 
+{
+  struct EXTRACTOR_PluginList *plugins
+    = EXTRACTOR_plugin_add_defaults (EXTRACTOR_OPTION_DEFAULT_POLICY);
+  EXTRACTOR_extract (plugins, argv[1],
+                     NULL, 0, 
+                     &EXTRACTOR_meta_data_print, stdout);
+  EXTRACTOR_plugin_remove_all (plugins);
+  return 0;
+}
+@end verbatim
+
+The minimal API illustrated by this example is actually sufficient for
+many applications.  The full external C API of GNU libextractor is described
+in chapter @xref{Extracting meta data}.  Bindings for other languages
+are described in chapter @xref{Language bindings}.  The API for
+writing new plugins is described in chapter @xref{Writing new Plugins}.
+
+Note that it is possible for GNU libextractor to encounter a @code{SIGPIPE}
+during its execution.  GNU libextractor --- as it is a library and as such
+should not interfere with your main application --- does NOT install a 
+signal handler for @code{SIGPIPE}.  You thus need to install a signal
+handler (or at least tell your system to ignore @code{SIGPIPE}) if you
+want to avoid unexpected problems during calls to GNU libextractor.  
+@cindex SIGPIPE
+
+@node Extracting meta data
+@chapter Extracting meta data
+
+In order to extract meta data with GNU libextractor you first need to
+load the respective plugins and then call the extraction API
+with the plugins and the data to process.  This section
+documents how to load and unload plugins, the various types
+and formats in which meta data is returned to the application
+and finally the extraction API itself.
+
+@menu
+* Plugin management::   How to load and unload plugins
+* Meta types::          About meta types
+* Meta formats::        About meta formats
+* Extracting::          How to use the extraction API
+@end menu
+
+
+@node Plugin management
+@section Plugin management
+
+@cindex reentrant
+@cindex concurrency
+@cindex threads
+@cindex thread-safety
+@tindex enum EXTRACTOR_Options
+
+Using GNU libextractor from a multi-threaded parent process requires some
+care.  The problem is that on most platforms GNU libextractor starts
+sub-processes for the actual extraction work.  This is useful to
+isolate the parent process from potential bugs; however, it can cause
+problems if the parent process is multi-threaded.  The issue is that
+at the time of the fork, another thread of the application may hold a
+lock (i.e. in gettext or libc).  That lock would then never be
+released in the child process (as the other thread is not present in
+the child process).  As a result, the child process would then
+deadlock on trying to acquire the lock and never terminate.  This has
+actually been observed with a lock in GNU gettext that is triggered by
+the plugin startup code when it interacts with libltdl.
+
+The problem can be solved by loading the plugins using the
+@code{EXTRACTOR_OPTION_IN_PROCESS} option, which will run GNU libextractor
+in-process and thus avoid the locking issue.  In this case, all of the
+functions for loading and unloading plugins, including
+@verb{|EXTRACTOR_plugin_add_defaults|} and
+@verb{|EXTRACTOR_plugin_remove_all|}, are thread-safe and reentrant.
+However, using the same plugin list from multiple threads at the same
+time is not safe.  
+
+All plugin code is expected required to be reentrant and state-less,
+but due to the extensive use of 3rd party libraries this cannot
+be guaranteed.
+
+
+@deftp {C Struct} EXTRACTOR_PluginList
+@tindex struct EXTRACTOR_PluginList
+
+A plugin list represents a set of GNU libextractor plugins.  Most of
+the GNU libextractor API is concerned with either constructing a
+plugin list or using it to extract meta data.  The internal representation
+of the plugin list is of no concern to users or plugin developers.
+@end deftp
+
+
+@deftypefun void EXTRACTOR_plugin_remove_all (struct EXTRACTOR_PluginList *plugins)
+@findex EXTRACTOR_plugin_remove_all
+
+Unload all of the plugins in the given list.
+@end deftypefun
+
+@deftypefun {struct EXTRACTOR_PluginList *} EXTRACTOR_plugin_remove (struct EXTRACTOR_PluginList *plugins, const char*name)
+@findex EXTRACTOR_plugin_remove
+
+Unloads a particular plugin.  The given name should be the short name of the plugin, for example ``mime'' for the mime-type extractor or ``mpeg'' for the MPEG extractor.
+@end deftypefun
+
+@deftypefun {struct EXTRACTOR_PluginList *} EXTRACTOR_plugin_add (struct EXTRACTOR_PluginList *plugins, const char* name,const char* options, enum EXTRACTOR_Options flags)
+@findex EXTRACTOR_plugin_add
+
+Loads a particular plugin.  The plugin is added to the existing list, which can be @code{NULL}.  The second argument specifies the name of the plugin (i.e. ``ogg'').  The third argument can be @code{NULL} and specifies plugin-specific options.  Finally, the last argument specifies if the plugin should be executed out-of-process (@code{EXTRACTOR_OPTION_DEFAULT_POLICY}) or not.
+@end deftypefun
+
+@deftypefun {struct EXTRACTOR_PluginList *} EXTRACTOR_plugin_add_config (struct EXTRACTOR_PluginList *plugins, const char* config, enum EXTRACTOR_Options flags)
+@findex EXTRACTOR_plugin_add_config
+
+Loads and unloads plugins based on a configuration string, modifying the existing list, which can be @code{NULL}.  The string has the format ``[-]NAME(OPTIONS)@{:[-]NAME(OPTIONS)@}*''.  Prefixing the plugin name with a ``-'' means that the plugin should be unloaded.
+@end deftypefun
+
+@deftypefun {struct EXTRACTOR_PluginList *} EXTRACTOR_plugin_add_defaults (enum EXTRACTOR_Options flags)
+@findex EXTRACTOR_plugin_add_defaults
+
+Loads all of the plugins in the plugin directory.  This function is what most GNU libextractor applications should use to setup the plugins.
+@end deftypefun
+
+
+
+@node Meta types
+@section Meta types
+
+
+@tindex enum EXTRACTOR_MetaType
+@findex EXTRACTOR_metatype_get_max
+
+@verb{|enum EXTRACTOR_MetaType|} is a C enum which defines a list of over 100 different types of meta data.  The total number can differ between different GNU libextractor releases; the maximum value for the current release can be obtained using the @verb{|EXTRACTOR_metatype_get_max|} function.  All values in this enumeration are of the form @verb{|EXTRACTOR_METATYPE_XXX|}.
+
+@deftypefun {const char *} EXTRACTOR_metatype_to_string (enum EXTRACTOR_MetaType type)
+@findex EXTRACTOR_metatype_to_string
+@cindex gettext
+@cindex internationalization
+
+The function @verb{|EXTRACTOR_metatype_to_string|} can be used to obtain a short English string @samp{s} describing the meta data type.  The string can be translated into other languages using GNU gettext with the domain set to GNU libextractor (@verb{|dgettext("libextractor", s)|}).  
+@end deftypefun
+
+@deftypefun {const char *} EXTRACTOR_metatype_to_description (enum EXTRACTOR_MetaType type)
+@findex EXTRACTOR_metatype_to_description
+@cindex gettext
+@cindex internationalization
+
+The function @verb{|EXTRACTOR_metatype_to_description|} can be used to obtain a longer English string @samp{s} describing the meta data type.  The description may be empty if the short description returned by @code{EXTRACTOR_metatype_to_string} is already comprehensive.  The string can be translated into other languages using GNU gettext with the domain set to GNU libextractor (@verb{|dgettext("libextractor", s)|}).  
+@end deftypefun
+
+
+
+@node Meta formats
+@section Meta formats
+
+@tindex enum EXTRACTOR_MetaFormat
+
+@verb{|enum EXTRACTOR_MetaFormat|} is a C enum which defines on a high level how the extracted meta data is represented.  Currently, the library uses three formats: UTF-8 strings, C strings and binary data.  A fourth value, @code{EXTRACTOR_METAFORMAT_UNKNOWN} is defined but not used.  UTF-8 strings are 0-terminated strings that have been converted to UTF-8.  The format code is @code{EXTRACTOR_METAFORMAT_UTF8}. Ideally, most text meta data will be of this format.  Some file formats fail to specify the encoding used for the text.  In this case, the text cannot be converted to UTF-8.  However, the meta data is still known to be 0-terminated and presumably human-readable.  In this case, the format code used is @code{EXTRACTOR_METAFORMAT_C_STRING}; however, this should not be understood to mean that the encoding is the same as that used by the C compiler.  Finally, for binary data (mostly images), the format @code{EXTRACTOR_METAFORMAT_BINARY} is used.
+
+Naturally this is not a precise description of the meta format. Plugins can provide a more precise description (if known) by providing the respective mime type of the meta data.  For example, binary image meta data could be also tagged as ``image/png'' and normal text would typically be tagged as ``text/plain''.  
+
+
+
+@node Extracting
+@section Extracting
+
+@deftypefn {Function Pointer} int (*EXTRACTOR_MetaDataProcessor)(void *cls, const char *plugin_name, enum EXTRACTOR_MetaType type, enum EXTRACTOR_MetaFormat format, const char *data_mime_type, const char *data, size_t data_len)
+@tindex EXTRACTOR_MetaDataProcessor
+
+Type of a function that libextractor calls for each meta data item found.
+
+@table @var
+
+@item cls 
+closure (user-defined)
+
+@item plugin_name 
+name of the plugin that produced this value; special values can be used (i.e. '<zlib>' for zlib being used in the main libextractor library and yielding meta data);
+
+@item type 
+libextractor-type describing the meta data;
+
+@item format basic 
+format information about data
+
+@item data_mime_type 
+mime-type of data (not of the original file); can be @code{NULL} (if mime-type is not known);
+
+@item data 
+actual meta-data found
+
+@item data_len 
+number of bytes in data
+
+@end table
+
+Return 0 to continue extracting, 1 to abort.
+@end deftypefn
+
+
+
+@deftypefun void EXTRACTOR_extract (struct EXTRACTOR_PluginList *plugins, const char *filename, const void *data, size_t size, EXTRACTOR_MetaDataProcessor proc, void *proc_cls)
+@findex EXTRACTOR_extract
+@cindex reentrant
+@cindex concurrency
+@cindex threads
+@cindex thread-safety
+
+This is the main function for extracting keywords with GNU libextractor.  The first argument is a plugin list which specifies the set of plugins that should be used for extracting meta data.  The @samp{filename} argument is optional and can be used to specify the name of a file to process.  If @samp{filename} is @code{NULL}, then the @samp{data} argument must point to the in-memory data to extract meta data from.  If @samp{filename} is non-@code{NULL}, @samp{data} can be @code{NULL}.  If @samp{data} is non-null, then @samp{size} is the size of @samp{data} in bytes.  Otherwise @samp{size} should be zero.  For each meta data item found, GNU libextractor will call the @samp{proc} function, passing @samp{proc_cls} as the first argument to @samp{proc}.  The other arguments to @samp{proc} depend on the specific meta data found.  
+
+@cindex SIGBUS
+@cindex bus error
+Meta data extraction should never really fail --- at worst, GNU libextractor should not call @samp{proc} with any meta data. By design, GNU libextractor should never crash or leak memory, even given corrupt files as input.  Note however, that running GNU libextractor on a corrupt file system (or incorrectly @verb{|mmap|}ed files) can result in the operating system sending a SIGBUS (bus error) to the process.  As GNU libextractor typically runs plugins out-of-process, it first maps the file into memory and then attempts to decompress it.  During decompression it is possible to encounter a SIGBUS.   GNU libextractor will @emph{not} attempt to catch this signal and your application is likely to crash.  Note again that this should only happen if the file @emph{system} is corrupt (not if individual files are corrupt).  If this is not acceptable, you might want to consider running GNU libextractor itself also out-of-process (as done, for example, by @url{http://grothoff.org/christian/doodle/,doodle}).
+
+@end deftypefun
+
+
+@node Language bindings
+@chapter Language bindings
+@cindex Java
+@cindex Mono
+@cindex Perl
+@cindex Python
+@cindex PHP
+@cindex Ruby
+
+GNU libextractor works immediately with C and C++ code. Bindings for Java, Mono, Ruby, Perl, PHP and Python are available for download from the main GNU libextractor website.  Documentation for these bindings (if available) is part of the downloads for the respective binding.  In all cases, a full installation of the C library is required before the binding can be installed.
+
+@section Java
+
+Compiling the GNU libextractor Java binding follows the usual process of
+running @command{configure} and @command{make}.  The result will be a
+shared C library @file{libextractor_java.so} with the native code and
+a JAR file (installed to @file{$PREFIX/share/java/libextractor.java}).
+
+A minimal example for using GNU libextractor's Java binding would look
+like this:
+@verbatim
+import org.gnu.libextractor.*;
+import java.util.ArrayList;
+
+public static void main(String[] args) {
+  Extractor ex = Extractor.getDefault();
+  for (int i=0;i<args.length;i++) {
+    ArrayList keywords = ex.extract(args[i]);
+    System.out.println("Keywords for " + args[i] + ":");
+    for (int j=0;j<keywords.size();j++)
+      System.out.println(keywords.get(j));
+  }
+}
+@end verbatim
+
+The GNU libextractor library and the @file{libextractor_java.so} JNI binding
+have to be in the library search path for this to work.  Furthermore, the
+@file{libextractor.jar} file should be on the classpath.  
+
+Note that the API does not use Java 5 style generics in order to work
+with older versions of Java.
+
+@section Mono
+
+his binding is undocumented at this point.
+
+@section Perl
+
+This binding is undocumented at this point.
+
+@section Python
+
+This binding is undocumented at this point.
+
+@section PHP
+
+This binding is undocumented at this point.
+
+@section Ruby
+
+This binding is undocumented at this point.
+
+
+
+@node Utility functions
+@chapter Utility functions
+
+@cindex reentrant
+@cindex concurrency
+@cindex threads
+@cindex thread-safety
+This chapter describes various utility functions for GNU libextractor usage. All of the functions are reentrant.
+
+@menu
+* Utility Constants::
+* Meta data printing::
+@end menu
+
+@node Utility Constants
+@section Utility Constants
+
+@findex EXTRACTOR_VERSION
+The constant @verb{|EXTRACTOR_VERSION|} is a hexadecimal
+representation of the version number of the installed libextractor
+header.  The hexadecimal format is 0xAABBCCDD where AA is the major
+version (so far always 0), BB is the minor version, CC is the revision
+and DD the patch number.  For example, for version 0.5.18, we would
+have AA=0, BB=5, CC=18 and DD=0.  Minor releases such as 0.5.18a or
+significant changes in unreleased versions would be marked with DD=1
+or higher.
+
+
+@node Meta data printing
+@section Meta data printing
+
+
+@findex EXTRACTOR_meta_data_print
+The @verb{|EXTRACTOR_meta_data_print|} is a simple function which prints the meta data found with libextractor to a file.  The function is mostly useful for debugging and as an example for how to manipulate the keyword list and can be passed as the @samp{proc} argument to @code{EXTRACTOR_extract}.  The file to print to should be passed as @samp{proc_cls} (which must be of type @code{FILE *}), for example @code{stdout}.
+
+
+
+@node Existing Plugins
+@chapter Existing Plugins
+
+@itemize @bullet
+@item
+ARCHIVE (using libarchive)
+@item
+DVI
+@item
+EXIV2 (using libexiv2, 0.23 or later preferred)
+@item 
+FLAC (using libFLAC)
+@item
+GIF (using libgif)
+@item
+GSTREAMER (using libgstreamer v1.0 or later)
+@item
+HTML (using libtidy)
+@item
+IT 
+@item
+JPEG (using libjpeg v8 or later)
+@item
+MAN
+@item
+MIDI (using libsmf)
+@item
+MIME (using libmagic)
+@item
+MPEG (using libmpeg2)
+@item
+NSF
+@item
+NSFE
+@item
+ODF
+@item
+OLE2 (with libgsf)
+@item
+OGG (with libogg)
+@item
+PNG
+@item
+PS
+@item
+RIFF
+@item
+RPM (using librpm)
+@item
+S3M
+@item
+SID
+@item
+ThumbnailFFMPEG (using libavformat and related libav-libraries, including libswscale)
+@item
+ThumbnailGtk (using libgtk)
+@item
+TIFF (with libtiff, tested with v4)
+@item
+WAV
+@item
+XM
+@item
+ZIP
+@end itemize
+
+@file{gzip} and @file{bzip2} compressed versions of these formats are 
+also supported (as well as meta data embedded by @file{gzip} itself)
+if zlib or libbz2 are available.
+
+@node Writing new Plugins
+@chapter Writing new Plugins
+
+Writing a new plugin for libextractor usually requires writing of or
+interfacing with an actual parser for a specific format.  How this is
+can be accomplished depends on the format and cannot be specified in
+general.  However, care should be taken for the code to be reentrant
+and highly fault-tolerant, especially with respect to malformed
+inputs.
+
+Plugins should start by verifying that the header of the data matches
+the specific format and immediately return if that is not the case.
+Even if the header matches the expected file format, plugins must not
+assume that the remainder of the file is well formed.
+
+The plugin library must be called libextractor_XXX.so, where XXX 
+denotes the file format of the plugin. The library must export a 
+method @verb{|libextractor_XXX_extract_method|}, with the following 
+signature:
+@verbatim
+void
+EXTRACTOR_XXX_extract_method (struct EXTRACTOR_ExtractContext *ec);
+@end verbatim
+
+@samp{ec} contains various information the plugin may need for its
+execution.  Most importantly, it contains functions for reading
+(``read'') and seeking (``seek'') the input data and for returning
+extracted data (``proc'').  The ``config'' member can contain
+additional configuration options.  ``proc'' should be called on
+each meta data item found.  If ``proc'' returns non-zero,
+processing should be aborted (if possible).
+
+In order to test new plugins, the @file{extract} command can be run
+with the options ``-ni'' and ``-l XXX'' .  This will run the plugin
+in-process (making it easier to debug) and without any of the other
+plugins.
+
+
+@section Example for a minimal extract method
+
+The following example shows how a plugin can return the mime type of
+a file.
+@example
+@verbatim
+void
+EXTRACTOR_mymime_extract (struct EXTRACTOR_ExtractContext *ec)
+{
+  void *data;
+  ssize_t data_size,
+
+  if (-1 == (data_size = ec->read (ec->cls, &data, 4)))
+    return; /* read error */
+  if (data_size < 4)
+    return; /* file too small */
+  if (0 != memcmp (data, "\177ELF", 4))
+    return; /* not ELF */
+  if (0 != ec->proc (ec->cls, 
+                     "mymime",
+                     EXTRACTOR_METATYPE_MIMETYPE,
+                     EXTRACTOR_METAFORMAT_UTF8,
+                     "text/plain",
+                     "application/x-executable",
+                     1 + strlen("application/x-executable")))
+    return;
+  /* more calls to 'proc' here as needed */
+}
+@end verbatim
+@end example
+
+
+@node Internal utility functions
+@chapter Internal utility functions
+
+Some plugins link against the @code{libextractor_common} library which
+provides common abstractions needed by many plugins.  This section
+documents this internal API for plugin developers.  Note that the headers
+for this library are (intentionally) not installed: we do not consider
+this API stable and it should hence only be used by plugins that are 
+build and shipped with GNU libextractor.  Third-party plugins should
+not use it.
+
+@file{convert_numeric.h} defines various conversion functions for
+numbers (in particular, byte-order conversion for floating point
+numbers).  
+
+@file{unzip.h} defines an API for accessing compressed files.
+
+@file{pack.h} provides an interpreter for unpacking structs of integer
+numbers from streams and converting from big or little endian to host
+byte order at the same time.
+
+@file{convert.h} provides a function for character set conversion described
+below.
+
+@deftypefun {char *} EXTRACTOR_common_convert_to_utf8 (const char *input, size_t len, const char *charset)
+@cindex UTF-8
+@cindex character set
+@findex EXTRACTOR_common_convert_to_utf8
+Various GNU libextractor plugins make use of the internal
+@file{convert.h} header which defines a function
+
+@verb{|EXTRACTOR_common_convert_to_utf8|} which can be used to easily convert text from
+any character set to UTF-8.  This conversion is important since the
+linked list of keywords that is returned by GNU libextractor is
+expected to contain only UTF-8 strings.  Naturally, proper conversion
+may not always be possible since some file formats fail to specify the
+character set.  In that case, it is often better to not convert at
+all.
+
+The arguments to @verb{|EXTRACTOR_common_convert_to_utf8|} are the input string (which
+does @emph{not} have to be zero-terminated), the length of the input
+string, and the character set (which @emph{must} be zero-terminated).
+Which character sets are supported depends on the platform, a list can
+generally be obtained using the @command{iconv -l} command.  The
+return value from @verb{|EXTRACTOR_common_convert_to_utf8|} is a zero-terminated string
+in UTF-8 format.  The responsibility to free the string is with the
+caller, so storing the string in the keyword list is acceptable.
+@end deftypefun
+
+
+
+
+
+@node Reporting bugs
+@chapter Reporting bugs
+
+@cindex bug
+GNU libextractor uses the @url{https://gnunet.org/bugs/,Mantis bugtracking
+system}.  If possible, please report bugs there.  You can also e-mail
+the GNU libextractor mailinglist at @url{libextractor@@gnu.org}.
+
+
+
+@c **********************************************************
+@c *******************  Appendices  *************************
+@c **********************************************************
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl-1.3.texi
+
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@c @node Function and Data Index
+@c @unnumbered Function and Data Index
+@c @printindex fn
+
+@c @node Type Index
+@c @unnumbered Type Index
+@c @printindex tp
+
+@bye

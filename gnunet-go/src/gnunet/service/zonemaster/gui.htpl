@@ -1,0 +1,142 @@
+{{define "main"}}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {{template "css" .NumRR}}
+    </head>
+    <body>
+        <h1>GNUnet Zone Master</h1>
+        <hr/>
+        {{.Content}}
+        <script>
+            function notify(msg) {
+                if ('Notification' in window) {
+                    if (Notification.permission !== 'denied') {
+                        Notification.requestPermission(function (permission) {
+                            if (permission === 'granted') {
+                                var note = new Notification('GNUnet Zone Master', {
+                                    body: msg,
+                                    actions: []
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
+{{end}}
+
+{{define "dashboard"}}
+<div>
+    <ul id="dashboard">
+    {{if .Zones}}
+        {{$plugins := .Plugins}}
+        {{range $zi, $zone := .Zones}}
+        <li>
+            {{$z := $zone.Zone}}
+            <span class="caret"><b>{{$z.Name}}</b></span> [{{keytype $z.Key.Type}}: {{$zone.PubID}}]
+            <a href="/edit/zone/{{$z.ID}}" title="Edit zone"><button class="icon blue">&#9998;</button></a>
+            <a href="/del/zone/{{$z.ID}}" title="Remove zone"><button class="icon red">&#10006;</button></a>
+            (Created: {{date $z.Created}}, Modified: {{date $z.Modified}})
+            <ul class="nested">
+            {{if $zone.Labels}}
+                {{range $li, $label := $zone.Labels}}
+                <li>
+                    {{$l := $label.Label}}
+                    <span class="caret"><b>{{$l.Name}}</b></span>
+                    <a href="/edit/label/{{$l.ID}}" title="Edit label"><button class="icon blue">&#9998;</button></a>
+                    <a href="/del/label/{{$l.ID}}" title="Remove label"><button class="icon red">&#10006;</button></a>
+                    (Created: {{date $l.Created}}, Modified: {{date $l.Modified}})
+                    <ul class="nested">
+                    {{if $label.Records}}
+                        <li>
+                            <table class="rowed">
+                                <tr class="header">
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                    <th>Flags</th>
+                                    <th>Expires</th>
+                                    <th>Created</th>
+                                    <th>Modified</th>
+                                    <th>Actions</th>
+                                </tr>
+                                {{range $ri, $rec := $label.Records}}
+                                <tr class="row">
+                                    <td>{{rrtype $rec.RType}}</td>
+                                    <td>{{rrdata $rec.RType $rec.Data}}</td>
+                                    <td>{{rrflags $rec.Flags}}</td>
+                                    <td>{{dateExp $rec.Expire $rec.Flags}}</td>
+                                    <td>{{date $rec.Created}}</td>
+                                    <td>{{date $rec.Modified}}</td>
+                                    <td>
+                                        <a href="/edit/rr/{{$rec.ID}}" title="Edit record"><button class="icon blue">&#9998;</button></a>
+                                        <a href="/del/rr/{{$rec.ID}}" title="Remove record"><button class="icon red">&#10006;</button></a>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </table>
+                        </li>
+                    {{else}}
+                        <li><h3>No resource records for label defined yet.</h3></li>
+                    {{end}}
+                        <li>
+                            <form action="/new/rr/{{$l.ID}}" method="get">
+                                <select name="mode">
+                                    <option value="GNS" selected>GNS</option>
+                                    {{range $i,$v := $plugins}}
+                                    <option value="{{$i}}">{{$v}}</option>
+                                    {{end}}
+                                </select>
+                                <button id="submit" class="icon blue">&#10010;</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {{end}}
+            {{else}}
+                <li><h3>No labels for zone defined yet.</h3></li>
+            {{end}}
+                <li>
+                    <a href="/new/label/{{$z.ID}}" title="Add new label..."><button class="icon blue">&#10010;</button></a>
+                </li>
+            </ul>
+        </li>
+        {{end}}
+    {{else}}
+        <li>
+            <h3>No zones defined yet.</h3>
+        </li>
+    {{end}}
+        <li>
+            <a href="/new/zone/0" title="Add new zone..."><button class="icon blue">&#10010;</button></a>
+        </li>
+    </ul>
+</div>
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    for (var i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function() {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+
+    for (var i = 0; i < toggler.length; i++) {
+        if (localStorage.getItem("t"+i) == "true") {
+            toggler[i].parentElement.querySelector(".nested").classList.toggle("active");
+            toggler[i].classList.toggle("caret-down");
+        }
+    }
+    document.documentElement.scrollTop = document.body.scrollTop = localStorage.getItem("top");
+
+    window.addEventListener('beforeunload', function (e) {
+        for (var i = 0; i < toggler.length; i++) {
+            localStorage.setItem("t"+i, toggler[i].classList.contains("caret-down"));
+        }
+        localStorage.setItem("top", window.pageYOffset || document.documentElement.scrollTop);
+    });
+</script>
+{{end}}

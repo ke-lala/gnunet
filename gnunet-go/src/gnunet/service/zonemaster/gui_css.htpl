@@ -1,0 +1,246 @@
+{{define "css"}}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        margin: 2em 9em 2em 9em;
+    }
+    input[type=text] {
+        font-size: 1.2em;
+        padding: 5px;
+        border: 2px solid #ddd;
+        border-radius: 7px;
+    }
+    input[type=text]:focus { 
+        outline: none;
+        border-color: #ace;
+        box-shadow: 0 0 10px #ace;
+    }
+    div.row::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+    div.cell {
+        display: inline;
+        float: left;
+    }
+    div.box {
+        border: 2px solid black;
+        margin: 0.5em;
+        padding: 0.5em;
+    }
+    div.block {
+        margin: 0.5em;
+        padding: 0.5em;
+    }
+    div.heading {
+        color: white;
+        background-color: orange;
+        font-size: 200%;
+        font-weight: bold;
+        padding: 0.3em;
+        margin: 1em 0 1em 0;
+    }
+    button.icon {
+        border: none;
+        color: black;
+        background-color: transparent;
+        padding: 0 0;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 100%;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+    .label {
+        text-align: right;
+        vertical-align: top;
+        font-weight: bold;
+    }            
+    .title {
+        font-size: 120%;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+    }
+    .large {
+        font-size: 200%;
+        font-weight: bold;
+    }
+    .small {
+        font-size: 75%;
+    }
+    .blue {
+        color: blue !important;
+    }
+    .red {
+        color: red !important;
+    }
+    .disabled {
+        pointer-events:none;
+    }
+    .headline {
+        color: white;
+        padding: 0.3em;
+    }
+    .status-0 {
+        background-color: green;
+    }
+    .status-1 {
+        background-color: orange;
+    }
+    .status-2 {
+        background-color: red;
+    }
+    .spacer-right {
+        margin-right: 2em;
+    }
+    .changed {
+        background-color: #fee;
+    }
+    table.rowed {
+        border-collapse: separate;
+    }
+    table.rowed > tbody > tr {
+        border: solid;
+        border-width: 1px 0;
+        border-color: #ccc;
+    }
+    tr.row:nth-child(even) {
+        background: #fff;
+    }
+    tr.row:nth-child(odd) {
+        background: #eee;
+    }
+    tr.header {
+        background: #eef;
+        color: black;
+        font-weight: bold;
+    }
+    td {
+        padding: 0.5em;
+    }
+    th {
+        padding: 0.5em;
+        text-align: center;
+    }
+    label[for=toggle] {
+        cursor: pointer;
+        border: 1px solid black;
+        border-radius: 0.2em;
+        background-color: #eeeeee;
+        padding: 0.1em;
+    }
+    #toggle {
+        display: none;
+    }
+    #toggle:not(:checked) ~ #toggled {
+        display: none;
+    }
+    ul, #dashboard {
+        list-style-type: none;
+    }
+    #dashboard {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        margin: 0.5em;
+    }
+    .caret {
+        cursor: pointer;
+        user-select: none;
+    }
+    .caret::before {
+        content: "\25B6";
+        color: black;
+        display: inline-block;
+        margin-right: 6px;
+    }
+    .caret-down::before {
+        transform: rotate(90deg);
+    }
+    .nested {
+        display: none;
+    }
+    .tabset > input[type="radio"] {
+        position: absolute;
+        left: -200vw;
+    }
+    .tabset .tab-panel {
+        display: none;
+    }
+    {{range $i,$j := tabSetList .}}
+    .tabset > input:nth-child({{$j}}):checked ~ .tab-panels > .tab-panel:nth-child({{$i}}),
+    {{end}}
+    .active {
+        display: block;
+    }
+    .tabset > label {
+        position: relative;
+        display: inline-block;
+        padding: 15px 15px 25px;
+        border: 1px solid transparent;
+        border-bottom: 0;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .tabset > label::after {
+        content: "";
+        position: absolute;
+        left: 15px;
+        bottom: 10px;
+        width: 22px;
+        height: 4px;
+        background: #8d8d8d;
+    }
+    .tabset > label:hover {
+        color: #f90;
+    }
+    .tabset > input:focus + label {
+        color: #06c;
+    }
+    .tabset > label:hover::after {
+        background: #f90;
+    }
+    .tabset > input:focus + label::after,
+    .tabset > input:checked + label::after {
+        background: #06c;
+    }
+    .tabset > input:checked + label {
+        border-color: #ccc;
+        border-bottom: 1px solid #fff;
+        margin-bottom: -1px;
+    }
+    .tab-panel {
+        padding: 30px 0;
+        border-top: 1px solid #ccc;
+    }
+    div.switch {
+        display: none;
+    }
+    input.switch:checked ~ div.switch {
+        display: block;
+    }
+    div.alternate {
+        display: block;
+    }
+    input.alternate:checked ~ div.alternate {
+        display: none;
+    }
+    div.toggle-on {
+        display: none;
+    }
+    div.toggle-off {
+        display: block;
+    }
+    input.toggle:checked ~ div.toggle-on {
+        display: block;
+    }
+    input.toggle:checked ~ div.toggle-off {
+        display: none;
+    }
+</style>
+{{end}}

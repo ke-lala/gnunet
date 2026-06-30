@@ -1,0 +1,58 @@
+.qr {
+  text-align: center;
+}
+
+.taldir-qr {
+  margin: 1em;
+  border: 1px solid #555;
+  border-radius: 1em;
+}
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+ul.timeline > li {
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+ul.timeline > li:before {
+    content: ' ';
+    background: white;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 400;
+}
+
+ul.timeline > li.inprogress:before {
+    border: 3px solid #22c0e8;
+}
+
+ul.timeline > li.done:before {
+    border: 3px solid #333;
+}
+/*.card {
+//  box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
+//  border: 1px solid #e6e4e9;
+//  border-radius: 8px;
+//}
+//
+//body {
+//  background-color: #fefefe;
+//}*/

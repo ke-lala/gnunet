@@ -1,0 +1,6 @@
+Makefile.in
+Makefile
+POTFILES
+gnunet-ext.pot
+remove-potcdate.sed
+stamp-po

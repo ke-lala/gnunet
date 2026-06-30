@@ -1,0 +1,49 @@
+# Payto Payment Target Type for Wallee Transactions
+
+## Target Type "wallee-transaction"
+
+Name: wallee-transaction
+
+Description:  Wallee Transaction
+
+   A Wallee transaction is targeted by this payto target-type.
+   It aims to allow refunding a transaction which was initiated
+   by Wallee.
+
+   For refunding a transaction using Wallee, this payto specification
+   shall be used. To trigger a refund operation in Wallee, the merchant-reference
+   of the transaction must be given as path parameter. The merchant reference is 
+   specified by the merchant and is represented as string.
+
+Syntax:
+
+   payto-wallee-transaction-URI = "payto://wallee-transaction/" [ merchant-reference ]
+
+   'merchant-reference' is a string which is given to the transaction by the merchant.
+   
+   The merchant-reference can be used at Wallee's transaction service to find the transaction.
+
+Examples:
+
+   payto://wallee-transaction/8XP6K51NGPHXD80JJEF660HT277Q2WCW248SS2SR30V2DSTH8V8G
+   payto://wallee-transaction/602990d9-22a6-43c2-a8cc-13c3531fed91
+
+
+Contact:  <mailto:joel.haeberli@taler.net>
+
+
+Normative References
+
+* [RFC 8905] The 'payto' URI Scheme for Payments
+  <https://tools.ietf.org/html/rfc8905>
+
+Informative References
+
+* [Wallee Transaction Model] The Transaction model of Wallee
+  <https://app-wallee.com/en-us/doc/api/model/transaction>
+
+* [Wallee Transaction API] The Transaction api of Wallee
+  <https://app-wallee.com/doc/api/web-service#_transaction>
+
+* [Wallee Type System] The type system used by Wallee
+  <https://app-wallee.com/en-us/doc/api/web-service#_type_system>

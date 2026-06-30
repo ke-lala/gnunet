@@ -1,0 +1,106 @@
+<!--
+    This file is part of GNUnet.
+    Copyright (C) 2021–2025 GNUnet e.V.
+
+    GNUnet is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License,
+    or (at your option) any later version.
+
+    GNUnet is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: AGPL3.0-or-later
+
+    @author t3sserakt
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profileContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/avatarImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_account_circle" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:paddingTop="8dp" />
+
+
+    <EditText
+        android:id="@+id/nameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Account Name"
+        android:visibility="gone"
+        android:paddingTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_save_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Name"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/publicKeyText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Public Key"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/qrCodeImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <!--<Button
+        android:id="@+id/btn_list_attributes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Attributes"
+        android:layout_marginTop="16dp" />-->
+
+    <Button
+        android:id="@+id/btn_share_attributes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Attributes"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btn_share_identity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Identity"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_block_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Block Contact"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+</LinearLayout>

@@ -1,0 +1,51 @@
+#!/bin/sh
+
+
+# This is more portable than `which' but comes with
+# the caveat of not(?) properly working on busybox's ash:
+existence()
+{
+    command -v "$1" >/dev/null 2>&1
+}
+
+check_uncrustify()
+{
+    if existence uncrustify; then
+        echo "Installing uncrustify hook and configuration"
+        ln -fs contrib/build-common/conf/uncrustify.cfg uncrustify.cfg 2> /dev/null
+        ln -fs contrib/build-common/conf/uncrustify_precommit .git/hooks/pre-commit 2> /dev/null
+    else
+        echo "Uncrustify not detected, hook not installed."
+        echo "Please install uncrustify if you plan on doing development"
+    fi
+}
+
+submodules()
+{
+    # Try to update the submodule. Since bootstrap
+    # is also invoked by distributors, we must
+    # ignore any failing of this function as we
+    # could have no outgoing network connection
+    # in a restricted environment.
+    if ! git --version >/dev/null; then
+        echo "git not installed, skipping submodule update"
+    else
+        git submodule update --init || true
+        git submodule update --recursive --remote || true
+        git submodule sync || true
+    fi
+}
+
+auto_reconf()
+{
+    autoreconf -fi
+}
+
+main()
+{
+    submodules
+    check_uncrustify
+    auto_reconf
+}
+
+main "$@"

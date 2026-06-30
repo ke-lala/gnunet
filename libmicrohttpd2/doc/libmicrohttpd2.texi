@@ -1,0 +1,177 @@
+\input texinfo
+@setfilename libmicrohttpd2.info
+@documentencoding UTF-8
+@include version.texi
+@settitle The GNU libmicrohttpd2 Reference Manual
+@c Unify all the indices into concept index.
+@syncodeindex vr cp
+@syncodeindex ky cp
+@syncodeindex pg cp
+@copying
+This manual is for GNU libmicrohttpd
+(version @value{VERSION}, @value{UPDATED}), a library for embedding
+an HTTP(S) server into C applications.
+
+Copyright @copyright{} 2025 Christian Grothoff
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+@end quotation
+
+We are grateful for financial support from the SovereignTechFund
+(2024--2025) of the German government.
+@end copying
+
+@dircategory Software libraries
+@direntry
+* libmicrohttpd2: (libmicrohttpd2).       Embedded HTTP server library.
+@end direntry
+
+@c
+@c Titlepage
+@c
+@titlepage
+@title The GNU libmicrohttpd2 Reference Manual
+@subtitle Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author Christian Grothoff (@email{christian@@grothoff.org})
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@summarycontents
+@contents
+
+@c ------------------------------------------------------------
+@ifnottex
+@node Top
+@top The GNU libmicrohttpd2 Library
+@insertcopying
+@end ifnottex
+
+
+@menu
+* libmicrohttpd2-introduction::     Introduction.
+* libmicrohttpd2-init::             Starting and stopping the HTTP daemon.
+* libmicrohttpd2-doptions::         Configuring your HTTP daemon.
+* libmicrohttpd2-external::         Using external event loops.
+* libmicrohttpd2-requests::         Accessing client request data.
+* libmicrohttpd2-actions::          Acting on HTTP requests.
+* libmicrohttpd2-responses::        Generating HTTP responses.
+* libmicrohttpd2-postprocessor::    Parsing POST data.
+* libmicrohttpd2-authentication::   Using HTTP authentication.
+* libmicrohttpd2-introspection::    Introspecting MHD objects.
+* libmicrohttpd2-utility::          Utility functions.
+* libmicrohttpd2-migration::        Migration from GNU libmicrohttpd 1.0.
+
+Appendices
+
+* GNU-LGPL::                    The GNU Lesser General Public License says how you
+                                 can copy and share almost all of `libmicrohttpd2'.
+* eCos License::                The eCos License says how you can copy and share some parts of `libmicrohttpd2'.
+* GNU-GPL::                     The GNU General Public License (with eCos extension) says how you can copy and share some parts of `libmicrohttpd2'.
+* GNU-FDL::                     The GNU Free Documentation License says how you
+                                can copy and share the documentation of `libmicrohttpd2'.
+
+Indices
+
+* Concept Index::               Index of concepts and programs.
+* Function and Data Index::     Index of functions, variables and data types.
+* Type Index::                  Index of data types.
+@end menu
+
+
+@node libmicrohttpd2-introduction
+@chapter Introduction
+@include manual/introduction.inc
+
+@node libmicrohttpd2-init
+@chapter Starting and stopping the HTTP daemon
+@include manual/init.inc
+
+@node libmicrohttpd2-doptions
+@chapter Configuring your HTTP daemon
+@include manual/doptions.inc
+
+@node libmicrohttpd2-external
+@chapter Using external event loops
+@include manual/external.inc
+
+@node libmicrohttpd2-requests
+@chapter Accessing client request data
+@include manual/requests.inc
+
+@node libmicrohttpd2-actions
+@chapter Reacting to HTTP requests with actions
+@include manual/actions.inc
+
+@node libmicrohttpd2-responses
+@chapter Responses to HTTP requests
+@include manual/responses.inc
+
+@node libmicrohttpd2-postprocessor
+@chapter Parsing HTML form data with the POST processor
+@include manual/postprocessor.inc
+
+@node libmicrohttpd2-authentication
+@chapter Using HTTP authentication
+@include manual/authentication.inc
+
+@node libmicrohttpd2-introspection
+@chapter Introspecting MHD objects.
+@include manual/introspection.inc
+
+@node libmicrohttpd2-utility
+@chapter Utility functions.
+@include manual/utility.inc
+
+@node libmicrohttpd2-migration
+@chapter Migrating code to MHD2
+@include manual/migration.inc
+
+
+@c FIXME: document other options (connection, request, session)
+
+
+@node GNU-LGPL
+@unnumbered GNU-LGPL
+@cindex license
+@include lgpl.texi
+
+@node eCos License
+@unnumbered eCos License
+@cindex license
+@include ecos.texi
+
+@node GNU-GPL
+@unnumbered GNU General Public License
+@cindex license
+@include gpl-2.0.texi
+
+@node GNU-FDL
+@unnumbered GNU-FDL
+@cindex license
+@include fdl-1.3.texi
+
+@node Concept Index
+@unnumbered Concept Index
+
+@printindex cp
+
+@node Function and Data Index
+@unnumbered Function and Data Index
+
+@printindex fn
+
+@node Type Index
+@unnumbered Type Index
+
+@printindex tp
+
+@bye

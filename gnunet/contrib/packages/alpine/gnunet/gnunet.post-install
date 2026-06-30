@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Enumerate users.
+users=`awk -F ':' '$3>=1000 && $3<2000 {print $1}' /etc/passwd`
+
+# Install gnunet.conf for existing users.
+for user in $users; do
+        install -m644 -o $user -g $user -D /etc/skel/.config/gnunet.conf \
+                /home/$user/.config/gnunet.conf
+done
+
+exit 0

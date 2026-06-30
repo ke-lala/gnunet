@@ -1,0 +1,45 @@
+# Build the program in the local tree
+.PHONY: all
+all:
+	$(NINJA) -C $(mesonbuilddir)
+
+# Install the program
+.PHONY: install
+install: all
+	$(MESON) install -C $(mesonbuilddir)
+
+# Remove files created during 'all'
+.PHONY: clean
+clean:
+	$(NINJA) -C $(mesonbuilddir) -t clean
+
+# Remove files created during 'install'
+.PHONY: uninstall
+uninstall:
+	$(NINJA) uninstall -C $(mesonbuilddir)
+
+# Make tarball
+.PHONY: dist
+dist:
+	$(MESON) dist -C $(mesonbuilddir) --no-tests --formats gztar
+
+# Make doxygen
+.PHONY: doxygen
+doxygen:
+	$(NINJA) -C $(mesonbuilddir) doxygen
+
+# Run tests
+.PHONY: check
+check:
+	$(MESON) test -C $(mesonbuilddir)
+
+.PHONY: check
+installcheck:
+	$(MESON) test -C $(mesonbuilddir) --suite=installcheck
+
+format:
+	$(MESON) fmt -i -r .
+	#find ./src -name "*.[h,c]" | uncrustify -l c -c contrib/conf/uncrustify.cfg -F - --replace --no-backup
+
+Makefile: Makefile.in
+	./config.status

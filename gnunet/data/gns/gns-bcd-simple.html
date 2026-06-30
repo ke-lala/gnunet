@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create your GNU Name System Business Card</title>
+    <style>
+      /* "Reset" values */
+      html {
+          box-sizing: border-box;
+      }
+      *, *:before, *:after {
+          box-sizing: inherit;
+      }
+      body {
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+          font-size: 1rem;
+          font-weight: 400;
+          line-height: 1.5;
+          background-color: #ffffff;
+          color: #212121;
+          margin: 0;
+      }
+      h1, h2, h3, h4, h5 {
+          margin-top: 0px;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+      }
+      p {
+          margin-top: 0px;
+          margin-bottom: 1rem;
+      }
+      fieldset{
+          margin: 0px;
+          padding: 0px;
+          border: 0px;
+          min-width: 0px;
+      }
+      label {
+          display: inline-block;
+      }
+      input {
+          margin: 0px;
+          font-family: inherit;
+          font-size: inherit;
+          line-height: inherit;
+      }
+      /* "Component" values */
+      .gns-container {
+          max-width: 100%;
+          margin-left: auto;
+          margin-right: auto;
+      }
+      .gns-header {
+          padding-top: 1rem;
+          padding-bottom: 0.25rem;
+      }
+      .gns-form-group {
+          margin-bottom: 1.5rem;
+      }
+      .gns-field:not(:last-child) {
+          margin-bottom: 1rem;
+      }
+      .gns-label {
+          margin-bottom: 0.25rem;
+      }
+      .gns-text-input {
+          display: block;
+          width: 100%;
+          padding: 0.375rem 0.75rem;
+          color: #212121;
+          background-color: #ffffff;
+          border: 1px solid #ced4da;
+          border-radius: 0.20rem;
+      }
+      .gns-text-input:focus {
+          box-shadow: 0px 0px 9px rgba(102, 175, 233, 0.5);
+          border: 1px solid rgb(102, 175, 233);
+      }
+      .gns-check-input {
+          width: 1rem;
+          height: 1rem;
+          margin-top: 0.25rem;
+          margin-right: 0.25rem;
+      }
+      .gns-button {
+          display: inline-block;
+          text-align: center;
+          text-decoraton: none;
+          vertical-align: middle;
+          cursor: pointer;
+          border: 1px solid transparent;
+          padding: 0.375rem 0.75rem;
+          border-radius: 0.20rem;
+      }
+      .gns-button:focus {
+          box-shadow: 0px 0px 9px rgba(200, 200, 200, 0.75);
+          border: 1px solid rgb(98, 98, 98);
+      }
+      @media (min-width: 576px) {
+          .gns-container {
+              max-width: 540px;
+          }
+      }
+      @media (min-width: 768px) {
+          .gns-container {
+              max-width: 720px;
+          }
+      }
+      @media (min-width: 992px) {
+          .gns-container {
+              max-width: 960px;
+          }
+      }
+      @media (min-width: 1200px) {
+          .gns-container {
+              max-width: 1140px;
+          }
+      }
+      @media (min-width: 1400px) {
+          .gns-container {
+              max-width: 1320px;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gns-container">
+      <div class="gns-header">
+        <h1>GNU Name System Business Card</h1>
+        <p>Please fill in the information below to generate your business
+          card.</p>
+        <p>Want a more detailed card? Use the <a href="/full">full
+            form</a>.</p>
+      </div>
+      <form name="gnsinput" action="/submit/simple" method="get">
+        <fieldset class="gns-form-group">
+          <div class="gns-field">
+            <label class="gns-label" for="name">Full Name:</label>
+            <input class="gns-text-input" name="name" type="text" required>
+          </div>
+          <div class="gns-field">
+            <label class="gns-label" for="email">E-mail:</label>
+            <input class="gns-text-input" name="email" type="email" required>
+          </div>
+          <div class="gns-field">
+            <label class="gns-label" for="homepage">Homepage:</label>
+            <input class="gns-text-input" name="homepage" type="text" required>
+          </div>
+        </fieldset>
+        <fieldset class="gns-form-group">
+          <div class="gns-field">
+            <label class="gns-label" for="gnskey">GNS Public Key</label>
+            <input class="gns-text-input" name="gnskey" type="text" required>
+          </div>
+          <div class="gns-field">
+            <label class="gns-label" for="gnsnick">GNS Nickname:</label>
+            <input class="gns-text-input" name="gnsnick" type="text" required>
+          </div>
+        </fieldset>
+        <fieldset class="gns-form-group">
+          <div class="gns-field">
+            <input class="gns-check-input" name="gnspng" id="gnspng" type="checkbox" value="true">
+            <label class="gns-label" for="gnspng">Generate only QR Code (as PNG)</label>
+          </div>
+        </fieldset>
+        <fieldset class="gns-form-group">
+          <div class="gns-field">
+            <input class="gns-button"
+                   type="submit"
+                   value="Generate Business Card">
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </body>
+</html>

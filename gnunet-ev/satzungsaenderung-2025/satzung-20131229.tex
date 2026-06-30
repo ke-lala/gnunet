@@ -1,0 +1,216 @@
+%
+% Satzung des GNUnet e.V. in der Fassung vom 20.9.2013
+%
+\documentclass[german,a4paper]{article} %,titlepage
+%\documentclass{article}
+\usepackage{german,url,a4wide}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage[%
+  pdftitle = {Satzung des GNUnet e.V.},
+%%  pdfsubject = {},
+  pdfauthor = {Christian Grothoff},
+  pdfpagemode=UseOutlines,
+  colorlinks=false,
+%%    linkcolor=black,
+%%    filecolor=black,
+%%    urlcolor=black,
+%%    citecolor=black
+  pdftex=true,
+  plainpages=false,
+  hypertexnames=true,%false,
+  pdfpagelabels=true,
+  hyperindex=true%
+]{hyperref}
+
+
+\newcommand{\zweidrittel}{2/3}
+\renewcommand{\thesection}{\S\arabic{section}}
+\renewcommand{\thepart}{\alph{part})}
+%begin{latexonly}
+\makeatletter
+\renewcommand\l@section[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{1.0em \@plus\p@}%
+    \setlength\@tempdima{2.0em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\makeatother
+%end{latexonly}
+
+\newenvironment{enumpar}{%
+%begin{latexonly}
+  \renewcommand{\labelenumi}{\theenumi}%
+  \renewcommand{\theenumi}{(\arabic{enumi})}%
+  \renewcommand{\labelenumii}{\theenumii}%
+  \renewcommand{\theenumii}{(\alph{enumii})}%
+%end{latexonly}
+  \begin{enumerate}}
+{\end{enumerate}}
+
+\newcommand{\parref}[2]{\ref{#1}\ref{#2}}
+
+
+\title{Vereinssatzung\\des Vereins zur F\"orderung von GNUnet (e.V.)\\}
+\date{}
+\begin{document}
+\maketitle \textit{\small{Aus Gründen der Lesbarkeit werden im
+    Folgenden weitgehend männliche Bezeichnungen verwendet. Natürlich
+    sind in jedem Falle weibliche wie männliche Personen gleichermaßen
+    gemeint und angesprochen. Wir bitten darum die jeweils weiblichen
+    Fassungen mitzudenken.}}
+
+\section*{Präambel}
+Im Willen, als Gemeinschaft die Sicherheit im Internet f\"ur alle
+B\"urger mittels freier Software, Dezentralisierung von Diensten und
+sichere Netzwerkprotokolle durch Forschung, Entwicklung und
+Bildungsangebote zu f\"ordern haben wir folgendes beschlossen: \par
+
+\section{Name und Sitz des Vereins}
+\begin{enumpar}
+\item Der Verein führt den Namen \glqq GNUnet\grqq . Er soll in das Vereinsregister eingetragen werden; nach der Eintragung lautet der Name \glqq GNUnet e.V.\grqq.
+\item Sitz des Vereins ist Garching bei M\"unchen.
+\end{enumpar}
+
+\section{Zweck des Vereins}
+
+Zweck des Vereins ist die F\"orderung von Forschung, Entwicklung und
+Bildung im Bereich freier Software f\"ur dezentrale, sichere Netzwerke,
+mit Fokus auf dem GNUnet\footnote{\url{https://gnunet.org/}} Projekt.  Dieser
+Zweck wird insbesondere durch Unterst\"utzung beim Betrieb
+von Servern, bei der Organisation von Entwicklertreffen und
+Veranstaltungen zur Weiterbildung von Nutzern, sowie der
+Besch\"aftigung von Entwicklern verfolgt.
+
+\section{Mittel des Vereins}
+\begin{enumpar}
+\item Mittel des Vereins dürfen nur für die satzungsmäßigen Zwecke verwendet werden.
+\item Satzungsgemäße Verwendung schließt insbesondere aber nicht ausschließlich ein:
+\begin{enumpar}
+\item Zahlung angemessener Geh\"alter zur Entwicklung von freier Software (die dann kostenlos mit Quellcode
+      der Allgemeinheit unter einer freien Software Lizenz zur Verf\"ugung gestellt wird)
+\item Fortbildung von Entwicklern und Anwendern durch Finanzierung von Reisen zu Kongressen mit Projektbezug
+\item Anmietung oder Kauf von Servern zum Betrieb der Entwicklungsplatform und/oder von Knoten im GNUnet Netzwerk
+\end{enumpar}
+%\item Die Mitglieder erhalten keine Zuwendungen aus Mitteln des Vereins.
+\item Wenn und solange es zur nachhaltigen Erfüllung der Vereinsaufgaben erforderlich ist, dürfen Einnahmen einer Rücklage zur Verfolgung der satzungsgemäßen Zwecke zugeführt werden.
+\item Zur Durchführung von speziellen Projekten oder kostspieligen Anschaffungen dürfen zweckgebundene Rücklagen gebildet werden. Der Zweck und eine finanzielle oder zeitliche Zielvereinbarung dieser Rücklagen werden von der Mitgliederversammlung beschlossen.
+\item Es darf keine Person durch Ausgaben, die dem Zweck des Vereins fremd sind oder durch unverhältnismäßig hohe Vergütungen begünstigt werden.
+\end{enumpar}
+
+\section{Geschäftsjahr}
+Das Geschäftsjahr des Vereines ist das Kalenderjahr.
+
+\section{Erwerb der Mitgliedschaft}
+\label{Mitgliedschaft}
+\begin{enumpar}
+\item Mitglied kann jede natürliche Person werden, welche die nötigen technischen und menschlichen Eigenschaften mitbringt um ihren Aufnahmewunsch unter Angabe von Name und E-Mail-Adresse in der {\tt gnunet-svn} Mailingliste zu äussern.
+\item Die Aufnahme ist in diesem Fall automatisch und ben\"otigt keinen Beschluss des Vorstands.
+\item Wir betrachten unsere technische Arbeit als Ausdruck menschlicher Verbundenheit über religiöse, konfessionelle, soziale, sprachliche, kulturelle und staatliche Grenzen hinweg. Durch Mitgliedschaft oder Mitarbeit in einer Partei oder Vereinigung, die Fremdenhass, Rassismus, Nationalismus, Faschismus oder Intoleranz und Gewalt gegenüber Andersdenkenden verbreitet, dokumentiert ein Mitglied, dass es die Vereinssatzung nicht anerkennt. Daher ist eine Mitgliedschaft oder Mitarbeit in einer solchen Partei oder Vereinigung mit der Mitgliedschaft im GNUnet Verein unvereinbar.
+\end{enumpar}
+
+\section{Beendigung der Mitgliedschaft}
+\begin{enumpar}
+\item Die Mitgliedschaft endet durch Tod, Austritt, Löschung oder Ausschluss.
+\item Ein Austritt aus dem Verein ist jederzeit möglich. Er erfolgt entweder durch eine entsprechende formlose, schriftliche Erklärung (ggf. auch per E-mail) an den Vorstand oder eine entsprechende Nachricht in der {\tt gnunet-svn} Mailingliste.
+\item Die Mitgliedschaft eines Mitgliedes, welches im Zeitraum eines Jahres nicht an der Entwicklung teilgenommen hat, kann vom Vorstand gelöscht werden.
+\item Ausschluss aus dem Verein:
+\begin{enumpar}
+\item Bei wiederholten oder eklatanten Verstößen gegen die Satzung oder schuldhafter und grober Verletzung der Interessen des Vereins kann jedes Mitglied von der Mitgliedschaft aus dem Verein ausgeschlossen werden.
+\item Die technische Leitung, wie definiert in Abschnitt \ref{sec:tl}, kann in Ausnahmefällen den Ausschluss eines Mitgliedes bei der Mitgliederversammlung wegen nicht ausreichender technischer Fähigkeiten beantragen.
+\item Über den Ausschluss aus dem Verein entscheidet die Mitgliederversammlung, hierzu ist eine Mehrheit von $\frac{2}{3}$ der abgegebenen Stimmen vonnöten. Der Ausschluss kann mit sofortiger Wirkung erfolgen. Vor der Beschlussfassung ist dem Mitglied, unter Setzung einer angemessenen Frist, Gelegenheit zur Rechtfertigung zu geben. Der Beschluss über den Ausschluss ist dem Mitglied schriftlich (ggf. auch per E-mail) mit Begründung bekannt zu geben.
+\end{enumpar}
+\end{enumpar}
+
+\section{Rechte und Pflichten der Mitglieder}
+\label{Pflichten}
+\begin{enumpar}
+\item Jedes Mitglied hat gleiches Stimm- und Wahlrecht bei der Mitgliederversammlung \ref{Mitgliederversammlung}.
+\item Jedes Mitglied hat das Recht, Anträge in die Mitgliederversammlung einzubringen.
+\item Jedes Mitglied hat die Pflicht, die Interessen des GNUnet e.V. zu unterstützen; insbesondere beinhaltet das, an der technischen Entwicklung aktiv teilzunehmen, soweit es in seinen Kräften und zeitlichen Möglichkeiten steht.
+\end{enumpar}
+
+\section{Aufnahmegebühr / Mitgliedsbeiträge}
+\begin{enumpar}
+\item Der Verein erhebt keine Aufnahmegebühr.
+\item Der Verein erhebt keine Mitgliedsbeiträge.
+\end{enumpar}
+
+\section{Technische Leitung}\label{sec:tl}
+\begin{enumpar}
+\item Die technische Leitung des GNUnet Projektes wird durch das GNU Projekt bestimmt (``GNU maintainer'').
+\item Bei Bedarf unterst\"utzt der GNUnet e.V. das GNU Projekt bei der Suche nach einem Nachfolger.  Die entg\"ultige Entscheidung verbleibt jedoch beim GNU Projekt.
+\end{enumpar}
+
+\section{Aufgaben innerhalb des Vereins}
+\label{Aufgaben}
+\begin{enumpar}
+\item Die Übernahme einer Aufgabe innerhalb des Vereins ist ein Ehrenamt.
+\item \label{Kassenwart}Kassenwart: Die Mitgliederversammlung wählt einen Kassenwart für die Dauer von zwei Jahren. Zu seinen Aufgaben zählt die Verwaltung des Vereinsvermögens und Anfertigung eines Jahresberichtes. Wiederwahl ist möglich.
+\item Beisitzer: Um jedem Vereinsmitglied die grundsätzliche Möglichkeit zu geben im Vorstand mitzuwirken, kann die Mitgliederversammlung optional zwei Beisitzer für die Dauer von zwei Jahren w\"ahlen.
+\item Weitere Aufgaben können von der Mitgliederversammlung beschlossen und besetzt werden, ein Eintrag in der Satzung ist nur für auf lange Sicht angelegte Aufgaben sinnvoll, ansonsten gilt das Protokoll der bestellenden Mitgliederversammlung als Beschreibung.
+\item Solle ein Aufgabenträger sein Amt vorzeitig niederlegen, übernimmt der Vorstand die Aufgabe bis zur Neuwahl. In diesem Falle ist der Vorstand aufgefordert baldmöglichst eine Mitgliederversammlung einzuberufen, welche die Aufgabe bis zur nächsten turnusmäßigen Wahl übergangsweise neu besetzt.
+\item In besonderen Ausnahmefällen kann die Mitgliederversammlung Aufgabenträger durch ein konstruktives Misstrauensvotum abwählen, hierzu ist die absolute Mehrheit der Mitgliederversammlung notwendig.´
+\item Mit Ausnahme der in \ref{Vorstand} genannten sind Aufgabenträger des Vereines keine Vorstandsmitglieder.
+\end{enumpar}
+
+\section{Vorstand}
+\label{Vorstand}
+\begin{enumpar}
+\item \label{vorstandsämter} Der Vorstand des Vereins setzt sich zusammen aus dem Vereinsvorsitzenden, dem stellvertretenden Vereinsvorsitzenden, dem Kassenwart und optional den beiden Beisitzern. Die Vorstandsmitglieder bleiben in jedem Fall bis zur Neuwahl ihrer Nachfolger im Amt. Wiederwahl ist möglich.
+\item Der Vereinsvorsitzende und sein Stellvertreter werden von der Mitgliederversammlung für die Dauer von einem Jahr gewählt, Wiederwahl ist möglich. Wenn möglich, sollte der jeweilige technische Leiter des GNUnet Projektes auch zum Vereinsvorsitzenden oder zum stellvertretenden Vorsitzenden gewählt werden.
+\item Im Außenverhältnis wird der Verein gerichtlich und außergerichtlich vertreten durch die Vorstandsmitglieder; jedes Vorstandsmitglied ist alleine vertretungsberechtigt. Alle Vorstandsmitglieder sind Vorstand im Sinne des \S26 BGB.\par
+\item Im Innenverhältnis wird der Verein durch den Vorsitzenden vertreten, bei Verhinderung des Vorsitzenden durch den stellvertretenden Vorsitzenden. Bei Verhinderung des Vorsitzenden und des stellvertretenden Vorsitzenden kann der Verein durch jedes andere Vorstandsmitglied vertreten werden.
+\item Dem Vorstand obliegt insbesondere die Ausführung der von der Mitgliederversammlung beschlossenen Beschlüsse sowie die Führung der Geschäfte des Vereins.
+\item Die Beschlüsse des Vorstandes sind den Mitgliedern zugänglich zu machen (zum Beispiel durch Ver\"offentlichung auf der Vereinswebsite (\url{https://gnunet/ev}) oder via E-Mail).
+\item In besonderen Ausnahmefällen kann die Mitgliederversammlung Vorstandsmitglieder durch ein konstruktives Misstrauensvotum abwählen, hierzu ist die absolute Mehrheit der Mitgliederversammlung notwendig.
+\item Der Vorstand tritt nach Bedarf zusammen, eine Vorstandssitzung kann durch jedes Vorstandsmitglied einberufen werden. Der Vorstand ist beschlussfähig, wenn mindestens drei Mitglieder anwesend sind. Sitzungen sind auch online m\"oglich.
+\item Der Vorstand entscheidet nach Bedarf ob die Sitzung \"offentlich oder nicht-\"offentlich ist.
+\item Bei der Beschlussfassung entscheidet die einfache Mehrheit der abgegebenen Stimmen, im Falle von Stimmengleichheit kann eine Entscheidung auf die nächste Sitzung vertagt werden. Wird auch dort keine Entscheidung erzieht ist die Mitgliederversammlung anzurufen, diese entscheidet dann endgültig.
+\end{enumpar}
+
+\section{Mitgliederversammlung}
+\label{Mitgliederversammlung}
+\begin{enumpar}
+\item Die Mitgliederversammlung (im Weiteren abgekürzt als \glqq MV\grqq ) ist höchstes entscheidendes Organ im Verein. Sie entscheidet in allen Vereinsangelegenheiten, die nicht vom Vorstand oder einem anderen in der Satzung bestimmten Organ zu besorgen sind und hat das Recht, Entscheidungen aller Organe zu ändern oder aufzuheben.
+\item Die MV soll möglichst jedes Jahr beim Chaos Communication Congress zusammentreten. Anträge zur Tagesordnung dieser MV müssen von den Mitgliedern spätestens zwei Wochen vorher beim Vorstand eingegangen sein. Diese Anträge werden vom Vorstand der Ladungsschrift beigefügt.
+\item Die MV tritt weiterhin auf Verlangen einer Gruppe von mindestens 25\% der Mitglieder zusammen. In besonders dringenden Fällen kann der Vorstand zudem eine Dringlichkeitssitzung einberufen.
+\item Die Einberufung erfolgt elektronisch durch den Vorstand eine Woche vor der Zusammenkunft. Die Tagesordnung ist bei jeder Einberufung bekannt zu geben. Die Ladungsschrift ist dem Protokoll beizuheften.
+\item Die MV bestimmt für die Dauer der Versammlung einen Versammlungsleiter und einen Schriftführer.
+\item Die MV tagt unter Ausschluss der Öffentlichkeit, Nichtmitglieder können vom Vorstand eingeladen werden.
+\item Jede ordnungsgemäß einberufene MV ist beschlussfähig; sie entscheidet mit einfacher Mehrheit der anwesenden Mitglieder, sofern die Satzung keine anderen Mehrheiten vorschreibt.
+\item Protokolle der MV werden von Schriftführer vom Versammlungsleiter zur Beurkundung unterzeichnet.
+\item Die Protokolle der MV sind auf der Vereinswebsite baldmöglichst zugänglich zu machen.
+\end{enumpar}
+
+\section{Webseite}
+\label{Webseite}
+\begin{enumpar}
+\item Die Adresse \url{https://gnunet.org/} ist Eigentum des Vereins. Die Pflege der Vereinswebseite obliegt der technischen Leitung des GNUnet Projektes.
+\end{enumpar}
+
+\section{Änderung der Satzung}
+\label{Satzungsänderung}
+\begin{enumpar}
+\item Änderungen der Satzung werden von der Mitgliederversammlung beschlossen.
+\item Für eine Änderung der Satzung ist die Mehrheit von $\frac{2}{3}$ aller zur Mitgliederversammlung erschienenen Mitglieder erforderlich.
+\end{enumpar}
+
+\section{Auflösung des Vereins}
+\label{Auflösung}
+\begin{enumpar}
+\item Über die Auflösung der Vereins entscheidet die Mitgliederversammlung.
+\item Zur Auflösung des Vereins ist eine Mehrheit von $\frac{3}{4}$ aller zur Mitgliederversammlung erschienenen Mitglieder erforderlich.
+\item Erhält der Verein im Falle einer Auflösung einen direkten, durch dessen Satzung nachgewiesenen Nachfolger, fällt das Vermögen an diesen. Ist ein solcher Nachfolger nicht vorhanden, fällt das Vermögen an die Free Software Foundation Europe e.V. mit der Bestimmung, dieses ausschließlich und unmittelbar für die Förderung freier Software zu verwenden.
+\end{enumpar}
+
+\end{document}

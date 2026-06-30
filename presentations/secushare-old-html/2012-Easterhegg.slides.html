@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Re-Invent the Internet with Secure Share</title>
+<meta name="presdate" content="20120201" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="author" content="Carlo v. Loesch" />
+<meta name="company" content="symlynX.com" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="UI/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="UI/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="UI/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="UI/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- S5 JS -->
+<script src="UI/slides.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer">
+&nbsp; secushare: A Framework for ReInventing the Internet
+</div>
+</div>
+
+<div id="between">&nbsp;</div>
+
+<div class="presentation">
+
+<div class="slide">
+<img style="padding: 80px" src="img/secushare-0444.png" />
+</div>
+
+<div class="slide">
+<img class="gfx" src="img/gfx-unicast.png" width="600" height="500"/>
+</div>
+<div class="slide">
+<img class="gfx" src="img/gfx-cloud.png" width="600" height="500"/>
+</div>
+<div class="slide">
+<img class="gfx" src="img/gfx-multicast.png" width="600" height="500"/>
+</div>
+
+<div class="slide">
+<h1>One Too Many</h1>
+<h2>Multicasting for Scalability</h2>
+<ul class="uncremental">
+<li>social = one-to-many | many-to-many</li>
+<li>70% of S2S XMPP messages is presence updates (5 years ago)</li>
+<li>round robin distribution = slow (SMTP, XMPP, OStatus)</li>
+<li>multicast = distribution trees</li>
+<!-- li>HTTP is one-to-one, query/response, not bidirectional</li>
+<li>XMPP has a trust issue (says the XSF)</li -->
+<li>Bittorrent: from files to life streams?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Don't Trust Servers</h1>
+<h2>Servers are vulnerable</h2>
+<ul class="uncremental">
+<li>client/server architecture: data resides on servers</li>
+<li>federation: data visible on even more servers</li>
+<li>memory access via bus sniffing</li>
+<li>no shutdown necessary</li>
+<li>automated memory image analysis proven</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Don't Trust Virtual Machines</h1>
+<!--h2>Commodity Servers are VMs</h2-->
+<ul class="uncremental">
+<li>my own server for 8 euros a month</li>
+<li>vulnerable cryptography</li>
+<li>memory can be monitored</li>
+<li>controlling system accessible by observers</li>
+<li>automated monitoring of federated social networks</li>
+<li>anti-terror legislation possible</li>
+<li>even if <em>your</em> box is at home</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Technologies</h1>
+<ul class="uncremental">
+<li>GNUnet as a framework: routing and crypto</li>
+<li>TUM, learned from I2P, Freenet...</li>
+<li>"Enhanced" P2P with servers as agnostic routers</li>
+<li>PSYC on top for trust relations and</li> 
+<li>friend discovery over social graph instead of DHT</li>
+<li>no file sharing, no big traffic</li>
+</ul>
+
+<div class="slide">
+<h1>Privacy vs. Paranoia</h1>
+<ul class="uncremental">
+<li>just to the intended recipients (e2e encryption)</li>
+<li>packet size padding (unobservability)</li>
+<li>flexible number of anonymization hops</li>
+<li>optional intentional delay</li>
+<li>forward secrecy</li>
+<li>deniability (a log is no proof of nothing)</li>
+<li>private subscription lists (not on a server)</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>It's A Question Of Trust</h1>
+<h2>Social Onion Routing</h2>
+<ul class="uncremental">
+<li>trust relationship between nodes</li>
+<li>multihop provides anonymization</li>
+<li>motivation to provide "servers" as fast routers</li>
+<li>my server is me, so you can trust my server</li>
+<li>"P2P" a lot faster over servers</li>
+<li>servers agnostically maintain messages (and data)</li>
+<li>embed multicast trees into the onion routing</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Dissemination</h1>
+<h2>Hard to beat Faceboogle</h2>
+<ul class="uncremental">
+<li>since we need to go onto every computer anyway..</li>
+<li>offer something Faceboogle can't provide?</li>
+<li>exchanging files between friends sucks</li>
+<li>USB sticks, e-mail, file hosters, skype, MSN, DropBox (brrr!)</li>
+<li>WTF is 'Secure Share' ?</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>A bad idea whose time has come?</h1>
+<h2>End-to-end Encryption in the Browser!!1!11</h2>
+<ul class="uncremental">
+<li>User interface comes from the server.
+<li>Web browser does what the server says.
+<li>Server corrupted? It can steal your data.
+<li>Only static install helps. Still:
+<li>Bad cryptography, bad script signing.
+<li>So you might aswell go for the real thing...
+</ul>
+</div>
+
+<div class="slide">
+<h1>Secure Share</h1>
+<h2>Who's involved?</h2>
+<ul>
+<li>Carlo v. Lynx</li>
+<li>Gabor Toth</li>
+<li>Mathias Baumann</li>
+<li>Daniel Reusche</li>
+<li>secushare.org</li>
+</ul>
+</div>
+
+
+</html>

@@ -1,0 +1,160 @@
+\documentclass[a4paper,oneside]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{qrcode}
+\usepackage[newdimens]{labels}
+
+\LabelCols=2
+\LabelRows=5
+\LeftPageMargin=17.0mm
+\RightPageMargin=17.0mm
+\TopPageMargin=10.0mm
+\BottomPageMargin=10.0mm
+\InterLabelColumn=3.5mm
+\InterLabelRow=3.0mm
+\numberoflabels=10
+\LabelGridtrue
+
+\renewcommand{\rmdefault}{phv}
+\renewcommand{\seriesdefault}{m}
+\renewcommand{\shapedefault}{n}
+
+\input{def.tex}
+
+\setlength\parindent{0pt}
+
+\newcommand{\logo}{
+  \begin{tikzpicture}
+    [every node/.style={circle,fill=black!73,inner sep=0pt,minimum size=2.2mm},
+      every edge/.style={draw,semithick},
+      x=1pt,y=1pt]
+    \node (p1)  at (21.57,-219.43)  {};
+    \node (p2)  at (41.44,-168.86)  {}
+    edge (p1);
+    \node (p3)  at (54.16,-130.86)  {}
+    edge (p2);
+    \node (p4)  at (-21.62,-219.43) {}
+    edge (p1);
+    \node (p5)  at (10.41,-158.90)  {}
+    edge (p2);
+    \node (p6)  at (-22.20,-173.21) {}
+    edge (p4);
+    \node (p9)  at (-147.32,-37.53) {};
+    \node (p10) at (-97.30,-18.50)  {}
+    edge (p9);
+    \node (p11) at (74.95,-89.64)   {}
+    edge (p3);
+    \node (p12) at (-0.20,-182.48)  {}
+    edge (p1)
+    edge (p4)
+    edge (p5)
+    edge (p6)
+    edge (p3);
+    \node (p13) at (18.79,-190.31)  {}
+    edge (p2)
+    edge (p1)
+    edge (p5)
+    edge (p4);
+    \node (p14) at (-46.77,-141.82) {}
+    edge (p6)
+    edge (p4);
+    \node (p15) at (-14.08,-141.91) {}
+    edge (p5)
+    edge (p6)
+    edge (p12);
+    \node (p16) at (-96.66,-90.02)  {};
+    \node (p17) at (-71.34,-90.78)  {}
+    edge (p16)
+    edge (p14);
+    \node (p18) at (-25.92,-109.84) {}
+    edge (p15)
+    edge (p17)
+    edge (p14);
+    \node (p19) at (-46.78,-94.06)  {}
+    edge (p18)
+    edge (p17)
+    edge (p14)
+    edge (p15);
+    \node (p20) at (51.95,-67.01)   {}
+    edge (p3)
+    edge (p11);
+    \node (p21) at (29.21,-103.63)  {}
+    edge (p11)
+    edge (p20)
+    edge (p3)
+    edge (p5)
+    edge (p2);
+    \node (p22) at (-116.84,-55.89) {}
+    edge (p10)
+    edge (p9);
+    \node (p23) at (-61.14,-62.16)  {}
+    edge (p18)
+    edge (p19)
+    edge (p17)
+    edge (p16);
+    \node (p24) at (107.08,-62.78)  {}
+    edge (p20)
+    edge (p11);
+    \node (p25) at (131.66,-76.41)  {}
+    edge (p24)
+    edge (p11)
+    edge (p20);
+    \node (p26) at (29.59,-139.18)  {}
+    edge (p3)
+    edge (p21)
+    edge (p2)
+    edge (p5);
+    \node (p28) at (-137.12,-66.58) {}
+    edge (p22)
+    edge (p9)
+    edge (p10)
+    edge (p16);
+    \node (p29) at (-84.94,-72.38)  {}
+    edge (p23)
+    edge (p22)
+    edge (p16)
+    edge (p28);
+    \node (p30) at (145.17,-37.49)  {}
+    edge (p25)
+    edge (p24);
+    \node (p31) at (102.20,-18.50)  {}
+    edge (p30)
+    edge (p25);
+  \end{tikzpicture}
+}
+
+\newcommand{\card}{
+  \begin{tikzpicture}
+    [every node/.style={rectangle,fill=white,minimum height=7pt,inner sep=0pt},
+      medium text/.style={text width=37.5mm},
+      slight text/.style={text width=30mm},
+      important text/.style={text width=41mm},
+      font=\tiny]
+    \begin{scope}[xshift=10mm]
+      \node[important text] (prefix) at (0, 4mm) {
+        \ifthenelse{\equal{\prefix}{}}{}{\tiny \prefix}
+      };
+      \node[important text] (name) at (0,0mm) {
+        \fontsize{9pt}{9pt}\selectfont
+        \textbf{\name}\ifthenelse{\equal{\suffix}{}}{}{, \tiny \suffix}
+      };
+      \node[important text] (jobtitle) at (0, -4mm) {\jobtitle};
+    \end{scope}
+    \begin{scope}[xshift=8.5mm,yshift=-1.23mm]
+      \node[medium text] (mail) at (0, -10mm) {\email};
+      \node[medium text] (homepage) at (0, -13.25mm) {\homepage};
+    \end{scope}
+    \begin{scope}[xshift=53.5mm]
+      \node (qrcode) at (0,-9mm) {
+        \qrcode[height=24.2mm,level=Q]{gnunet://gns/\gns}
+      };
+      \node[scale=0.16] (logo) at (0,13mm) {\logo};
+    \end{scope}
+  \end{tikzpicture}
+}
+
+\begin{document}
+\addresslabel{\card}
+\end{document}

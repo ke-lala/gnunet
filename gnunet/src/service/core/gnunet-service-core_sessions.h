@@ -1,0 +1,138 @@
+/*
+     This file is part of GNUnet.
+     Copyright (C) 2009-2014 GNUnet e.V.
+
+     GNUnet is free software: you can redistribute it and/or modify it
+     under the terms of the GNU Affero General Public License as published
+     by the Free Software Foundation, either version 3 of the License,
+     or (at your option) any later version.
+
+     GNUnet is distributed in the hope that it will be useful, but
+     WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+     SPDX-License-Identifier: AGPL3.0-or-later
+ */
+
+/**
+ * @file core/gnunet-service-core_neighbours.h
+ * @brief code for managing of 'encrypted' sessions (key exchange done)
+ * @author Christian Grothoff
+ */
+#ifndef GNUNET_SERVICE_CORE_SESSIONS_H
+#define GNUNET_SERVICE_CORE_SESSIONS_H
+
+#include "gnunet-service-core.h"
+#include "gnunet-service-core_kx.h"
+
+
+/**
+ * Create a session, a key exchange was just completed.
+ *
+ * @param peer peer that is now connected
+ * @param kx key exchange that completed
+ */
+void
+GSC_SESSIONS_create (const struct GNUNET_PeerIdentity *peer,
+                     struct GSC_KeyExchangeInfo *kx,
+                     enum GNUNET_CORE_PeerClass class);
+
+
+/**
+ * The other peer has indicated that it 'lost' the session
+ * (KX down), reinitialize the session on our end, in particular
+ * this means to restart the typemap transmission.
+ * XXX the typemap does not exist anymore
+ *
+ * @param peer peer that is now connected
+ */
+void
+GSC_SESSIONS_reinit (const struct GNUNET_PeerIdentity *peer);
+
+
+/**
+ * End the session with the given peer (we are no longer
+ * connected).
+ *
+ * @param pid identity of peer to kill session with
+ */
+void
+GSC_SESSIONS_end (const struct GNUNET_PeerIdentity *pid);
+
+
+/**
+ * Traffic is being solicited for the given peer.  This means that the
+ * message queue on the transport-level (NEIGHBOURS subsystem) is now
+ * empty and it is now OK to transmit another (non-control) message.
+ *
+ * @param pid identity of peer ready to receive data
+ */
+void
+GSC_SESSIONS_solicit (const struct GNUNET_PeerIdentity *pid);
+
+
+/**
+ * Queue a request from a client for transmission to a particular peer.
+ *
+ * @param car request to queue; this handle is then shared between
+ *         the caller (CLIENTS subsystem) and SESSIONS and must not
+ *         be released by either until either 'GNUNET_SESSIONS_dequeue',
+ *         or 'GNUNET_CLIENTS_failed'
+ *         have been invoked on it
+ */
+void
+GSC_SESSIONS_queue_request (struct GSC_ClientActiveRequest *car);
+
+
+/**
+ * Dequeue a request from a client from transmission to a particular peer.
+ *
+ * @param car request to dequeue; this handle will then be 'owned' by
+ *        the caller (CLIENTS sysbsystem)
+ */
+void
+GSC_SESSIONS_dequeue_request (struct GSC_ClientActiveRequest *car);
+
+
+/**
+ * Transmit a message to a particular peer.
+ *
+ * @param car original request that was queued and then solicited,
+ *            ownership does not change (dequeue will be called soon).
+ * @param msg message to transmit
+ * @param priority how important is this message
+ */
+void
+GSC_SESSIONS_transmit (struct GSC_ClientActiveRequest *car,
+                       const struct GNUNET_MessageHeader *msg,
+                       enum GNUNET_MQ_PriorityPreferences priority);
+
+
+/**
+ * We have a new client, notify it about all current sessions.
+ *
+ * @param client the new client
+ */
+void
+GSC_SESSIONS_notify_client_about_sessions (struct GSC_Client *client);
+
+
+/**
+ * Initialize sessions subsystem.
+ */
+void
+GSC_SESSIONS_init (void);
+
+
+/**
+ * Shutdown sessions subsystem.
+ */
+void
+GSC_SESSIONS_done (void);
+
+
+#endif

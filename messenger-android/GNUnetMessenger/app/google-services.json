@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "90040359969",
+    "project_id": "gnua-483f6",
+    "storage_bucket": "gnua-483f6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90040359969:android:a66d6b93e658f9acd61760",
+        "android_client_info": {
+          "package_name": "org.gnunet.gnunetmessenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsXbMzXSe-nkLHOaCsPdasg8DDbAtbErY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

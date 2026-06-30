@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2024‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkBox" id="entry_box">
+    <property name="visible">1</property>
+    <property name="border-width">4</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">1</property>
+        <property name="border-width">8</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkImage" id="file_image">
+            <property name="visible">1</property>
+            <property name="icon-name">folder-documents-symbolic</property>
+            <property name="icon-size">3</property>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkLabel" id="name_label">
+            <property name="visible">1</property>
+            <property name="ellipsize">end</property>
+            <property name="single-line-mode">1</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="size_label">
+            <property name="visible">1</property>
+            <property name="margin-end">4</property>
+            <property name="xalign">0</property>
+            <property name="yalign">1</property>
+            <attributes>
+              <attribute name="variant" value="all-small-caps"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">1</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>

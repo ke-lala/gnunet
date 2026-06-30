@@ -1,0 +1,35 @@
+all: server
+
+SCRIPT_TARGET:=$(shell dirname $(shell go list -f '{{.Target}}' ./cmd/gns-registrar))
+GNSR_DATA_HOME=${datadir}/gnunet-gns-registrar
+GITVER=`git describe --tags | sed 's/v//'`
+
+server:
+	${GO} build -o gnunet-gns-registrar -ldflags "-X main.version=${VERSION} -X main.taldirdatahome=${GNSR_DATA_HOME}"  ./cmd/gns-registrar
+
+install: server
+	-mkdir -p ${DESTDIR}${bindir}
+	-mkdir -p ${DESTDIR}${GNSR_DATA_HOME}
+	install ./gnunet-gns-registrar ${DESTDIR}${bindir}
+	cp -r ./web ${DESTDIR}${GNSR_DATA_HOME}/
+	cp -r ./static ${DESTDIR}${GNSR_DATA_HOME}/
+	-mkdir -p ${DESTDIR}${mandir}/man1
+	cp doc/man/gnunet-gns-registrar.1 ${DESTDIR}${mandir}/man1/
+	cp gns-registrar.conf.example ${DESTDIR}${GNSR_DATA_HOME}
+
+uninstall:
+	${RM} ${DESTDIR}${bindir}/gnunet-gns-registrar
+	${RM} ${DESTDIR}${GNSR_DATA_HOME}/gns-registrar.conf.example
+
+format:
+	${GO} fmt ./cmd/gns-registrar/*.go
+	${GO} fmt ./pkg/rest/*.go
+
+check:
+	${GO} test ./cmd/gns-registrar
+
+dist:
+	git archive --format=tar.gz -o ${PKG_NAME}-${GITVER}.tar.gz --prefix=${PKG_NAME}-${GITVER}/ HEAD
+
+
+.PHONY: all server check format uninstall install dist

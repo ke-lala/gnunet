@@ -1,0 +1,144 @@
+name: messenger-gtk
+version: 0.12.0
+title: GNUnet Messenger
+summary: A GTK based GUI for the Messenger service of GNUnet.
+description: |
+  Messenger-GTK is a convergent GTK messaging application using the GNUnet Messenger service. The goal is to provide private and secure communication between any group of devices.
+  
+  The application provides the following features:
+  * Creating direct chats and group chats
+  * Managing your contacts and groups
+  * Invite contacts to a group
+  * Sending text messages
+  * Sending voice recordings
+  * Sharing files privately
+  * Deleting messages with any custom delay
+  * Renaming contacts
+  * Exchanging contact details physically
+  * Verifying contact identities
+  * Switching between different accounts
+  * Chatting live via video or voice streaming
+  * Sharing your screen with a selected group
+  * Writing notes to yourself
+  
+  Chats will generally created as opt-in. So you can decide who may contact you directly and who does not, accepting to a direct chat. Leaving a chat is also always possible.
+website:
+  - https://git.gnunet.org/messenger-gtk.git/about/
+contact:
+  - gnunet@thejackimonster.de
+donation:
+  - https://www.gnunet.org/en/ev.html
+  - https://liberapay.com/GNUnet-Messenger/
+source-code:
+  - https://git.gnunet.org/messenger-gtk.git/
+issues:
+  - https://bugs.gnunet.org
+license: GPL-3.0-or-later
+adopt-info: messenger-gtk
+icon: resources/icon/full_color.svg
+base: core24
+confinement: strict
+grade: stable
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
+
+slots:
+  messenger-gtk:
+    interface: dbus
+    bus: session
+    name: org.gnunet.Messenger
+
+apps:
+  messenger-gtk:
+    command: usr/bin/messenger-gtk
+    extensions: [gnome]
+    plugs:
+      - home
+      - network
+      - network-bind
+      - camera
+      - audio-playback
+      - audio-record
+    desktop: usr/share/applications/org.gnunet.Messenger.desktop
+    common-id: org.gnunet.Messenger
+
+parts:
+  gnunet:
+    build-packages:
+      - libgcrypt20-dev
+      - recutils
+      - libjansson-dev
+      - libsodium-dev
+      - libcurl4-gnutls-dev
+      - libidn2-dev
+      - libunistring-dev
+      - libsqlite3-dev
+      - libmicrohttpd-dev
+      - libltdl-dev
+    stage-packages:
+      - libgcrypt20
+      - recutils
+      - libjansson4
+      - libsodium23
+      - libcurl3t64-gnutls
+      - libidn2-0
+      - libunistring5
+      - libsqlite3-0
+      - libmicrohttpd12
+      - libgnutls-dane0
+      - libunbound8
+      - libltdl7
+    source: https://ftpmirror.gnu.org/gnunet/gnunet-0.27.0.tar.gz
+    source-checksum: sha512/e5e17911f48ad2579898a7f119a1faede0ce1a437163f826d3cd02fefe0de6ce254cb514b5b2455270f6f5c474e39aea837a1a062d2ca09a4c002d4f574ac360
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release
+  libgnunetchat:
+    after: [ gnunet ]
+    source: https://ftpmirror.gnu.org/gnunet/libgnunetchat-0.7.0.tar.gz
+    source-checksum: sha512/330857bc3e38c2107d70c5ce5d729a1562593b139bc86bf883a5b397f2b33f9ea362e2b6619b35566cb2a646cfc0c5ca71478ff7161cf40410fe52666b828bba
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release
+  messenger-gtk:
+    after: [ gnunet, libgnunetchat ]
+    build-packages:
+      - libqrencode-dev
+      - libzbar-dev
+      - libgstreamer1.0-dev
+      - libgstreamer-plugins-base1.0-dev
+      - libpipewire-0.3-dev
+      - libportal-dev
+      - libportal-gtk3-dev
+      - libsecret-1-dev
+      - desktop-file-utils
+    stage-packages:
+      - libqrencode4
+      - libzbar0
+      - libgstreamer1.0-0
+      - libgstreamer-plugins-base1.0-0 
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-bad
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-plugins-ugly
+      - gstreamer1.0-gtk3
+      - gstreamer1.0-pipewire
+      - gstreamer1.0-libav
+      - libpipewire-0.3-0t64
+      - libportal1
+      - libportal-gtk3-1
+      - libsecret-1-0
+    source: https://ftpmirror.gnu.org/gnunet/messenger-gtk-0.12.0.tar.gz
+    source-checksum: sha512/8a83e2fef6a60c4634abe5ee98db61ed50101e92bb20cb6cb9a91a48ce52797a8d4373566765dbbb1c032f517c6125ce87773ca5d7ca045a1dce7cd01e690ad8
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release

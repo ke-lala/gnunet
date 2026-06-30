@@ -1,0 +1,90 @@
+\documentclass[DIN, pagenumber=false, parskip=half,
+               fromalign=right, fromphone=false, fromfax=false, frombank=true,
+               yourmail=false,
+               yourref=false,
+               fromrule=false]{scrlttr2}
+ 
+
+%\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{longtable}
+\usepackage{eurosym}
+
+\LoadLetterOption{template}
+
+\newcommand{\stdlohn}[0]{11 \euro}
+
+\renewcommand*{\raggedsignature}{\raggedright} 
+
+\setkomavar{fromname}{GNUnet e. V.}
+\setkomavar{fromaddress}{Boltzmannstraße 3 \\ 85748 Garching bei München}
+\setkomavar{frombank}{IBAN: DE67830654080004822650 \\ BIC: GENODEF1SLR}
+
+\setkomavar{subject}[]{GHM 2016 (August 18-20) Conference Registration Fees}
+%\setkomavar{yourmail}[Ihre Angebots-Nr.]{2011012631}
+%\setkomavar{yourref}[Ihre Kundennummer]{263}
+\setkomavar{date}[Datum]{\today}
+
+
+%===================================
+% footer
+\firstfoot{
+	\parbox[t]{\textwidth}{\footnotesize 
+	
+	\begin{tabular}[t]{l@{}}
+		 \multicolumn{1}{@{}l@{}}{Association:}\\ 
+		 GNUnet e. V. \\
+		 Boltzmannstraße 3, 85748 Garching bei München \\ \\
+		 E-Mail: ev@gnunet.org \\
+	\end{tabular}
+	\hfill{}
+	\begin{tabular}[t]{l@{}}
+	        \multicolumn{1}{@{}l@{}}{\usekomavar*{frombank}:}\\ 
+	        \usekomavar{frombank} 
+	\end{tabular} 
+ }}
+
+\begin{document}
+
+ 
+%===================================
+% receiver
+\begin{letter}{
+	Alice Muster \\ 
+	Musterstr. 12\\
+	12345 Musterstadt
+}
+
+\opening{\ }
+\vspace{-1.5cm}
+
+%===================================
+\begin{longtable}{p{5cm}p{1.5cm}p{3.5cm}p{3.5cm}}
+	\hline 	
+	Subject & Amount & Item Price & Total Price \\
+	\hline 
+	
+	One day of attendance & 3 & 50,00 \euro{} & 150,00 \euro{}\\
+	
+	\hline\hline 
+\end{longtable}
+
+
+%\begin{longtable}{p{5.5cm}p{2.5cm}p{2.5cm}p{2cm}p{3cm}}
+%	\hline Nettobetrag Gesamt & 19\% MwSt. & Versand & Verpackung & Bruttobetrag\\
+%	\hline 
+%	0,00 \euro{} & 0,00 \euro & 0,00 \euro & 0,00 \euro & 0,00 \euro{}\\
+%	\hline 
+%	\hline 	
+%\end{longtable}
+
+
+\vspace{3cm}
+Florian Dold\\
+Secretary GNUnet e. V.
+
+
+\end{letter}
+\end{document}

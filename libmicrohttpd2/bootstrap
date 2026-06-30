@@ -1,0 +1,181 @@
+#!/bin/sh
+
+if command -v "command" >/dev/null 2>&1; then
+have_cmd()
+{
+  command -v "$1" >/dev/null 2>&1
+}
+elif type "type" >/dev/null 2>&1; then
+have_cmd()
+{
+  type "$1" >/dev/null 2>&1
+}
+else
+have_cmd()
+{
+  : # dummy fallback
+}
+fi
+
+# Extract the dotted version string from stdin and write it to stdout
+ver_filter()
+{
+  ${SED-sed} -n 's/^\(.*[^0-9.]\)\{0,1\}\([0-9][0-9]*\(\.[0-9][0-9]*\)\{0,4\}\).*$/\2/p'
+}
+
+# Compare two version strings
+# Return codes:
+# * 11 if the first version is greater than the second version
+# * 10 if versions are equal
+# * 9  if the first version is less than the second version
+__helper_ver_cmp()
+{
+  _verA=$1
+  _verB=$2
+  _save_IFS="$IFS"
+  IFS=.
+  set dummy ${_verA}
+  _verA1=${2:-0}; _verA2=${3:-0}; _verA3=${4:-0}; _verA4=${5:-0}; _verA5=${6:-0}
+  set dummy ${_verB}
+  _verB1=${2:-0}; _verB2=${3:-0}; _verB3=${4:-0}; _verB4=${5:-0}; _verB5=${6:-0}
+  IFS="${_save_IFS}"
+  [ "${_verA1}" -gt "${_verB1}" ] && return 11
+  [ "${_verA1}" -lt "${_verB1}" ] && return 9
+  [ "${_verA2}" -gt "${_verB2}" ] && return 11
+  [ "${_verA2}" -lt "${_verB2}" ] && return 9
+  [ "${_verA3}" -gt "${_verB3}" ] && return 11
+  [ "${_verA3}" -lt "${_verB3}" ] && return 9
+  [ "${_verA4}" -gt "${_verB4}" ] && return 11
+  [ "${_verA4}" -lt "${_verB4}" ] && return 9
+  [ "${_verA5}" -gt "${_verB5}" ] && return 11
+  [ "${_verA5}" -lt "${_verB5}" ] && return 9
+  return 10
+}
+
+# Usage: ver_cmp VER1 -gt|-lt|-ge|-le|-eq|-ne VER2
+# For example: ver_cmp 5.10.1 -gt 5.9.1
+ver_cmp()
+{
+  __helper_ver_cmp "$1" "$3"
+  [ $? $2 10 ]
+}
+
+# Locate the bootstrap source directory
+bs_srcdir='' || exit 1
+if have_cmd 'dirname' && test X"`dirname / 2>/dev/null`" = X"/"; then
+  bs_srcdir=`dirname $0` || exit 2
+else
+  case $0 in
+    */*) bs_srcdir=`echo $0 | ${SED-sed} -n 's|/[^/]*$||p'` || exit 2;;
+    *) bs_srcdir='.' ;;
+  esac
+fi
+
+test -n "$bs_srcdir" && cd "$bs_srcdir" || echo "Warning: cannot detect the source directory" 1>&2
+
+if test ! -f './configure.ac'; then
+  echo "Error: 'configure.ac' not found. Wrong source directory?" 1>&2
+  exit 2
+fi
+if test ! -f './src/include/microhttpd2.h'; then
+  echo "Error: 'src/include/microhttpd2.h' not found. Wrong source directory?" 1>&2
+  exit 2
+fi
+
+: "${UNCRUSTIFY=uncrustify}"
+UNCRUSTIFY_VER_NEEDED="0.78.0"
+
+if have_cmd ${UNCRUSTIFY}; then
+  UNCRUSTIFY_VER=`${UNCRUSTIFY} --version | ver_filter`
+  if ver_cmp "$UNCRUSTIFY_VER" -ge "$UNCRUSTIFY_VER_NEEDED"; then
+    if test -f uncrustify.cfg; then
+      echo "Uncrustify configuration already exists; skipping installation of the configuration from the upstream file."
+    else
+      echo "Installing the libmicrohttpd Uncrustify configuration"
+      rm -f ./uncrustify.cfg
+      ln -s contrib/uncrustify.cfg uncrustify.cfg || \
+        cp contrib/uncrustify.cfg uncrustify.cfg || \
+        echo "Failed to install Uncrustify configuration file" 1>&2
+    fi
+  else
+    echo "Uncrustify version $UNCRUSTIFY_VER detected -- hook not installed. Please install Uncrustify $UNCRUSTIFY_VER_NEEDED or newer if you plan to contribute to development."
+  fi
+else
+  echo "Uncrustify not detected -- hook not installed. Please install Uncrustify $UNCRUSTIFY_VER_NEEDED or newer if you plan to contribute to development."
+fi
+
+test -n "$GIT" || GIT="$GIT_CMD"
+test -n "$GIT" || GIT="$GIT_BINARY"
+test -n "$GIT" || GIT="git"
+
+if test -d "${GIT_DIR-.git}"; then
+  if have_cmd "$GIT"; then
+    ver_GIT=`"$GIT" --version 2>/dev/null | ver_filter`
+    if ver_cmp "$ver_GIT" -lt "1.7"; then
+      echo "Git version $ver_GIT detected. If you plan to contribute to development, consider installing a modern Git version."
+    else
+      if test -f "${GIT_DIR-.git}/mhd2_special_config"; then :; else
+        git_settings_modified='no'
+        if ver_cmp "$ver_GIT" -ge "1.7.9"; then
+          if git_set_VAL=`"$GIT" config --get --local --bool 'pull.rebase' 2>/dev/null` && test "$git_set_VAL" = "true"; then :; else
+            echo "Setting 'pull.rebase' to 'true' for this repository."
+            "$GIT" config --local 'pull.rebase' 'true' && git_settings_modified='yes'
+          fi
+        else
+          if git_set_VAL=`"$GIT" config --get --local 'branch.autoSetupRebase' 2>/dev/null` && test "$git_set_VAL" = "always"; then :; else
+            echo "Setting 'branch.autoSetupRebase' to 'always' for this repository."
+            "$GIT" config --local 'branch.autoSetupRebase' 'always' && git_settings_modified='yes'
+          fi
+        fi
+        if ver_cmp "$ver_GIT" -ge "2.6"; then
+          if git_set_VAL=`"$GIT" config --get --local --bool 'rebase.autoStash' 2>/dev/null` && test "$git_set_VAL" = "true"; then :; else
+            echo "Setting 'rebase.autoStash' to 'true' for this repository."
+            "$GIT" config --local 'rebase.autoStash' 'true' && git_settings_modified='yes'
+          fi
+        fi
+        if test "$git_settings_modified" != "no"; then
+          echo "Some Git repository settings have been modified."
+          echo "Use the following command to prevent such modifications in the future:"
+          echo "  touch '${GIT_DIR-.git}/mhd2_special_config'"
+        fi
+      fi
+      if test -f uncrustify.cfg && have_cmd ${UNCRUSTIFY}; then
+        if test -f "${GIT_DIR-.git}/hooks/pre-commit"; then
+          echo "Pre-commit Git hook already exists; skipping installation of the upstream file."
+        else
+          echo "Installing Uncrustify pre-commit Git hook"
+          rm -f "${GIT_DIR-.git}/hooks/pre-commit"
+          if test ${GIT_DIR+y}; then
+            ln -s "`pwd`/contrib/precommit_hook.sh" "${GIT_DIR}/hooks/pre-commit"
+          else
+            ln -s ../../contrib/precommit_hook.sh .git/hooks/pre-commit
+          fi
+          test $? -eq 0 || cp contrib/precommit_hook.sh "${GIT_DIR-.git}/hooks/pre-commit" || \
+            echo "Failed to install pre-commit Git hook" 1>&2
+          if test -f "${GIT_DIR-.git}/hooks/pre-commit"; then
+            if chmod +x "${GIT_DIR-.git}/hooks/pre-commit"; then :; else
+              echo "Failed to mark the pre-commit Git hook as executable" 1>&2
+            fi
+            if dir_GIT_HOOKS=`"$GIT" config --get core.hooksPath 2>/dev/null` && test "X$dir_GIT_HOOKS" != "X${GIT_DIR-.git}/hooks"; then
+              echo "The installed hook will not be used due to the current Git configuration."
+              echo "Consider updating the Git configuration by running the following command:"
+              echo "  '$GIT' config --local core.hooksPath '${GIT_DIR-.git}/hooks'"
+            fi
+          fi
+        fi
+      fi
+    fi
+  else
+    echo "No 'git' command detected; skipping installation of the pre-commit Git hook and Git configuration."
+  fi
+else
+  echo "No '${GIT_DIR-.git}' directory found; skipping installation of the pre-commit Git hook and Git configuration."
+fi
+
+WANT_AUTOCONF=latest
+WANT_AUTOMAKE=latest
+export WANT_AUTOCONF
+export WANT_AUTOMAKE
+
+autoreconf -vi ${1+"$@"} || \
+  echo "*** Failed to build Autoconf output files ***" >&2

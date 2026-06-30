@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2021‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkBox" id="picker_box">
+    <property name="height-request">250</property>
+    <property name="visible">1</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkStack" id="picker_stack">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">1</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="vscrollbar-policy">never</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">1</property>
+                    <property name="shadow-type">none</property>
+                    <child>
+                      <object class="HdyViewSwitcherBar" id="emoji_switcher_bar">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="stack">emoji_stack</property>
+                        <property name="reveal">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <style>
+                  <class name="picker-switcher-bar"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStack" id="emoji_stack">
+                <property name="visible">1</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="recent_emoji_page">
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="recent_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">recent</property>
+                    <property name="icon-name">emoji-recent-symbolic</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="people_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">people</property>
+                    <property name="icon-name">emoji-people-symbolic</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="nature_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">nature</property>
+                    <property name="icon-name">emoji-nature-symbolic</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="food_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">food</property>
+                    <property name="icon-name">emoji-food-symbolic</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="activities_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">activities</property>
+                    <property name="icon-name">emoji-activities-symbolic</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="travel_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">travel</property>
+                    <property name="icon-name">emoji-travel-symbolic</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="objects_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">objects</property>
+                    <property name="icon-name">emoji-objects-symbolic</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="symbols_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">symbols</property>
+                    <property name="icon-name">emoji-symbols-symbolic</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="flags_flow_box">
+                            <property name="visible">1</property>
+                            <property name="valign">start</property>
+                            <property name="border-width">8</property>
+                            <property name="homogeneous">1</property>
+                            <property name="max-children-per-line">32</property>
+                            <property name="selection-mode">none</property>
+                            <style>
+                              <class name="emoji-flow-box"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">flags</property>
+                    <property name="icon-name">emoji-flags-symbolic</property>
+                    <property name="position">8</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="pack-type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HdySearchBar" id="emoji_search_bar">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="show-close-button">True</property>
+                <child>
+                  <object class="GtkSearchEntry" id="emoji_search_entry">
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <property name="primary-icon-name">edit-find-symbolic</property>
+                    <property name="primary-icon-activatable">0</property>
+                    <property name="primary-icon-sensitive">0</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="name">emoji</property>
+            <property name="title" translatable="yes">Emoji</property>
+            <property name="icon-name">face-smile-symbolic</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="name">gif</property>
+            <property name="title" translatable="yes">GIF</property>
+            <property name="icon-name">video-x-generic-symbolic</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="name">stickers</property>
+            <property name="title" translatable="yes">Stickers</property>
+            <property name="icon-name">image-x-generic-symbolic</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">1</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkButton" id="search_button">
+            <property name="visible">1</property>
+            <property name="can-focus">1</property>
+            <property name="receives-default">1</property>
+            <property name="valign">center</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">1</property>
+                <property name="icon-name">system-search-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyViewSwitcherBar" id="picker_switcher_bar">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="policy">auto</property>
+            <property name="stack">picker_stack</property>
+            <property name="reveal">True</property>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="settings_button">
+            <property name="visible">1</property>
+            <property name="sensitive">0</property>
+            <property name="can-focus">1</property>
+            <property name="receives-default">1</property>
+            <property name="valign">center</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">1</property>
+                <property name="icon-name">preferences-other-symbolic</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <style>
+          <class name="picker-switcher-box"/>
+        </style>
+      </object>
+      <packing>
+        <property name="position">3</property>
+      </packing>
+    </child>
+  </object>
+</interface>

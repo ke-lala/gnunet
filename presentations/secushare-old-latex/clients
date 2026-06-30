@@ -1,0 +1,116 @@
+
+* Clients
+
+Clients implement a user interface for interacting with the PSYC network. They
+connect to the PSYC daemon and link with a person entity. After successful
+linking they receive all the packets destined for that person and can send
+packets originating from the person. In the current implementation of psycd no
+authentication is required for linking, so it's only suitable for localhost use,
+later we'll provide password authentication as well.
+
+We have developed a client library -- called libpsycclient -- providing a simple
+API for clients. It implements the core logic used by clients to interact with
+the PSYC network. It allows clients to establish a connection to psycd, so they
+can send and receive packets for their person entity. Clients can define
+callback functions for handling incoming packets and various events,
+e.g. handling linking and unlinking or adding and removing aliases. The library
+also provides various commands used in clients, such as entering and leaving
+contexts, sending messages, setting aliases, or querying and manipulating the
+context state.
+
+By using the client library, implementing new clients is much simpler. With the
+library providing all the underlying logic, client developers can focus on the
+GUI, implementing message display and UI elements performing various commands
+provided by the library.
+
+** Desktop clients
+
+#+CAPTION: irssyc, a text-based client
+#+LABEL: fig:irssyc
+#+ATTR_LaTeX: width=14cm placement=[t!]
+[[./shot-irssyc-gray.png]]
+
+#+CAPTION: secushare, a GUI client
+#+LABEL: fig:secushare
+#+ATTR_LaTeX: width=14cm placement=[ht]
+[[./shot-secushare.png]]
+
+We have implemented two clients so far: a text-based client and one with a
+graphical user interface (GUI).
+
+The text-based client, irssyc (figure \ref{fig:irssyc}), is implemented in C as
+a module for Irssi, a popular chat client. It is more suited for advanced users
+and for development and testing purposes. It shows each subscribed channel in
+one of its windows and provides access to commands implemented by the client
+library.
+
+The GUI client, secushare (figure \ref{fig:secushare}), is implemented using Qt
+in C++. It uses Qt's relatively new declarative user interface (UI) description
+language, QML. The C++ part of the application implements data models used by
+QML components to display data -- such as the contact list or messages in a
+channel -- and provides access to the commands implemented by the client library
+from QML.
+
+The reasons for choosing Qt were its extensive platform support and its
+declarative UI description language, QML, which makes it easier to accomplish a
+complex but still consistent user interface with good usability.
+
+Qt supports most desktop operating systems -- including Windows, Linux and Mac
+OS X -- and a couple of mobile platforms as well: Maemo, MeeGo, Windows Mobile
+and Symbian. Recently it has been ported to Android as well, and there's an iOS
+port being developed, too.
+
+** Web interface
+
+We have plans for developing a web interface as well, which allows remote access
+of a node installed on a plug computer or server machine. This is useful in case
+the user does not have a device available that runs a full node with the whole
+software stack. The web interface will be a PSYC client written in JavaScript,
+communicating with psycd via WebSocket. This way we only need minimal
+enhancements on the server side, as the client is pretty much like a desktop
+client in this case, only the connection to psycd is implemented
+differently. Now that JavaScript typed arrays are available in most modern
+browsers, parsing of binary packets are possible now purely in JavaScript.
+
+** Mobile clients
+
+As all components of GNUnet are written in C, it is possible to port it to
+smartphone platforms. Problem with this approach, however, is that continuous
+network traffic drains the battery really soon, so we'll have to take measures
+to reduce network traffic. If the mobile node connects only to one trusted node
+-- e.g. hosted on a server or plug computer in the user's home -- which forwards
+the necessary packets for the mobile node, this significantly reduces network
+traffic, as the mobile node does not have to take part in any routing scheme,
+which usually means continuous traffic, even if it's low volume.
+
+Another approach is to only implement a client application for mobile devices
+which connects to a remote psycd on a trusted node over a TLS connection. This,
+however, requires users to set up a server or a plug computer at home and
+configure their firewall or NAT box to allow connections to the PSYC
+daemon. Advantage of the full node approach is that GNUnet already takes care of
+NAT traversal, it does not need to deal with (dynamic) DNS and TLS certificates.
+
+** Extensibility
+
+Extensibility via custom applications is an important aspect of the system. We
+have two different approaches to achieve this.
+
+*** Channel API
+
+Channels can have an interface type defined in an =_interface= state
+variable. The default view is a chat interface, and we're planning to provide a
+few other built-in types in the secushare GUI client, e.g. a microblogging
+interface with status updates.
+
+We intend to enable developers to write custom applications on top of channels,
+which will run in a sandboxed QML or HTML view inside the client, using a
+JavaScript API for sending and receiving packets for the channel. This approach
+does not expose any private user data to the applications, as they only have
+access to the channel they're running in, and nothing else.
+
+*** Client API
+
+For more complex tasks custom client applications have to be built using the
+libpsycclient C library. This approach allows full access to user data and
+messages for the application, thus users should be careful what client
+applications they install on their machine.

@@ -1,0 +1,85 @@
+About
+=====
+
+GNU libextractor is a library used to extract meta data from files of
+arbitrary type.  It is designed to use helper-libraries to perform the
+actual extraction, and to be trivially extendable by linking against
+external extractors for additional file types.  Common use-cases for
+GNU libextractor include detail-views in file managers, detailed
+search results in file-sharing networks and general information
+gathering in forensics investigations and penetration testing.
+
+GNU libextractor is a simple C library with a small API.  Bindings for
+GNU libextractor exists for many languages in addition to the standard
+C/C++ API (we know about bindings for Java, Perl, PHP, Mono, Python,
+Ruby).
+
+libextractor uses a plugin mechanism to enable developers to quickly
+add extractors for additional formats.  Plugins are executed
+out-of-process and can thus bugs in them (or the libraries that they
+use) cannot crash the main application.  libextractor typically ships
+with a few dozen plugins that can be used to obtain keywords from
+common file types.
+
+More detailed documentation is available in the GNU libextractor
+manual.  libextractor is an official GNU package and available from
+http://www.gnu.org/s/libextractor/.
+
+
+Joining GNU
+===========
+
+This is a GNU program, developed by the GNU Project and part of the
+GNU Operating System. If you are the author of an awesome program and
+want to join us in writing Free Software, please consider making it an
+official GNU program and become a GNU maintainer.  You can find
+instructions on how to do so at http://www.gnu.org/help/evaluation.
+We are looking forward to hacking with you!
+
+
+extract
+=======
+
+extract is a simple command-line interface to GNU libextractor.
+
+
+Dependencies
+============
+
+* GNU C/C++ compiler
+* libltdl 2.2.x (from GNU libtool)
+* GNU libtool 2.2 or higher
+* GNU gettext
+
+The following dependencies are all optional, but should be
+available in order for maximum coverage:
+
+* libarchive
+* libbz2 (bzip2)
+* libexiv2
+* libflac
+* libgif (giflib)
+* libglib (glib)
+* libgtk+
+* libgsf
+* libgstreamer
+* libjpeg (v8 or later)
+* libmagic (file)
+* libmpeg2
+* libmp4v2
+* librpm
+* libsmf
+* libtidy
+* libtiff
+* libvorbis / libogg
+* libz (zlib)
+
+When building libextractor binaries, please make sure all of these
+dependencies are available and configure detects a sufficiently recent
+installation.  Otherwise the build system may automatically build only
+a subset of GNU libextractor resulting in mediocre meta data
+production.
+
+Finally, 'zzuf' is a fuzzing tool that can optionally be detected by
+the build system and be used for debugging / testing.  It is not required
+at runtime or for normal builds.

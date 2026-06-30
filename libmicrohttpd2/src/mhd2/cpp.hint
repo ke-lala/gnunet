@@ -1,0 +1,68 @@
+/* This is a helper file used by MSVC Browsing Database Parser.
+   This file is required to quickly identify functions in the code. */
+
+#define MHD_VISIBILITY_EXTERN /* empty */
+
+#define MHD_EXPORTED /* empty */
+
+#define MHD_EXTERN_USED /* empty */
+
+#define MHD_EXTERN_ extern
+
+#define MHD_VISIBILITY_HIDDEN /* empty */
+
+#define MHD_VISIBILITY_INTERNAL /* empty */
+
+#define MHD_INTERNAL /* empty */
+
+#define MHD_FN_PURE_ /* empty */
+
+#define MHD_FN_CONST_ /* empty */
+
+#define MHD_FN_MUST_CHECK_RESULT_ /* empty */
+
+#define MHD_FN_RETURNS_NONNULL_ /* empty */
+
+#define MHD_FN_PAR_NONNULL_(param_num)       /* empty */
+
+#define MHD_FN_PAR_NONNULL_ALL_       /* empty */
+
+#define MHD_FN_PAR_IN_(param_num)       /* empty */
+
+#define MHD_FN_PAR_IN_SIZE_(param_num,size_num)       /* empty */
+
+#define MHD_FN_PAR_OUT_(param_num)       /* empty */
+
+#define MHD_FN_PAR_OUT_SIZE_(param_num,size_num)       /* empty */
+
+#define MHD_FN_PAR_INOUT_(param_num)       /* empty */
+
+#define MHD_FN_PAR_INOUT_SIZE_(param_num,size_num)       /* empty */
+
+#define MHD_FN_PAR_FD_READ_(param_num)       /* empty */
+
+#define MHD_FN_PAR_CSTR_(param_num)       /* empty */
+
+#define MHD_FIXED_ENUM_       /* empty */
+
+#define MHD_FLAGS_ENUM_       /* empty */
+
+#define MHD_FIXED_FLAGS_ENUM_ /* empty */
+
+#define MHD_FIXED_ENUM_APP_SET_ /* empty */
+
+#define MHD_FLAGS_ENUM_APP_SET_ /* empty */
+
+#define MHD_FIXED_FLAGS_ENUM_APP_SET_ /* empty */
+
+#define MHD_FIXED_ENUM_MHD_SET_ /* empty */
+
+#define MHD_FLAGS_ENUM_MHD_SET_ /* empty */
+
+#define MHD_FIXED_FLAGS_ENUM_MHD_SET_ /* empty */
+
+#define MHD_FIXED_ENUM_MHD_APP_SET_ /* empty */
+
+#define MHD_FLAGS_ENUM_MHD_APP_SET_ /* empty */
+
+#define MHD_FIXED_FLAGS_ENUM_MHD_APP_SET_ /* empty */

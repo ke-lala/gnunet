@@ -1,0 +1,112 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2021 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd July 15, 2012
+.Dt GNUNET-CONFIG 1
+.Os
+.Sh NAME
+.Nm gnunet-config
+.Nd manipulate GNUnet configuration files and provide information on how GNUnet was built
+.Sh SYNOPSIS
+.Nm
+.Op Fl b Ar BACKEND | Fl -supported-backend= Ns Ar BACKEND
+.Op Fl C | -cflags
+.Op Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+.Op Fl F | -full
+.Op Fl f | -filename
+.Op Fl h | -help
+.Op Fl j | -libs
+.Op Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+.Op Fl o Ar OPTION | Fl -option= Ns Ar OPTION
+.Op Fl p | -prefix
+.Op Fl r | -rewrite
+.Op Fl S |-list-sections
+.Op Fl s Ar SECTION | Fl -section= Ns Ar SECTION
+.Op Fl V Ar VALUE | Fl -value Ar VALUE
+.Op Fl v | -version
+.Sh DESCRIPTION
+.Nm
+can be used to read or modify GNUnet configuration files.
+It can also provide information to properly build applications on top of
+GNUnet, like appropriate values for CFLAGS or the installation prefix.
+.Bl -tag -width indent
+.It Fl b Ar BACKEND | Fl -supported-backend= Ns Ar BACKEND
+Tests whether the specified BACKEND is supported by the current installation.  The backend must match the name of a plugin, e.g. "namestore_postgres" for the Postgres database backend of the "NAMESTORE" service. If the BACKEND is supported, gnunet-config will return a status code of 0 (success), otherwise 77 (unsupported).  When this option is specified, no other options may be specified. Specifying this option together with other options will cause gnunet-config to return a status code of 1 (error).
+.It Fl C | -cflags
+Print an appropriate value for CFLAGS to compile applications on top of GNUnet.
+.It Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+Use the configuration file FILENAME.
+.It Fl F | -full
+Write the full configuration, not just the deltas to the defaults.
+.It Fl f | -filename
+Try to perform expansions as if the option values represent filenames (will also be applied even if the option is not really a filename).
+.It Fl h | -help
+Print short help on options.
+.It Fl j | -libs
+Print an appropriate value for LIBS to compile applications on top of GNUnet.
+.It Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+Use LOGLEVEL for logging.
+Valid values are DEBUG, INFO, WARNING and ERROR.
+.It Fl o Ar OPTION | Fl -option= Ns Ar OPTION
+Which configuration option should be accessed or edited.
+Required to set a value.
+If not given, all values of a given section will be printed in the format "OPTION = VALUE".
+.It Fl p | -prefix
+Print GNUnet's installation prefix (for example /usr/local.)
+.It Fl r | -rewrite
+Write the configuration to file, even if it did not change.
+.It Fl S |-list-sections
+List available configuration sections for use with --section.
+.It Fl s Ar SECTION | Fl -section= Ns Ar SECTION
+Which configuration section should be accessed or edited.
+Required option.
+.It Fl V Ar VALUE | Fl -value Ar VALUE
+Configuration value to store in the given section under the given option.
+Must only be given together with -s and -o options.
+.It Fl v | -version
+Print GNUnet version number.
+.El
+.Sh SEE ALSO
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Pp
+.Dl info gnunet
+.Pp
+should give you access to the complete handbook,
+.Pp
+.Dl info gnunet-c-tutorial
+.Pp
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.\".Sh HISTORY
+.\".Sh AUTHORS
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt gnunet-developers@gnu.org .

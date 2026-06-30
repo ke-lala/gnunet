@@ -1,0 +1,106 @@
+.\" This file is part of Ascension.
+.\" Copyright (C) 2018,2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" ``FDL-1.3''.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" ``GPL3''.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html.
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd May 9, 2019
+.Dt ASCENSION 1
+.Os
+.Sh NAME
+.Nm ascension
+.Nd migrate existing DNS zones into the GNU Name System
+.Sh SYNOPSIS
+.Nm
+.Op Ar domain Fl d Fl p Fl s -minimum-ttl=<ttl> -dry-run
+.Nm
+.Op Ar domain port Fl d Fl p Fl s -minimum-ttl=<ttl> -dry-run
+.Nm
+.Op Ar domain Fl n Ar transferns Fl d Fl p Fl s Fl -minimum-ttl=<ttl> -dry-run
+.Nm
+.Op Ar domain Fl n Ar transferns Ar port Fl d Fl p Fl s -minimum-ttl=<ttl> -dry-run
+.Sh DESCRIPTION
+.Nm
+is a tool to migrate existing DNS Zones into the GNU Name System (GNS) using incremental zone transfers (AXFR/IXFR).
+To achieve this it uses
+.Xr gnunet-identity 1 ,
+.Xr gnunet-namestore 1 ,
+.Xr gnunet-gns 1 .
+As
+.Nm
+relies on these 3 GNUnet services,
+.Xr gnunet-arm 1
+must be installed and running.
+.Bl -tag -width Ds
+.It Ar domain Fl d Fl p Fl s -minimum-ttl=<ttl> -dry-run
+Migrate the DOMAIN passed as domain.
+The debug, public and standalone options are optional.
+.It Ar domain port Fl d Fl p Fl s -minimum-ttl=<ttl -dry-run>
+Migrate the DOMAIN domain, using port for zone transfer.
+The debug, public and standalone options are optional.
+.It Ar domain Fl n Ar transferns Fl d Fl p Fl s -minimum-ttl=<ttl -dry-run>
+Migrate the DOMAIN domain from the DNS server transferns.
+The debug, public and standalone options are optional.
+.It Ar domain Fl n Ar transferns Ar port Fl d Fl p Fl s -minimum-ttl=<ttl -dry-run>
+Migrate the DOMAIN domain from the DNS server transferns using port for the zone transfer.
+The debug, public and standalone options are optional.
+.It Fl s | \-standalone
+Run Ascension once
+.It Fl d | \-debug
+Enable debugging
+.It Fl h | \-help
+Print short help on options
+.It Fl p | \-public
+Make records public on the DHT
+.It Fl v | \-version
+Print ascension version number
+.El
+.\" .Sh FILES
+.Sh EXAMPLES
+To transfer the sy TLD from ns1.tld.sy:
+.Pp
+.Dl $ ascension sy -n ns1.tld.sy.
+.Pp
+To transfer the nu TLD from zonedata.iis.se with debug options enabled:
+.Pp
+.Dl $ ascension nu -n zonedata.iis.se. -d
+.Sh SEE ALSO
+.Xr gnunet-arm 1 ,
+.Xr gnunet-gns 1 ,
+.Xr gnunet-identity 1 ,
+.Xr gnunet-namestore 1
+.Sh HISTORY
+The
+.Nm
+tool was designed and written in 2018 by
+.An rexxnor Aq Mt rexxnor+gnunet@brief.li .
+.Sh AUTHORS
+This man page was written by
+.An ng0 Aq Mt ng0@gnunet.org
+and updated by
+.An rexxnor Aq Mt rexxnor+gnunet@brief.li
+it first appeared in
+.Nm
+0.5.1.
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt bug-gnunet@gnu.org .

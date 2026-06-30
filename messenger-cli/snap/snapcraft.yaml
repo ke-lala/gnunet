@@ -1,0 +1,100 @@
+name: messenger-cli
+version: 0.5.0
+title: GNUnet Messenger
+summary: An interface using ncurses for the Messenger service of GNUnet.
+description: |
+  The tool messenger-cli is an terminal interface for the GNUnet Messenger service. The goal is to provide private and secure communication between any group of devices.
+  
+  Chats will generally created as opt-in. So you can decide who may contact you directly and who does not, accepting to a direct chat. Leaving a chat is also always possible.
+website:
+  - https://git.gnunet.org/messenger-cli.git/about/
+contact:
+  - gnunet@thejackimonster.de
+donation:
+  - https://www.gnunet.org/en/ev.html
+  - https://liberapay.com/GNUnet-Messenger/
+source-code:
+  - https://git.gnunet.org/messenger-cli.git/
+issues:
+  - https://bugs.gnunet.org
+license: GPL-3.0-or-later
+adopt-info: messenger-cli
+base: core24
+confinement: strict
+grade: stable
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
+
+apps:
+  messenger-cli:
+    command: usr/bin/messenger-cli
+    plugs:
+      - home
+      - network
+      - network-bind
+
+parts:
+  gnunet:
+    build-packages:
+      - libgcrypt20-dev
+      - recutils
+      - libjansson-dev
+      - libsodium-dev
+      - libcurl4-gnutls-dev
+      - libidn2-dev
+      - libunistring-dev
+      - libsqlite3-dev
+      - libmicrohttpd-dev
+      - libltdl-dev
+      - zlib1g-dev
+      - meson
+    stage-packages:
+      - libgcrypt20
+      - recutils
+      - libjansson4
+      - libsodium23
+      - libcurl3t64-gnutls
+      - libidn2-0
+      - libunistring5
+      - libsqlite3-0
+      - libmicrohttpd12
+      - libgnutls-dane0
+      - libunbound8
+      - libltdl7
+      - zlib1g
+    source: https://ftpmirror.gnu.org/gnunet/gnunet-0.27.0.tar.gz
+    source-checksum: sha512/e5e17911f48ad2579898a7f119a1faede0ce1a437163f826d3cd02fefe0de6ce254cb514b5b2455270f6f5c474e39aea837a1a062d2ca09a4c002d4f574ac360
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release
+  libgnunetchat:
+    after: [ gnunet ]
+    build-packages:
+      - pkg-config
+    source: https://ftpmirror.gnu.org/gnunet/libgnunetchat-0.7.0.tar.gz
+    source-checksum: sha512/330857bc3e38c2107d70c5ce5d729a1562593b139bc86bf883a5b397f2b33f9ea362e2b6619b35566cb2a646cfc0c5ca71478ff7161cf40410fe52666b828bba
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release
+  messenger-cli:
+    after: [ gnunet, libgnunetchat ]
+    build-packages:
+      - libncurses-dev
+      - libsecret-1-dev
+    stage-packages:
+      - libncurses6
+      - libsecret-1-0
+    source: https://ftpmirror.gnu.org/gnunet/messenger-cli-0.5.0.tar.gz
+    source-checksum: sha512/33f2255c3bbeab104b8a680687a647238f2f42e99a73b922f6936127dda74ffec3699dae687dabe3c6aa22527d71a5cc83dbbd1217e43c242335a240cddb0cb2
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - --buildtype=release

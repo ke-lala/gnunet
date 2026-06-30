@@ -1,0 +1,6 @@
+
+
+  /**
+   * {{Comment}}
+   */
+  GNUNET_BLOCK_TYPE_{{Name}} = {{Number}},

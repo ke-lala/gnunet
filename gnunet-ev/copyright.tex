@@ -1,0 +1,287 @@
+%
+% Copyright assignment to GNUnet e.V. in der Fassung vom 20.1.2016
+% Inhaltliche Korrekturen von ng0 bis zum 14.03 2019:
+% - URL changes (git repository location)
+% - Lizenzaenderung (GPL3 -> AGPL3)
+%
+\documentclass[a4paper]{article} %,titlepage
+%\documentclass{article}
+\usepackage{german,url,a4wide}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage[%
+  pdftitle = {Copyright assignment},
+%%  pdfsubject = {},
+  pdfpagemode=UseOutlines,
+  colorlinks=false,
+%%    linkcolor=black,
+%%    filecolor=black,
+%%    urlcolor=black,
+%%    citecolor=black
+  pdftex=true,
+  plainpages=false,
+  hypertexnames=true,%false,
+  pdfpagelabels=true,
+  hyperindex=true%
+]{hyperref}
+
+
+\newcommand{\zweidrittel}{2/3}
+\renewcommand{\thesection}{\S\arabic{section}}
+\renewcommand{\thepart}{\alph{part})}
+%begin{latexonly}
+\makeatletter
+\renewcommand\l@section[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{1.0em \@plus\p@}%
+    \setlength\@tempdima{2.0em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\makeatother
+%end{latexonly}
+
+\newenvironment{enumpar}{%
+%begin{latexonly}
+  \renewcommand{\labelenumi}{\theenumi}%
+  \renewcommand{\theenumi}{(\arabic{enumi})}%
+  \renewcommand{\labelenumii}{\theenumii}%
+  \renewcommand{\theenumii}{(\alph{enumii})}%
+%end{latexonly}
+  \begin{enumerate}}
+{\end{enumerate}}
+
+\newcommand{\parref}[2]{\ref{#1}\ref{#2}}
+
+
+\title{Copyright Assignment Agreement \\ for Contributors to GNUnet}
+\date{}
+\begin{document}
+\maketitle
+%\textit{\small{Aus Gründen der Lesbarkeit werden im
+%    Folgenden weitgehend männliche Bezeichnungen verwendet. Natürlich
+%    sind in jedem Falle weibliche wie männliche Personen gleichermaßen
+%    gemeint und angesprochen. Wir bitten darum die jeweils weiblichen
+%    Fassungen mitzudenken.}}
+\noindent
+{\bf Between:}
+
+GNUnet e.V., a German association of GNUnet developers
+registered in M\"unchen and seated in Garching bei M\"unchen,
+represented by
+
+\vspace{2cm}
+
+an authorized currently elected representative of the
+GNUnet e.V. Vorstand, hereinafter referred to as {\bf ``GNUnet e.V.''},
+
+\noindent
+{\bf And:}
+% Note: pseudonymous contributions are still OK!
+% Then we just put the pseudonym.
+
+\vspace{4cm}
+hereinafter referred to as {\bf ``the Contributor''}.
+
+\vspace{0.5cm}
+
+\noindent
+{\bf IT HAVING BEEN PREVIOUSLY ESTABLISHED:}
+\begin{itemize}
+\item That the GNUnet project is directed and supported by GNUnet e.V.,
+  which aims to develop the GNUnet software as part of the GNU project,
+  distributed under license GNU AGPL v3+ on the date of signing of this
+  contract;
+\item That this development project is opened to contributions
+  submitted by individuals outside of GNUnet e.V., contributions which
+  may be officially submitted by their holder to GNUnet e.V. for the
+  purpose of being integrated by the latter into the GNUnet software,
+  in successive versions edited and distributed by GNUnet e.V. or the
+  GNU project;
+\item That GNUnet e.V. wishes, in this context, to centralize copyright
+  ownership on any new contribution integrated into the GNUnet software
+  edited and distributed by it;
+\item That the Contributor wishes to participate, or authorize its
+  personnel to participate, in the development of the aforementioned
+  software.
+\end{itemize}
+
+\noindent
+{\bf IT HAS BEEN AGREED AS FOLLOWS:}
+
+\section{Definition}
+
+\begin{itemize}
+  \item {\bf ``Software'':} means the GNUnet software available at
+    {\tt https://git.gnunet.org/} and on GNU's FTP mirrors, in its
+    present version and future versions, distributed under the GNU AGPL
+    v3 license at the date of the signing of this contract, or any
+    other license chosen by GNUnet e.V.
+\end{itemize}
+
+However, ``Software'' does not mean the versions derived from the
+Software, developed and distributed by the Contributor, independently
+of the successive versions edited and distributed by GNUnet e.V., in
+accordance with the rights granted to the Contributor by the GNU AGPL
+v3+ license.
+
+\begin{itemize}
+  \item {\bf ``Contribution'':} means any original contribution
+    protected by copyright, in particular modifications or the
+    development of new software components and new functionalities by
+    the Contributor (be the Contributor an individual or an
+    organization employing individuals), and that the latter
+    intentionally submits to GNUnet e.V. to be integrated into the
+    Software, with GNUnet e.V.'s approval. A Contribution includes its
+    source code, its object code, as well as any specifications and
+    documentation related thereto.
+\end{itemize}
+
+\section{Subject}
+
+This contract defines the conditions under which the Contributor
+assigns, free of charge, the copyrights over its Contributions as they
+are in progress, to GNUnet e.V..  Any participation by the Contributor
+or employees of the Contributor will be made under the conditions of
+this contract.
+
+Should the Contributor wish to terminate further participation under
+the terms of this contract, it will inform GNUnet e.V. of this in
+advance and by registered mail to:
+
+\begin{verbatim}
+GNUnet e.V.
+Fakultät für Informatik -- I8
+Technische Universität München
+Boltzmannstraße 3
+85748 Garching
+GERMANY
+\end{verbatim}
+
+It is specified that this copyright assignment is a necessary
+condition to enable GNUnet e.V. to integrate the Contributions of the
+Contributor’s personnel in the Software.
+
+\section{EFFECT AND DURATION}
+
+The contract takes effect on the latest date of signing.
+
+The contract shall be enforced for a duration of five years, renewable
+by written agreement, as far as the Contributor’s participation in the
+development of the Software is concerned.
+
+However, the Contributor’s copyright on the Contributions is assigned
+to GNUnet e.V. for as long as said copyrights last.
+
+\section{COPYRIGHTS ASSIGNED TO GNUnet e.V.}
+
+\begin{enumpar}
+  \item is stipulated that copyrights over the Contributions, as
+    assigned by the Contributor to GNUnet e.V., are the following:
+  \begin{itemize}
+    \item The right to reproduce, permanently or temporarily, all or
+      part of the Contributions, in any format, on any medium and by
+      any technical means, present or future, necessary for their use.
+    \item The right to represent all or part of the Contributions, in
+      any place, public or not, through any form of communication,
+      present or future, by the means referred to above.
+    \item The right to adapt for purposes of freely carrying out, on
+      any medium and by any technical means, any adaptation and/or
+      modification of all or part of the Contributions, including with
+      a view to developing derivative software and integrating the
+      Contributions into a future version of the Software. It is
+      stipulated that the right of adaptation includes the corrective
+      and developmental maintenance of the software into which a
+      Contribution might be integrated.  Therefore, the Contributor
+      promises to deliver to GNUnet e.V. the source code of the
+      Contributions transferred, as well as any documentation
+      pertaining thereto.
+    \item The right to distribute the Contributions referred to above,
+      internally or publicly, remunerated or free of charge, directly
+      or through a provider and/or licensee and/or assignee.
+    \item The right of using, for operating and making use of, whether
+      personally or on behalf of a third party, remunerated or free of
+      charge, the Contributions herein assigned, for the purposes of
+      carrying out any form of processing, to whatever end.
+    \item It is agreed that all of the rights considered above are
+      assigned for the duration of copyright, for the whole world.
+  \end{itemize}
+  It is specified that any author-employee of the Contributor remains
+  the holder of his or her moral right over said Contributions.
+  \item In the event that the Contributor wishes to cease submitting
+    further Contributions, it promises to inform GNUnet e.V. of this
+    in advance by registered mail with return receipt. It further
+    promises to ensure that all participation by its employees in the
+    development of the Software ceases.
+  \item The Contributor and its employees nevertheless remain free to
+    use the Software under the conditions provided for by the GNU AGPL
+    v3 license or any other license which may subsequently become
+    attached to it.
+  \item The assignment is non-exclusive. In particular, the
+    Contributor remains free to make the same Contributions to other
+    projects and under other licenses.  However, this exception only
+    applies to the Contribution, and in particular does not relieve
+    the Contributor from the obligations of the GNU AGPLv3+ or other
+    licenses of the Software, in cases where these licenses may
+    otherwise apply to the Contribution.
+  \item GNUnet e.V. remains free to terminate the submission of
+    Contributions by the Contributor at any time.
+\end{enumpar}
+
+\section{GUARANTEES}
+
+\begin{enumpar}
+ \item The Contributor guarantees that it possesses copyrights over
+   the Contributions (non-exclusively) transferred and that it holds
+   all of the rights necessary to assign said Contributions to GNUnet
+   e.V.. The Contributor guarantees, in particular, that the
+   Contributions assigned to GNUnet e.V.  do not infringe third
+   parties' intellectual property rights, including those protected by
+   patent law.  Should the Contributor become aware, after the
+   assignment of a Contribution to GNUnet e.V., of details calling
+   into question this article and the validity of the assignment
+   covered by this contract, the Contributor promises to inform GNUnet
+   e.V. of this promptly, in order that the latter may withdraw the
+   Contribution or Contributions at issue from the Software, as
+   necessary.
+ \item The Contributor acknowledges that it holds no patent which
+   could be enforced against any use by GNUnet e.V. of the copyright over
+   the Contributions which are assigned to it. In the opposite case,
+   the Contributor promises to raise no objection to GNUnet e.V., or any of
+   its licensees, sub- licensees or assignees, on the grounds of the
+   use of its patent in the Contributions assigned.
+ \item The Contributor is bound by no obligation to maintain its
+   Contributions, except as voluntarily undertaken on its
+   part. Moreover, the Contributor declares that it is assigning its
+   Contributions ``as they are'', without guarantee as to their
+   commercial value, and without guaranteeing GNUnet e.V. that the
+   Contributions are free of errors or correspond to its needs.
+ \item GNUnet e.V. guarantees that it will continue to distribute
+   all future versions of the Software under a free software license,
+   as defined by the Free Software Foundation (\url{http://www.fsf.org/}).
+\end{enumpar}
+
+\section{MISCELLANEOUS}
+
+\begin{enumpar}
+ \item This contract is subject to Swiss law.
+ \item Any dispute concerning the interpretation, validity or
+   execution of this contract will be submitted, failing an
+   out-of-court resolution, to the competent German court.
+ \item If one or several stipulations of this contract are held to be
+   invalid or declared such in application of a law or regulation, or
+   by reason of a final ruling by a competent court, the others will
+   retain all of their force and scope.
+\end{enumpar}
+
+
+
+\end{document}

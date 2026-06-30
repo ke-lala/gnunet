@@ -1,0 +1,73 @@
+#+OPTIONS: toc:nil num:t timestamp:nil author:t H:6 ^:{}
+#+BIND: org-export-latex-title-command ""
+
+#+LaTeX_CLASS: book-nopart
+#+LaTeX_HEADER: \usepackage{datetime}
+#+LaTeX_HEADER: \usepackage{titlesec}
+#+LaTeX_HEADER: \usepackage{parskip}
+#+LaTeX_HEADER: \usepackage{fancyvrb}
+#+LaTeX_HEADER: \usepackage[bookmarks]{hyperref}
+
+#+LaTeX_HEADER: \usepackage{fancyhdr}
+#+LaTeX_HEADER: \pagestyle{fancy}
+#+LaTeX_HEADER: \fancyhf{}
+
+#+LaTeX_HEADER: \fancyhead[RO, LE] {\thepage}
+#+LaTeX_HEADER: \fancyhead[RE]{\textit{\nouppercase{\leftmark}}}
+#+LaTeX_HEADER: \fancyhead[LO]{\textit{\nouppercase{\rightmark}}}
+
+#+LaTeX_HEADER: \renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+#+LaTeX_HEADER: \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}{}}
+
+#+LaTeX_HEADER: \fancypagestyle{plain}{%
+#+LaTeX_HEADER: \fancyhf{} % clear all header and footer fields
+#+LaTeX_HEADER: \fancyfoot[C]{\bfseries \thepage} % except the center
+#+LaTeX_HEADER: \renewcommand{\headrulewidth}{0pt}
+#+LaTeX_HEADER: \renewcommand{\footrulewidth}{0pt}}
+
+#+LaTeX_HEADER: \usepackage{color}
+#+LaTeX_HEADER: \definecolor{blue}{rgb}{0,0,0.5}
+#+LaTeX_HEADER: \definecolor{src}{rgb}{0.95,0.95,0.95}
+#+LaTeX_HEADER: \hypersetup{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue,filecolor=blue}
+
+##+LaTeX_HEADER: \usepackage{listings}
+##+LaTeX_HEADER: \lstnewenvironment{src}[1][]%
+##+LaTeX_HEADER:   {\minipage{\linewidth}
+##+LaTeX_HEADER:    \lstset{basicstyle=\ttfamily\footnotesize,
+##+LaTeX_HEADER:            backgroundcolor=\color{src}}}
+##+LaTeX_HEADER:   {\endminipage}
+
+#+LaTeX_HEADER: \usepackage{listings}
+#+LaTeX_HEADER: \lstnewenvironment{src}[1][]%
+#+LaTeX_HEADER:    {\lstset{basicstyle=\ttfamily\footnotesize}}{}
+
+#+LaTeX_HEADER: \usepackage{biblatex}
+#+LaTeX_HEADER: \bibliography{ref}{}
+
+#+LaTeX_HEADER: \makeatletter
+
+#+LaTeX_HEADER: \renewcommand{\@makechapterhead}[1]{%
+#+LaTeX_HEADER:   \vspace*{50\p@}%
+#+LaTeX_HEADER:   {\parindent \z@ \raggedright \normalfont
+#+LaTeX_HEADER:     \interlinepenalty\@M
+#+LaTeX_HEADER:     \ifnum \c@secnumdepth >\m@ne
+#+LaTeX_HEADER:       \if@mainmatter
+#+LaTeX_HEADER:         \Huge\bfseries \thechapter.\ 
+##+LaTeX_HEADER:         \huge\bfseries \@chapapp\space \thechapter
+##+LaTeX_HEADER:         \par\nobreak
+##+LaTeX_HEADER:         \vskip 20\p@
+#+LaTeX_HEADER:       \fi
+#+LaTeX_HEADER:     \fi
+#+LaTeX_HEADER:     \Huge \bfseries #1\par\nobreak
+#+LaTeX_HEADER:     \vskip 40\p@
+#+LaTeX_HEADER:   }}
+
+#+LaTeX_HEADER: \renewcommand\section{%
+#+LaTeX_HEADER:   \@startsection%
+#+LaTeX_HEADER:     {section}{\if@mainmatter 1 \else 10 \fi}{\z@}%
+#+LaTeX_HEADER:     {-3.5ex \@plus -1ex \@minus -.2ex}%
+#+LaTeX_HEADER:     {2.3ex \@plus.2ex}%
+#+LaTeX_HEADER:     {\normalfont\Large\bfseries}
+#+LaTeX_HEADER: }
+
+#+LaTeX_HEADER: \makeatother

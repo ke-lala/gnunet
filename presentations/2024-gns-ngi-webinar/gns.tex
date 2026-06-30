@@ -1,0 +1,327 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{appendixnumberbeamer}
+\usepackage{mathtools}
+\usetheme{metropolis}           % Use metropolis theme
+\definecolor{fhggreen}{RGB}{23,156,125}
+\let\oldemph\textbf
+\renewcommand{\textbf}[1]{{\color{mLightBrown}\oldemph{#1}}}
+
+\usepackage{blkarray}
+\usepackage{amsmath}
+\usepackage{multirow}
+\title{\includegraphics[width=0.2\textwidth]{gns-logo.png}\\\small{The GNU Name System | RFC 9498}}
+\date{2024-02-22}
+\author{Bernd Fix, Christian Grothoff, \textbf{Martin Schanzenbach}}
+%\institute{\includegraphics[width=.25\textwidth]{aisec_logo.pdf}}
+
+\graphicspath{{figures/}}
+
+\begin{document}
+\metroset{block=fill,sectionpage=progressbar,numbering=counter}
+\maketitle
+
+\begin{frame}{Directories / DNS}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{www}}}^{\text{Label}}}
+    \text{www.}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.example.com}}}}_{\text{Zone}}}
+    {\color{fhggreen}\text{example.com}}
+  $$
+\end{frame}
+
+\begin{frame}{The Domain Name System}
+  Whats wrong with DNS? See RFC 8324\footnote{DNS Privacy, Authorization, Special Uses, Encoding, Characters,
+          Matching, and Root Structure: Time for Another Look?}:
+  \begin{itemize}
+    \item No \textbf{query privacy}.
+    \item A \textbf{single hierarchy with a centrally controlled root}.
+    \item Requires management/maintenance of \textbf{root servers}.
+    \item etc\ldots
+  \end{itemize}
+  DNSSEC and other ``patches'' do not or in adequately address the issues: ``[the existing solutions for DNS are] security patches rather than designed-in
+   security or privacy mechanisms''.
+\end{frame}
+
+\begin{frame}{Directories / GNS}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{www}}}^{\text{Label}}}
+    \text{www.}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.myzone.gns.alt}}}}_{\text{Zone}}}
+    {\color{fhggreen}\text{myzone.gns.alt}}
+  $$
+\end{frame}
+
+\begin{frame}{The .alt TLD}
+  Why ``.gns.alt''?
+  \begin{itemize}
+    \item RFC9476: ``The .alt Special-Use Top-Level Domain'' defines the TLD to be used for alternative (from the point of view of DNS) name systems.
+    \item RFC9476 does \textbf{not} define a registry for ``.alt''-subdomains.
+    \item We manage a ``.alt'' registry at \url{https://gana.gnunet.org}~\footnote{If you ever need a registry for your protocol feel free to approach us!} which already includes a code point for ``.gns.alt''.
+    \item To prevent shadowing of DNS names, it is recommended to use the ``.gns.alt'' suffix.
+    \item Sometimes (e.g. censorship-overrides) you may not want to do that.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The GNU Name System}
+  \begin{itemize}
+    \item Zones are created and uniquely identified using \textbf{public zone keys}.
+    \item \textbf{Records} are grouped by \textbf{label}, encrypted, signed, and published in a key-value store (usually, a DHT\footnote{\url{https://datatracker.ietf.org/doc/draft-schanzen-r5n/}}).
+    \item Supported zone types and crypto (for now):
+      \begin{itemize}
+        \item PKEY: ECDSA+CTR-AES-256
+        \item EDKEY: EdDSA+XSalsa20-Poly1305
+      \end{itemize}
+  \end{itemize}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-0}
+\end{frame}
+
+\begin{frame}{Zone key TLD}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{www}}}^{\text{Label}}}
+    \text{www.}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{000G005096M367VCT5D\ldots BXVBBBHX1GF0}}}}_{\text{Zone}}}
+    {\color{fhggreen}\text{000G005096M367VCT5D\ldots BXVBBBHX1GF0}}
+  $$
+\end{frame}
+
+\begin{frame}{Zone management}
+  \includegraphics[height=0.9\textheight]{deleg0.pdf}
+\end{frame}
+
+
+\begin{frame}{Name resolution}
+  \includegraphics[height=0.9\textheight]{deleg1.pdf}
+\end{frame}
+
+
+\begin{frame}{Name resolution}
+  \includegraphics[height=0.9\textheight]{deleg2.pdf}
+\end{frame}
+
+
+\begin{frame}{How do we bootstrap the top-level zones?}
+  \includegraphics[height=0.9\textheight]{deleg3.pdf}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Start Zone}
+  ``Hyper-hyper local root'' concept we call the \textbf{Start Zone}:
+  \begin{itemize}
+    \item Start Zone contains so-called \textbf{suffix-to-zone}-mappings.
+    \item Implementation ships with an \emph{initial} Start Zone configuration.
+    \item Start Zone is configurable \emph{locally} at \emph{each} endpoint.
+    \item User override/extension of mappings at top-level or subdomain-level to\ldots
+      \begin{itemize}
+        \item circumvent censorship if necessary, or
+        \item names in private networks.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The Start Zone}
+  Example suffix-to-zone mappings:
+  \begin{small}
+  \begin{verbatim}
+# Some TLDs
+.com = 000G001MF6DVMZZ4Y8XRZQDXM1PB3D3VGEK29ZHXBA57EPSNW1QBPKT8J0
+.myzone.gns.alt = 000G007FKSA876G6SNDF8VA7YK1DJE96RPPBHRT2X55Q13M2T4YKNYT3DG
+# Some subdomain overrides
+.gnu.org = 000G001223Q8ZJZBSK6XT2DWV6PE5B1W436D2NB7ZBR9XSXT7TFJHCDB24
+.gnunet.gns.alt = 000G0047M3HN599H57MPXZK4VB59SWK4M9NRD68E1JQFY3RWAHDMKAPN30
+  \end{verbatim}
+  \end{small}
+\end{frame}
+
+\begin{frame}[fragile]{GNS Registrars}
+  How do I get my zone published?
+  \begin{itemize}
+  \item Entities in Start Zones are prime candiates to offer registrar services.
+  \item But, \textbf{anyone} can become a registrar!
+  \item The GNUnet Project offers an experimental registrar service where you can pay with GNU Taler.
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{Default Start Zones --- Possible Governance Models}
+%   \begin{itemize}
+%   \item Non-profit organization.
+%   \item Multi-stakeholder model: Board, supporting organizations, \ldots
+%   \item Examples for possible stakeholders:
+%     \begin{itemize}
+%     \item Software and OS Distributors
+%     \item Browser vendors
+%     \item Governments
+%     \end{itemize}
+%   \item Funding options:
+%     \begin{itemize}
+%     \item Applications for new top-level domains.
+%     \item Registrations of new top-level domains.
+%     \item \ldots
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}{Hiding information inside GNS}
+  \begin{itemize}
+  \item GNS's crypto allows you to hide resource records.
+  \item It requires either
+    \begin{itemize}
+    \item the use of a label with sufficient entropy (a shared secret) or
+    \item the use of a secret zone.
+    \end{itemize}
+  \end{itemize}
+  $$
+  \mathrlap{\overbrace{\phantom{\text{ohcoxaiShaingahd}}}^{\text{Secret label}}}
+  \text{ohcoxaiehaingahd}
+  \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.my.zone}}}}_{\text{Namespace}}}
+  {\color{fhggreen}\text{.my.zone}}
+  $$
+\end{frame}
+
+
+\begin{frame}{Encrypt}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-1}
+\end{frame}
+
+\begin{frame}{Sign}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockCreation-2}
+\end{frame}
+
+\begin{frame}{Derive}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockCreation-3}
+\end{frame}
+
+\begin{frame}{Combine and publish}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-4}
+\end{frame}
+
+\begin{frame}{Query}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-0}
+\end{frame}
+
+\begin{frame}{Retrieve}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-1}
+\end{frame}
+
+\begin{frame}{Verify}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-2}
+\end{frame}
+
+\begin{frame}{Decrypt}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-3}
+\end{frame}
+
+\begin{frame}{Decrypt}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-4}
+\end{frame}
+
+\begin{frame}{The RFC journey}
+  \begin{itemize}
+  \item[2012:] ``GNU Alternative Domain System'', Master's Thesis, TUM.
+  \item[2013:] ``The GNU Name System'', 30c3, Hamburg.
+  \item[2015:] ``Special Use Domain Names of P2P Systems''@DNSOP, IETF 93, Prague.
+  \item[2019:] ``The GNU Name System: 2019 Edition''@DINRG, IETF 104, Prague
+  \item[2019:] ``The GNU Name System'', ICANN66, Montreal.
+  \end{itemize}
+  Around this time, NGI Search and discovery funding aquired to create the specification.
+\end{frame}
+
+\begin{frame}{Paths}
+  Potential paths to an RFC (incomplete):
+  \begin{itemize}
+  \item IETF
+    \begin{itemize}
+    \item Organized in working groups (WGs). E.g. DNSOP.
+    \item Work on ``Standards''.
+    \item \textbf{IF} your document is adopted, control over its contents are given to the WG.
+    \item Publication requires \textbf{consensus}.
+    \end{itemize}
+  \item IRTF
+    \begin{itemize}
+    \item Similar to IETF WGs but focussed on research topics. E.g. DINRG.
+    \item Technically don't work on ``Standards'' (RFCs never have status ``Proposed Standard'').
+    \end{itemize}
+  \item ISE
+    \begin{itemize}
+    \item Process outside of the IETF.
+    \item You retain most of the control over the document.
+    \item Requires ISE to accept it for publication and that it does not conflict with work in the IETF.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The RFC journey}
+  \begin{itemize}
+  \item[2020/5:] First draft submission to IETF datatracker. IRTF and other research groups approached (through mailing list) asking for interest and adoption.
+  \item[2020/7:] ``The GNU Name System''@SECDISPATCH, IETF 108, Online. IRTF and other research groups approached (through mailing list) asking for interest and adoption.
+  \item[2021/5:] Asked Independent Stream Editor for adoption.
+  \item[2021/11:] Draft adopted by Independent Stream Editor.
+  \item[2023/11:] RFC 9498 published.
+  \end{itemize}
+  \textbf{Note:} Publication through the ISE is not technically related to standardization (RFC publication $\neq$ IETF standardization). But, it is a very enriching and helpful process in any case!
+\end{frame}
+
+\begin{frame}{The Independent Stream}
+  There will be questions, and feedback!
+  \begin{itemize}
+  \item ``Why should this document be published as RFC (as opposed to self-published)''
+  \item You need to propose (at least) two expert reviewers that can (and will!) provide extensive expert reviews to the ISE. The ISE may be able to help you with that, but take this into account \textbf{early}.
+  \item There is going to be a lot of ping-pong with the ISE and all kinds of reviewers of the document from withing or outside of the IETF.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The IESG review}
+  \begin{itemize}
+  \item The ``final hurdle''.
+  \item Includes the ``IETF conflict review''.
+  \item In our case, GNS potentially conflicts with other IETF work: DNS.
+  \item Again, extensive discussions with domain experts (DNSOP, IESG reviewer).
+  \item Close coordination with RFC 9476 (dot-alt) to argumentatively deconflict.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The RFC editor}
+  \begin{itemize}
+  \item Very helpful editorial review and proofreading.
+  \item Can be a rather long process (2023/7 --- 2023/11). Note: RFC 9498 is 74 PDF pages.
+  \item Usually not a lot of actual work (for you).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{In retrospect}
+  \begin{itemize}
+  \item GNS was a politically loaded document with historical baggage (special-use domains etc.).
+  \item ISE process was very beneficial:
+    \begin{itemize}
+    \item Thinking again from an implementer's perspective (also: alternative implementations!).
+    \item Important details that destroy interoperability. Example: UTF-8 canoncalization for labels.
+    \item Design oversights. Example: Tombstone records for deleted record sets required to prevent accidental IV reuse.
+    \end{itemize}
+  \item Other specification efforts: \url{https://datatracker.ietf.org/doc/draft-schanzen-r5n/}.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \begin{center}
+    Questions?\\
+    \vspace{2cm}
+    \url{https://gnunet.org}\\
+    \vspace{1em}
+    {\tiny
+      \texttt{schanzen@gnu.org}\\
+      \texttt{3D11~063C~10F9~8D14~BD24~D147~0B09~98EF~86F5~9B6A}\\
+    }
+  \end{center}
+\end{frame}
+
+\end{document}

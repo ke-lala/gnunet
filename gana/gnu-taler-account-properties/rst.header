@@ -1,0 +1,14 @@
+GNU Taler AML Properties
+---------------------
+
+Entries
+^^^^^^^
+
+.. list-table:: GNU Taler AML Properties
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Value
+     - HTTP Status
+     - Description

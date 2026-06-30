@@ -1,0 +1,131 @@
+{{define "edit_zone"}}
+    {{$type := index .Params "keytype"}}
+    {{$name := index .Params "name"}}
+    <div>
+        <h3>Edit a [{{$type}}] GNS zone:</h3>
+        <p><small>(Created: {{index .Params "created"}}, Last edited: {{index .Params "modified"}})</small></p>
+        <form action="/action/upd/zone/{{.Ref}}" method="post" onsubmit="return(zone_validate());">
+            <input type="hidden" name="old_name" value="{{$name}}">
+            <table>
+                <tr>
+                    <td align="right"><b>Zone name:</b></td>
+                    <td><input type="text" id="name" name="name" value="{{$name}}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>The type of the zone key cannot be changed. It is currently set to
+                        <b>{{if eq $type "PKEY"}}PKEY (Ed25519+EcDSA){{else}}EDKEY (EdDSA){{end}}</b>:</p>
+                        <table>
+                            <tr>
+                                <td align="right"><b>Public key:</b></td>
+                                <td>{{index .Params "keydata"}}</td>
+                            </tr>
+                            <tr>
+                                <td align="right"><b>Private key:</b></td>
+                                <td>{{index .Params "prvdata"}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <button id="submit">Change zone name</button>
+        </form>
+        <p><a href="/"><button>Leave</button></a></p>
+    </div>
+    <script>
+        const old_zone = "{{$name}}";
+        const zone_names = [
+            {{range $i, $n := .Names}}
+                "{{$n}}",
+            {{end}}
+        ];
+        function zone_validate() {
+            const name = document.getElementById("name").value;
+            if (!name) {
+                alert("Empty zone name not allowed");
+                return false;
+            }
+            if (name == old_zone) {
+                alert("Zone name not changed");
+                return false;
+            }
+            for (var i = 0; i < names.length; i++) {
+                if (zone_names[i] == name) {
+                    alert("Zone name already in-use");
+                    return false;
+                }
+            }
+            return(true);
+        }
+    </script>
+{{end}}
+
+{{define "edit_label"}}
+    {{$name := index .Params "name"}}
+    {{$zone := index .Params "zone"}}
+    <div>
+        <h3>Edit a GNS label for zone "{{$zone}}":</h3>
+        <p><small>(Created: {{index .Params "created"}}, Last edited: {{index .Params "modified"}})</small></p>
+        <p>Query hash({{$name}}): {{index .Params "query"}}</p>
+        <form action="/action/upd/label/{{.Ref}}" method="post" onsubmit="return(label_validate());">
+            <input type="hidden" name="old_name" value="{{$name}}">
+            <input type="hidden" name="zid" value="{{index .Params "zid"}}">
+            <table>
+                <tr>
+                    <td align="right">Name:</td>
+                    <td><input type="text" id="name" name="name" value="{{$name}}"></td>
+                </tr>
+            </table>
+            <button id="submit">Change label name</button>
+        </form>
+        <p><a href="/"><button>Leave</button></a></p>
+    </div>
+    <script>
+        const old_label = "{{$name}}";
+        const label_names = [
+            {{range $i, $n := .Names}}
+            '{{$n}}',
+            {{end}}
+        ];
+        function label_validate() {
+            const name = document.getElementById("name").value;
+            if (!name) {
+                alert("Empty labels not allowed");
+                return false;
+            }
+            if (name == old_label) {
+                alert("Label name not changed");
+                return false;
+            }
+            for (var i = 0; i < names.length; i++) {
+                if (label_names[i] == name) {
+                    alert("Label name already in-use");
+                    return false;
+                }
+            }
+            return(true);
+        }
+    </script>
+{{end}}
+
+{{define "edit_rec"}}
+    {{$label := index .Params "label"}}
+    <div>
+        <h3>Edit a resource record for label "{{$label}}":</h3>
+        <p><small>(Created: {{index .Params "created"}}, Last edited: {{index .Params "modified"}})</small></p>
+        {{$t := rritype (index .Params "type")}}
+        {{if eq $t "PKEY"}}{{template "PKEY" .}}{{end}}
+        {{if eq $t "EDKEY"}}{{template "EDKEY" .}}{{end}}
+        {{if eq $t "NICK"}}{{template "NICK" .}}{{end}}
+        {{if eq $t "LEHO"}}{{template "LEHO" .}}{{end}}
+        {{if eq $t "REDIRECT"}}{{template "REDIRECT" .}}{{end}}
+        {{if eq $t "GNS2DNS"}}{{template "GNS2DNS" .}}{{end}}
+        {{if eq $t "BOX"}}{{template "BOX" .}}{{end}}
+        {{if eq $t "DNS_CNAME"}}{{template "DNS_CNAME" .}}{{end}}
+        {{if eq $t "DNS_A"}}{{template "DNS_A" .}}{{end}}
+        {{if eq $t "DNS_AAAA"}}{{template "DNS_AAAA" .}}{{end}}
+        {{if eq $t "DNS_MX"}}{{template "DNS_MX" .}}{{end}}
+        {{if eq $t "DNS_TXT"}}{{template "DNS_TXT" .}}{{end}}
+    </div>
+    <a href="/"><button>Leave</button></a>
+{{end}}

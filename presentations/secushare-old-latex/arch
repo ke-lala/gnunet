@@ -1,0 +1,203 @@
+* Architecture
+
+Secure Share intends to implement a scalable P2P social network enabling
+real-time one-to-one, one-to-many and many-to-many message distribution for
+applications using the network while fulfilling the privacy requirements
+described in the previous chapter.
+
+It provides private and group messaging, status updates and profiles in the
+first prototype version, while keeping the protocol extensible allowing various
+social applications to be built on top later.
+
+By combining PSYC with a P2P network architecture we get an efficient and
+extensible protocol provided by PSYC and security and privacy properties
+provided by the underlying P2P network.
+
+** P2P network architecture
+
+Many P2P networks use an architecture where nodes connect to arbitrary peers, no
+trust relation exists between them. A problem with this approach is that some
+nodes could use more resources of the network than they contribute to it
+(freeloaders), which can be alleviated by applying an economic model in the
+network. For instance GNUnet uses an excess-based economy: a node when idle does
+favors for free, but when busy it only works for nodes it likes and charges them
+for favors they request, which they can pay back by doing a favor in return.
+
+Another problem that could arise in this architecture are malicious nodes who
+can perform various active attacks, including blocking access to parts of the
+network, or returning false information to certain requests. These can be
+avoided to some extent by randomized routing and by making it harder to create
+new identities in the network.
+
+A different approach we use is a friend-to-friend (F2F) architecture where nodes
+only connect to friendly peers whom they trust. This has the advantage that it
+avoids many attacks involving malicious nodes in the network. An attacker has to
+infiltrate a user's social circle to perform a successful attack, which is much
+harder. By adding a trust level metric to social connections we can further
+differentiate between more and less trusted nodes in the network.
+
+Also, a F2F architecture gives better incentives to participants in the network:
+users help their friends by forwarding packets for them instead of random
+strangers. Nodes with high bandwidth and no connection restrictions --
+e.g. server machines in data centers -- can improve throughput and connectivity
+in the network by serving their owner's social circle.
+
+Other systems based on a F2F architecture include Freenet \cite{dark-freenet},
+Drac \cite{drac}, Tonika, and GNUnet has a F2F mode as well.
+
+** Structure of the network
+
+Another aspect of P2P networks is whether they're structured or not. In
+structured networks the structure of the network is predefined, the node ID
+determines the position of the node in the network, this information is enough
+to be able to route packets to their destination. Often a distributed hash table
+(DHT) is used in structured P2P networks which provides hash table functionality
+distributed over many nodes in the network.
+
+A different approach is an unstructured network like the Internet, where
+arbitrary nodes can connect, no structure is imposed upon the nodes. In this
+case a routing table is needed to be able to route a packet to its destination.
+
+A social network could be built purely using a DHT, LifeSocial \cite{lifesocial}
+is an example of such a network. In this case every shared status message, image
+or document would become an entry in the DHT, and a profile consists of a
+collection of links to other DHT entries. To ensure only the intended recipients
+have access to private data, DHT entries are encrypted with a symmetric key,
+which is attached to the entry encrypted with every user's public key who should
+have access to the entry. This means that there's no forward secrecy in this
+network, if a user's private key is compromised all these entries can still be
+decrypted with that key. Even if noticed in time, re-encrypting all entries
+affected by a compromised key is quite a costly operation when the number of
+entries become larger after using the system over the years.
+
+For our case either an unstructured network is suitable, or a structured network
+where the structure is only used for routing, and not for storing user data in a
+DHT. In our architecture data is pushed once to recipients who store it locally
+as long as they need it, which means all profile data, messages and received
+files are all available locally -- even offline -- and can be viewed and
+searched using local tools on the personal device.
+
+** Software components
+
+In a P2P network every user runs the P2P software on their devices, so it's
+important that it is multi-platform, lightweight, and written in a compiled
+language, so we can easily run it on all popular desktop platforms and small
+devices as well, including plug computers, home routers, and even smartphones.
+
+In our case the P2P software runs as a daemon -- a background process -- on the
+local machine or on another device on the network. Client applications connect
+to this daemon and integrate into the desktop or mobile GUI environment running
+on the system.
+
+Server machines, home routers and plug computers act as intermediary nodes in the
+system, helping their owners' social network by forwarding packets for them.
+
+Mobile phones require a different approach. Continuous network usage would drain
+the battery quite fast, so we'll have to minimize it by disabling packet
+forwarding for mobile nodes and connecting only to a trusted node with good
+connectivity -- e.g. a server machine or a plug computer at home -- which would
+forward the necessary packets for the mobile node.
+
+** Peer-to-peer framework
+
+We have examined various P2P systems looking for an implementation that can
+serve as a basis for our social messaging platform. The criteria for a suitable
+P2P framework was:
+
+- Free/libre/open-source software.
+- Multi-platform, lightweight and written in a compiled language.
+- Implements and provides an API for essential P2P features such as
+  bootstrapping, addressing, routing, encryption and NAT traversal.
+
+We have found GNUnet to be the most promising implementation out there
+satisfying these requirements. It is a modular P2P framework written in C,
+providing an API for essential P2P functionalities. It supports advanced NAT
+(Network Address Translation) traversal, which enables contacting nodes without
+a public IP address typically found in home or corporate networks. Furthermore
+it has several transport mechanisms with automatic transport selection,
+including TCP, UDP, HTTP(S), SMTP and ad-hoc WiFi mesh networks. It also
+provides various routing schemes and a distributed hash table.
+
+It has three operation modes: in P2P mode it makes connections with any peer in
+the network, in friend-to-friend (F2F) mode only trusted nodes are connected,
+and in mixed mode a minimum number of trusted nodes are required to be connected
+at all times.
+
+GNUnet currently has two options for routing packets in the network: the
+distance vector and the mesh service.
+
+The distance vector (DV) service uses a fish-eye bounded distance vector
+protocol \cite{gnunet-decrouting}, which builds a routing table by gossiping
+about neighboring peers within a limited number of hops distance. It is a
+link-state routing protocol with improved efficiency: nodes only know about the
+state of a local neighborhood, and link state of nodes close to each other are
+updated more often than of nodes multiple hops away. The DV service also
+provides onion routing of packets through multiple hops, which improves network
+connectivity by connecting two peers behind NAT through an intermediary hop, and
+makes it harder for an observer to determine who is talking to whom.
+
+The mesh service creates tunnels through several hops and supports multicast as
+well. Initial routes to recipients are discovered using the DHT. It is still
+being heavily worked on by the GNUnet team, for instance encryption is missing
+and has to be implemented for the multicast groups in order to make it useful
+for our purpose.
+
+These routing methods only support delivery of packets to connected nodes, in
+order to provide offline messaging, we'll need a store-and-forward mechanism in
+the network. This can be implemented by storing encrypted packets on more stable
+nodes in the network, until the recipient comes back online.
+
+#+BEGIN_COMMENT
+GNUnet's DHT component can be used for facilitating the bootstrapping process by
+storing user public key to current node ID mappings in the DHT. This allows
+peers offline for a longer period to look up the current node of a contact
+in order to re-establish connection to the network, or it can be used to publish
+addresses of nodes hosting public groups or providing a public news feed.
+#+END_COMMENT
+
+GNUnet also has an anonymous file sharing component which uses a DHT together
+with the GNUnet Anonymity Protocol (GAP). For our use case -- transferring files
+between friends -- this is not needed, instead we transfer files just like other
+messages, using PSYC's multicast distribution channels. As the PSYC packet
+syntax supports binary data without any encoding, this causes no additional
+overhead. In order to transfer files, we would have to split them up into
+smaller fragments, as the maximum packet size supported by GNUnet is 64KB.
+
+#+CAPTION: Components and message flow in GNUnet
+#+LABEL: fig:arch
+#+ATTR_LaTeX: width=8.2cm placement=[h!]
+[[./gnunet.png]]
+
+** Messaging daemon
+
+GNUnet's modular architecture allows us to extend it with a service that
+implements a messaging protocol, manages the connections between people, and
+provides a local client interface. This service -- called psycd -- uses the PSYC
+protocol for communication with both other peers and local clients.
+
+Psycd sends messages through GNUnet core, which encrypts the message and passes
+it to the modular transport system, sending packets through one of its transport
+plugins.
+
+In our prototype we use direct connections to peers. Users manually add their
+friends by exchanging hello messages, which contain their public key and current
+addresses. For the prototype version the focus was on the implementation of the
+messaging daemon, and we intend to work on the underlying routing mechanism in
+future versions.
+
+See figure \ref{fig:arch} for an illustration of the components used in the
+system. Dotted parts are not existing yet, only planned. The arrows depict the
+flow of messages between components.
+
+** Functionality
+
+One of the core concepts of PSYC is programmable channels with their own
+subscription lists. Using this combined with custom user interfaces makes it
+possible to implement the usual functionality found in centralized and federated
+social networks, like private and group messages, status updates, photo and link
+sharing, as well as features not found in those networks, like sharing of files
+and custom content, or real-time notifications for custom events.
+
+As Secure Share runs on the users' own device and stores all incoming messages
+and data locally, this enables offline usage and local search in the data
+received from subscribed friends or groups.

@@ -1,0 +1,48 @@
+29.12.2015, hamburg, 32c3
+
+Author: Martin Schanzenbach
+
+* Attendees:
+ 1. Christian Grothoff
+ 2. Daniel Golle
+ 3. Gabor Toth
+ 4. Martin Schanzenbach
+ 5. Teich
+ 6. Florian Dold
+ 7. Sri Harsha Totakura
+ 8. Nils Durner
+ 9. Jeff Burdges
+
+* Guests: 
+ 1. Jan
+ 2. Anselm
+ 3. Julius
+ 4. Leandro
+ 5. Christian Delgado
+
+I. Financial Report (dold):
+  - No expenses
+  - Financial Officer will attach detailed report
+
+II. New Board Election
+  - Proposal: No changes
+  => Unanimous consent reached
+    => Board unchanged
+
+III. Taler Payment Spinoff
+  - Jan-March Ben Müller will work on fints integration for Taler
+  - As employee, 400 EUR/month (part-time)
+  => Unanimous consent on hire
+
+IV. PEP
+  - Wants to use GNUnet; Monetize it in the future
+  - Everything as Free Software
+  - For other licensing reasons (e.g. Apple Store) they want shared ownership
+  - Code authors all need to allow G-ev to handle such negotiation in
+    general by transferring copyright (ex. like Open Whisper Systems)
+    => All those present are OK with GNUnet e.V. having right to represent
+  - CG asked FSF for legal advice
+  - Question: Are any contributors against this? 
+  - Details on relicensing need to be discussed
+  - Vote: Anybody against the board to negotiate with FSF, PEP etc 
+  - 1 absent, 9 in favor

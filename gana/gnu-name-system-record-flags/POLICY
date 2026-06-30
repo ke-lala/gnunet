@@ -1,0 +1,20 @@
+Policy
+^^^^^^
+
+Each registry entry should contain three values: the "Number" of the
+record flags, which must be between 0 and 15,
+the "Name" of the record flag, and a "Reference" with links
+to further information about the record flag.
+
+The "Name" must be unique in the entire registry.  The value must be a
+case insensitive ASCII string and is restricted to alphanumeric
+characters.
+
+Adding flags is possible after expert review, using a
+first-come-first-served policy for unique "Name" allocation.
+Experts are responsible to ensure that the chosen "Name" is
+appropriate for the record flag.
+
+The current contact(s) for expert review are reachable at
+gns-registry@gnunet.org.
+

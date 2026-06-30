@@ -1,0 +1,35 @@
+# Payto Payment Target Type for Cyclos account
+
+## Target Type "cyclos"
+
+Name: cyclos
+
+Description:  Cyclos Account ID
+
+  The path consists of two components: The network address and the account ID.
+
+  This is used to uniquely identify both the Cyclos network and the account in the network.
+
+Syntax:
+
+  payto-cyclos-URI = "payto://cyclos/" host ["/" fpath] "/" account-id [ "?" opts ]
+
+  'host' and 'fpath' is defined in
+  [Section 5 of RFC 1738](https://tools.ietf.org/html/rfc1738#section-5).
+
+  'opts' is defined in
+  [Section 2 of RFC 8905](https://tools.ietf.org/html/rfc8905#section-2).
+
+
+Examples:
+
+      payto://cyclos/demo.cyclos.org/31000163100000000
+      payto://cyclos/communities.cyclos.org/utrecht/31000163100000000
+
+Contact:  <mailto:antoine@taler.net>
+
+
+Normative References
+
+* [RFC 8905] The 'payto' URI Scheme for Payments
+  <https://tools.ietf.org/html/rfc8905>

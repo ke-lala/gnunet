@@ -1,0 +1,45 @@
+.TH ASCENSION "1" "February 2019" "Ascension 0.5.0" "User Commands"
+.SH NAME
+Ascension \- continuous migration of DNS zones to GNS
+.SH USAGE
+.IP
+ascension <domain> [\-d] [\-p] [\-s]
+.IP
+ascension <domain> <port> [\-d] [\-p] [\-s]
+.IP
+ascension <domain> \fB\-n\fR <transferns> [\-d] [\-p] [\-s]
+.IP
+ascension <domain> \fB\-n\fR <transferns> <port> [\-d] [\-p] [\-s]
+.IP
+ascension \fB\-p\fR | \fB\-\-public\fR
+.IP
+ascension \fB\-s\fR | \fB\-\-standalone\fR
+.IP
+ascension \fB\-h\fR | \fB\-\-help\fR
+.IP
+ascension \fB\-v\fR | \fB\-\-version\fR
+.SH OPTIONS
+.TP
+<domain>
+Domain to migrate
+.TP
+<port>
+Port for zone transfer
+.TP
+<transferns>
+DNS Server that does the zone transfer
+.TP
+\fB\-p\fR \fB\-\-public\fR
+Make records public on the DHT
+.TP
+\fB\-s\fR \fB\-\-standalone\fR
+Run ascension once
+.TP
+\fB\-d\fR \fB\-\-debug\fR
+Enable debugging
+.TP
+\fB\-h\fR \fB\-\-help\fR
+Show this screen.
+.TP
+\fB\-v\fR \fB\-\-version\fR
+Show version.

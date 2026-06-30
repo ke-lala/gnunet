@@ -1,0 +1,12 @@
+Entries
+^^^^^^^
+
+.. list-table:: GNS Signature Purposes
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Number
+     - Package
+     - Subsystem
+     - Comment

@@ -1,0 +1,45 @@
+# Gnunet e.V. Mitgliederversammlung 2019
+#
+# NOTE: This is right now only the AGENDA. Whoever does the
+# protocol should augment it according to whatever actually
+# transpires.
+
+Leipzig, 36C3 - TBD
+
+# Teilnehmer
+  - Guests: Gurke, Maki, Peio
+  - Members: dvn, Florian Dold, Christian Grothoff, Lurchi, Hartmut Goebel, xrs
+
+# Finanzbericht
+  - Vorstand genehmigte einstimmig 37 EUR fuer Reise von Martin zur ICANN
+  - Vorstand genehmigte einstimmig <500 EUR fuer Sticker (genauer Betrag
+    kommt noch von Sva)
+  - Details: siehe finanzreport2019.tex
+
+# Vorstandsbericht:
+  - Taler Systems SA beschloss Kapitalerhoehung, sucht Mitarbeiter
+
+# Entlastung
+  - Es wurde einstimmig die Entlastung des Vorstands bestimmt.
+
+# Vorstandswahl
+  - neuer Finanzwart: Florian Dold
+  - neuer Präsident: Martin Schanzenbach
+  - neuer Vizepräsident: Christian Grothoff
+  - neuer Beisitzer: Hartmut Goebel
+  - neuer Beisitzer: DVN
+  - einstimmig gewählt
+
+# Diskussionsvorlage:
+  - Soll die jaehrliche Sitzung des GNUnet e.V. vom Congress weg
+    und stattdessen beim GNUnet Hacker Meeting (@ Decentrale.ch)
+    im Sommer stattfinden? Tickets fuer den Congress sind teuer
+    und z.T. sehr schwer zu bekommen.
+    => einstimmig beschlossen.
+  - Proposal: Aenderung der Vereinsanschrift.  Vorschlag:
+    Onionspace.  Details dem Vorstand ueberlassen.
+    => einstimmig beschlossen.
+    
+# Neuigkeiten / Berichte
+  - keine
+  

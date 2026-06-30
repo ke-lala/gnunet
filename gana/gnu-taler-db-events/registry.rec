@@ -1,0 +1,320 @@
+# -*- mode: rec -*-
+#
+# Registry for Taler database event trigger types
+#
+%rec: TalerDatabaseEventTriggerTypes
+%key: Value
+%typedef: ValueRange_t range 0 65535
+%type: Value ValueRange_t
+%mandatory: Value
+%typedef: Description_t regexp |^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\(\)\.,;!"':#\/ -]*$|
+%type: Description Description_t
+%mandatory: Description
+%typedef: Name_t regexp /^[ABCDEFGHIJKLMNOPQRSTUVWXYZ_][ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789]*$/
+%type: Name Name_t
+%unique: Name
+%mandatory: Name
+%sort: Value
+
+# 0 - 999: Reserved for GNUnet
+
+# 1000-1099: For Taler Exchange
+
+Value: 1000
+Name: EXCHANGE_RESERVE_INCOMING
+Description: Event triggered when a reserve is funded via a bank transfer.
+
+Value: 1001
+Name: EXCHANGE_KEYS_UPDATED
+Description: Event triggered when new online signing keys are activated via the management API.
+
+Value: 1002
+Name: EXCHANGE_WIRE_UPDATED
+Description: Event triggered when the wire response was changed via the management API.
+
+Value: 1003
+Name: EXCHANGE_KYC_COMPLETED
+Description: Event triggered when a user completed a KYC process.
+
+Value: 1004
+Name: EXCHANGE_EXTENSIONS_UPDATED
+Description: Event triggered when the configuration of an extension is updated.
+
+Value: 1005
+Name: EXCHANGE_PURSE_MERGED
+Description: Event triggered when a purse was merged into a reserve.
+
+Value: 1006
+Name: EXCHANGE_PURSE_DEPOSITED
+Description: Event triggered when coins are deposited into a purse.
+
+Value: 1007
+Name: EXCHANGE_DEPOSIT_STATUS_CHANGED
+Description: Event triggered when the tracking status for a deposit has changed.
+
+Value: 1008
+Name: EXCHANGE_PURSE_REFUNDED
+Description: Event triggered when any purse was refunded.
+
+Value: 1009
+Name: EXCHANGE_NEW_KYC_ATTRIBUTES
+Description: Event triggered when new KYC attributes are available.
+
+# 1100-1199: For Taler Merchant
+
+Value: 1100
+Name: MERCHANT_INSTANCE_SETTINGS
+Description: Some instance setting was changed (new instance, deleted instance, change options)
+
+Value: 1101
+Name: MERCHANT_ORDER_PAID
+Description: Event triggered when an order is paid by a customer.
+
+Value: 1102
+Name: MERCHANT_ORDER_REFUND
+Description: Event triggered when a refund is approved by the backoffice staff.
+
+Value: 1103
+Name: MERCHANT_SESSION_CAPTURED
+Description: Event triggered when a fulfillment URL becomes paid for a particular session.
+
+Value: 1104
+Name: MERCHANT_REFUND_OBTAINED
+Description: Event triggered when a refund is obtained by a wallet.
+
+Value: 1105
+Name: MERCHANT_ORDERS_CHANGE
+Description: Event triggered when the set of orders or their state changes.
+
+Value: 1106
+Name: MERCHANT_WEBHOOK_PENDING
+Description: Event triggered when a new pending webhook is ready to be run.
+
+Value: 1107
+Name: MERCHANT_REWARD_PICKUP
+Description: Event triggered when a reward is being picked up.
+
+Value: 1108
+Name: MERCHANT_WIRE_TRANSFER_CONFIRMED
+Description: Event triggered when a wire transfer is confirmed. Triggers interaction with the exchange to download details about which payments were aggregated.
+
+Value: 1109
+Name: MERCHANT_ACCOUNTS_CHANGED
+Description: Event triggered when the set of accounts has changed. Triggers restart of taler-merchant-wirewatch.
+
+Value: 1110
+Name: MERCHANT_EXCHANGE_KEYS
+Description: Event triggered when we downloaded "/keys" from an exchange and stored it in the database. Extra argument must be the exchange base URL.
+
+Value: 1111
+Name: MERCHANT_NEW_WIRE_DEADLINE
+Description: Event triggered upon successful (batch) deposit. Notifies taler-merchant-depositcheck about a potentially relevant wire deadline to wake up for. Argument is a 64-bit absolute time in network byte order.
+
+Value: 1112
+Name: MERCHANT_EXCHANGE_FORCE_KEYS
+Description: Event triggered when a service wants to force the download of "/keys" from an exchange despite it not yet having expired. Extra argument must be the exchange base URL.
+
+Value: 1113
+Name: MERCHANT_EXCHANGE_KYC_STATUS_CHANGED
+Description: Event triggered when the KYC status changed for a merchant account. Event is of type MerchantKycStatusChangeEventP.
+
+Value: 1114
+Name: MERCHANT_EXCHANGE_KYC_RULE_TRIGGERED
+Description: Event triggered when a merchant operation has run into a KYC trigger and the taler-merchant-kyccheck tool should urgently check the KYC status of the account. Extra argument will be the "h_wire" of the affected account (" "-terminated in base32-encoding) followed by the "exchange_url" (0-terminated).
+
+Value: 1115
+Name: MERCHANT_KYC_STATUS_CHANGED
+Description: Event triggered when the KYC status changed for any merchant account. Event is of type GNUNET_DB_EventHeaderP (no body).
+
+Value: 1116
+Name: MERCHANT_DONAU_KEYS
+Description: Event triggered when we downloaded "/keys" from a Donau and stored it in the database. Extra argument must be the Donau base URL.
+
+Value: 1117
+Name: MERCHANT_WIRE_TRANSFER_EXPECTED
+Description: Event triggered when an expected wire transfer is added to the database. Triggers interaction with the exchange to download details about which payments were aggregated.
+
+Value: 1118
+Name: MERCHANT_DONAU_CHARITY_ID
+Description: Event triggered when we need to update the info about the charity in the db. Triggers force_donau_charity_id in the donaukeyupdate service.
+
+Value: 1119
+Name: MERCHANT_REPORT_UPDATE
+Description: New reporting requirements have been added. Triggers a run of taler-merchant-report-generator.
+
+Value: 1120
+Name: MERCHANT_EXCHANGE_KYC_UPDATE_FORCED
+Description: Event triggered when there are new KYC status updates to be fetched immediately. Triggers run of taler-merchant-kychceck.
+
+Value: 1121
+Name: MERCHANT_ORDER_STATUS_CHANGED
+Description: Event triggered when anything about an order status is changing.
+
+# 1200+: For auditor
+Value: 1200
+Name: EXCHANGE_AUDITOR_NEW_DEPOSIT_CONFIRMATION
+Description: Event triggered when there is a new deposit confirmation available.
+
+Value: 1201
+Name: AUDITOR_NEW_BAD_SIG_LOSSES
+Description: Event triggered when there is a new bad sig loss available.
+
+Value: 1202
+Name: AUDITOR_NEW_BALANCES
+Description: Event triggered when there is a new balance available.
+
+Value: 1203
+Name: AUDITOR_NEW_CLOSURE_LAGS
+Description: Event triggered when there is a new closure lag available.
+
+Value: 1204
+Name: AUDITOR_NEW_COIN_INCONSISTENCY
+Description: Event triggered when there is a new coin inconsistency available.
+
+Value: 1205
+Name: AUDITOR_NEW_DENOMINATION_KEY_VALIDITY_WITHDRAW_INCONSISTENCY
+Description: Event triggered when there is a new denomination key validity withdraw inconsistency available.
+
+Value: 1206
+Name: AUDITOR_NEW_DENOMINATION_PENDING
+Description: Event triggered when there is a new pending denomination available.
+
+Value: 1207
+Name: AUDITOR_NEW_DENOMINATION_WITHOUT_SIGS
+Description: Event triggered when there is a new denomination without sigs available.
+
+Value: 1208
+Name: AUDITOR_NEW_EMERGENCY
+Description: Event triggered when there is a new emergency available.
+
+Value: 1209
+Name: AUDITOR_NEW_EMERGENCY_BY_COUNT
+Description: Event triggered when there is a new emergency by count available.
+
+Value: 1210
+Name: AUDITOR_NEW_EXCHANGE_SIGNKEYS
+Description: Event triggered when there is a new exchange sign keys available.
+
+Value: 1211
+Name: AUDITOR_NEW_FEE_TIME_INCONSISTENCY
+Description: Event triggered when there is a new fee time inconsistency available.
+
+Value: 1212
+Name: AUDITOR_NEW_HISTORIC_DENOMINATION_REVENUE
+Description: Event triggered when there is a new historic denomination revenue entry available.
+
+Value: 1213
+Name: AUDITOR_NEW_HISTORIC_RESERVE_SUMMARY
+Description: Event triggered when there is a new historic reserve summary entry available.
+
+Value: 1214
+Name: AUDITOR_NEW_MISATTRIBUTION_IN_INCONSISTENCY
+Description: Event triggered when there is a new misattribution in inconsistency available.
+
+Value: 1215
+Name: AUDITOR_NEW_PROGRESS
+Description: Event triggered when there is a new progress entry available.
+
+Value: 1216
+Name: AUDITOR_NEW_PURSE_NOT_CLOSED_INCONSISTENCY
+Description: Event triggered when there is a new purse not closed inconsistency available.
+
+Value: 1217
+Name: AUDITOR_NEW_PURSES
+Description: Event triggered when there is a new purse entry available.
+
+Value: 1218
+Name: AUDITOR_NEW_REFRESHES_HANGING
+Description: Event triggered when there is a new refreshes hanging entry available.
+
+Value: 1219
+Name: AUDITOR_NEW_RESERVE_BALANCE_INSUFFICIENT_INCONSISTENCY
+Description: Event triggered when there is a new balance insufficient inconsistency available.
+
+Value: 1220
+Name: AUDITOR_NEW_RESERVE_BALANCE_SUMMARY_WRONG_INCONSISTENCY
+Description: Event triggered when there is a new reserve balance summary wrong inconsistency available.
+
+Value: 1221
+Name: AUDITOR_NEW_RESERVE_IN_INCONSISTENCY
+Description: Event triggered when there is a new reserve in inconsistency available.
+
+Value: 1222
+Name: AUDITOR_NEW_RESERVE_NOT_CLOSED_INCONSISTENCY
+Description: Event triggered when there is a new reserve not closed inconsistency available.
+
+Value: 1223
+Name: AUDITOR_NEW_RESERVES
+Description: Event triggered when there is a new reserves entry available.
+
+Value: 1224
+Name: AUDITOR_NEW_ROW_INCONSISTENCY
+Description: Event triggered when there is a new row inconsistency available.
+
+Value: 1225
+Name: AUDITOR_NEW_ROW_MINOR_INCONSISTENCY
+Description: Event triggered when there is a new minor row inconsistency available.
+
+Value: 1226
+Name: AUDITOR_NEW_WIRE_FORMAT_INCONSISTENCY
+Description: Event triggered when there is a new wire format inconsistency available.
+
+Value: 1227
+Name: AUDITOR_NEW_WIRE_OUT_INCONSISTENCY
+Description: Event triggered when there is a new wire out inconsistency available.
+
+Value: 1230
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_AGGREGATION
+Description: Event triggered when there is new data for the aggregation helper to process.
+
+Value: 1231
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_COINS
+Description: Event triggered when there is new data for the coins helper to process.
+
+Value: 1232
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_PURSES
+Description: Event triggered when there is new data for the purses helper to process.
+
+Value: 1233
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_DEPOSITS
+Description: Event triggered when there is new data for the deposits helper to process.
+
+Value: 1234
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_RESERVES
+Description: Event triggered when there is new data for the reserves helper to process.
+
+Value: 1235
+Name: EXCHANGE_AUDITOR_WAKE_HELPER_WIRE
+Description: Event triggered when there is a new deposit confirmation available.
+
+# 2000-2099: For Anastasis
+
+Value: 2000
+Name: ANASTASIS_AUTH_IBAN_TRANSFER
+Description: A wire transfer from the target account with the correct wire transfer subject was received.
+
+# 3000-3099: For Libeufin
+
+Value: 3000
+Name: LIBEUFIN_TALER_INCOMING
+Description: A wire transfer with a valid reserve public key was received.
+
+# This event signals that a payment was persisted in the database,
+# and it carries the direction in its payload.  Note: the direction
+# is expressed the CaMt way: CRDT or DBIT.
+Value: 3001
+Name: LIBEUFIN_REGIO_TX
+Description: A new transactions internal to Sandbox was made.
+
+# In the context of regional currencies, this event triggers the
+# wire transfer from "admin" to the exchange, in order to start a
+# Taler withdrawal.
+Value: 3002
+Name: LIBEUFIN_SANDBOX_FIAT_INCOMING
+Description: A new fiat transaction can trigger actions in Sandbox.
+
+# A fiat payment was ingested for a particular bank account.  The
+# payload communicates the direction: CRDT or DBIT.
+Value: 3003
+Name: LIBEUFIN_NEXUS_TX
+Description: A new transaction was successfully ingested by Nexus.

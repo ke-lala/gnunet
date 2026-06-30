@@ -1,0 +1,23 @@
+
+* Abbreviations
+
+| ABNF   | Augmented Backus-Naur Form                 |
+| DHT    | Distributed Hash Table                     |
+| DNS    | Domain Name System                         |
+| DV     | Distance Vector (routing protocol)         |
+| F2F    | Friend-to-Friend (network architecture)    |
+| GUI    | Graphical User Interface                   |
+| HTTP   | Hypertext Transfer Protocol                |
+| OTR    | Off-the-Record Messaging                   |
+| P2P    | Peer-to-Peer (network architecture)        |
+| PGP    | Pretty Good Privacy                        |
+| PSYC   | Protocol for SYnchronous Conferencing      |
+| QML    | Qt Modeling Language                       |
+| SHA    | Secure Hash Algorithm                      |
+| SMTP   | Simple Mail Transfer Protocol              |
+| TCP    | Transmission Control Protocol              |
+| UDP    | User Datagram Protocol                     |
+| UI     | User Interface                             |
+| URI    | Uniform Resource Identifier                |
+| XML    | Extensible Markup Language                 |
+| XMPP   | Extensible Messaging and Presence Protocol |

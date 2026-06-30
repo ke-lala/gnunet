@@ -1,0 +1,35 @@
+Format: 1.8
+Date: Wed, 20 Mar 2019 09:28:32 +0000
+Source: ascension-bind
+Binary: ascension-bind
+Architecture: source amd64
+Version: 0.0.1-1
+Distribution: UNRELEASED
+Urgency: low
+Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+Changed-By: rexxnor <rexxnor+gnunet@brief.li>
+Description:
+ ascension-bind - Allows local zone transfer on bind for migration into GNS
+Closes: 123123
+Changes:
+ ascension-bind (0.0.1-1) UNRELEASED; urgency=low
+ .
+   * Initial release Closes: #123123
+Checksums-Sha1:
+ c470385c0b9cf70b9f7056022def96148e10e39e 904 ascension-bind_0.0.1-1.dsc
+ 0a7953cf5bf7616ff1c2171789fab736e199e769 3860 ascension-bind_0.0.1.orig.tar.xz
+ 0e0bde8e10468463ae3fcdb1574cf3477668daf9 4196 ascension-bind_0.0.1-1.debian.tar.xz
+ 8747822f49efbaa8c85d25bf8a4a8c290a018868 5640 ascension-bind_0.0.1-1_amd64.buildinfo
+ de1d13e0b04e38bcb2ec8c4146a5c969d7de16c3 3780 ascension-bind_0.0.1-1_amd64.deb
+Checksums-Sha256:
+ ef28690eb17d40e38293780bbd692659ffe0699e684ade65ae9562c6aaef014b 904 ascension-bind_0.0.1-1.dsc
+ e21b0672b6d9932d03541c13e9350546542d9dd86373bf6bc78f61a1c79586b4 3860 ascension-bind_0.0.1.orig.tar.xz
+ 0854d2c10da448b0642124b4c890524b4ea536232e99b6bf832044846d2c0d04 4196 ascension-bind_0.0.1-1.debian.tar.xz
+ 7772bbcd1125bc1b0fb2feca1e1568a5e1cc31d0835e479a54f56aad23d1bdce 5640 ascension-bind_0.0.1-1_amd64.buildinfo
+ 969234a4ded23d62494c27d8b1d3cb5ddec7c5025c8184ff7b04860f2bf546c1 3780 ascension-bind_0.0.1-1_amd64.deb
+Files:
+ 2bdeb845ca6eccbcee41d560207b8b02 904 net optional ascension-bind_0.0.1-1.dsc
+ 3e51a0f28a46eff44e0366ab9185b840 3860 net optional ascension-bind_0.0.1.orig.tar.xz
+ 553d863b9fddef218568c6242c13c118 4196 net optional ascension-bind_0.0.1-1.debian.tar.xz
+ e330aa5152567c9b756eacb15d6b519a 5640 net optional ascension-bind_0.0.1-1_amd64.buildinfo
+ 9a6e983aa0a1510b881bc828fcdac3db 3780 net optional ascension-bind_0.0.1-1_amd64.deb

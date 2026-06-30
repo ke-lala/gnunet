@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2021‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkBox" id="message_box">
+    <property name="visible">1</property>
+    <child>
+      <object class="HdyAvatar" id="sender_avatar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="valign">end</property>
+        <property name="size">36</property>
+        <style>
+          <class name="message-avatar"/>
+        </style>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkFrame">
+        <property name="visible">1</property>
+        <property name="shadow-type">none</property>
+        <child>
+          <object class="GtkBox" id="content_box">
+            <property name="visible">1</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkFlowBox" id="tag_flow_box">
+                <property name="visible">1</property>
+                <property name="column-spacing">2</property>
+                <property name="min-children-per-line">1</property>
+                <property name="max-children-per-line">5</property>
+                <property name="selection-mode">none</property>
+                <property name="activate-on-single-click">0</property>
+              </object>
+              <packing>
+                <property name="pack-type">end</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child type="label">
+          <object class="GtkBox">
+            <property name="visible">1</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="GtkLabel" id="sender_label">
+                <property name="visible">1</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="weight" value="semibold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="private_image">
+                <property name="yalign">1</property>
+                <property name="icon-name">network-wireless-encrypted-symbolic</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="message-box"/>
+          <class name="sent"/>
+        </style>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>

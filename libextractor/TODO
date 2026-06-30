@@ -1,0 +1,11 @@
+Desirable missing formats:
+* mbox / various e-mail formats
+* info pages (scan for 'Node: %s^?ID' - see end of .info files!)
+* sources (Java, C, C++, see doxygen!)
+* a.out (== ar?)
+* rtf
+* EXE
+* PRC (Palm module, http://web.mit.edu/tytso/www/pilot/prc-format.html)
+* KOffice
+* TGA
+* Microsoft OOXML (MS Office >= 2007)

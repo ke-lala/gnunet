@@ -1,0 +1,14 @@
+Package: ascension-bind
+Version: 0.0.1-1
+Architecture: amd64
+Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+Installed-Size: 18
+Depends: debconf (>= 0.5) | debconf-2.0, python3-ascension, bind9, dnsutils
+Section: net
+Priority: optional
+Homepage: https://git.gnunet.org/ascension.git/
+Description: Allows local zone transfer on bind for migration into GNS
+ This package modifies existing bind configuration to allow zone transfer to
+ localhost to allow the gnsmigrator package to migrate the zone into GNS and
+ creates the necessary configuration and service files to do it automatically.
+ As this only creates files and starts services, it is an empty package.

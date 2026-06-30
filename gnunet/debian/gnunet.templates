@@ -1,0 +1,26 @@
+Template: gnunet-systempeer/autostart
+Type: boolean
+Default: false
+_Description: Should the GNUnet server be launched on boot?
+ If you choose this option, a GNUnet peer will be launched each time
+ the system is started. Otherwise, you will need to launch
+ GNUnet each time you want to use it.
+
+Template: gnunet-dns/libnsswitch
+Type: boolean
+Default: false
+_Description: Should GNS be hooked into the system resolution process?
+ If you choose this option, GNS will be hooked into the system
+ resolution process. Records that can be resolved using GNS are
+ resolved via GNS and will fall back to DNS when it is not resolvable
+ using GNS. This requires to have the system GNUnet peer running and
+ also having a peer running as your user.
+
+Template: gnunet-user/proxy
+Type: boolean
+Default: false
+_Description: Use the GNU Name System in Firefox/Chromium by default?"
+ If you choose this option the proxy settings for Firefox and Chromium will be
+ adjusted to use a user local running gnunet-gns-proxy to delegate DNS requests
+ over. This allows for resolution of GNS names in the browser and validation for
+ GNS hostnames.

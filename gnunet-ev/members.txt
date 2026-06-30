@@ -1,0 +1,18 @@
+Carlo v. Loesch <lynX@gnunet.e.V.is.psyced.org>
+Christian Grothoff <christian@grothoff.org>
+Florian Dold <dold@taler.net>
+David Barksdale <amatus@amat.us>
+Martin Schanzenbach <mschanzenbach@posteo.de>
+Daniel Golle <daniel@makrotopia.org>
+Nils Durner <ndurner at gmail dot com>
+Julius Buenger <buenger at mytum dot de>
+Christian Ulrich <lurchi@strangeplace.net>
+xrs <xrs@mail36.net>
+t3sserakt <t3ss@posteo.de>
+Hartmut Goebel <h.goebel@crazy-compilers.com>
+Devan Carpenter <mail@dvn.me>
+Hernâni Marques <hernani@vecirex.net>
+TheJackiMonster <thejackimonster@gmail.com>
+Florian Felgenhauer <florian.felgenhauer@posteo.de>
+Özgür Kesim <oec-gnunet@kesim.org>
+Marc Stibane <marc@fesh.com>

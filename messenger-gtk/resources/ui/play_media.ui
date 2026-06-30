@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2022‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkAdjustment" id="timeline_adjustment">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="HdyWindow" id="play_media_window">
+    <property name="width-request">250</property>
+    <property name="height-request">250</property>
+    <property name="can-focus">False</property>
+    <property name="modal">True</property>
+    <property name="window-position">center-on-parent</property>
+    <property name="type-hint">dialog</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">1</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkRevealer" id="header_revealer">
+            <property name="visible">1</property>
+            <property name="reveal-child">1</property>
+            <child>
+              <object class="HdyWindowHandle">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="HdyHeaderBar" id="title_bar">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="title" translatable="yes">Play Media</property>
+                    <property name="show-close-button">True</property>
+                    <child>
+                      <object class="GtkButton" id="back_button">
+                        <property name="visible">1</property>
+                        <property name="can-focus">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">1</property>
+                            <property name="icon-name">go-previous-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyFlap" id="controls_flap">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="flap-position">end</property>
+            <property name="modal">False</property>
+            <child type="content">
+              <object class="GtkStack" id="preview_stack">
+                <property name="visible">1</property>
+                <child>
+                  <object class="GtkBox" id="video_box">
+                    <property name="visible">1</property>
+                    <property name="orientation">vertical</property>
+                  </object>
+                  <packing>
+                    <property name="name">page_video</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="fail_box">
+                    <property name="visible">1</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">1</property>
+                        <property name="pixel-size">64</property>
+                        <property name="icon-name">action-unavailable-symbolic</property>
+                        <property name="icon-size">3</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">1</property>
+                        <property name="label" translatable="yes">Video source invalid!</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">page_fail</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="separator">
+              <object class="GtkSeparator">
+                <property name="visible">1</property>
+              </object>
+            </child>
+            <child type="flap">
+              <object class="GtkBox">
+                <property name="visible">1</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">1</property>
+                    <property name="border-width">4</property>
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkButton" id="play_pause_button">
+                        <property name="visible">1</property>
+                        <property name="sensitive">0</property>
+                        <property name="can-focus">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkStack" id="play_symbol_stack">
+                            <property name="visible">1</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">1</property>
+                                <property name="sensitive">0</property>
+                                <property name="icon-name">media-playback-start-symbolic</property>
+                              </object>
+                              <packing>
+                                <property name="name">play_page</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">1</property>
+                                <property name="icon-name">media-playback-pause-symbolic</property>
+                              </object>
+                              <packing>
+                                <property name="name">pause_page</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkVolumeButton" id="volume_button">
+                        <property name="visible">1</property>
+                        <property name="sensitive">0</property>
+                        <property name="can-focus">1</property>
+                        <property name="focus-on-click">0</property>
+                        <property name="receives-default">1</property>
+                        <property name="relief">none</property>
+                        <property name="orientation">vertical</property>
+                        <property name="icons">audio-volume-muted-symbolic
+audio-volume-high-symbolic
+audio-volume-low-symbolic
+audio-volume-medium-symbolic</property>
+                        <child internal-child="plus_button">
+                          <object class="GtkButton">
+                          </object>
+                        </child>
+                        <child internal-child="minus_button">
+                          <object class="GtkButton">
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="HdyLeaflet">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="visible-child">timeline_scale</property>
+                        <property name="transition-type">slide</property>
+                        <child>
+                          <object class="GtkLabel" id="timeline_label">
+                            <property name="width-request">80</property>
+                            <property name="visible">1</property>
+                            <property name="margin-end">4</property>
+                            <property name="label">0:00 / 0:00</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="timeline_scale">
+                            <property name="width-request">100</property>
+                            <property name="visible">1</property>
+                            <property name="sensitive">0</property>
+                            <property name="can-focus">1</property>
+                            <property name="margin-start">4</property>
+                            <property name="hexpand">1</property>
+                            <property name="adjustment">timeline_adjustment</property>
+                            <property name="draw-value">0</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">1</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="fullscreen_button">
+                        <property name="visible">1</property>
+                        <property name="can-focus">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkStack" id="fullscreen_symbol_stack">
+                            <property name="visible">1</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">1</property>
+                                <property name="icon-name">view-fullscreen-symbolic</property>
+                              </object>
+                              <packing>
+                                <property name="name">scale_up_page</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">1</property>
+                                <property name="icon-name">view-restore-symbolic</property>
+                              </object>
+                              <packing>
+                                <property name="name">scale_down_page</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="pack-type">end</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="settings_button">
+                        <property name="visible">1</property>
+                        <property name="sensitive">0</property>
+                        <property name="can-focus">1</property>
+                        <property name="receives-default">1</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">1</property>
+                            <property name="icon-name">preferences-other-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="pack-type">end</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="pack-type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkProgressBar" id="timeline_progress_bar">
+                    <property name="visible">1</property>
+                    <property name="margin-start">4</property>
+                    <property name="margin-end">4</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+            <property name="pack-type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- bestehende Berechtigungen -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- nötig, wenn du den Foreground-Service nutzt -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.GNUnet"
+        android:allowNativeHeapPointerTagging="false"
+        tools:targetApi="34">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- ✳️ Öffentlicher Bound Service für den IPC-Contract -->
+        <service
+            android:name=".ipc.GnunetChatIpcService"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <!-- Muss exakt zum Client-Intent passen -->
+                <action android:name="org.gnunet.gnunetmessenger.ipc.BIND_GNUNET_CHAT" />
+            </intent-filter>
+        </service>
+
+        <!-- 🔧 Optional: Foreground-Service, falls der Server im Hintergrund
+             dauerhaft laufen soll (API 26+ Background-Limits) -->
+        <service
+            android:name=".ipc.GnunetForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+        // AndroidManifest (Server)
+        <service
+            android:name=".core.GnunetCoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+    </application>
+
+</manifest>

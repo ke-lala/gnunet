@@ -1,0 +1,151 @@
+.\" This file is part of GNUnet.
+.\" Copyright (C) 2001-2019 GNUnet e.V.
+.\"
+.\" Permission is granted to copy, distribute and/or modify this document
+.\" under the terms of the GNU Free Documentation License, Version 1.3 or
+.\" any later version published by the Free Software Foundation; with no
+.\" Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+.\" copy of the license is included in the file
+.\" FDL-1.3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/fdl.html}.
+.\"
+.\" Alternately, this document is also available under the General
+.\" Public License, version 3 or later, as published by the Free Software
+.\" Foundation.  A copy of the license is included in the file
+.\" GPL3.
+.\"
+.\" A copy of the license is also available from the Free Software
+.\" Foundation Web site at http://www.gnu.org/licenses/gpl.html
+.\"
+.\" SPDX-License-Identifier: GPL3.0-or-later OR FDL1.3-or-later
+.\"
+.Dd June 18, 2012
+.Dt GNUNET-AUTO-SHARE 1
+.Os
+.Sh NAME
+.Nm gnunet-auto-share
+.Nd a command line tool to automatically share an entire directory with other users
+.Sh SYNOPSIS
+.Nm
+.Op Fl a Ar LEVEL | Fl -anonymity= Ns Ar LEVEL
+.Op Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+.Op Fl D | -disable-extractor
+.Op Fl d | -disable-creation-time
+.Op Fl h | -help
+.Op Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+.Op Fl l Ar FILENAME | Fl -logfile= Ns Ar FILENAME
+.Op Fl p Ar PRIORITY | Fl -prio= Ns Ar PRIORITY
+.Op Fl r Ar LEVEL | Fl -replication= Ns Ar LEVEL
+.Op Fl V | -verbose
+.Op Fl v | -version
+.Ao Ar DIRNAME Ac
+.Sh DESCRIPTION
+In order to share files with other GNUnet users, the files must first be made available to GNUnet.
+This tool can be used to automatically share all files from a certain directory.
+The program will periodically scan the directory for changes and publish files that are new or that changed on GNUnet.
+Which files have already been shared is remembered in a
+.Pa .auto-share
+file in the shared directory.
+You can run the tool by hand or automatically by adding the respective options to your configuration.
+gnunet-auto-share has many options in common with gnunet-publish, but can only be used to index files.
+.Pp
+You can use automatic meta-data extraction (based on libextractor).
+The options are as follows:
+.Bl -tag -width indent
+.It Fl a Ar LEVEL | Fl -anonymity= Ns Ar LEVEL
+This option can be used to specify additional anonymity constraints.
+The default is 1.
+If set to 0, GNUnet will publish the file non-anonymously and in fact sign the advertisement for the file using your peer's private key.
+This will allow other users to download the file as fast as possible, including using non-anonymous methods (discovery via DHT and CADET transfer).
+If you set it to 1 (default), you use the standard anonymous routing algorithm (which does not explicitly leak your identity).
+However, a powerful adversary may still be able to perform traffic analysis (statistics) to over time discovery your identity.
+You can gain better privacy by specifying a higher level of anonymity (using values above 1).
+This tells FS that it must hide your own requests in equivalent-looking cover traffic.
+This should confound an adversaries traffic analysis, increasing the time and effort it would take to discover your identity.
+However, it also can significantly reduce performance, as your requests will be delayed until sufficient cover traffic is available.
+The specific numeric value (for anonymity levels above 1) is simple:
+Given an anonymity level L (above 1), each request FS makes on your behalf must be hidden in L-1 equivalent requests of cover traffic (traffic your peer routes for others) in the same time-period.
+The time-period is twice the average delay by which GNUnet artificially delays traffic.
+Note that regardless of the anonymity level you choose, peers that cache content in the network always use anonymity level 1.
+.It Fl c Ar FILENAME | Fl -config= Ns Ar FILENAME
+Use alternate config file (if this option is not specified, the default is
+.Pa ~/.config/gnunet.conf Ns ).
+.It Fl D | -disable-extractor
+Disable use of GNU libextractor for finding additional keywords and metadata.
+.It Fl d | -disable-creation-time
+Disable adding the creation time to the metadata of the uploaded file.
+.It Fl h | -help
+Print a brief help page with all the options.
+.It Fl L Ar LOGLEVEL | Fl -loglevel= Ns Ar LOGLEVEL
+Change the loglevel.
+Possible values for LOGLEVEL are ERROR, WARNING, INFO and DEBUG.
+.It Fl l Ar FILENAME | Fl -logfile= Ns Ar FILENAME
+Configure logging to write logs to FILENAME.
+.It Fl p Ar PRIORITY | Fl -prio= Ns Ar PRIORITY
+Executive summary: You probably don't need it.
+Set the priority of the published content (default: 365).
+If the local database is full, GNUnet will discard the content with the lowest ranking.
+Note that ranks change over time depending on popularity.
+The default should be high enough to preserve the locally published content in favor of content that migrates from other peers.
+.It Fl r Ar LEVEL | Fl -replication= Ns Ar LEVEL
+Set the desired replication level.
+If CONTENT_PUSHING is set to YES, GNUnet will push each block (for the file) LEVEL times to other peers before doing normal "random" replication of all content.
+This option can be used to push some content out into the network harder.
+Note that pushing content LEVEL times into the network does not guarantee that there will actually be LEVEL replicas.
+.It Fl V | -verbose
+Be verbose.
+Using this option causes gnunet-publish to print progress information and at the end the file identification that can be used to download the file from GNUnet.
+.It Fl v | -version
+Print the version number.
+.El
+.Sh EXAMPLES
+.Ss Basic example
+$ gnunet-auto-share $HOME/gnunet-share/ &
+.Pp
+Share a directory
+.Pa $HOME/gnunet-share/
+.Ss Basic configuration
+$ Share a directory
+.Pa $HOME/gnunet-share/
+.Pp
+.Bd -literal -offset indent -compact
+[gnunet-auto-share]
+OPTIONS = $HOME/gnunet-share
+IMMEDIATE_START = YES # start this service when the peer starts
+.Ed
+.Sh FILES
+.Pa ~/.config/gnunet.conf
+GNUnet configuration file
+.Sh SEE ALSO
+.Xr extract 1 ,
+.Xr gnunet-download 1 ,
+.Xr gnunet-fs-gtk 1 ,
+.Xr gnunet-publish 1 ,
+.Xr gnunet-search 1 ,
+.Xr gnunet.conf 5
+.sp
+The full documentation for gnunet is maintained as a Texinfo manual.
+If the
+.Xr info 1
+and gnunet programs are properly installed at your site, the command
+.Pp
+.Dl info gnunet
+.Pp
+should give you access to the complete handbook,
+.Pp
+.Dl info gnunet-c-tutorial
+.Pp
+will give you access to a tutorial for developers.
+.sp
+Depending on your installation, this information is also available in
+.Xr gnunet 7 and
+.Xr gnunet-c-tutorial 7 .
+.\".Sh HISTORY
+.\".Sh AUTHORS
+.Sh BUGS
+Report bugs by using
+.Lk https://bugs.gnunet.org
+or by sending electronic mail to
+.Aq Mt gnunet-developers@gnu.org .

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2024‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkBox" id="panel_box">
+    <property name="visible">1</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkStack" id="panel_stack">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkBox" id="avatar_box">
+            <property name="width-request">124</property>
+            <property name="visible">1</property>
+            <property name="valign">center</property>
+            <property name="border-width">8</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="HdyAvatar" id="panel_avatar">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="icon-name">avatar-default</property>
+                <property name="size">80</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="panel_label">
+                <property name="visible">1</property>
+                <property name="wrap">1</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="ellipsize">end</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="name">avatar_page</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="video_box">
+            <property name="visible">1</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="name">video_page</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>

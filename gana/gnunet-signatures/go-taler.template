@@ -1,0 +1,6 @@
+
+
+  /**
+   * {{Comment}} ({{Package}})
+   */
+  TALER_SIGNATURE_PURPOSE_{{Name}} = {{Number}}

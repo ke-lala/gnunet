@@ -1,0 +1,7 @@
+    /**
+     * Description: {{Description}}
+     *
+     * GANA Type: {{Type}}
+     * Deployment: {{Deployment}}
+     */
+    {{Identifier}}: "{{Identifier}}" as const,

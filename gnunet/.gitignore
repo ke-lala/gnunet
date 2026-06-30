@@ -1,0 +1,84 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# Unignore configure script and meson dist script
+!meson-dist-script
+!configure
+
+*~
+\#*\#
+gnunet-*.tar.gz
+*vgcore.*
+*.bak
+*.a
+*.la
+*.lo
+*.log
+*.o
+*.orig
+*.rej
+*.swp
+*.trs
+*.kdev4
+.clangd/
+.deps/
+.libs/
+.svn/
+build
+Makefile
+compile_commands.json
+aclocal.m4
+autom4te.cache/
+compile
+config.cache
+config.guess
+config.log
+config.status
+config.sub
+.version
+contrib/vendored/
+depcomp
+gnunet_private_config.h
+gnunet_private_config.h.in
+install-sh
+libtool
+ltmain.sh
+missing
+po/*.gmo
+pkgconfig/*.pc
+src/**/*.conf
+stamp-h1
+test-driver
+INSTALL
+confdefs.h
+confdefs.c
+confdefs.err
+*.patch
+python-lint.log
+flake8.log
+# for pytest created data:
+.cache/
+__pycache__/
+build-aux/
+
+# top-level symlink can exist
+.clang-format
+uncrustify.cfg
+.style.yapf
+
+# Prevent cache files from IDEA from being commited
+.autotools
+.cproject
+.project
+.settings/
+.idea/
+.vscode/
+.vimrc
+gnunet_config.h
+gnunet_config.h.in

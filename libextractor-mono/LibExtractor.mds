@@ -1,0 +1,19 @@
+<Combine fileversion="2.0" name="LibExtractor">
+  <Policies>
+    <StandardHeader IncludeInNewFiles="False" inheritsSet="LGPLv2License" />
+  </Policies>
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="LibExtractor" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="LibExtractor" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="LibExtractor" single="True">
+    <Execute type="None" entry="LibExtractor" />
+  </StartMode>
+  <Entries>
+    <Entry filename="LibExtractor/LibExtractor.mdp" />
+  </Entries>
+</Combine>

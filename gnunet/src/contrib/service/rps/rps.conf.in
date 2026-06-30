@@ -1,0 +1,38 @@
+[rps]
+START_ON_DEMAND = @START_ON_DEMAND@
+IMMEDIATE_START = YES
+BINARY = gnunet-service-rps
+UNIXPATH = $GNUNET_RUNTIME_DIR/gnunet-service-rps.sock
+HOME = $SERVICEHOME
+UNIX_MATCH_UID = NO
+UNIX_MATCH_GID = YES
+HOSTNAME = localhost
+ACCEPT_FROM = 127.0.0.1;
+ACCEPT_FROM6 = ::1;
+# PORT = 2119
+@UNIXONLY@ PORT = 2119
+
+# This is the timeinterval between the rounds
+ROUNDINTERVAL = 30 s
+
+# This is the file in which valid peers are stored
+FILENAME_VALID_PEERS = $GNUNET_DATA_HOME/rps/valid_peers.txt
+# Disable storage of valid peers
+#FILENAME_VALID_PEERS = DISABLE
+
+# This is the 'estimate' in the beginning.
+# This determines the size of the peers we keep in memory
+# until we receive the first estimate from NSE.
+# Keep in mind, that (networksize)^(1/3) should be enough.
+# So, 50 is enough for a network of size 50^3 = 125000
+MINSIZE = 10
+
+# The probability with which we want a sampler element to have observed all
+# peer ids in the network at least
+DESIRED_PROBABILITY = 0.9
+
+# A factor that catches the 'bias' of a random stream of peer ids.
+#
+# As introduced by Brahms: Factor between the number of unique ids in a
+# truly random stream and number of unique ids in the gossip stream.
+DEFICIENCY_FACTOR = 0.4

@@ -1,0 +1,505 @@
+#
+# Tobias Frisch <>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unnamed project\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-21 03:36+0200\n"
+"PO-Revision-Date: 2024-04-02 02:13+0200\n"
+"Last-Translator: Tobias Frisch <>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 46.0\n"
+
+#: resources/ui/about.ui:32
+msgid ""
+"This application is part of GNUnet.\n"
+"Copyright (C) 2021--2024 GNUnet e.V."
+msgstr ""
+"Diese Anwendung ist Teil von GNUnet.\n"
+"Copyright (C) 2021--2024 GNUnet e.V."
+
+#: resources/ui/about.ui:38
+msgid "Translators"
+msgstr "Tobias Frisch"
+
+#: resources/ui/about.ui:71 resources/ui/accounts.ui:42
+#: resources/ui/contact_info.ui:78 resources/ui/contacts.ui:42
+#: resources/ui/files.ui:34 resources/ui/invite_contact.ui:42
+msgid "Close"
+msgstr "Schließen"
+
+#: resources/ui/accounts.ui:27
+msgid "Accounts"
+msgstr "Konten"
+
+#: resources/ui/accounts.ui:105 resources/ui/messenger.ui:329
+msgid "Add Account"
+msgstr "Konto hinzufügen"
+
+#: resources/ui/chat.ui:459 resources/ui/contact_info.ui:234
+msgid "Reveal Identity"
+msgstr "Identität anzeigen"
+
+#: resources/ui/chat.ui:505
+msgid "Open Discourse"
+msgstr "Diskurs öffnen"
+
+#: resources/ui/chat.ui:555 resources/ui/contact_info.ui:371
+msgid "Block Contact"
+msgstr "Kontakt sperren"
+
+#: resources/ui/chat.ui:601 resources/ui/contact_info.ui:415
+msgid "Unblock Contact"
+msgstr "Kontakt entsperren"
+
+#: resources/ui/chat.ui:655
+msgid "Leave Chat"
+msgstr "Chat verlassen"
+
+#: resources/ui/chat.ui:694 resources/ui/settings.ui:176
+#: resources/ui/settings.ui:181
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: resources/ui/chat.ui:733 resources/ui/contacts.ui:27
+#: resources/ui/messenger.ui:536
+msgid "Contacts"
+msgstr "Kontake"
+
+#: resources/ui/chat.ui:782 resources/ui/invite_contact.ui:27
+msgid "Invite Contact"
+msgstr "Kontakt einladen"
+
+#: resources/ui/chat.ui:822
+msgid "Media"
+msgstr "Medien"
+
+#: resources/ui/chat.ui:870 resources/ui/files.ui:7
+#: resources/ui/settings.ui:676
+msgid "Files"
+msgstr "Dateien"
+
+#: resources/ui/chat.ui:941
+msgid "Send Later"
+msgstr "Später senden"
+
+#: resources/ui/chat.ui:956
+msgid "Send Now"
+msgstr "Jetzt senden"
+
+#: resources/ui/contact_info.ui:51
+msgid "Contact Information"
+msgstr "Kontaktinformationen"
+
+#: resources/ui/contact_info.ui:66 resources/ui/files.ui:22
+msgid "Back"
+msgstr "Zurück"
+
+#: resources/ui/contact_info.ui:141 resources/ui/contact_info.ui:602
+#: resources/ui/contact_info.ui:770 resources/ui/new_account.ui:109
+msgid "Name:"
+msgstr "Name:"
+
+#: resources/ui/contact_info.ui:199 resources/ui/new_account.ui:135
+#, fuzzy
+msgid "Select profile picture"
+msgstr "Profilbild auswählen"
+
+#: resources/ui/contact_info.ui:279
+msgid "List Attributes"
+msgstr "Eigenschaften auflisten"
+
+#: resources/ui/contact_info.ui:323
+msgid "Share Attributes"
+msgstr "Eigenschaften teilen"
+
+#: resources/ui/contact_info.ui:467
+msgid "Open Private Chat"
+msgstr "Privaten Chat öffnen"
+
+#: resources/ui/contact_info.ui:539 resources/ui/new_contact.ui:271
+#: resources/ui/new_lobby.ui:354
+msgid "ID:"
+msgstr "ID:"
+
+#: resources/ui/contact_info.ui:578
+msgid "Attributes:"
+msgstr "Eigenschaften:"
+
+#: resources/ui/contact_info.ui:621
+msgid "Value:"
+msgstr "Wert:"
+
+#: resources/ui/contact_info.ui:653
+msgid "New Attribute:"
+msgstr "Neue Eigenschaft:"
+
+#: resources/ui/contact_info.ui:666
+#, fuzzy
+msgid "Name"
+msgstr "Name:"
+
+#: resources/ui/contact_info.ui:685
+msgid "Value"
+msgstr "Wert"
+
+#: resources/ui/contact_info.ui:746
+msgid "Shared Attributes:"
+msgstr "Geteilte Eigenschaften"
+
+#: resources/ui/contact_info.ui:788
+msgid "Share:"
+msgstr "Teilen:"
+
+#: resources/ui/contacts.ui:118
+msgid "Add Contact"
+msgstr "Kontakt hinzufügen"
+
+#: resources/ui/delete_messages.ui:14 resources/ui/new_lobby.ui:35
+#: resources/ui/settings.ui:35
+msgid "Off"
+msgstr "Aus"
+
+#: resources/ui/delete_messages.ui:18 resources/ui/new_lobby.ui:39
+#: resources/ui/settings.ui:39
+msgid "4 weeks"
+msgstr "4 Wochen"
+
+#: resources/ui/delete_messages.ui:22 resources/ui/new_lobby.ui:43
+#: resources/ui/settings.ui:43
+msgid "1 week"
+msgstr "1 Woche"
+
+#: resources/ui/delete_messages.ui:26 resources/ui/new_lobby.ui:47
+#: resources/ui/settings.ui:47
+msgid "1 day"
+msgstr "1 Tag"
+
+#: resources/ui/delete_messages.ui:30 resources/ui/new_lobby.ui:51
+#: resources/ui/settings.ui:51
+msgid "8 hours"
+msgstr "8 Stunden"
+
+#: resources/ui/delete_messages.ui:34 resources/ui/new_lobby.ui:55
+#: resources/ui/settings.ui:55
+msgid "1 hour"
+msgstr "1 Stunde"
+
+#: resources/ui/delete_messages.ui:38 resources/ui/new_lobby.ui:59
+#: resources/ui/settings.ui:59
+msgid "5 minutes"
+msgstr "5 Minuten"
+
+#: resources/ui/delete_messages.ui:42 resources/ui/new_lobby.ui:63
+#: resources/ui/settings.ui:63
+msgid "30 seconds"
+msgstr "30 Sekunden"
+
+#: resources/ui/delete_messages.ui:49
+msgid "Delete Messages"
+msgstr "Nachrichten löschen"
+
+#: resources/ui/delete_messages.ui:64 resources/ui/new_account.ui:48
+#: resources/ui/new_contact.ui:52 resources/ui/new_group.ui:43
+#: resources/ui/new_lobby.ui:86 resources/ui/new_platform.ui:43
+#: resources/ui/new_tag.ui:43 resources/ui/send_file.ui:41 src/ui/chat.c:510
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: resources/ui/delete_messages.ui:77 resources/ui/new_account.ui:61
+#: resources/ui/new_group.ui:81 resources/ui/new_platform.ui:56
+#: resources/ui/new_tag.ui:56 src/ui/chat.c:512
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: resources/ui/delete_messages.ui:108
+msgid "When do you want those messages to be deleted?"
+msgstr "Wann sollen diese Nachrichten gelöscht werden?"
+
+#: resources/ui/delete_messages.ui:148
+msgid "Hide this dialog in the future"
+msgstr "Diesen Dialog in Zukunft verstecken"
+
+#: resources/ui/messenger.ui:392 resources/ui/new_contact.ui:35
+msgid "New Contact"
+msgstr "Neuer Kontakt"
+
+#: resources/ui/messenger.ui:440 resources/ui/new_group.ui:28
+msgid "New Group"
+msgstr "Neue Gruppe"
+
+#: resources/ui/messenger.ui:488 resources/ui/new_platform.ui:28
+msgid "New Platform"
+msgstr "Neue Plattform"
+
+#: resources/ui/messenger.ui:584 resources/ui/settings.ui:70
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: resources/ui/messenger.ui:631
+msgid "About"
+msgstr "Info"
+
+#: resources/ui/messenger.ui:747
+msgid "Select a chat to start messaging..."
+msgstr "Wähle einen Chat um zu schreiben..."
+
+#: resources/ui/messenger.ui:808
+#, fuzzy
+msgid "GNUnet Messenger"
+msgstr "GNUnet Messenger"
+
+#: resources/ui/new_account.ui:33
+msgid "New Account"
+msgstr "Neues Konto"
+
+#: resources/ui/new_contact.ui:65
+msgid "Accept"
+msgstr "Annehmen"
+
+#: resources/ui/new_contact.ui:178
+msgid "Connection to camera failed!"
+msgstr "Verbindung zur Kamera fehlgeschlagen!"
+
+#: resources/ui/new_contact.ui:218
+msgid "No camera found!"
+msgstr "Keine Kamera gefunden!"
+
+#: resources/ui/new_group.ui:56
+msgid "Previous"
+msgstr "Vorherige"
+
+#: resources/ui/new_group.ui:68
+msgid "Next"
+msgstr "Nächste"
+
+#: resources/ui/new_group.ui:131
+msgid "Group:"
+msgstr "Gruppe:"
+
+#: resources/ui/new_lobby.ui:70
+msgid "New Lobby"
+msgstr "Neue Lobby"
+
+#: resources/ui/new_lobby.ui:99
+msgid "Generate"
+msgstr "Generieren"
+
+#: resources/ui/new_lobby.ui:112
+msgid "Copy"
+msgstr "Kopieren"
+
+#: resources/ui/new_lobby.ui:166
+msgid ""
+"Please notice that everyone with access to the lobby's code can enter its "
+"chat!"
+msgstr ""
+"Bitte beachten, dass jeder mit Zugang zum Lobby-Code dem Chat beitreten kann!"
+
+#: resources/ui/new_lobby.ui:234
+msgid "Delay until new lobby expires:"
+msgstr "Zeitdauer bis neue Lobby abläuft:"
+
+#: resources/ui/new_lobby.ui:304
+msgid "Generation of new lobby failed!"
+msgstr "Generierung der neuen Lobby gescheitert!"
+
+#: resources/ui/new_platform.ui:103
+msgid "Platform:"
+msgstr "Plattform:"
+
+#: resources/ui/new_tag.ui:28
+msgid "New Tag"
+msgstr "Neues Stichwort"
+
+#: resources/ui/new_tag.ui:103
+msgid "Tag:"
+msgstr "Stichwort:"
+
+#: resources/ui/picker.ui:389
+msgid "Emoji"
+msgstr "Emoji"
+
+#: resources/ui/picker.ui:409
+msgid "GIF"
+msgstr "GIF"
+
+#: resources/ui/picker.ui:430
+msgid "Stickers"
+msgstr "Aufkleber"
+
+#: resources/ui/play_media.ui:56
+msgid "Play Media"
+msgstr "Medium abspielen"
+
+#: resources/ui/play_media.ui:134
+msgid "Video source invalid!"
+msgstr "Videoquelle invalide!"
+
+#: resources/ui/send_file.ui:54
+msgid "Send"
+msgstr "Senden"
+
+#: resources/ui/settings.ui:79
+msgid "General"
+msgstr "Allgemein"
+
+#: resources/ui/settings.ui:84
+msgid "System"
+msgstr "System"
+
+#: resources/ui/settings.ui:89 resources/ui/settings.ui:98
+msgid "Start on login"
+msgstr "Beim Anmelden starten"
+
+#: resources/ui/settings.ui:130 resources/ui/settings.ui:139
+msgid "Run in background"
+msgstr "Im Hintergrund ausführen"
+
+#: resources/ui/settings.ui:186 resources/ui/settings.ui:195
+msgid "Enable notifications"
+msgstr "Benachrichtigungen aktivieren"
+
+#: resources/ui/settings.ui:227 resources/ui/settings.ui:236
+msgid "Play notification sounds"
+msgstr "Benachrichtigungsgeräusche abspielen"
+
+#: resources/ui/settings.ui:274
+msgid "Privacy"
+msgstr "Privatsphäre"
+
+#: resources/ui/settings.ui:279
+msgid "Blocked"
+msgstr "Blockiert"
+
+#: resources/ui/settings.ui:294 src/ui/settings.c:415
+#, c-format
+msgid "%u blocked contacts"
+msgstr "%u blockierte Kontakte"
+
+#: resources/ui/settings.ui:342
+msgid "Messaging"
+msgstr "Kommunikation"
+
+#: resources/ui/settings.ui:347 resources/ui/settings.ui:356
+msgid "Send read receipts"
+msgstr "Lesebestätigungen senden"
+
+#: resources/ui/settings.ui:390
+msgid "Disappearing messages"
+msgstr "Verschwindende Nachrichten"
+
+#: resources/ui/settings.ui:395 resources/ui/settings.ui:404
+msgid "Delete messages automatically"
+msgstr "Nachrichten automatisch löschen"
+
+#: resources/ui/settings.ui:446
+msgid "History"
+msgstr "Historie"
+
+#: resources/ui/settings.ui:451 resources/ui/settings.ui:460
+msgid "Clear history automatically"
+msgstr "Historie automatisch leeren"
+
+#: resources/ui/settings.ui:501 resources/ui/settings.ui:508
+msgid "Clear all history"
+msgstr "Gesamte Historie leeren"
+
+#: resources/ui/settings.ui:540
+msgid "Network"
+msgstr "Netzwerk"
+
+#: resources/ui/settings.ui:545
+msgid "Invitations"
+msgstr "Einladungen"
+
+#: resources/ui/settings.ui:550 resources/ui/settings.ui:559
+msgid "Accept invitations automatically"
+msgstr "Einladungen automatisch annehmen"
+
+#: resources/ui/settings.ui:591 resources/ui/settings.ui:600
+msgid "Delete invitations automatically"
+msgstr "Einladungen automatisch löschen"
+
+#: resources/ui/settings.ui:640 resources/ui/settings.ui:647
+msgid "Delete all invitations"
+msgstr "Alle Einladungen löschen"
+
+#: resources/ui/settings.ui:681 resources/ui/settings.ui:690
+msgid "Accept files automatically"
+msgstr "Automatisch Dateien annehmen"
+
+#: resources/ui/settings.ui:722 resources/ui/settings.ui:731
+msgid "Download folder"
+msgstr "Download-Ordner"
+
+#: resources/ui/settings.ui:746
+msgid "Select download folder"
+msgstr "Download-Ordner auswählen"
+
+#: resources/ui/settings.ui:765 resources/ui/settings.ui:774
+msgid "Delete files automatically"
+msgstr "Dateien automatisch löschen"
+
+#: resources/ui/settings.ui:814 resources/ui/settings.ui:822
+msgid "Delete all files"
+msgstr "Alle Dateien löschen"
+
+#: resources/ui/settings.ui:840
+#, fuzzy
+msgid "Show all files"
+msgstr "Alle Dateien löschen"
+
+#: resources/ui/settings.ui:865
+msgid "Chats"
+msgstr "Chats"
+
+#: resources/ui/settings.ui:870 resources/ui/settings.ui:879
+msgid "Leave chats automatically"
+msgstr "Chats automatisch verlassen"
+
+#: resources/ui/settings.ui:919 resources/ui/settings.ui:926
+msgid "Leave all chats"
+msgstr "Alle Chats verlassen"
+
+#: src/event.c:600
+msgid "joined the chat"
+msgstr "ist dem Chat beigetreten"
+
+#: src/event.c:600
+msgid "left the chat"
+msgstr "hat den Chat verlassen"
+
+#: src/event.c:733
+#, c-format
+msgid "invited %s to a chat"
+msgstr "hat %s zum Chat eingeladen"
+
+#: src/event.c:737
+msgid "you"
+msgstr "dich"
+
+#: src/ui/chat.c:507
+msgid "Select file"
+msgstr "Datei auswählen"
+
+#: src/ui/chat_entry.c:203
+msgid "Yesterday"
+msgstr "Gestern"
+
+#: src/ui/send_file.c:311
+msgid "Send File"
+msgstr "Datei senden"
+
+#~ msgid "GNUnet"
+#~ msgstr "GNUnet"
+
+#, c-format
+#~ msgid "%d members"
+#~ msgstr "%d Mitglieder"

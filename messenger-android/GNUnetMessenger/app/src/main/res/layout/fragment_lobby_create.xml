@@ -1,0 +1,77 @@
+<!--
+    This file is part of GNUnet.
+    Copyright (C) 2021–2025 GNUnet e.V.
+
+    GNUnet is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License,
+    or (at your option) any later version.
+
+    GNUnet is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: AGPL3.0-or-later
+
+    @author t3sserakt
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lobby_notice"
+        android:text="@string/lobby_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" /> <!-- Fügt Abstand hinzu -->
+
+    <Spinner
+        android:id="@+id/lifetime_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:entries="@array/lobby_lifetimes"
+        android:layout_marginTop="24dp"
+        android:padding="8dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:text="Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:padding="12dp" /> <!-- Padding hinzugefügt -->
+
+        <Button
+            android:id="@+id/btn_generate"
+            android:text="Generate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:padding="12dp" />
+    </LinearLayout>
+</LinearLayout>

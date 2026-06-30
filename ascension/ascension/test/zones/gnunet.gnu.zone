@@ -1,0 +1,24 @@
+;; Zone dump (Knot DNS 3.1.5)
+gnunet.gnu.         	7200	SOA	ns1.gnunet.gnu. hostmaster.gnunet.gnu. 2022031400 3600 900 86400 3600
+gnunet.gnu.         	3600	NS	ns1.gnunet.gnu.
+gnunet.gnu.         	3600	NS	ns2.gnunet.gnu.
+gnunet.gnu.         	3600	A 1.1.1.1
+_turn._tcp.gnunet.gnu.	3600	SRV	5 0 3478 server.gnunet.gnu.
+_turns._tcp.gnunet.gnu.	3600	SRV	5 0 3478 server.gnunet.gnu.
+_xmpp-client._tcp.gnunet.gnu.	3600	SRV	5 0 5222 jabber.gnunet.gnu.
+_turn._udp.gnunet.gnu.	3600	SRV	5 0 3478 server.gnunet.gnu.
+_https._udp.ping.gnunet.gnu.	3600	SRV	5 0 443 server.gnunet.gnu.
+firefly.gnunet.gnu. 	3600	A	147.87.255.218
+firefly.gnunet.gnu. 	3600	A	147.87.255.219
+firefly.gnunet.gnu. 	3600	AAAA	2a07:6b47:100:464::9357:ffda
+firefly.gnunet.gnu. 	3600	AAAA	2a07:6b47:100:464::9357:ffdb
+git.gnunet.gnu.     	3600	CNAME	firefly.gnunet.gnu.
+jabber.gnunet.gnu.  	3600	A	127.0.0.2
+ns1.gnunet.gnu.     	3600	A	1.1.1.1
+ns2.gnunet.gnu.     	3600	A	1.0.0.1
+server.gnunet.gnu.  	3600	A	127.0.1.3
+this.is.a.test.gnunet.gnu.	3600	A	127.0.1.3
+www.gnunet.gnu.     	3600	A	131.159.74.67
+www.gnunet.gnu.     	3600	AAAA	2001:4ca0:2001:42:225:90ff:fe6b:d60
+;; Written 19 records
+;; Time 2022-03-14 19:39:00 CET

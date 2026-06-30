@@ -1,0 +1,4 @@
+Makevars.template
+POTFILES
+gnunet-fuse.pot
+remove-potcdate.sed

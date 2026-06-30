@@ -1,0 +1,3 @@
+adduser --system ascension
+# ok if this fails as gnunet is not yet a dependency
+adduser ascension gnunet || true

@@ -1,0 +1,22 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ascension-bind
+Source: <https://git.gnunet.org/ascension.git/>
+
+Files: *
+Copyright: 2019 GNUnet e.V.
+License: AGPL-3.0
+ Source: ascension-bind
+ Section: contrib 
+ Priority: optional
+ Maintainer: rexxnor <rexxnor+gnunet@brief.li>
+ Build-Depends: debhelper (>= 9), python3-ascension, bind9
+ Standards-Version: 3.9.8
+ Homepage: https://git.gnunet.org/ascension.git/
+ #Vcs-Git: https://anonscm.debian.org/collab-maint/ascension-bind.git
+ #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/ascension-bind.git
+ Package: ascension-bind
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: Allows local zone transfer on bind for migration into GNS
+ This package modifies existing bind configuration to allow zone transfer to
+ localhost to allow the gnsmigrator package to migrate the zone into GNS.

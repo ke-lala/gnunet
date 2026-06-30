@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">	
+<head>
+	<meta charset="utf-8">
+	<title>GNUnet 31.01.19</title>
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">	
+	<!--Add support for earlier versions of Internet Explorer -->
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<!-- Wrap the entire slide show in a div using the "reveal" class. -->
+	<div class="reveal">
+		<!-- Wrap all slides in a single "slides" class -->
+		<div class="slides">
+
+			<!-- ALL SLIDES GO HERE -->
+			<!-- Each section element contains an individual slide -->
+			<section>
+				<h1>GNUnet</h1>
+				<p>Die Grundlage für ein anderes Internet</p>		
+			</section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  t3sserakt
+
+                  secushare Entwickler
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  [secushare](http://secushare.org) ist eine Anwendung, die auf GNUnet aufbaut.
+                  Ein verteiltes, vertrauliches, soziales Netzwerk.
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Motivation
+
+                  Das Internet ist kaput! [#youbroketheinternet](https://youbroketheinternet.org/)
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  Die meisten Lösung, die wir benutzen, offenbaren Metadaten über unsere Kommunikation. Projekte wie z.B. Tor gehen dieses Problem an.
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  GNUnet versucht Probleme ([Tor Threat Model](https://svn.torproject.org/svn/projects/design-paper/tor-design.html#tth_sEc3.1)), die aktuell mit Tor bestehen, zu lösen, bzw. hat diese gelöst:
+
+                  * Scalability
+                  * Sybil attacks
+                  * Traffic shaping
+                  * Fingerprinting attacks
+                  * Keine für den Dienst zentralen Komponenten
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  Wenn man auf den weltweiten autoritären und illiberalen Backslash schaut,  ist zu befürchten, dass vermehrt gegen Systeme, welche die Vertrauchlichkeit unserer Kommunikation schützen, vorgegangen werden wird.
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### GNUnet Design Ziele
+
+                  * Freie Software.
+                  * Es wird so wenig wie möglich ungewollte Informationen an Kommunikationspartner oder Dritte weitergegeben.
+                  * Dezentraliziert und stabil gegen byzantinischen Fehlern.
+                  * Die Vertrauenswürdigkeit der Kommunikationspartner wird sichergestellt.
+                  * Abschottung der GNUnet Softwarekomponenten gegeneinander.
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  * Neue GNUnet Knoten können jederzeit dem Netzwerk beitreten.
+                  * Selbstorganisierend.
+                  * Unterstützt viele Arten von Applikationen und Geräten.
+                  * Skalierbarkeit und Wirtschaftlichkeit.
+                  * Das Beisteuern von Ressourcen zu dem Netzwerk wird gegenüber deren Verbrauch belohnt.
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Schichtenarchitektur
+
+                  |Internet|GNUnet|
+                  |--------|------:|
+                  |Google, Facebook, etc.| Applications|
+                  |DNS/X.509             | GNS         |
+                  |TCP/UDP               | CADET       |
+                  |IP/BGP                | R5N DHT     |
+                  |Ethernet              | Core (OTR)  |
+                  |Physikalischer Layer  | Transport   |
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Anwendungen
+
+                  * Filesharing
+                  * GNUnet Naming Service
+                  * Messaging
+                  * VPN
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  `$ gnunet-identity -C myself`
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  `$ gnunet-identity -d
+
+                  myself - HWTYD3P5D77JVFNVMZ1M5T10V4SZYNMY3PCGQCSVENKD6ZCRKPMG`
+                  </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  `$ gnunet-namestore -z myself -a -e never -p -t A -n ccc -V 195.54.164.39`
+                  </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  `$ gnunet-gns -u ccc.myself
+
+                  ccc.myself:
+                  Got `A' record: 195.54.164.39`
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Installation
+
+                  Letzte Release 10.1 ist sehr alt.
+
+                  Es gibt ein Prerelease 11.0 von Anfang letzten Jahres.
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  [Einfachste Option](https://github.com/compiaffe/gnunet-docker) ist das automatisierte Bauen mit Hilfe von Docker.
+
+                  Beste Option ist das Bauen aus den Quellen.
+
+                  git clone ssh://git@gnunet.org/gnunet.git
+
+                  https://github.com/royneary/painless-gnunet
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Konfiguration
+
+                  Es gibt eine Konfigurationsoberfläche.
+
+                  git clone ssh://git@gnunet.org/gnunet-gtk.git
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  Lerneffekt ist größer, wenn man die Konfigurationsdatei direkt editiert,
+                  unter Zuhilfenahme der sehr gut kommentierten Dateien mit
+                  Grundeinstellungen.
+                </textarea>
+              </section>
+              <section data-markdown>
+                <textarea data-template>
+                  Die Grundeinstellungen sind meist ausreichend. Abhängig davon, ob ein
+                  GNUnet Knoten hinter einem Router und/oder Firewall betrieben wird muss
+                  die Konfiguration angepasst werden.
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Architektur
+
+                  * [APIs und Services](https://gnunet.org/system-architecture-with-legos)
+                  * [Code Überblick](https://gnunet.org/gnunet-source-overview)
+                  * [Code Dokumentation](https://gnunet.org/doxygen/)
+                  * [Developer Handbuch](https://docs.gnunet.org/)
+                  * [The GNUnet System](https://grothoff.org/christian/habil.pdf)
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Hilfe für das Projekt
+
+                  * Benutzen.
+                  * Bugs finden und [eintragen](https://gnunet.org/bugs/my_view_page.php).
+                  * Dokumentation.
+                  * Applikationen bauen.
+                  * Bugs beheben.
+                  * weiterentwickeln.
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Kontakt
+
+                  Mailing Listen:
+
+                  [Allgemeine Hilfe](https://lists.gnu.org/mailman/listinfo/help-gnunet)
+
+                  [Bug Reports](https://lists.gnu.org/mailman/listinfo/bug-gnunet)
+                  
+                  [Development](https://lists.gnu.org/mailman/listinfo/gnunet-developers)
+
+                  IRC: Channel #gnunet auf freenode
+
+                  [secushare](https://secushare.org/#questions)
+                </textarea>
+              </section>
+            </section>
+
+            <section>
+              <section data-markdown>
+                <textarea data-template>
+                  ### Präsentation
+
+                  https://gnunet.org/git/presentations.git/t3sserakt
+                </textarea>
+              </section>
+            </section>
+
+			</div>
+	</div>
+	<script src="lib/js/head.js"></script>
+	<script src="js/reveal.js"></script>
+    <script src="plugin/markdown/marked.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+
+	<script>
+		// Required, even if empty.
+		Reveal.initialize({
+		});
+	</script>
+</body>
+</html>

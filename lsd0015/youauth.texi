@@ -1,0 +1,669 @@
+@title YouAuth: A Decentralized P2P Authentication and Authorization Protocol
+@node Current Outline
+@chapter Current Outline for the YouAuth LSD Proposal
+
+In the GNU tradition of crafting documentation that liberates protocols through clear, extensible specifications---much as LSD0001 (The GNU Name System) provides a blueprint for decentralized naming---we refine our outline to prioritize YouAuth's practical, DNS-based P2P authentication while noting optional enhancements like GNS for advanced scenarios. This balances ubiquity with future-proofing, ensuring the protocol empowers users without imposing niche dependencies. The structure follows LSD templates, with normative sections for core flows and informative appendices for extensions.
+
+@menu
+* Abstract::
+* Status of This Memo::
+* Introduction::
+* Terminology::
+* Overview::
+* Identities and Authentication::
+* Authorization and Data Sharing::
+* Cryptography::
+* Resolution Mechanisms::
+* Security Considerations::
+* GANA Considerations::
+* Implementation Status::
+* References::
+* Appendices::
+@end menu
+@node Abstract
+@section Abstract
+
+YouAuth is a lightweight decentralized, peer-to-peer authentication and authorization protocol that empowers users with self-sovereign domain-based identities. By leveraging standard DNS/HTTPS for resolution and optionally the GNU Name System (GNS) for enhanced privacy, YouAuth establishes a secure foundation for subsequent data sharing by enabling peers to mutually generate a token pair and a shared secret for end-to-end encryption (layered over HTTPS), using cryptographic primitives such as Elliptic Curve Diffie-Hellman (ECDH) over P-384 for key exchange, HKDF-SHA256 for key derivation, and AES-CBC/GCM for encryption - ensuring P2P E2E security without intermediaries.
+
+While similar decentralization could be achieved by operating their own OpenID Connect (OIDC) servers, often referred to as Bring Your Own OIDC (BYO-OIDC), YouAuth offers a more streamlined, purpose-built protocol that natively incorporates end-to-end peer-to-peer encryption, avoiding OIDC's extensive specification ecosystem and the need for custom extensions to achieve comparable security and privacy. In terms of security, YouAuth's use of HKDF(ECDH(priv_self, pub_other), salt) provides equivalence to OIDC's PKCE (Proof Key for Code Exchange) in mitigating interception and replay attacks through short-lived values and secure transport, but delivers higher security for the final secret (e.g., the Client Access Token and shared secret) by layering application-level encryption on top of HTTPS, protecting against potential decryption at intermediaries like corporate firewalls or browser extensions where TLS alone might be vulnerable.
+
+This specification outlines normative flows, extensions, and considerations for interoperable implementations.
+
+
+
+@node Status of This Memo
+@section Status of This Memo
+
+This document is a draft specification for the YouAuth protocol, submitted as an independent proposal to the GNUnet community for consideration as a Layered System Design (LSD) document. It does not represent consensus within the GNUnet project or any standards body such as the IETF. This draft is intended to solicit feedback and foster discussion on decentralized authentication mechanisms.
+
+The information in this document is provided "as is" without warranty of any kind. Implementers are encouraged to review and test the specification but should not deploy it in production without further validation.
+
+This draft expires on April 29, 2026. After this date, it should be considered obsolete unless updated or adopted.
+
+Distribution of this document is unlimited.
+@node Introduction
+@section Introduction
+Centralized authentication services, such as those provided by major platforms like Google, Twitter, or Facebook, offer convenience for logging into third-party sites, via OAUTH, without requiring separate credentials for each service. However, these systems introduce significant drawbacks that undermine user privacy, autonomy, and security.
+The primary issues with centralized authentication include:
+@itemize @bullet
+@item
+@strong{Privacy Concerns}: Centralized platforms track users' login activities across sites, collecting data on what services are accessed and when. This pervasive surveillance compromises personal privacy and enables detailed profiling.
+@item
+@strong{Web Tracking}: Users are further exposed through cross-site tracking mechanisms embedded by these services, allowing the aggregation of behavioral data for advertising or other purposes.
+@item
+@strong{Loss of Control}: Access to third-party sites is ultimately governed by the centralized provider. If a user is deplatformed or their account is suspended, they lose access to all integrated services without recourse.
+@item
+@strong{Service Dependency}: Similarly, if the centralized platform revokes access for a third-party service, users are cut off from that service, regardless of their own preferences.
+@item
+@strong{Data Sharing Limitations}: Users have minimal control over what personal information is shared with third-party sites or how it is used, often leading to over-sharing and potential misuse.
+@end itemize
+
+YouAuth addresses these challenges by providing a decentralized, peer-to-peer (P2P) authentication protocol that empowers users with self-sovereign identities based on domain names. By leveraging existing web technologies like DNS and HTTPS for resolution and communication, YouAuth enables direct, secure exchanges between peers without relying on intermediary authorities. This approach restores user control, enhances privacy through end-to-end encryption and data minimization, and ensures compatibility with standard web infrastructure, including seamless integration with web browsers for client-side authentication flows.
+
+In YouAuth, users authenticate themselves to third-party sites using their own domain-based identities (e.g., samwisegamgee.me). The protocol supports granular authorization, allowing users to specify exactly what information is shared and under what conditions. Through YouAuth, peers can exchange cryptographic information that is encrypted in such a way that it can only be decrypted within the intended application or site, rendering man-in-the-middle (MITM) attacks ineffective for accessing sensitive data—a level of protection not fully achieved in traditional OAuth implementations, where transport-layer security (TLS) protects transmission but does not inherently ensure application-specific decryption. Third parties are not required to store sensitive user data, reducing risks for both users and services. Critically, YouAuth eliminates centralized tracking, as all interactions occur directly between the user's identity host and the requesting peer.
+
+YouAuth builds on proven standards, including HTTPS for secure transport, SSL certificates for verification, Elliptic Curve Cryptography (ECC) for key exchanges, AES for encryption, DNS and DNSSEC for resolution, and optional Client Certificate Authentication for enhanced security in identity-to-identity flows. While DNS serves as the primary, normative resolution mechanism for broad accessibility, the protocol includes informative support for advanced alternatives like the GNU Name System (GNS) to provide censorship resistance and privacy in specialized scenarios.
+This document specifies the YouAuth protocol in a manner that promotes interoperability, extensibility, and user freedom, in the spirit of GNU documentation. Implementations can enable a truly decentralized web where authentication is liberated from corporate silos.
+
+Systems like re:claimID (LSD0002) provide decentralized identity management with verifiable credentials; YouAuth complements this by offering P2P authentication compatible with web technologies, enabling access to such credentials via granular permissions in the Client Access Token (CAT).
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [@cite{RFC2119}] [@cite{RFC8174}] when, and only when, they appear in all capitals, as shown here.
+@node Terminology
+@section Terminology
+
+This section defines key terms used throughout this document to ensure clarity and consistency. Terms are presented in alphabetical order for reference.
+
+@table @dfn
+@item Authentication Code
+A short-lived, single-use code generated by the identity host during the authorization flow. It is transmitted unencrypted to the requesting peer but expires quickly (e.g., within seconds) to mitigate replay attacks.
+
+@item Client Access Token (CAT)
+A cryptographic token issued by the identity host to the requesting peer upon successful authentication and authorization. The CAT serves as proof of the user's identity and includes any granted permissions. It is encrypted using a shared secret and can be used for subsequent secure interactions.
+
+@item Client Type
+The category of the requesting peer, which influences consent requirements and permission handling. Valid types are:
+@itemize @bullet
+@item @code{app}: A single-page or native application (e.g., a mobile app accessing user data).
+@item @code{domain}: A domain-based peer (e.g., a website like @code{frodo.me} or @code{shop.amazon.com}).
+@end itemize
+
+@item Consent Requirement
+A policy specifying when user consent is needed for authentication or authorization. Types include:
+@itemize @bullet
+@item @code{Always}: Consent is required for every request.
+@item @code{Expiring}: Consent is required after a specified expiration time.
+@item @code{Never}: No consent is required (use with caution).
+@end itemize
+
+@item Identity
+A domain-based identifier representing a user or entity in the YouAuth protocol (e.g., @code{samwisegamgee.me}). The identity host manages authentication and authorization for this identifier.
+
+@item Peer
+In the context of YouAuth's P2P model, a peer refers to a domain or application participating in direct exchanges. Peers include the user's identity host and the requesting client (either an @code{app} or @code{domain}).
+
+@item Permission Request
+A list of specific permissions requested by the client, such as access to certain data drives or operations (e.g., @code{drive:xyz:read}). These are evaluated during consent and included in the CAT if approved.
+
+@item Shared Secret
+A cryptographically derived value computed independently by both peers using Elliptic Curve Diffie-Hellman (ECDH) key exchange, combined with a Key Derivation Function (KDF) like HKDF and a random salt. It is used for encrypting sensitive data, such as the CAT, ensuring only the intended parties can decrypt it.
+@end table
+
+Additional terms from referenced standards (e.g., ECDH, HKDF) are used as defined in their respective specifications.
+@node Overview
+@section Overview
+
+YouAuth operates as a decentralized peer-to-peer (P2P) authentication and authorization protocol, where identities are represented by domain names and interactions occur directly between the user's identity host and the requesting peer (client). The protocol follows a flow inspired by OAuth 2.0's authorization code grant but adapted for P2P environments: the client redirects the user's browser to the identity host, obtains user consent if required, and exchanges cryptographic material for a Client Access Token (CAT) that serves as proof of the user's identity and provides access to granted permissions for subsequent interactions. All sensitive exchanges are secured using Elliptic Curve Diffie-Hellman (ECDH) for shared secret derivation, HKDF for key strengthening, and AES-CBC for encryption, ensuring end-to-end protection against interception.
+
+The high-level flow is as follows:
+
+@enumerate
+@item
+The client (e.g., a website or app) redirects the user's browser to the identity host's @code{/authorize} endpoint, providing parameters such as the client type (@code{app} or @code{domain}), client ID, public key, permission requests, and a redirect URI.
+
+@item
+The identity host checks if the user is authenticated; if not, it prompts for login. It then verifies if consent is needed based on the consent requirements (e.g., always, expiring, or never). If consent is required, the user is prompted via a frontend interface.
+
+@item
+Upon approval, the identity host generates a temporary ECC key pair, computes an exchange shared secret using ECDH (its temporary private key and the client's public key) combined with HKDF and a random salt, encrypts the CAT and a new random shared secret (for future communications) using this exchange shared secret, stores the encrypted data in a cache keyed by the SHA-256 digest of the exchange shared secret, and redirects back to the client with its temporary public key and salt.
+
+@item
+The client computes the exchange shared secret using its private key, the identity host's temporary public key, and the salt (via ECDH and HKDF), computes the digest, and requests the encrypted data from the @code{/token} endpoint using the digest.
+
+@item
+The identity host validates the digest, retrieves the encrypted data from the cache, and returns it (the encrypted CAT and new shared secret, along with their respective IVs).
+@end enumerate
+
+This flow ensures that authentication only proceeds with explicit user control, minimizes data exposure, and resists man-in-the-middle attacks through application-level encryption. Note that the CAT itself is a token providing proof of identity and permissions; it does not contain additional user data. The successful decryption of the response from the @code{/token} endpoint (using the exchange shared secret) confirms the user's identity, as only the legitimate identity host could have encrypted it with the matching shared secret (because the validation https request is to the user's domain and X509 certificate). While the client could theoretically verify identity solely through successful decryption without fully utilizing the CAT (if no further access is needed), in practice, decryption yields the CAT and new shared secret, which are typically required for any authorized data requests. For further interactions, the client uses the CAT and new shared secret to authenticate API calls to the identity host and retrieve any authorized information (e.g., profile details or payment info).
+
+To illustrate, consider a shopping example where Sam Gamgee (identity: @code{samwisegamgee.me}) wants to authenticate to an online shop at @code{www.southfarthing.com} to purchase tobacco.
+
+@itemize @bullet
+@item
+Sam enters his identity @code{samwisegamgee.me} on the shop's login page and submits.
+
+@item
+The shop generates an ECC key pair and redirects Sam's browser to @code{https://samwisegamgee.me/authorize} with parameters including its public key, client type (@code{domain}), client ID (@code{southfarthing.com}), and redirect URI.
+
+@item
+Sam's identity host checks for login and consent. Assuming Sam is logged in but hasn't approved @code{southfarthing.com}, he is prompted to consent (e.g., "www.southfarthing.com wants to confirm your identity. Auto-login in the future?").
+
+@item
+Upon approval, the identity host generates a temporary ECC key pair, computes the exchange shared secret (ECDH + HKDF with salt), encrypts the CAT and new random shared secret, caches it under the digest, and redirects back with its temporary public key and salt.
+
+@item
+The shop computes the exchange shared secret and digest, sends the digest to @code{https://samwisegamgee.me/token}, receives the encrypted response, and decrypts it to obtain the CAT and new shared secret, verifying Sam's identity.
+
+@item
+For additional authorization (e.g., accessing address or payment info), the shop includes permission requests in the initial redirect, and Sam consents to specific terms. The CAT allows subsequent access to granted permissions, enabling the shop to make authenticated calls (using the CAT and new shared secret) to Sam's identity host to retrieve the authorized data securely.
+@end itemize
+
+The following ASCII diagram depicts the core flow:
+
+@example
+@verbatim
++-------------+                +----------------+                +-------------------+
+| Sam's       |                | Southfarthing  |                | Sam's Identity    |
+| Browser     |                | (Shop)         |                | Host              |
++-------------+                +----------------+                +-------------------+
+      |                               |                                 |
+      |  [User enters ID and clicks login]                                |
+      |                               |                                 |
+      |<------------------------------|                                 |
+      |                               |                                 |
+      |------------------------------>|  [010] Generate ECC keys        |
+      |                               |                                 |
+      |------------------------------>|                                 |
+      |                               |  [030] Redirect to /authorize   |
+      |                               |  with params (public_key, etc.) |
+      |                               |<--------------------------------|
+      |                               |                                 |
+      |------------------------------>|  [040-050] Check login/consent  |
+      |                               |                                 |
+      |                               |  [070] Gen temp ECC pair,       |
+      |                               |  compute exchange SS (ECDH+HKDF)|
+      |                               |  encrypt CAT & new SS, cache    |
+      |                               |                                 |
+      |                               |  [080] Redirect back with       |
+      |                               |  temp public_key, salt          |
+      |                               |-------------------------------->|
+      |                               |                                 |
+      |<------------------------------|  [090] Compute exchange SS      |
+      |                               |                                 |
+      |                               |  [100] POST to /token with      |
+      |                               |  secret_digest                  |
+      |                               |-------------------------------->|
+      |                               |                                 |
+      |                               |  [110-140] Validate digest,     |
+      |                               |  return encrypted CAT & new SS  |
+      |                               |<--------------------------------|
+      |                               |                                 |
+      |                               |  [150] Decrypt; auth complete   |
+      |                               |                                 |
+      |                               |  [Post-flow] Use CAT & new SS   |
+      |                               |  to request authorized data     |
+      |                               |-------------------------------->|
+@end verbatim
+@end example
+
+Note that resolution of identities primarily uses DNS over HTTPS for compatibility with existing web infrastructure and browser-native operations. The HTTPS validation of the X.509 certificate is a crucial aspect of the flow, providing irrefutable proof of the domain (and thus the username) from the identity host. As an optional enhancement, integration with the GNU Name System (GNS) is supported for scenarios requiring greater privacy or censorship resistance, such as via proxies or distributed hash tables (DHTs). Details on GNS integration are provided informatively in appendices.
+@node Identities and Authentication
+@section Identities and Authentication
+
+YouAuth identities are domain-based, leveraging DNS names (e.g., @code{samwisegamgee.me}) to establish self-sovereign control. This ensures users own their identifiers through standard domain registration, avoiding centralized silos. Identities resolve via HTTPS endpoints on the domain, enabling P2P exchanges without intermediaries. The protocol mandates X.509 certificate validation during resolution to confirm domain ownership, providing cryptographic proof of identity.
+
+The core authentication flows occur via two endpoints: @code{/authorize} (GET/POST) for initiation and consent, and @code{/token} (POST) for token exchange. These mimic OAuth 2.0's authorization code flow but in a decentralized manner, with direct peer communication.
+
+@subsection Authorize Endpoint (@code{/authorize})
+This endpoint handles the initial request and user consent.
+
+@itemize @bullet
+@item @strong{GET Request Parameters}:
+  @table @code
+  @item redirect_uri
+  Required: Callback URI for redirect after authorization (HTTPS only).
+  @item client_type
+  Required: @code{app} or @code{domain}, determining consent and permission handling.
+  @item client_id
+  Required: UUID for apps or domain name for domains (must match @code{redirect_uri} host for domains).
+  @item public_key
+  Required: Base64-encoded ECC public key (P-384) from the client.
+  @item state
+  Optional: Client-defined value echoed in response for CSRF protection.
+  @item permission_request
+  Optional: JSON-encoded list of permissions (e.g., @code{["drive:xyz:read", "profile:email"]}).
+  @item client_info
+  Optional: JSON or URL with client details (name, description) for consent display.
+  @end table
+
+@item @strong{Processing}:
+  - Validate parameters and client_type-specific rules.
+  - Check if user is authenticated (via session cookie); redirect to login if not.
+  - For @code{client_type=app}, ensure app registration; prompt if unregistered.
+  - Determine consent need based on prior approvals and permission_request.
+  - If consent required, redirect to frontend consent page (e.g., @code{/owner/youauth/authorize}).
+  - Upon consent, generate temporary ECC key pair, compute exchange shared secret (ECDH + HKDF), encrypt CAT and new shared secret, cache under digest.
+  - Redirect to @code{redirect_uri} with:
+    @table @code
+    @item identity
+    Authorizing domain.
+    @item public_key
+    Temporary public key.
+    @item salt
+    Base64-encoded salt.
+    @item state
+    Echoed value.
+    @end table
+
+@item @strong{POST for Consent (Internal)}:
+  Used by frontend to store consent after user approval.
+  Parameters: @code{return_url}, @code{consent_req} (JSON for ConsentRequirements: @code{always}, @code{expiring}, @code{never}).
+@end itemize
+
+@subsection Token Endpoint (@code{/token})
+Exchanges digest for encrypted tokens.
+
+@itemize @bullet
+@item @strong{POST Request Parameters}:
+  @table @code
+  @item secret_digest
+  Required: Base64-encoded SHA-256 digest of exchange shared secret.
+  @end table
+
+@item @strong{Processing}:
+  - Lookup cached encrypted data by digest.
+  - If found, return JSON response and MUST delete the cache entry to enforce one-time use and prevent replays; else, 404.
+  - Response:
+    @table @code
+    @item base64SharedSecretCipher
+    AES-CBC encrypted new shared secret.
+    @item base64SharedSecretIv
+    Initialization vector.
+    @item base64ClientAuthTokenCipher
+    AES-CBC encrypted CAT.
+    @item base64ClientAuthTokenIv
+    Initialization vector.
+    @end table
+  - Client decrypts using exchange shared secret to obtain CAT and new shared secret for further interactions.
+@end itemize
+
+@subsection Consent Handling
+Consent is user-centric and granular. For domains, prior consents can auto-approve unless new permissions are requested. Apps always require initial consent. ConsentRequirements allow configuration: always prompt, expire after time, or never prompt. Stored consents minimize friction while preserving control.
+
+@subsection Wire Formats
+All endpoints use HTTPS. Parameters are URL-encoded in GET/redirects; JSON in POST bodies/responses. Errors follow HTTP status codes (e.g., 400 for invalid params, 401 for unauthorized).
+
+This section defines the normative P2P authentication mechanics, ensuring secure, consensual identity verification without central authorities.
+@node Authorization and Data Sharing
+@section Authorization and Data Sharing
+
+YouAuth extends beyond mere authentication to enable fine-grained authorization and secure data sharing. Authorization is integrated into the authentication flow, allowing clients to request specific permissions during the @code{/authorize} step. The resulting Client Access Token (CAT) encapsulates these granted permissions, serving as a proof of consent for subsequent data access. This design emphasizes data minimization, user control, and privacy, ensuring that only necessary information is shared under explicit conditions.
+
+@subsection Permission Requests and the CAT
+Permissions are requested via the @code{permission_request} parameter in the @code{/authorize} GET request. This is a JSON-encoded array of permission strings, following a scoped format such as @code{"drive:profile:read"}, @code{"profile:email"}, or @code{"payment:info:write"}. These scopes define the actions (e.g., read, write) on specific resources (e.g., profile, payment info).
+
+During processing:
+@itemize @bullet
+@item The identity host parses the @code{permission_request} and presents it to the user during consent (if required).
+@item Users can approve, deny, or modify permissions (e.g., grant read-only instead of read-write).
+@item Upon approval, the identity host embeds the granted permissions into the CAT.
+@item The CAT is a structured token (e.g., JWT-like, signed with EdDSA) containing:
+  @itemize @bullet
+  @item Issuer: The identity domain.
+  @item Subject: The client's @code{client_id}.
+  @item Granted permissions: Array of approved scopes.
+  @item Expiry: Short-lived by default (e.g., 1 hour), configurable.
+  @item Audience: Restricted to the client's domain or app ID.
+  @end itemize
+@end itemize
+
+The CAT does not contain user data itself but acts as an access credential. Clients must present the CAT (and use the new shared secret from the token exchange, for AES encryption/decryption of data) in subsequent API requests to the identity host to retrieve authorized data.
+
+@subsection Data Sharing Mechanics
+Data sharing occurs post-authentication via authenticated API calls to the identity host's endpoints (e.g., @code{/api/data/profile}). These endpoints are not normatively defined in this specification but follow these principles:
+
+@itemize @bullet
+@item @strong{Authentication}: Requests must include the CAT in headers (e.g., @code{Authorization: Bearer <CAT>}) and prove knowledge of the shared secret (e.g., via HMAC signature).
+@item @strong{Encryption}: Responses are encrypted end-to-end using the shared secret (AES-CBC), ensuring only the authorized client can decrypt.
+@item @strong{Data Minimization}: Only requested and consented data is returned. For example, if @code{"profile:email"} is granted, only the email is shared, not the full profile.
+@item @strong{User Controls}: During consent, users can impose restrictions, such as:
+  - No storage: The client must not persist the data (enforced via token claims or agreements; auditable but not technically prevented).
+  - Time-bound access: Permissions expire automatically.
+  - Revocation: Users can revoke consents via their identity host's interface, invalidating CATs.
+@end itemize
+
+For advanced verifiable credential sharing, implementations MAY integrate with re:claimID (LSD0002), where YouAuth's CAT can authorize access to stored attributes.
+
+Informative: For browser-based clients, implementations MAY split the CAT into components (e.g., a visible ID cookie and an HTTP-only secure secret) to mitigate XSS and JS access risks, with server-side key derivation (e.g., via XOR) for session security. In mobile/apps, the full CAT can be used in headers. The reference Odin C# implementation employs this split for enhanced web security.
+
+Example: In the shopping scenario, the shop requests @code{["profile:address", "payment:info"]}. After consent, the CAT grants these. The shop then queries the identity host for the address and payment details, receiving encrypted responses.
+
+@subsection Identity-to-Identity Interactions
+For peer-to-peer interactions between YouAuth identities (e.g., one domain authenticating to another), mutual authentication is strengthened:
+
+@itemize @bullet
+@item @strong{Client Certificates}: The requesting peer must present a valid X.509 client certificate during TLS handshake, proving domain ownership.
+@item @strong{Mutual TLS (mTLS)}: Both peers validate certificates, ensuring bidirectional trust.
+@item @strong{Ease for Third-Parties}: Non-identity clients (e.g., e-commerce sites) are not required to present client certificates, lowering integration barriers while maintaining server-side validation via HTTPS.
+@end itemize
+
+This enables secure, direct data sharing between users' domains, such as syncing profiles or payments in a decentralized network.
+
+@subsection Privacy and Control Considerations
+YouAuth prioritizes user sovereignty:
+- No unnecessary data is shared without consent.
+- Permissions are granular and revocable.
+- Data flows directly P2P, avoiding centralized tracking.
+- Clients are encouraged to implement just-in-time data fetching, reducing storage needs.
+
+Implementations MUST log consent events for user review and SHOULD provide interfaces for permission management. For full security analysis, see @ref{Security Considerations}.
+@node Cryptography
+@section Cryptography
+YouAuth relies on established cryptographic primitives to ensure confidentiality, integrity, and authenticity in its P2P exchanges. All operations MUST use secure randomness from cryptographically secure sources (e.g., @code{/dev/urandom} on Unix-like systems or equivalent). Implementations MUST validate all inputs, such as public keys and digests, to prevent attacks like invalid curve points or weak keys.
+@subsection Key Exchange and Shared Secret Derivation
+Elliptic Curve Diffie-Hellman (ECDH) over the NIST P-384 curve (secp384r1) is used for ephemeral key exchanges during authentication.
+@itemize @bullet
+@item @strong{Key Generation}: Generate ECC key pairs using P-384 parameters as defined in RFC 5480. Public keys are encoded in JSON Web Key (JWK) format, base64url-encoded for transmission.
+@item @strong{ECDH Computation}: Compute the raw shared secret using the client's private key and the peer's public key (or vice versa).
+@item @strong{Key Derivation}: Derive the final shared secret using HKDF (RFC 5869) with SHA-256 as the hash function:
+
+Input Keying Material (IKM): Raw ECDH output.
+Salt: Random 16-byte salt generated by the identity host, base64-encoded in responses.
+Info: Empty or protocol-specific label (e.g., @code{"YouAuth-Exchange"}).
+Output Length: 16 bytes for AES-128 (normative minimum); implementations SHOULD derive 32 bytes for AES-256 to provide higher security margins, especially against potential quantum threats.
+@item @strong{Digest for Lookup}: Compute a SHA-256 digest of the derived shared secret for secure, indirect cache lookups in the @code{/token} endpoint.
+@end itemize
+
+@subsection Encryption and Decryption
+Symmetric encryption protects tokens and data during exchanges.
+@itemize @bullet
+@item @strong{Algorithm}: AES-128 in CBC mode (AES-CBC) with PKCS#7 padding (normative minimum); implementations SHOULD use AES-256 for enhanced security. For new implementations, consider AEAD modes like AES-GCM (NIST SP 800-38D) for built-in authentication, better performance, and resistance to certain attacks, though CBC remains secure when paired with separate integrity mechanisms.
+@item @strong{Key}: The 16-byte (AES-128) or 32-byte (AES-256) derived shared secret from HKDF.
+@item @strong{Initialization Vector (IV)}: Random 16-byte IV per encryption, base64-encoded in responses. IVs MUST be unique and unpredictable to prevent attacks.
+@item @strong{Usage}: Encrypt the Client Access Token (CAT) and new persistent shared secret during @code{/authorize} processing. Clients decrypt using the exchange shared secret; the new shared secret secures future data APIs. When using CBC, ALWAYS pair with integrity checks (e.g., HMAC-SHA-256 or the signed CAT) to mitigate padding oracle and other attacks.
+@end itemize
+@subsection Signing and Verification
+The CAT is signed to ensure integrity and authenticity.
+@itemize @bullet
+@item @strong{Algorithm}: EdDSA (Edwards-curve Digital Signature Algorithm) over Ed25519 as per RFC 8032.
+@item @strong{Structure}: The CAT is a compact, serialized structure (e.g., JWT-like: header.payload.signature), with the header specifying @code{alg=EdDSA} and @code{typ=CAT}.
+@item @strong{Verification}: Clients MUST verify the signature using the identity host's public key (obtainable via well-known endpoints or included in responses) and check claims like issuer, expiry, and audience.
+@end itemize
+@subsection Additional Requirements
+
+@strong{Randomness}: All random values (keys, salts, IVs) MUST be generated with at least 128 bits of entropy.
+@strong{Validation}: Implementations MUST perform point validation on received ECC public keys to mitigate invalid curve attacks.
+@strong{Key Rotation}: Ephemeral keys for each exchange; persistent shared secrets SHOULD rotate periodically.
+@strong{Forward Secrecy}: Achieved via ephemeral ECDH for each authentication flow.
+@strong{Quantum Considerations}: While AES-128 provides strong classical security, AES-256 offers better resistance to quantum attacks (e.g., Grover's algorithm). Future versions SHOULD explore post-quantum key exchange alternatives.
+
+For security analysis, including resistance to quantum threats (consider post-quantum alternatives in future versions), see @ref{Security Considerations}. Normative references: RFC 5869 (HKDF), RFC 8032 (EdDSA), NIST SP 800-38A (AES-CBC), NIST SP 800-38D (AES-GCM).
+@node Resolution Mechanisms
+@section Resolution Mechanisms
+
+YouAuth prioritizes ubiquitous, browser-native resolution mechanisms to facilitate broad adoption while allowing for advanced privacy enhancements. The normative resolution uses DNS and HTTPS, leveraging existing web infrastructure for peer discovery and communication. This ensures compatibility with standard browsers and servers without requiring additional software. Informatively, integration with the GNU Name System (GNS) is described for scenarios demanding higher privacy or resistance to censorship, though it is optional and may require proxies or DHT-based resolution.
+
+@subsection Normative: DNS and HTTPS Resolution
+Identities are resolved via standard DNS lookups on the domain name (e.g., @code{samwisegamgee.me}). Implementations MUST support this method as the primary mechanism.
+
+@itemize @bullet
+@item @strong{Domain Resolution}: Use DNS to resolve the identity domain to an IP address. DNSSEC SHOULD be enabled for added integrity against cache poisoning.
+@item @strong{Endpoint Discovery}: Authentication endpoints (@code{/authorize}, @code{/token}) are accessed via HTTPS on the resolved domain. Well-known URIs (per RFC 8615) MAY be used for additional metadata, such as public keys or supported features (e.g., @code{/.well-known/youauth}).
+@item @strong{TLS Validation}: All connections MUST use HTTPS with valid X.509 certificates matching the domain, ensuring server authentication and encryption in transit.
+@item @strong{Browser Compatibility}: This method enables direct P2P flows in web browsers without extensions, as redirects and requests are handled natively.
+@end itemize
+
+This approach balances simplicity and security, allowing any domain owner to host a YouAuth identity without specialized infrastructure.
+
+@subsection Informative: Optional GNS Integration
+For enhanced privacy and decentralization, YouAuth MAY integrate with the GNU Name System (GNS, as defined in LSD0001). GNS provides a censorship-resistant, privacy-preserving alternative to DNS via a distributed hash table (DHT) and user-controlled namespaces.
+
+@itemize @bullet
+@item @strong{GNS Resolution}: Identities can be registered as GNS records (e.g., under @code{.gnu} TLD). Resolution occurs via GNS clients or proxies, mapping to IP addresses or other locators.
+@item @strong{Hybrid Flows}: Clients MAY attempt GNS resolution first, falling back to DNS if unavailable. This is useful in censored environments.
+@item @strong{Privacy Benefits}: GNS avoids central registries, reducing tracking risks. However, it requires GNS-aware software or gateways, limiting ubiquity.
+@item @strong{Implementation Notes}: Use GNS record types for YouAuth-specific data (e.g., public keys). See @ref{GANA Considerations} for registry requests.
+@end itemize
+
+While GNS offers future-proofing, it is not required; DNS/HTTPS suffices for most deployments. Hybrid implementations SHOULD prioritize DNS for compatibility.
+@node Security Considerations
+@section Security Considerations
+
+This section addresses key security aspects of YouAuth, focusing on threats inherent to decentralized P2P authentication and mitigation strategies. Implementations MUST adhere to these considerations to maintain the protocol's integrity, confidentiality, and user sovereignty. Analysis draws from standard threat models (e.g., Dolev-Yao) adapted for P2P environments, emphasizing active adversaries, network attacks, and user errors.
+
+@subsection Consent and User Control
+User consent is mandatory for all authentications and authorizations to prevent unauthorized access.
+@itemize @bullet
+@item Implementations MUST prompt for explicit consent unless pre-approved (e.g., via ConsentRequirements), and MUST log all consents for auditability.
+@item All user interfaces MUST display all remote domains clearly with non-ASCII letters clearly visually marked, such that Ámazon.com isn't mistaken for Amazon.com.
+@item Risks: Social engineering or UI spoofing could trick users into granting permissions. Mitigations: Use clear, non-deceptive consent interfaces; validate @code{client_info} to display accurate client details.
+@item Revocation: Users MUST be able to revoke consents and CATs at any time via the identity host. Revoked tokens SHOULD be invalidated immediately (e.g., via blocklists or short expiries).
+@end itemize
+
+@subsection Token Lifetimes and Replay Attacks
+Tokens (e.g., CATs, exchange digests) are short-lived to limit exposure.
+@itemize @bullet
+@item CAT expiry MUST be enforced (default: 1 hour; configurable by the user). Exchange caches MUST expire quickly (e.g., 5 minutes) and be deleted post-use (as normatively required in @ref{Identities and Authentication}).
+@item Risks: Replay of intercepted tokens or digests. Mitigations: One-time use enforced by cache deletion; unique salts/IVs per exchange; timestamp/nonce claims in CATs verified on use.
+@end itemize
+
+@subsection Man-in-the-Middle (MITM) Resistance
+YouAuth resists MITM through cryptographic design.
+@itemize @bullet
+@item All communications use HTTPS with TLS 1.3+; domain-validated certificates confirm peer identity.
+@item ECDH + HKDF derives secrets without transmission; end-to-end encryption (AES-CBC/GCM) protects data beyond TLS.
+@item Risks: Certificate misissuance or DNS hijacking. Mitigations: DNSSEC for resolution; HPKP/Expect-CT for pinning (informative); mTLS for identity-to-identity flows.
+@end itemize
+
+@subsection P2P-Specific Threats
+Decentralization introduces unique risks compared to centralized systems.
+@itemize @bullet
+@item @strong{Peer Validation}: Clients MUST verify identity hosts via TLS and SHOULD make signatures for the CAT. Risks: Impersonation. Mitigations: Public key pinning; cross-check with DNS/GNS records.
+@item @strong{Denial of Service (DoS)}: Flooding @code{/authorize} or @code{/token}. Mitigations: Rate limiting by client_id/IP; ephemeral keys to avoid state exhaustion.
+@item @strong{Side-Channel Attacks}: Timing or cache probes. Mitigations: Constant-time crypto operations; randomized delays.
+@end itemize
+
+@subsection Privacy Considerations
+YouAuth minimizes tracking and data exposure.
+@itemize @bullet
+@item End-to-end encryption ensures only consented peers access data; no intermediaries (unlike centralized OAuth).
+@item Risks: Metadata leakage (e.g., login times via DNS queries). Mitigations: Optional GNS for private resolution; anonymizing proxies; data minimization in requests.
+@item No centralized logging: All flows are direct P2P, reducing surveillance risks.
+@end itemize
+
+@subsection Cryptographic Risks and Future-Proofing
+@itemize @bullet
+@item Weak keys or randomness: Mitigated by requiring CSPRNGs and input validation.
+@item Quantum threats: ECDH/P-384 vulnerable to Shor's algorithm; AES-128 to Grover's. Mitigations: Recommend AES-256; plan for post-quantum KEMs (e.g., Kyber) in future versions.
+@item Downgrade attacks: Enforce minimum versions (e.g., TLS 1.3, AES-128).
+@end itemize
+
+Implementers SHOULD conduct threat modeling and audits. Report vulnerabilities to the community for collaborative fixes. Normative references: RFC 3552 (Security Considerations Guidelines), OWASP for web threats.
+@node GANA Considerations
+@section GANA Considerations
+
+YouAuth requires assignments from the GNUnet Assigned Numbers Authority (GANA) to ensure interoperability and avoid collisions in record types, enumerations, and other protocol elements. This section requests the creation or extension of registries, following GANA policies as defined in the GNUnet project. All requests are for first-come-first-served allocation unless specified otherwise, with expert review recommended for additions that impact core security or compatibility.
+
+@subsection Record Types Registry
+YouAuth defines new record types for use in resolution mechanisms, particularly for optional GNS integration (see @ref{Resolution Mechanisms}). Request to extend the "GNS Record Types" registry (or create a sub-registry if appropriate):
+
+@itemize @bullet
+@item @strong{YOUAUTH_PUBLIC_KEY}: Value 65560. Stores the identity host's EdDSA public key (Ed25519) in JWK format (RFC 7517), serialized to UTF-8 binary for compactness in GNS records. This enables metadata like "alg" and "kid" for verification and rotation.
+@item @strong{YOUAUTH_ENDPOINT}: Value 65561. Stores well-known endpoint URIs (e.g., @code{/authorize}) as UTF-8 strings.
+@item @strong{YOUAUTH_FEATURES}: Value 65562. Bitfield for supported features (e.g., bit 0: AES-256 support; bit 1: GNS hybrid).
+@item Policy: First-come-first-served for values 65563-69999; expert review for lower values to prevent conflicts with core YouAuth extensions.
+@end itemize
+
+@subsection Client Types Registry
+A new registry for ClientType enumeration values used in @code{/authorize} requests.
+
+@itemize @bullet
+@item @strong{unknown}: Value 0 (reserved).
+@item @strong{app}: Value 1. For single-page or native applications.
+@item @strong{domain}: Value 2. For domain-based peers.
+@item Policy: Expert review for additions, ensuring new types align with P2P principles and do not introduce security risks.
+@end itemize
+
+@subsection Error Codes Registry
+A new registry for error codes in responses (e.g., JSON fields in @code{/token} 4xx responses or informative logs).
+
+@itemize @bullet
+@item @strong{INVALID_PARAMETER}: Value 100. For missing or malformed request params.
+@item @strong{CONSENT_REQUIRED}: Value 101. When consent is needed but not provided.
+@item @strong{TOKEN_EXPIRED}: Value 102. For expired or replayed digests/tokens.
+@item @strong{ACCESS_DENIED}: Value 103. Revoked or invalid permissions.
+@item Policy: First-come-first-served for values 104-199; expert review for security-critical codes (0-99 reserved for core).
+@end itemize
+
+@subsection Signature Purposes Registry
+Extension to the existing "GNUnet Signature Purposes" registry for EdDSA signatures in CATs.
+
+@itemize @bullet
+@item @strong{YOUAUTH_CAT}: Value 42 (example; assign next available). Purpose for signing Client Access Tokens.
+@item Policy: Expert review, as signatures impact cryptographic trust.
+@end itemize
+
+Implementations MUST use these assigned values for interoperability. Future YouAuth versions or extensions MAY request additional entries via GANA updates. Contact the GANA maintainers for assignments.
+@node Implementation Status
+@section Implementation Status
+
+This section provides an overview of known implementations of YouAuth, focusing on reference code, deployment status, and extensions. As an evolving protocol, implementations are in early stages, with emphasis on open-source contributions to foster community development.
+
+The primary reference implementation is the Odin project from Homebase-ID (https://github.com/homebase-id/), written in C# (.NET). It serves as a back-end web server implementing core YouAuth flows, including domain-based identities, P2P authentication endpoints (@code{/authorize} and @code{/token}), consent handling, and integration with decentralized storage and communications. Key features include Federated Identity Authentication aligned with YouAuth's self-sovereign principles, emphasizing security over traditional OAuth.
+
+- **Status**: Alpha release; subject to breaking changes and upgrades. Suitable for development and testing, with pre-built identities (e.g., frodo.dotyou.cloud) for local setups. Continuous Integration (CI) workflows support SQLite and PostgreSQL backends.
+- **Licensing**: Open-source under the Affero General Public License (AGPL-3.0), ensuring freedoms for modification and distribution while requiring source disclosure for networked services.
+- **Test Deployments**: Local development environments are provided, with optional at-home hosting for fully distributed testing. No production-scale deployments are documented yet, but the implementation supports experimental P2P networks.
+- **Hybrid Extensions**: The Odin ecosystem includes hybrid support via web technologies (e.g., the odin-js TypeScript monorepo at https://github.com/homebase-id/odin-js), enabling browser-native flows and optional GNS integration through proxies or DHTs for enhanced privacy. This aligns with the protocol's normative DNS/HTTPS and informative GNS resolution.
+
+Contributions are welcomed via pull requests or community channels (e.g., Discord). Future work may include mobile app integrations and post-quantum cryptography upgrades. Implementers are encouraged to report issues and share extensions to refine the protocol.
+@node References
+@section References
+
+This section lists normative and informative references cited in this document. Normative references provide requirements essential for implementing YouAuth, while informative references offer additional context or background.
+
+@subsection Normative References
+@itemize @bullet
+@item RFC 2119: Key words for use in RFCs to Indicate Requirement Levels. S. Bradner. March 1997.
+@item RFC 8174: Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words. B. Leiba. May 2017.
+@item RFC 5480: Elliptic Curve Cryptography Subject Public Key Information. S. Turner, D. Brown, K. Yiu, R. Housley, T. Polk. March 2009.
+@item RFC 5869: HMAC-based Extract-and-Expand Key Derivation Function (HKDF). H. Krawczyk, P. Eronen. May 2010.
+@item RFC 7517: JSON Web Key (JWK). M. Jones. May 2015.
+@item RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA). S. Josefsson, I. Liusvaara. January 2017.
+@item NIST SP 800-38A: Recommendation for Block Cipher Modes of Operation: Methods and Techniques. M. Dworkin. December 2001 (AES-CBC).
+@item NIST SP 800-38D: Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC. M. Dworkin. November 2007 (AES-GCM, informative but referenced for alternatives).
+@item RFC 3552: Guidelines for Writing RFC Text on Security Considerations. E. Rescorla, B. Korver. July 2003.
+@end itemize
+
+@subsection Informative References
+@itemize @bullet
+@item LSD0001: The GNU Name System. M. Schanzenbach, C. Grothoff, B. Fix. November 2021.
+@item LSD0002 @anchor{lsd0002} re:claimID Specification. @url{https://lsd.gnunet.org/lsd0002/}.
+@item RFC 9498: The GNU Name System. M. Schanzenbach, C. Grothoff, B. Fix. November 2023.
+@item RFC 8615: Well-Known Uniform Resource Identifiers (URIs). M. Nottingham. May 2019.
+@item OWASP: Open Worldwide Application Security Project resources for web threats and best practices.
+@item RFC 7519: JSON Web Token (JWT). M. Jones, J. Bradley, N. Sakimura. May 2015 (for CAT structure inspiration).
+@end itemize
+
+Additional resources, such as the Odin implementation (see @ref{Implementation Status}), may provide practical examples and code references.
+@node Appendices
+@section Appendices
+@table @asis
+@item A
+Example Flows (ASCII diagrams, DNS and GNS variants).
+
+@item B
+Test Vectors (keys, secrets, tokens).
+@end table
+
+@subsection Appendix A: Example Flows
+
+This appendix provides ASCII diagrams illustrating key YouAuth flows, based on the shopping example where Sam (samwisegamgee.me) authenticates to southfarthing.com. Diagrams cover the normative DNS variant and an informative GNS hybrid.
+
+@subsubsection DNS-Based Flow
+
+@verbatim
++---------------+         +----------------+         +-------------------+
+| Sam's Browser |         | southfarthing  |         | samwisegamgee.me  |
++---------------+         +----------------+         +-------------------+
+      |                         |                           |
+      | --- Login Request ----> |                           |
+      |                         | --- DNS Resolve --------> |
+      |                         | <--- IP/HTTPS ----------- |
+      |                         |                           |
+      | <--- Redirect (302) --- |                           |
+      | --- GET /authorize ---> |                           |
+      |                         | --- Internal Consent ---> |
+      |                         | <--- Consent Granted ---- |
+      |                         |                           |
+      | <--- Redirect (302) --- |                           |
+      |     w/ pub_key, salt    |                           |
+      | --- POST /token ------> |                           |
+      |                         | --- Cache Lookup/Delete -> |
+      | <--- Encrypted CAT ---- |                           |
+      |                         |                           |
+      v                         v                           v
+@end verbatim
+
+Description: Browser redirects to identity host via DNS-resolved HTTPS. Consent handled internally; token exchanged with cache deletion for one-time use.
+
+@subsubsection GNS Hybrid Flow (Informative)
+
+@verbatim
++---------------+         +----------------+         +-------------------+
+| Sam's Browser |         | southfarthing  |         | samwisegamgee.me  |
++---------------+         +----------------+         +-------------------+
+      |                         |                           |
+      | --- Login Request ----> |                           |
+      |                         | --- GNS Resolve (DHT) --> |
+      |                         | <--- Locator/Records ---- |
+      |                         | --- Fallback DNS? ------> |
+      |                         | <--- IP/HTTPS ----------- |
+      |                         |                           |
+      | <--- Redirect (302) --- |                           |
+      | --- GET /authorize ---> |                           |
+      |                         | --- Fetch YOUAUTH_PUBLIC_KEY from GNS --> |
+      |                         | <--- JWK Pub Key -------- |
+      |                         | --- Consent (Proxy?) ---> |
+      |                         | <--- Granted ------------ |
+      |                         |                           |
+      | <--- Redirect (302) --- |                           |
+      |     w/ pub_key, salt    |                           |
+      | --- POST /token ------> |                           |
+      |                         | --- Cache Lookup/Delete -> |
+      | <--- Encrypted CAT ---- |                           |
+      |                         |                           |
+      v                         v                           v
+@end verbatim
+
+Description: Attempts GNS first for privacy; falls back to DNS. Retrieves public key from GNS records for verification.
+
+@subsection Appendix B: Test Vectors
+
+This appendix provides sample test vectors for cryptographic operations. These are generated for illustration; implementations MUST NOT hardcode them but use secure randomness. Values are in hexadecimal.
+
+@subsubsection Key Exchange and Derivation
+
+TODO: This has not yet been verified.
+
+@itemize @bullet
+@item Host Private Key (d): c3d058229170f520ed2b8ac0f1ad7b3e4f7d59119a5b66a5953042653d7c5f5d0028e27dc8ea7a90de0642435f8fd41e
+@item Host Public Key (x,y): 499e6b2db750bd8fe25e08722a8dc30467fb4f0aa9a20afd1373c18e575298968219bf5af1dc0925655658ac0a5344ce20a8e13fc99726f8e67fba2a4989ee07cf983831e9e0369db811864e8ea4b35d6dde10f46a31affd790dde7c54e079db04d
+@item Client Private Key (d): bb0280bbdc4da8dee2dccc70545c752efa6d1caec995c615e7cc947051cf9bae3ff8cf38ff5916bc21f265d306f62de7
+@item Client Public Key (x,y): e1743ebd476292f6c774036cc8cfa3248aefac8bef7d0d631a0a1b830f34e24a1f89b9da2acb6017622522fa9a71aa4d959800c643f0d88451ba9d2a53ee759f71f7f3d0b6a8bd298107f1b58acacb1c0467d609d15865c3c6bc06885c01bc0d
+@item Raw Shared Secret (x): ff7ab0a74c61d1a132a6700a2578f74e612f90fa0c1eab7b5bc2fad9fcd8828efd457b92d1d3cbe9b20cfcd3fa559517
+@item Salt: 5c6de4afc6e9371feab049e12ffa40e7
+@item Derived Shared Secret (16 bytes): 5e481af2aca2706b213e1754d72aba57
+@item Secret Digest (SHA256): 4600f0aa2be3b347e7e02db62526fc9b4bd93744840d5603614a42ff7302dcef
+@end itemize
+
+@subsubsection Encryption (Placeholder)
+
+TODO: This has not yet been verified.
+
+@itemize @bullet
+@item Sample CAT Plaintext: 6f1614813f86bdfaca28dfd88a9bde41ef3c6fddce7df5b1d9fc0c8cc4d1bdb4
+@item IV: c289331e898a15c5be600cf42f71d7d0
+@item Placeholder Encrypted CAT (demo hash): 393a22541b98ed91202b6a2450393de2574c89078257737f47d0528b3b3df99
+@end itemize
+
+Note: Actual AES-128-CBC encryption would use the derived key; this placeholder uses a hash for illustration. Implementations should verify with real crypto libraries.

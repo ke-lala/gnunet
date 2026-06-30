@@ -1,0 +1,202 @@
+/* SPDX-License-Identifier: LGPL-2.1-or-later OR (GPL-2.0-or-later WITH eCos-exception-2.0) */
+/*
+  This file is part of GNU libmicrohttpd.
+  Copyright (C) 2016, 2024 Christian Grothoff & Evgeny Grin (Karlson2k)
+
+  GNU libmicrohttpd is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  GNU libmicrohttpd is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  Alternatively, you can redistribute GNU libmicrohttpd and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of
+  the License, or (at your option) any later version, together
+  with the eCos exception, as follows:
+
+    As a special exception, if other files instantiate templates or
+    use macros or inline functions from this file, or you compile this
+    file and link it with other works to produce a work based on this
+    file, this file does not by itself cause the resulting work to be
+    covered by the GNU General Public License. However the source code
+    for this file must still be made available in accordance with
+    section (3) of the GNU General Public License v2.
+
+    This exception does not invalidate any other reasons why a work
+    based on this file might be covered by the GNU General Public
+    License.
+
+  You should have received copies of the GNU Lesser General Public
+  License and the GNU General Public License along with this library;
+  if not, see <https://www.gnu.org/licenses/>.
+*/
+
+/**
+ * @file test_postprocessor.c
+ * @brief  test with client against server
+ * @author Christian Grothoff
+ */
+#include "libtest.h"
+
+
+int
+main (int argc, char *argv[])
+{
+  struct MHD_DaemonOptionAndValue thread1auto[] = {
+    MHD_D_OPTION_POLL_SYSCALL (MHD_SPS_AUTO),
+    MHD_D_OPTION_WM_WORKER_THREADS (1),
+    MHD_D_OPTION_TERMINATE ()
+  };
+  struct ServerType
+  {
+    const char *label;
+    MHDT_ServerSetup server_setup;
+    void *server_setup_cls;
+    MHDT_ServerRunner server_runner;
+    void *server_runner_cls;
+  } configs[] = {
+    {
+      .label = "auto-selected mode, single threaded",
+      .server_setup = &MHDT_server_setup_minimal,
+      .server_setup_cls = thread1auto,
+      .server_runner = &MHDT_server_run_minimal,
+    },
+    {
+      .label = "END"
+    }
+  };
+#define MHDT_SOME_BIN_DATA "\x1\x2\x3\x4\x5"
+  struct MHDT_PostWant simple_wants[] = {
+    {
+      .key = "V1",
+      .value = "One"
+    },
+    {
+      .key = "V2",
+      .value = "Two"
+    },
+    {
+      .key = NULL
+    }
+  };
+  struct MHDT_PostWant mpart_wants[] = {
+    {
+      .key = "username",
+      .value = "Bob"
+    },
+    {
+      .key = "password",
+      .value = "Passwo3d"
+    },
+    {
+      .key = "file",
+      .filename = "image.jpg",
+      .content_type = "image/jpeg",
+      .value = MHDT_SOME_BIN_DATA,
+      .value_size = sizeof(MHDT_SOME_BIN_DATA) / sizeof(char) - 1
+    },
+    {
+      .key = NULL
+    }
+  };
+  struct MHDT_PostInstructions simple_pi = {
+    .enc = MHD_HTTP_POST_ENCODING_FORM_URLENCODED,
+    .postdata = "V1=One&V2=Two",
+    .postheader = MHD_HTTP_HEADER_CONTENT_TYPE
+                  ": application/x-www-form-urlencoded",
+    .buffer_size = 32,
+    .auto_stream_size = 16,
+    .wants = simple_wants
+  };
+  struct MHDT_PostInstructions simple_mp = {
+    .enc = MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA,
+    .postdata = "--XXXX\r\n"
+                "Content-Disposition: form-data; name=\"username\"\r\n"
+                "\r\n"
+                "Bob\r\n"
+                "--XXXX\r\n"
+                "Content-Disposition: form-data; name=\"password\"\r\n"
+                "\r\n"
+                "Passwo3d\r\n"
+                "--XXXX\r\n"
+                "Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n"
+                "Content-Type: image/jpeg\r\n"
+                "\r\n"
+                MHDT_SOME_BIN_DATA "\r\n"
+                "--XXXX--\r\n",
+    .postheader = MHD_HTTP_HEADER_CONTENT_TYPE
+                  ": multipart/form-data; boundary=XXXX",
+    .buffer_size = 512,
+    .auto_stream_size = 128,
+    .wants = mpart_wants
+  };
+  struct MHDT_PostInstructions simple_tp = {
+    .enc = MHD_HTTP_POST_ENCODING_TEXT_PLAIN,
+    .postdata = "V1=One\r\nV2=Two\r\n",
+    .postheader = MHD_HTTP_HEADER_CONTENT_TYPE ": text/plain",
+    .buffer_size = 32,
+    .auto_stream_size = 16,
+    .wants = simple_wants
+  };
+  struct MHDT_Phase phases[] = {
+    {
+      .label = "simple post",
+      .server_cb = &MHDT_server_reply_check_post,
+      .server_cb_cls = &simple_pi,
+      .client_cb = &MHDT_client_do_post,
+      .client_cb_cls = &simple_pi,
+      .timeout_ms = 2500,
+    },
+    {
+      .label = "multipart post",
+      .server_cb = &MHDT_server_reply_check_post,
+      .server_cb_cls = &simple_mp,
+      .client_cb = &MHDT_client_do_post,
+      .client_cb_cls = &simple_mp,
+      .timeout_ms = 2500,
+    },
+    {
+      .label = "plain text post",
+      .server_cb = &MHDT_server_reply_check_post,
+      .server_cb_cls = &simple_tp,
+      .client_cb = &MHDT_client_do_post,
+      .client_cb_cls = &simple_tp,
+      .timeout_ms = 2500,
+    },
+    {
+      .label = NULL,
+    },
+  };
+  unsigned int i;
+
+  (void) argc; /* Unused. Silence compiler warning. */
+  (void) argv; /* Unused. Silence compiler warning. */
+
+  for (i = 0; NULL != configs[i].server_setup; i++)
+  {
+    int ret;
+
+    fprintf (stderr,
+             "Running tests with server setup `%s'\n",
+             configs[i].label);
+    ret = MHDT_test (configs[i].server_setup,
+                     configs[i].server_setup_cls,
+                     configs[i].server_runner,
+                     configs[i].server_runner_cls,
+                     phases);
+    if (0 != ret)
+    {
+      fprintf (stderr,
+               "Test failed with server of type `%s' (%u)\n",
+               configs[i].label,
+               i);
+      return ret;
+    }
+  }
+  return 0;
+}

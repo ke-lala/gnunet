@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0">
+  <name>extractor</name>
+  <summary>extract meta-date from files</summary>
+  <description>A PHP extension that interfaces the libextractor library. libextractor is a library used to extract meta-data from files of arbitrary type.</description>
+  <maintainers>
+    <maintainer>
+      <user>manfred</user>
+      <name>Manfred Weber</name>
+      <email>weber@mayflower.de</email>
+      <role>lead</role>
+    </maintainer>
+  </maintainers>
+  <release>
+    <version>0.1</version>
+    <date>2004-12-22</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>- Added Function: extractor_getkeywords( string filename )</notes>
+    <filelist>
+      <file role="src" md5sum="7291f1b05a4608bc9223993fd2bea6c2" name="EXPERIMENTAL"/>
+      <file role="src" md5sum="4bd173b649dfe0931845e873361ceeb6" name="CREDITS"/>
+      <file role="src" md5sum="bedeb14e023df654cfacdc393b9c5024" name="Makefile"/>
+      <file role="src" md5sum="35dab6504c38bcec058e889362976ed1" name="config.m4"/>
+      <file role="src" md5sum="bf4db7a65c5f4c0801fcb73c80577c76" name="extractor.c"/>
+      <file role="src" md5sum="ae3ef44acaeae71d3b48b07164a5e124" name="php_extractor.h"/>
+      <file role="doc" baseinstalldir="/" md5sum="d50e0fe59205a0c834e02ec2d1748638" name="examples/extractor_getkeywords.php"/>
+    </filelist>
+  </release>
+</package>

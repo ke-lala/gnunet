@@ -1,0 +1,25 @@
+*.c		text eol=lf diff=cpp
+*.h		text eol=lf diff=cpp
+*.h.in		text eol=lf diff=cpp
+*.c.in		text eol=lf diff=cpp
+.gitattributes	text eol=lf
+.gitignore	text !eol
+configure.ac	text eol=lf
+makefile.am	text eol=lf
+*.m4		text eol=lf
+*.sh		text eol=lf diff=bash
+*.key		text eol=lf
+*.crt		text eol=lf
+*.pem		text eol=lf
+*.yml		text eol=lf
+*.rec		text eol=lf
+*.template	text eol=lf
+uncrustify.cfg	text eol=lf
+.editorconfig	text eol=crlf
+*.props		text eol=cflf
+*.vcxproj	text eol=cflf
+*.vcxproj.filters	text eol=cflf
+*.sln		text eol=cflf
+cpp.hint	text !eol
+*.ps1		text eol=cflf
+*.rc.in		text eol=lf

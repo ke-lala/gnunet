@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0
+
+Copyright (C) 2021‑‑2025 GNUnet e.V.
+
+GNUnet is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+GNUnet is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SPDX-License-Identifier: AGPL3.0-or-later
+Author: Tobias Frisch
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="1.2"/>
+  <object class="GtkDialog" id="new_group_dialog">
+    <property name="title" translatable="yes">New Group</property>
+    <property name="modal">1</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="cancel_button">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="previous_button">
+                <property name="label" translatable="yes">Previous</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="next_button">
+                <property name="label" translatable="yes">Next</property>
+                <property name="visible">1</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="confirm_button">
+                <property name="label" translatable="yes">Confirm</property>
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+              </object>
+              <packing>
+                <property name="expand">1</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="new_group_stack">
+            <property name="visible">1</property>
+            <child>
+              <object class="GtkBox" id="details_box">
+                <property name="visible">1</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="border-width">8</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="HdyAvatar" id="group_avatar">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="margin-top">8</property>
+                    <property name="margin-bottom">8</property>
+                    <property name="icon-name">system-users-symbolic</property>
+                    <property name="size">128</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">1</property>
+                    <property name="label" translatable="yes">Group:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="group_entry">
+                    <property name="width-request">250</property>
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="group_avatar_file">
+                    <property name="visible">1</property>
+                    <property name="title" translatable="yes"></property>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">details_page</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="contacts_box">
+                <property name="visible">1</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSearchEntry" id="contact_search_entry">
+                    <property name="width-request">250</property>
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <property name="primary-icon-name">edit-find-symbolic</property>
+                    <property name="primary-icon-activatable">0</property>
+                    <property name="primary-icon-sensitive">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="height-request">200</property>
+                    <property name="visible">1</property>
+                    <property name="can-focus">1</property>
+                    <property name="shadow-type">in</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">1</property>
+                        <child>
+                          <object class="GtkListBox" id="contacts_listbox">
+                            <property name="visible">1</property>
+                            <property name="selection-mode">multiple</property>
+                            <property name="activate-on-single-click">0</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">1</property>
+                    <property name="pack-type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">contacts_page</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

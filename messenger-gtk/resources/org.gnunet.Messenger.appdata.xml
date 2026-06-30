@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2022-2025 GNUnet e.V. -->
+<component type="desktop">
+	<id>org.gnunet.Messenger</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>AGPL-3.0</project_license>
+	<content_rating type="oars-1.1">
+		<content_attribute id="social-chat">intense</content_attribute>
+		<content_attribute id="social-audio">intense</content_attribute>
+	</content_rating>
+	
+	<developer id="org.gnunet">
+		<name>GNUnet e.V.</name>
+	</developer>
+
+	<name>GNUnet Messenger</name>
+	<summary>Private and secure communication</summary>
+	<description>
+		<p>Messenger-GTK is a convergent graphical messaging application using the GNUnet Messenger service. The goal is to provide private and secure communication between any group of devices.</p>
+		<p>The application provides the following features:</p>
+		<ul>
+			<li>Creating direct chats and group chats</li>
+			<li>Managing your contacts and groups</li>
+			<li>Invite contacts to a group</li>
+			<li>Sending text messages</li>
+			<li>Sending voice recordings</li>
+			<li>Sharing files privately</li>
+			<li>Deleting messages with any custom delay</li>
+			<li>Renaming contacts</li>
+			<li>Exchanging contact details physically</li>
+			<li>Verifying contact identities</li>
+			<li>Switching between different accounts</li>
+			<li>Chatting live via video or voice streaming</li>
+			<li>Sharing your screen with a selected group</li>
+			<li>Writing notes to yourself</li>
+		</ul>
+		<p>Chats will generally created as opt-in. So you can decide who may contact you directly and who does not, accepting to a direct chat. Leaving a chat is also always possible.</p>
+	</description>
+
+	<supports>
+		<control>pointing</control>
+		<control>keyboard</control>
+		<control>touch</control>
+	</supports>
+
+	<recommends>
+		<display_length compare="ge">768</display_length>
+	</recommends>
+
+	<requires>
+		<display_length compare="ge">360</display_length>
+		<display_length compare="le">3840</display_length>
+	</requires>
+
+	<screenshots>
+		<screenshot type="default">
+			<caption>Overview of the application</caption>
+			<image>https://gitlab.com/gnunet-messenger/messenger-gtk/-/raw/master/screenshots/messenger.png</image>
+		</screenshot>
+	</screenshots>
+	
+	<url type="homepage">https://www.gnunet.org</url>
+	<url type="bugtracker">https://bugs.gnunet.org/my_view_page.php</url>
+	<url type="faq">https://www.gnunet.org/en/faq.html</url>
+	<url type="donation">https://www.gnunet.org/en/ev.html</url>
+	<url type="contact">https://www.gnunet.org/en/contact.html</url>
+	
+	<url type="vcs-browser">https://git.gnunet.org/messenger-gtk.git</url>
+	<url type="contribute">https://git.gnunet.org/messenger-gtk.git/about</url>
+	
+	<update_contact>gnunet_at_thejackimonster.de</update_contact>
+
+	<launchable type="desktop-id">org.gnunet.Messenger.desktop</launchable>
+	<releases>
+	  <release version="0.12.0" date="2026-03-19">
+		  <description>
+			  <ul>
+				  <li>Accounts will encrypt their key storage using unique secrets</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2026-03-0.27.0.html</url>
+		</release>
+	  <release version="0.11.0" date="2025-09-17">
+			<description>
+				<ul>
+				  <li>Private chats for writing notes to yourself can be opened</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2025-09-libgnunetchat-0.6.0.html</url>
+	  </release>
+	  <release version="0.10.2" date="2025-01-08">
+			<description>
+				<ul>
+				  <li>Notifications play sounds if enabled.</li>
+				  <li>Contacts can be filtered by tags.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2025-01-libgnunetchat-0.5.2.html</url>
+		</release>
+	  <release version="0.10.1" date="2024-08-29">
+			<description>
+				<ul>
+				  <li>Discourses have been added for live voice and video chats with other contacts.</li>
+				  <li>Capturing a specific application or a whole monitor can be selected as video source in a live chat.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2024-08-0.22.0.html</url>
+		</release>
+	  <release version="0.10.0" date="2024-06-09">
+			<description>
+				<ul>
+				  <li>Messages can be tagged, filtered and searched.</li>
+				  <li>Profile pictures can be added and shared with other contacts.</li>
+				  <li>Supports localization for English, German and Spanish.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2024-06-0.21.2.html</url>
+		</release>
+		<release version="0.9.0" date="2024-03-08">
+			<description>
+				<ul>
+					<li>Contacts can be blocked and unblocked to filter chat messages.</li>
+					<li>Requests for permission to use a camera, autostart the application and running it in background.</li>
+					<li>Camera sensors can be selected to exchange contact information.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2024-03-messenger-gtk-0.9.0.html</url>
+		</release>
+		<release version="0.8.0" date="2023-02-10">
+			<description>
+				<ul>
+					<li>A simple media player has been added to the user interface to play received audio and video files without a third-party application.</li>
+					<li>Multiple crashes and breaking issues have been fixed.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2023-02-messenger-gtk-0.8.0.html</url>
+		</release>
+		<release version="0.7.0" date="2022-04-23">
+			<description>
+				<ul>
+					<li>The version iteration will be inherited by cadet-gtk as logical successor.</li>
+					<li>It is possible to create direct chats and group chats via physical or virtual exchange.</li>
+					<li>Groups and contacts can be named, left, verified or deleted.</li>
+					<li>Existing contacts can be invited to any private or public group.</li>
+					<li>Chats allow sending text messages, voice recordings or files.</li>
+					<li>Messages can be deleted with a custom delete or automatically.</li>
+					<li>Switching between different accounts can be done during runtime.</li>
+				</ul>
+			</description>
+			<url>https://www.gnunet.org/en/news/2022-05-messenger-gtk-0.7.0.html</url>
+		</release>
+	</releases>
+
+	<branding>
+		<color type="primary" scheme_preference="light">#AEFAAE</color>
+		<color type="primary" scheme_preference="dark">#3E523E</color>
+	</branding>
+
+	<custom>
+		<value key="GnomeSoftware::key-colors">[(174, 250, 174), (62, 82, 62)]</value>
+	</custom>
+</component>

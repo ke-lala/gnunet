@@ -1,0 +1,565 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc SYSTEM "rfc2629-xhtml.ent" [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3629 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">
+<!ENTITY RFC5869 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5869.xml">
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5891 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5891.xml">
+<!ENTITY RFC6781 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6781.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7748 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8032 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8032.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" docName="draft-schanzen-reclaimid-00" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" version="3">
+ <!-- xml2rfc v2v3 conversion 2.26.0 -->
+ <front>
+  <title abbrev="reclaimid">
+   re:claimID - A System for Self-sovereign, Decentralised Identity Management and Personal Data Sharing
+  </title>
+  <seriesInfo name="Internet-Draft" value="draft-schanzen-reclaimid-00"/>
+  <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+   <organization>GNUnet e.V.</organization>
+   <address>
+    <postal>
+     <street>Boltzmannstrasse 3</street>
+     <city>Garching</city>
+     <code>85748</code>
+     <country>DE</country>
+    </postal>
+    <email>schanzen@gnunet.org</email>
+   </address>
+  </author>
+  <author fullname="Christian Grothoff" initials="C." surname="Grothoff">
+   <organization>Berner Fachhochschule</organization>
+   <address>
+    <postal>
+     <street>Hoeheweg 80</street>
+     <city>Biel/Bienne</city>
+     <code>2501</code>
+     <country>CH</country>
+    </postal>
+    <email>grothoff@gnunet.org</email>
+   </address>
+  </author>
+
+  <!-- Meta-data Declarations -->
+  <area>General</area>
+  <workgroup>Independent Stream</workgroup>
+  <keyword>identity management</keyword>
+  <abstract>
+   <t>This document contains the re:claimID technical specification.</t>
+  </abstract>
+ </front>
+ <middle>
+   <section anchor="introduction" numbered="true" toc="default">
+     <name>Introduction</name>
+     <t>
+       re:claimID is a decentralized, self-sovereign identity management
+       system. It allows users to be in control over their digital identities
+       without having to rely on central identity provider services (IdPs) in
+       order to share personal data.
+     </t>
+     <t>
+       re:claimID is built upon the GNU Name System <xref target="GNS"/>
+       for data sharing and storage.
+       It leverages the zone privacy and key blinding properties of the name
+       system in order to provide a secure sharing and authorization mechanism.
+     </t>
+     <t>
+       The system supports both "self-asserted" as well as third party asserted
+       identity attributes. The assertion mechanisms are out of scope of this
+       document.
+     </t>
+     <t>
+       The re:claimID system can used and integrated into the OpenID Connect
+       protocol.
+     </t>
+     <t>
+       This document defines the normative wire format of resource records, resolution processes,
+       cryptographic routines and security considerations for use by implementors.
+     </t>
+     <t>
+       The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+       NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+       "OPTIONAL" in this document are to be interpreted as described
+       in <xref target="RFC2119"/>.
+     </t>
+   </section>
+   <section anchor="identities" numbered="true" toc="default">
+     <name>Identities</name>
+     <t>
+       An identity in re:claimID is defined through a zone in GNS.
+       As such, the creation of a zone in GNS implicitly also creates
+       a re:claimID identity.
+     </t>
+     <section anchor="attributes" numbered="true" toc="default">
+       <name>Attributes</name>
+       <t>
+         A re:claimID identity attribute is stored in GNS under records
+         of type "RECLAIM_ATTRIBUTE". An attribute consists of an identifier,
+         an optional attestation identifier, a type, a flag, a name and data.
+         The record format of a RECLAIM_ATTRIBUTE is as follows:
+       </t>
+         <figure anchor="figure_gnsattribute">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         TYPE          |         FLAG          |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                      ID                       |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                    ATTESTATION                |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         NSIZE         |          DSIZE        |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                  NAME + DATA                  /
+/                                               /
++-----------------------------------------------+
+             ]]></artwork>
+           <!--        <postamble>which is a very simple example.</postamble>-->
+         </figure>
+         <t>
+           where:
+         </t>
+         <dl>
+           <dt>TYPE</dt>
+           <dd>
+             Is the 32 bit attribute type as defined in the GANA registry.
+           </dd>
+           <dt>FLAG</dt>
+           <dd>
+             Is a 32 bit attribute flag combination as defined in the GANA registry
+           </dd>
+           <dt>ID</dt>
+           <dd>
+             Is a 256 bit attribute identifier.
+           </dd>
+           <dt>ATTESTATION</dt>
+           <dd>
+             Is the 256 bit credential identifier which asserts this attribute.
+             0 means no attestation.
+           </dd>
+           <dt>NSIZE</dt>
+           <dd>
+             32 bit length of the attribute name in bytes.
+           </dd>
+           <dt>DSIZE</dt>
+           <dd>
+             32 bit length of the attribute data.
+           </dd>
+           <dt>NAME</dt>
+           <dd>
+             The attribute name. A UTF-8 string with NULL byte at the end.
+           </dd>
+           <dt>DATA</dt>
+           <dd>
+             The attribute data.
+           </dd>
+         </dl>
+     </section>
+     <section anchor="credentials" numbered="true" toc="default">
+       <name>Credentials</name>
+       <t>
+         A re:claimID credential is stored in GNS under records
+         of type "RECLAIM_CREDENTIAL". A credential consists of an identifier,
+         a type, a flag, a name and data.
+         The record format of a RECLAIM_CREDENTIAL is as follows:
+       </t>
+         <figure anchor="figure_gnscred">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         TYPE          |         FLAG          |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                      ID                       |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         NSIZE         |          DSIZE        |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                  NAME + DATA                  /
+/                                               /
++-----------------------------------------------+
+             ]]></artwork>
+           <!--        <postamble>which is a very simple example.</postamble>-->
+         </figure>
+         <t>
+           where:
+         </t>
+         <dl>
+           <dt>TYPE</dt>
+           <dd>
+             Is the 32 bit credential type as defined in the GANA registry.
+           </dd>
+           <dt>FLAG</dt>
+           <dd>
+             Is a 32 bit credential flag combination as defined in the GANA registry
+           </dd>
+           <dt>ID</dt>
+           <dd>
+             Is a 256 bit credential identifier.
+           </dd>
+           <dt>NSIZE</dt>
+           <dd>
+             32 bit length of the credential name in bytes.
+           </dd>
+           <dt>DSIZE</dt>
+           <dd>
+             32 bit length of the credential data.
+           </dd>
+           <dt>NAME</dt>
+           <dd>
+             The credential name. A UTF-8 string with NULL byte at the end.
+           </dd>
+           <dt>DATA</dt>
+           <dd>
+             The credential data.
+           </dd>
+         </dl>
+    </section>
+    <section anchor="tickets" numbered="true" toc="default">
+      <name>Tickets</name>
+      <t>
+        In order to share a set of identity attributes with a third party,
+        re:claimID introduces the concept of "Tickets". A Ticket may be
+        issued by a user for an identity to a relying party.
+        The Ticket may then be used by the relying party to retrieve the
+        shared attributes from the name system.
+      </t>
+      <t>
+        A ticket is a GNS name that points to information pertaining to
+        the authorization given to the relying party.
+        The ticket has the format:
+      </t>
+      <figure>
+	<artwork type="abnf"><![CDATA[
+ticket = "TID.IDENTITY.zkey"
+TID = *gnslabel
+IDENTITY = *gnslabel
+]]>
+        </artwork>
+      </figure>
+       <t>
+         The TID essentially serves as a shared secret between user and
+         relying party. knowledge of the IDENTITY key and the TID allows
+         the relying party to iteratively query attribute data in GNS.
+         The record set under the TID label contains references to the shared attributes as
+         well as any credential presentations which attest attribute values.
+         The record set also includes the AUDIENCE key.
+       </t>
+       <section anchor="rp_rr" numbered="true" toc="default">
+        <name>Relying party reference</name>
+       <t>
+         A RP resource record is stored in GNS under records
+         of type "RECLAIM_RP". An RP reference
+         is stored in GNS under the TID.
+         The record format of a RECLAIM_RP is as follows:
+       </t>
+         <figure anchor="figure_gnsrp">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 AUDIENCE KEY                  |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+             ]]></artwork>
+           <!--        <postamble>which is a very simple example.</postamble>-->
+         </figure>
+         <t>
+           where:
+         </t>
+         <dl>
+           <dt>AUDIENCE KEY</dt>
+           <dd>
+             Is the audience zone key.
+           </dd>
+         </dl>
+      </section>
+       <section anchor="attrrefs" numbered="true" toc="default">
+        <name>Attribute References</name>
+       <t>
+         An attribute reference is stored in GNS under records
+         of type "RECLAIM_ATTRIBUTE_REF". An attribute reference
+         is stored in GNS under a label derived from a ticket ID.
+         The reference points to an actual attribute ID.
+         The record format of a RECLAIM_ATTRIBUTE_REF is as follows:
+       </t>
+         <figure anchor="figure_gnsattrref">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                 ATTRIBUTE ID                  |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+             ]]></artwork>
+           <!--        <postamble>which is a very simple example.</postamble>-->
+         </figure>
+         <t>
+           where:
+         </t>
+         <dl>
+           <dt>ATTRIBUTE ID</dt>
+           <dd>
+             Is the 256 bit attribute ID of an existing attribute.
+           </dd>
+         </dl>
+      </section>
+      <section anchor="credpres" numbered="true" toc="default">
+        <name>Credential Presentations</name>
+       <t>
+         A re:claimID presentation is stored in GNS under records
+         of type "RECLAIM_PRESENTATION". A presentation is derived from a
+         credential and may contain only a subset of the attestations.
+         The presentation construct is used to support selective disclosure
+         of third party issued credentials. It consists of
+         a type, a flag, a name and data.
+         The record format of a RECLAIM_PRESENTATION is as follows:
+       </t>
+         <figure anchor="figure_gnspres">
+           <artwork name="" type="" align="left" alt=""><![CDATA[
+0     8     16    24    32    40    48    56
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         TYPE          |         FLAG          |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|                      ID                       |
+|                                               |
+|                                               |
+|                                               |
++-----+-----+-----+-----+-----+-----+-----+-----+
+|         NSIZE         |          DSIZE        |
++-----+-----+-----+-----+-----+-----+-----+-----+
+/                  NAME + DATA                  /
+/                                               /
++-----------------------------------------------+
+             ]]></artwork>
+           <!--        <postamble>which is a very simple example.</postamble>-->
+         </figure>
+         <t>
+           where:
+         </t>
+         <dl>
+           <dt>TYPE</dt>
+           <dd>
+             Is the 32 bit presentation type as defined in the GANA registry.
+           </dd>
+           <dt>FLAG</dt>
+           <dd>
+             Is a 32 bit presentation flag combination as defined in the GANA registry
+           </dd>
+           <dt>ID</dt>
+           <dd>
+             Is a 256 bit credential identifier.
+           </dd>
+           <dt>NSIZE</dt>
+           <dd>
+             32 bit length of the presentation name in bytes.
+           </dd>
+           <dt>DSIZE</dt>
+           <dd>
+             32 bit length of the credential data.
+           </dd>
+           <dt>NAME</dt>
+           <dd>
+             The credential name. A UTF-8 string with NULL byte at the end.
+           </dd>
+           <dt>DATA</dt>
+           <dd>
+             The credential data.
+           </dd>
+         </dl>
+
+      </section>
+    </section>
+  </section>
+   <section anchor="access" numbered="true" toc="default">
+     <name>Access Management</name>
+     <section anchor="authorization" numbered="true" toc="default">
+       <name>Authorization</name>
+     </section>
+     <section anchor="revocation" numbered="true" toc="default">
+       <name>Revocation</name>
+     </section>
+   </section>
+   <section anchor="openid" numbered="true" toc="default">
+     <name>OpenID Connect Integration</name>
+     <section anchor="openidclientreg" numbered="true" toc="default">
+       <name>Client Registration</name>
+     </section>
+     <section anchor="AuthorizationCode" numbered="true" toc="default">
+       <name>Authorization Code</name>
+     </section>
+     <section anchor="IDToken" numbered="true" toc="default">
+       <name>ID Token</name>
+     </section>
+     <section anchor="UserinfoEndpoint" numbered="true" toc="default">
+       <name>Userinfo Endpoint</name>
+     </section>
+
+   </section>
+   <section anchor="encoding" numbered="true" toc="default">
+     <name>Internationalization and Character Encoding</name>
+     <t>
+         All attribute names in re:claimID are encoded in UTF-8
+       <xref target="RFC3629" />.
+     </t>
+   </section>
+
+   <section anchor="security" numbered="true" toc="default">
+     <name>Security Considerations</name>
+    <section anchor="tickets_generation" numbered="true" toc="default">
+      <name>Ticket generation</name>
+      <t>
+        The TID in a Ticket <bcp14>SHOULD</bcp14> have at least 256 bits of entropy.
+        The TID could be generated by simply sampling 32 bytes of random data and
+        encoding it using a suitable text encoding compatible with GNS labels such as
+        Base64.
+      </t>
+      <t>
+        The TID <bcp14>MAY</bcp14> be derived using more sophisticated means in order to
+        be able to relax security requirements on the exchange or storage of authorization metadata.
+        One option is to derive the TID using ephemeral Diffie-Hellman.
+        The user would first create an ephemeral key pair and calculate the TID in order to
+        populate the GNS resource records:
+      </t>
+      <artwork name="" type="" align="left" alt=""><![CDATA[
+CreateTid(AUDIENCE_PK):
+  x := rand() 
+  ETK := X25519 (x, AUDIENCE_PK)
+  dhs := X25519 (x, G)
+  TID := Base64 (SHA-512 (dhs))
+  return (TID,ETK)
+  ]]></artwork>
+      <t> 
+        This allows to the user to only transfer the ETK which can in turn be
+        used by the relying party to calculate the ticket identifier (TID)
+        using its private key:
+      </t>
+       <artwork name="" type="" align="left" alt=""><![CDATA[
+CalculateTid(AUDIENCE_SK,ETK):
+  dhs := X25519 (AUDIENCE_SK, G)
+  return TID := Base64 (SHA-512 (dhs))
+  ]]></artwork>
+   </section>
+   </section>
+   <section anchor="gana" numbered="true" toc="default">
+       <name>GANA Considerations</name>
+       <t>
+         GANA is requested to populate this registry as follows:
+       </t>
+       <figure anchor="figure_rrtypenums">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+Number: 65549
+Name: RECLAIM_TICKET
+Contact: N/A
+References: [This.I-D]
+Description: Ticket
+
+Number: 65549
+Name: RECLAIM_ATTRIBUTE
+Contact: N/A
+References: [This.I-D]
+Description: Identity attribute
+
+Number: 65550
+Name: RECLAIM_ATTRIBUTE_REF
+Contact: N/A
+References: [This.I-D]
+Description: Refrerence to identity attribute
+
+Number: 65551
+Name: RECLAIM_OIDC_CLIENT
+Contact: N/A
+References: [This.I-D]
+Description: OIDC client description
+
+Number: 65552
+Name: RECLAIM_OIDC_REDIRECT
+Contact: N/A
+References: [This.I-D]
+Description: OIDC client redirect(s)
+
+Number: 65553
+Name: RECLAIM_CREDENTIAL
+Contact: N/A
+References: [This.I-D]
+Description: Credential
+
+Number: 65554
+Name: RECLAIM_PRESENTATION
+Contact: N/A
+References: [This.I-D]
+Description: Credential presentation
+           ]]></artwork>
+       </figure>
+       <t>
+         GANA is requested to amend the "GNUnet Signature Purpose" registry
+         as follows:
+       </t>
+       <figure anchor="figure_purposenums">
+         <artwork name="" type="" align="left" alt=""><![CDATA[
+Purpose: 27
+Name: RECLAIM_CODE_SIGN
+References: [This.I-D]
+Description: Signature in OIDC authorization code
+           ]]></artwork>
+       </figure>
+     </section>
+     <!-- gana -->
+     <section>
+       <name>Test Vectors</name>
+     </section>
+   </middle>
+   <back>
+     <references>
+       <name>Normative References</name>
+
+       &RFC2119;
+       &RFC3629;
+
+       <reference anchor="GNS" target="https://lsd.gnunet.org/lsd0001">
+         <front>
+           <title>The GNU Name System</title>
+          <author initials="M." surname="Schanzenbach" fullname="Martin Schanzenbach">
+            <organization>GNUnet e.V.</organization>
+          </author>
+
+          <author initials="C." surname="Grothoff" fullname="Christian Grothoff">
+            <organization>GNUnet e.V.</organization>
+          </author>
+
+          <author initials="B." surname="Fix"
+            fullname="Bernd Fix">
+            <organization>GNUnet e.V.</organization>
+          </author>
+           <date year="2020" month="March"/>
+         </front>
+       </reference>
+     </references>
+   </back>
+ </rfc>

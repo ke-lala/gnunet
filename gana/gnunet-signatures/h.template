@@ -1,0 +1,6 @@
+
+
+/**
+ * {{Comment}} ({{Subsystem}})
+ */
+#define GNUNET_SIGNATURE_PURPOSE_{{Name}} {{Number}}

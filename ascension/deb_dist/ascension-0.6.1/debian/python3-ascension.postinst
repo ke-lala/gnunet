@@ -1,0 +1,44 @@
+#!/bin/sh
+# postinst script for ascension-bind
+#
+# see: dh_installdeb(1)
+# load debconf library
+set -e
+
+if ! id ascension; then
+    adduser --system ascension
+fi
+# ok if this fails as gnunet is not yet a dependency
+if ! id gnunet; then
+    addgroup --system gnunet
+    adduser ascension gnunet
+fi
+
+mkdir -p /etc/ascension.d/
+
+# add systemd unit file
+    cat > "/etc/ascension.d/gnunet-ascension.service" << EOF
+[Unit]
+Description=Starting GNUnet peer for ascension
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=ascension
+ExecStart=/usr/bin/gnunet-arm -s
+ExecStop=/usr/bin/gnunet-arm -e
+ExecReload=/usr/bin/gnunet-arm -r
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# link the systemd unit file
+ln -sf "/etc/ascension.d/gnunet-ascension.service" "/lib/systemd/system/gnunet-ascension.service"
+
+# start and enable service
+deb-systemd-invoke enable gnunet-ascension
+deb-systemd-invoke start gnunet-ascension
+
+#DEBHELPER#

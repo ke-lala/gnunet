@@ -1,0 +1,7 @@
+
+
+  /**
+   * {{Description}}
+   * Returned with an HTTP status code of #MHD_HTTP_{{HttpStatus_Identifier}} ({{HttpStatus_Value}}).
+   */
+  {{Name}} = {{Value}},

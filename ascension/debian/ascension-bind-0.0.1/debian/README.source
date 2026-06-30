@@ -1,0 +1,8 @@
+ascension-bind for Debian
+------------------------
+
+This package modifies existing bind configuration to allow zone transfer on
+localhost which in turn creates a systemd service to gun gnsmigrator in the
+background that migrates the zones into GNS.
+
+ -- rexxnor <rexxnor+gnunet@brief.li>  Wed, 20 Mar 2019 09:28:32 +0000

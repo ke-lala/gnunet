@@ -1,0 +1,307 @@
+/* This is generated code, it is still under LGPLv2.1+.
+   Do not edit directly! */
+/* *INDENT-OFF* */
+/**
+ * @file daemon_set_options.c
+ * @author options-generator.c
+ */
+
+#include "mhd_sys_options.h"
+#include "sys_base_types.h"
+#include "sys_malloc.h"
+#include <string.h>
+#include "mhd_daemon.h"
+#include "daemon_options.h"
+#include "mhd_public_api.h"
+
+
+MHD_FN_PAR_NONNULL_ALL_ MHD_EXTERN_
+enum MHD_StatusCode
+MHD_daemon_set_options (
+  struct MHD_Daemon *MHD_RESTRICT daemon,
+  const struct MHD_DaemonOptionAndValue *MHD_RESTRICT options,
+  size_t options_max_num)
+{
+  struct DaemonOptions *restrict settings = daemon->settings;
+  enum MHD_StatusCode res = MHD_SC_OK;
+  size_t i;
+
+  if (mhd_DAEMON_STATE_NOT_STARTED != daemon->state)
+    return MHD_SC_TOO_LATE;
+
+  for (i = 0; i < options_max_num; i++)
+  {
+    const struct MHD_DaemonOptionAndValue *const option
+      = options + i;
+    switch (option->opt)
+    {
+    case MHD_D_O_END:
+      i = options_max_num - 1;
+      break;
+    case MHD_D_O_WORK_MODE:
+      settings->work_mode = option->val.work_mode;
+      continue;
+    case MHD_D_O_POLL_SYSCALL:
+      settings->poll_syscall = option->val.poll_syscall;
+      continue;
+    case MHD_D_O_REREGISTER_ALL:
+      settings->reregister_all = option->val.reregister_all;
+      continue;
+    case MHD_D_O_LOG_CALLBACK:
+      /* Note: set directly to the daemon */
+      daemon->log_params = option->val.log_callback;
+      continue;
+    case MHD_D_O_BIND_PORT:
+      settings->bind_port.v_af = option->val.bind_port.v_af;
+      settings->bind_port.v_port = option->val.bind_port.v_port;
+      continue;
+    case MHD_D_O_BIND_SA:
+      /* custom setter */
+      if (0 != option->val.bind_sa.v_sa_len)
+      {
+        if (NULL != settings->bind_sa.v_sa)
+          free (settings->bind_sa.v_sa);
+        settings->bind_sa.v_sa = (struct sockaddr *)
+                                 malloc (option->val.bind_sa.v_sa_len);
+        if (NULL == settings->bind_sa.v_sa)
+          return MHD_SC_DAEMON_MEM_ALLOC_FAILURE;
+        memcpy (settings->bind_sa.v_sa, option->val.bind_sa.v_sa,
+                option->val.bind_sa.v_sa_len);
+        settings->bind_sa.v_sa_len = option->val.bind_sa.v_sa_len;
+        settings->bind_sa.v_dual = option->val.bind_sa.v_dual;
+      }
+      continue;
+    case MHD_D_O_LISTEN_SOCKET:
+      settings->listen_socket = option->val.listen_socket;
+      continue;
+    case MHD_D_O_LISTEN_ADDR_REUSE:
+      settings->listen_addr_reuse = option->val.listen_addr_reuse;
+      continue;
+    case MHD_D_O_TCP_FASTOPEN:
+      settings->tcp_fastopen.v_option = option->val.tcp_fastopen.v_option;
+      settings->tcp_fastopen.v_queue_length = option->val.tcp_fastopen.v_queue_length;
+      continue;
+    case MHD_D_O_LISTEN_BACKLOG:
+      settings->listen_backlog = option->val.listen_backlog;
+      continue;
+    case MHD_D_O_SIGPIPE_SUPPRESSED:
+      settings->sigpipe_suppressed = option->val.sigpipe_suppressed;
+      continue;
+    case MHD_D_O_TLS:
+      settings->tls = option->val.tls;
+      continue;
+    case MHD_D_O_TLS_CERT_KEY:
+      /* custom setter */
+      if ((NULL == option->val.tls_cert_key.v_mem_cert)
+          || (NULL == option->val.tls_cert_key.v_mem_key))
+        return MHD_SC_TLS_CONF_BAD_CERT;
+      else
+      {
+        size_t cert_size;
+        size_t key_size;
+        size_t pass_size;
+        cert_size = strlen (option->val.tls_cert_key.v_mem_cert);
+        key_size = strlen (option->val.tls_cert_key.v_mem_key);
+        if ((0 == cert_size)
+            || (0 == key_size))
+          return MHD_SC_TLS_CONF_BAD_CERT;
+        ++cert_size; /* Space for zero-termination */
+        ++key_size;  /* Space for zero-termination */
+        if (NULL != option->val.tls_cert_key.v_mem_pass)
+          pass_size = strlen (option->val.tls_cert_key.v_mem_pass);
+        else
+          pass_size = 0;
+        if (0 != pass_size)
+          ++pass_size; /* Space for zero-termination */
+        if (NULL != settings->tls_cert_key.v_mem_cert)
+          free (settings->tls_cert_key.v_mem_cert); // TODO: Support multiple certificates!!
+        settings->tls_cert_key.v_mem_cert = (char *) malloc (cert_size
+                                                             + key_size
+                                                             + pass_size);
+        if (NULL == settings->tls_cert_key.v_mem_cert)
+          return MHD_SC_DAEMON_MEM_ALLOC_FAILURE;
+        memcpy (settings->tls_cert_key.v_mem_cert,
+                option->val.tls_cert_key.v_mem_cert,
+                cert_size);
+        memcpy (settings->tls_cert_key.v_mem_cert + cert_size,
+                option->val.tls_cert_key.v_mem_key,
+                key_size);
+        settings->tls_cert_key.v_mem_key =
+          settings->tls_cert_key.v_mem_cert + cert_size;
+        if (0 != pass_size)
+        {
+          memcpy (settings->tls_cert_key.v_mem_cert + cert_size + key_size,
+                  option->val.tls_cert_key.v_mem_pass,
+                  pass_size);
+          settings->tls_cert_key.v_mem_pass =
+            settings->tls_cert_key.v_mem_cert + cert_size + key_size;
+        }
+        else
+          settings->tls_cert_key.v_mem_pass = NULL;
+      }
+      continue;
+    case MHD_D_O_TLS_CLIENT_CA:
+      settings->tls_client_ca = option->val.tls_client_ca;
+      continue;
+    case MHD_D_O_TLS_PSK_CALLBACK:
+      settings->tls_psk_callback.v_psk_cb = option->val.tls_psk_callback.v_psk_cb;
+      settings->tls_psk_callback.v_psk_cb_cls = option->val.tls_psk_callback.v_psk_cb_cls;
+      continue;
+    case MHD_D_O_NO_ALPN:
+      settings->no_alpn = option->val.no_alpn;
+      continue;
+    case MHD_D_O_TLS_APP_NAME:
+      /* custom setter */
+      settings->tls_app_name.v_disable_fallback =
+        option->val.tls_app_name.v_disable_fallback;
+      if (NULL == option->val.tls_app_name.v_app_name)
+        return MHD_SC_CONFIGURATION_PARAM_NULL;
+      else
+      {
+        size_t len;
+        len = strlen (option->val.tls_app_name.v_app_name);
+        if (128 <= len)
+          return MHD_SC_CONFIGURATION_PARAM_TOO_LARGE;
+        settings->tls_app_name.v_app_name = (char *) malloc (len + 1u);
+        if (NULL == settings->tls_app_name.v_app_name)
+          return MHD_SC_DAEMON_MEM_ALLOC_FAILURE;
+        memcpy (settings->tls_app_name.v_app_name,
+                option->val.tls_app_name.v_app_name,
+                len + 1u);
+      }
+      continue;
+    case MHD_D_O_TLS_OPENSSL_DEF_FILE:
+      /* custom setter */
+      settings->tls_openssl_def_file.v_disable_fallback =
+        option->val.tls_openssl_def_file.v_disable_fallback;
+      if (NULL == option->val.tls_openssl_def_file.v_pathname)
+        settings->tls_openssl_def_file.v_pathname = NULL;
+      else
+      {
+        size_t len;
+        len = strlen (option->val.tls_openssl_def_file.v_pathname);
+        settings->tls_openssl_def_file.v_pathname = (char *) malloc (len + 1u);
+        if (NULL == settings->tls_openssl_def_file.v_pathname)
+          return MHD_SC_DAEMON_MEM_ALLOC_FAILURE;
+        memcpy (settings->tls_openssl_def_file.v_pathname,
+                option->val.tls_openssl_def_file.v_pathname,
+                len + 1u);
+      }
+      continue;
+    case MHD_D_O_DEFAULT_TIMEOUT_MILSEC:
+      settings->default_timeout_milsec = option->val.default_timeout_milsec;
+      continue;
+    case MHD_D_O_GLOBAL_CONNECTION_LIMIT:
+      settings->global_connection_limit = option->val.global_connection_limit;
+      continue;
+    case MHD_D_O_PER_IP_LIMIT:
+      settings->per_ip_limit = option->val.per_ip_limit;
+      continue;
+    case MHD_D_O_ACCEPT_POLICY:
+      settings->accept_policy.v_apc = option->val.accept_policy.v_apc;
+      settings->accept_policy.v_apc_cls = option->val.accept_policy.v_apc_cls;
+      continue;
+    case MHD_D_O_CONN_BUFF_ZEROING:
+      settings->conn_buff_zeroing = option->val.conn_buff_zeroing;
+      continue;
+    case MHD_D_O_PROTOCOL_STRICT_LEVEL:
+      settings->protocol_strict_level.v_sl = option->val.protocol_strict_level.v_sl;
+      settings->protocol_strict_level.v_how = option->val.protocol_strict_level.v_how;
+      continue;
+    case MHD_D_O_EARLY_URI_LOGGER:
+      settings->early_uri_logger.v_cb = option->val.early_uri_logger.v_cb;
+      settings->early_uri_logger.v_cls = option->val.early_uri_logger.v_cls;
+      continue;
+    case MHD_D_O_DISABLE_URI_QUERY_PLUS_AS_SPACE:
+      settings->disable_uri_query_plus_as_space = option->val.disable_uri_query_plus_as_space;
+      continue;
+    case MHD_D_O_SUPPRESS_DATE_HEADER:
+      settings->suppress_date_header = option->val.suppress_date_header;
+      continue;
+    case MHD_D_O_ENABLE_SHOUTCAST:
+      settings->enable_shoutcast = option->val.enable_shoutcast;
+      continue;
+    case MHD_D_O_CONN_MEMORY_LIMIT:
+      settings->conn_memory_limit = option->val.conn_memory_limit;
+      continue;
+    case MHD_D_O_LARGE_POOL_SIZE:
+      settings->large_pool_size = option->val.large_pool_size;
+      continue;
+    case MHD_D_O_STACK_SIZE:
+      settings->stack_size = option->val.stack_size;
+      continue;
+    case MHD_D_O_FD_NUMBER_LIMIT:
+      settings->fd_number_limit = option->val.fd_number_limit;
+      continue;
+    case MHD_D_O_TURBO:
+      settings->turbo = option->val.turbo;
+      continue;
+    case MHD_D_O_DISABLE_THREAD_SAFETY:
+      settings->disable_thread_safety = option->val.disable_thread_safety;
+      continue;
+    case MHD_D_O_DISALLOW_UPGRADE:
+      settings->disallow_upgrade = option->val.disallow_upgrade;
+      continue;
+    case MHD_D_O_DISALLOW_SUSPEND_RESUME:
+      settings->disallow_suspend_resume = option->val.disallow_suspend_resume;
+      continue;
+    case MHD_D_O_DISABLE_COOKIES:
+      /* custom setter */
+      /* The is not an easy for automatic generations */
+      // TODO: remove options generator, put preprocessor directives to
+      //       the first column
+      #ifdef MHD_SUPPORT_COOKIES
+      settings->disable_cookies = option->val.disable_cookies;
+      #else
+      if (MHD_NO != option->val.disable_cookies)
+        return MHD_SC_FEATURE_DISABLED;
+      #endif
+      continue;
+    case MHD_D_O_DAEMON_READY_CALLBACK:
+      settings->daemon_ready_callback.v_cb = option->val.daemon_ready_callback.v_cb;
+      settings->daemon_ready_callback.v_cb_cls = option->val.daemon_ready_callback.v_cb_cls;
+      continue;
+    case MHD_D_O_NOTIFY_CONNECTION:
+      settings->notify_connection.v_ncc = option->val.notify_connection.v_ncc;
+      settings->notify_connection.v_cls = option->val.notify_connection.v_cls;
+      continue;
+    case MHD_D_O_NOTIFY_STREAM:
+      settings->notify_stream.v_nsc = option->val.notify_stream.v_nsc;
+      settings->notify_stream.v_cls = option->val.notify_stream.v_cls;
+      continue;
+    case MHD_D_O_RANDOM_ENTROPY:
+      /* custom setter */
+      /* The is not an easy for automatic generations */
+      if (0 != option->val.random_entropy.v_buf_size)
+      {
+        if (NULL != settings->random_entropy.v_buf)
+          free (settings->random_entropy.v_buf);
+        settings->random_entropy.v_buf =
+          malloc (option->val.random_entropy.v_buf_size);
+        if (NULL == settings->random_entropy.v_buf)
+          return MHD_SC_DAEMON_MEM_ALLOC_FAILURE;
+        memcpy (settings->random_entropy.v_buf,
+                option->val.random_entropy.v_buf,
+                option->val.random_entropy.v_buf_size);
+        settings->random_entropy.v_buf_size =
+          option->val.random_entropy.v_buf_size;
+      }
+      continue;
+    case MHD_D_O_AUTH_DIGEST_MAP_SIZE:
+      settings->auth_digest_map_size = option->val.auth_digest_map_size;
+      continue;
+    case MHD_D_O_AUTH_DIGEST_NONCE_TIMEOUT:
+      settings->auth_digest_nonce_timeout = option->val.auth_digest_nonce_timeout;
+      continue;
+    case MHD_D_O_AUTH_DIGEST_DEF_MAX_NC:
+      settings->auth_digest_def_max_nc = option->val.auth_digest_def_max_nc;
+      continue;
+    case MHD_D_O_SENTINEL:
+    default: /* for -Wswitch-default -Wswitch-enum */
+      res = MHD_SC_OPTION_UNKNOWN;
+      i = options_max_num - 1;
+      break;
+    }
+  }
+  return res;
+}

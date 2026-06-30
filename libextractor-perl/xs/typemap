@@ -1,0 +1,16 @@
+TYPEMAP
+
+EXTRACTOR_ExtractorList* T_PEXTRACT_GENERIC_WRAPPER
+EXTRACTOR_ExtractorList_ornull* T_PEXTRACT_GENERIC_WRAPPER
+
+OUTPUT
+
+T_PEXTRACT_GENERIC_WRAPPER
+	$arg = newSv${(my $ntype = $type) =~ s/(?:const\s+)?([:\w]+)(?:\s*\*)$/$1/;
+		      \$ntype} ($var);
+
+INPUT
+
+T_PEXTRACT_GENERIC_WRAPPER
+	$var = Sv${(my $ntype = $type) =~ s/(?:const\s+)?([:\w]+)(?:\s*\*)$/$1/x;
+	           \$ntype} ($arg);

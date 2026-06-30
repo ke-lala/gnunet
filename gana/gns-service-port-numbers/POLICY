@@ -1,0 +1,20 @@
+Policy
+^^^^^^
+
+Each registry entry should contain three values: the port "Number" of the
+service, which must be above 49151 (private/dynamic port range),
+the "Name" of the service, and a "Reference" with links
+to further information about the record type.
+
+The "Name" must be unique in the entire registry.  The value must be a
+case insensitive ASCII string and is restricted to alphanumeric
+characters.
+
+Adding records is possible after expert review, using a
+first-come-first-served policy for unique "Name" allocation.
+Experts are responsible to ensure that the chosen "Name" is
+appropriate for the record type.
+
+The current contact(s) for expert review are reachable at
+gns-registry@gnunet.org.
+

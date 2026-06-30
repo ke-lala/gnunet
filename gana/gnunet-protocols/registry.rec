@@ -1,0 +1,23 @@
+# -*- mode: rec -*-
+#
+# Registry for overlay protocols
+#
+
+%rec: OverlayProtocol
+%key: Number
+%typedef: NumberRange_t range 256 65535
+%type: Number NumberRange_t
+%mandatory: Number
+%typedef: Name_t regexp /^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]*$/
+%type: Name Name_t
+%unique: Name
+%mandatory: Name
+%mandatory: Comment
+%allowed: Contact
+%allowed: References
+%sort: Number Name Contact References
+
+Number: 256
+Name: CADET
+Comment: CADET protocol.
+References: https://git.gnunet.org/bibliography.git/plain/docs/cadet.pdf

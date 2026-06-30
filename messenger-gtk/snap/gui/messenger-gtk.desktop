@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Messenger-GTK
+Comment=A GTK based GUI for the Messenger service of GNUnet.
+TryExec=messenger-gtk
+Exec=messenger-gtk
+Icon=${SNAP}/meta/gui/messenger-gtk.svg
+Terminal=false
+StartupWMClass=MessengerGTK
+Type=Application
+Categories=Chat;Network;InstantMessaging;GTK;
+MimeType=x-scheme-handler/org.gnunet.Messenger;
+Keywords=messenger-gtk;chat;im;messaging;messenger;gtk;org.gnunet.Messenger;
+X-GNOME-UsesNotifications=true
+X-Purism-FormFactor=Workstation;Mobile;

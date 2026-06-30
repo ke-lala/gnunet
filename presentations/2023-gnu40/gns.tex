@@ -1,0 +1,241 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{appendixnumberbeamer}
+\usepackage{mathtools}
+\usetheme{metropolis}           % Use metropolis theme
+\definecolor{fhggreen}{RGB}{23,156,125}
+\let\oldemph\textbf
+\renewcommand{\textbf}[1]{{\color{mLightBrown}\oldemph{#1}}}
+
+\usepackage{blkarray}
+\usepackage{amsmath}
+\usepackage{multirow}
+\title{\includegraphics[width=0.2\textwidth]{gns-logo.png}\\\small{The GNU Name System}}
+\date{2023-09-27}
+\author{Bernd Fix, Christian Grothoff, \textbf{Martin Schanzenbach}}
+%\institute{\includegraphics[width=.25\textwidth]{aisec_logo.pdf}}
+
+\graphicspath{{figures/}}
+
+\begin{document}
+\metroset{block=fill,sectionpage=progressbar,numbering=counter}
+\maketitle
+
+\begin{frame}{Directories / DNS}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{www}}}^{\text{Label}}}
+    \text{www}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.example.com}}}}_{\text{Namespace}}}
+    {\color{fhggreen}\text{.example.com}}
+  $$
+\end{frame}
+
+\begin{frame}{The .alt TLD}
+  Whats wrong with DNS? See RFC 8324\footnote{DNS Privacy, Authorization, Special Uses, Encoding, Characters,
+          Matching, and Root Structure: Time for Another Look?}:
+  \begin{itemize}
+    \item No \textbf{query privacy}.
+    \item A \textbf{single hierarchy with a centrally controlled root}.
+    \item Requires management/maintenance of \textbf{root servers}.
+    \item etc\ldots
+  \end{itemize}
+  DNSSEC and other ``patches'' do not or in adequately address the issues: ``[the existing solutions for DNS are] security patches rather than designed-in
+   security or privacy mechanisms''.
+\end{frame}
+
+\begin{frame}{Directories / GNS}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{www}}}^{\text{Label}}}
+    \text{www}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.myzone.gns.alt}}}}_{\text{Namespace}}}
+    {\color{fhggreen}\text{.myzone.gns.alt}}
+  $$
+\end{frame}
+
+\begin{frame}{The .alt TLD}
+  Why ``.gns.alt''?
+  \begin{itemize}
+    \item RFC9476: ``The .alt Special-Use Top-Level Domain'' defines the TLD to be used for alternative (from the point of view of DNS) name systems.
+    \item RFC9476 does \textbf{not} define a registry for ``.alt''-subdomains.
+    \item We manage a ``.alt'' registry at \url{https://gana.gnunet.org}~\footnote{If you ever need a registry for your protocol feel free to approach us!} which already includes a code point for ``.gns.alt''.
+    \item To prevent shadowing of DNS names, it is recommended to use the ``.gns.alt'' suffix.
+    \item Sometimes (e.g. censorship-overrides) you may not want to do that.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The GNU Name System}
+  \begin{itemize}
+    \item Namespaces are created and uniquely identified using \textbf{public zone keys}.
+    \item \textbf{Records} are grouped by \textbf{label}, encrypted, signed, and published in a key-value store (usually, a DHT\footnote{\url{https://datatracker.ietf.org/doc/draft-schanzen-r5n/}}).
+    \item Supported zone types and crypto (for now):
+      \begin{itemize}
+        \item PKEY: ECDSA+CTR-AES-256
+        \item EDKEY: EdDSA+XSalsa20-Poly1305
+      \end{itemize}
+  \end{itemize}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-0}
+\end{frame}
+
+\begin{frame}{Zone management}
+  \includegraphics[height=0.9\textheight]{deleg0.pdf}
+\end{frame}
+
+
+\begin{frame}{Name resolution}
+  \includegraphics[height=0.9\textheight]{deleg1.pdf}
+\end{frame}
+
+
+\begin{frame}{Name resolution}
+  \includegraphics[height=0.9\textheight]{deleg2.pdf}
+\end{frame}
+
+
+\begin{frame}{How do we bootstrap the top-level zones?}
+  \includegraphics[height=0.9\textheight]{deleg3.pdf}
+\end{frame}
+
+
+\begin{frame}[fragile]{The Start Zone}
+  ``Hyper-hyper local root'' concept we call the \textbf{Start Zone}:
+  \begin{itemize}
+    \item Start Zone contains so-called \textbf{suffix-to-zone}-mappings.
+    \item Implementation ships with an \emph{initial} Start Zone configuration.
+    \item Start Zone is configurable \emph{locally} at \emph{each} endpoint.
+    \item User override/extension of mappings at top-level or subdomain-level for:
+      \begin{itemize}
+        \item Circumvent censorship if necessary.
+        \item Private networks.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The Start Zone}
+  Example suffix-to-zone mappings:
+  \begin{small}
+  \begin{verbatim}
+# Some TLDs
+.com = 000G001MF6DVMZZ4Y8XRZQDXM1PB3D3VGEK29ZHXBA57EPSNW1QBPKT8J0
+.myzone.gns.alt = 000G007FKSA876G6SNDF8VA7YK1DJE96RPPBHRT2X55Q13M2T4YKNYT3DG
+# Some subdomain overrides
+.gnu.org = 000G001223Q8ZJZBSK6XT2DWV6PE5B1W436D2NB7ZBR9XSXT7TFJHCDB24
+.gnunet.gns.alt = 000G0047M3HN599H57MPXZK4VB59SWK4M9NRD68E1JQFY3RWAHDMKAPN30
+  \end{verbatim}
+  \end{small}
+\end{frame}
+
+
+\begin{frame}{Possible Governance Models}
+  \begin{itemize}
+    \item Non-profit organization.
+    \item Multi-stakeholder model: Board, supporting organizations, \ldots
+    \item Examples for possible stakeholders:
+      \begin{itemize}
+        \item Software and OS Distributors
+        \item Browser vendors
+        \item Governments
+      \end{itemize}
+    \item Funding options:
+      \begin{itemize}
+        \item Applications for new top-level domains.
+        \item Registrations of new top-level domains.
+        \item \ldots
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Hiding information inside GNS}
+  \begin{itemize}
+    \item GNS's crypto allows you to hide resource records.
+    \item It requires either
+      \begin{itemize}
+        \item the use of a label with sufficient entropy (a shared secret) or
+        \item the use of a secret zone.
+      \end{itemize}
+  \end{itemize}
+  $$
+    \mathrlap{\overbrace{\phantom{\text{ohcoxaiShaingahd}}}^{\text{Secret label}}}
+    \text{ohcoxaiehaingahd}
+    \mathrlap{\underbrace{{\color{fhggreen}\phantom{\text{.my.zone}}}}_{\text{Namespace}}}
+    {\color{fhggreen}\text{.my.zone}}
+  $$
+\end{frame}
+
+
+\begin{frame}{Encrypt}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-1}
+\end{frame}
+
+\begin{frame}{Sign}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockCreation-2}
+\end{frame}
+
+\begin{frame}{Derive}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockCreation-3}
+\end{frame}
+
+\begin{frame}{Combine and publish}
+  \centering
+  \includegraphics[width=1\textwidth]{GNS-BlockCreation-4}
+\end{frame}
+
+\begin{frame}{Query}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-0}
+\end{frame}
+
+\begin{frame}{Retrieve}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-1}
+\end{frame}
+
+\begin{frame}{Verify}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-2}
+\end{frame}
+
+\begin{frame}{Decrypt}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-3}
+\end{frame}
+
+\begin{frame}{Decrypt}
+  \centering
+  \includegraphics[height=0.9\textheight]{GNS-BlockValidation-4}
+\end{frame}
+
+\begin{frame}{Status}
+  \begin{itemize}
+    \item Specification efforts:
+      \begin{itemize}
+        \item \url{https://datatracker.ietf.org/doc/draft-schanzen-gns/} -- Will become RFC soon (TM).
+        \item \url{https://datatracker.ietf.org/doc/draft-schanzen-r5n/} -- Is being worked on.
+      \end{itemize}
+    \item Reference implementation in C (part of GNUnet), alternative implementation in Go.
+    \item Currently funded project to develop and host a GNS zone registrar service and to mirror some (large) DNS zones funded through NLnet / NGI Zero Entrust.
+    \item Current and future research:
+      \begin{itemize}
+        \item PQ-secure key blinding.
+        \item Sharing identity information via GNS (re:claimID).
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \begin{center}
+    Questions?\\
+    \vspace{2cm}
+    \url{https://gnunet.org}\\
+    \vspace{1em}
+    {\tiny
+    \texttt{schanzen@gnu.org}\\
+    \texttt{3D11~063C~10F9~8D14~BD24~D147~0B09~98EF~86F5~9B6A}\\
+    }
+  \end{center}
+\end{frame}
+
+\end{document}

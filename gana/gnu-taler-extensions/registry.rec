@@ -1,0 +1,43 @@
+# -*- mode: rec -*-
+#
+# Registry for GNU Taler extensions, as per Design document 6
+#
+%rec: TalerExtensions
+%key: Identifier
+%typedef: Identifier_t regexp /^[ABCDEFGHIJKLMNOPQRSTUVWXYZ_][ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789:\.]*$/
+%type: Identifier Identifier_t
+%unique: Identifier
+%mandatory: Identifier
+%typedef: Description_t regexp |^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\(\)\.,;!"':#\/ -]*$|
+%type: Description Description_t
+%mandatory: Description
+%mandatory: Critical
+%type: Critical bool
+%allowed: Contact
+%allowed: References
+%sort: Identifier Description Contact References
+
+
+Identifier: AGE_RESTRICTIONS
+Description: Restrictions to limit spending of coins on products that are legally sold only to customers below a given age.
+Critical: true
+Contact: oec-taler@kesim.org
+References: Design document 24
+
+Identifier: POLICY_REFUND
+Description: Support for refund in payments.
+Critical: false
+Contact: team@taler.net
+References: Design document 13
+
+Identifier: POLICY_AUCTION
+Description: Auction support via libbrandt
+Critical: false
+Contact: oec-taler@kesim.org
+References: Design document 32
+
+Identifier: POLICY_ESCROW
+Description: Escrow functionality provided by the exchange.  Deposited coins can be put into escrow for a specified time interval, potentially in the future.  If the owner of the coins and the merchant both sign the contract within the interval, the coins' value will be transferred to the merchant's account. Otherwise, the coins can be refreshed by the owner.
+Critical: false
+Contact: oec-taler@kesim.org
+References: NOT YET

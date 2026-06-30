@@ -1,0 +1,126 @@
+// house = application
+// circle (default) = service
+// box = daemon
+// diamond = library
+// black line = dependency
+// blue line = extension via plugin
+// red line = possibly useful
+// dashed = in planning
+
+// this is what we have...o
+digraph dependencies {
+splines = true;
+
+  /*voting [shape=house];
+  voting -> consensus;
+  voting -> identity;
+  voting -> cadet;
+  voting -> secretsharing;*/
+  secretsharing -> consensus;
+
+  fs;
+  fs -> dht;
+  fs -> core;
+  fs -> datastore;
+  fs -> cadet;
+  fs -> transport;
+  //fs -> block [style=dotted,color=blue];
+  fs -> identity;
+  //exit;
+  //exit -> cadet;
+  //exit -> tun;
+  //exit -> dnsstub;
+  vpn -> cadet;
+  vpn -> regex;
+  //vpn -> tun;
+  /*pt [shape=house];
+  pt -> cadet;
+  pt -> vpn;
+  pt -> dns;*/
+  //pt -> dnsparser;
+  //dns -> tun;
+  //dns -> dnsstub;
+  zonemaster;
+  zonemaster -> namestore;
+  zonemaster -> namecache;
+  zonemaster -> dht;
+  gns -> dns;
+  gns -> dht;
+  //gns -> block [style=dotted,color=blue];
+  gns -> revocation;
+  gns -> vpn;
+  gns -> namecache;
+  //gns -> dnsparser;
+  //gns -> dnsstub;
+  gns -> identity;
+  revocation -> core;
+  revocation -> setu;
+  namestore -> identity;
+  //namestore -> gnsrecord;
+  //dnsparser -> gnsrecord [style=dotted,color=blue];
+  //conversation -> gnsrecord [style=dotted,color=blue];
+  //gns -> gnsrecord;
+  dht -> core;
+  dht -> nse;
+  //dht -> block;
+  dht -> datacache;
+  dht -> peerstore;
+  //dht -> hello;
+  nse -> core;
+  //regex -> block [style=dotted,color=blue];
+  //block [shape=diamond];
+  datacache;
+  cadet -> core [weight=2];
+  cadet -> dht;
+  //cadet -> block [style=dotted,color=blue];
+  conversation;
+  conversation -> cadet;
+  conversation -> gns;
+  //conversation -> speaker;
+  //conversation -> microphone;
+  //speaker [shape=diamond];
+  //microphone [shape=diamond];
+  regex -> dht;
+  core -> transport;
+  topology;
+  topology -> peerstore;
+  topology -> transport;
+  topology -> core;
+  //topology -> hello;
+  hostlist;
+  hostlist -> core;
+  hostlist -> peerstore;
+  //hostlist -> hello;
+  //transport -> hello;
+  transport -> peerstore;
+  //transport -> nat;
+  //transport -> fragmentation;
+  consensus -> set;
+  consensus -> cadet;
+  scalarproduct -> seti;
+  scalarproduct -> cadet;
+  set -> cadet;
+  seti -> cadet;
+  setu -> cadet;
+  //fragmentation [shape=diamond];
+  //hello [shape=diamond];
+  //nat [shape=diamond];
+  //tun [shape=diamond];
+  //dnsparser [shape=diamond];
+  //dnsstub [shape=diamond];
+
+  /*secushare [shape=house];
+  multicast;
+  psyc;
+  social -> psyc;
+  social -> gns;
+  psyc -> psycstore;
+  psycstore;
+  social;
+  secushare -> social;
+  psyc -> multicast;
+  multicast -> cadet;*/
+
+  rps;
+  rps -> core;
+}

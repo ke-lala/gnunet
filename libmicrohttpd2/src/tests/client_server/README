@@ -1,0 +1,39 @@
+Introduction
+============
+
+This README describes how to prepare MHD2 for fuzzing
+with "zzuf".
+
+Preparation
+===========
+
+To run the fuzzer tests, you first need to install "zzuf".
+You may furthermore need to build MHD using:
+
+ ./configure OTHER_OPTIONS mhd_cv_have_func_accept4=no
+
+to ensure MHD2 does not use "accept4()" which is not supported
+by zzuf.  Naturally, the OTHER_OPTIONS should also be set to catch
+as many errors as possible, such as --enable-build-type=release-hardened.
+Note that --enable-build-type=debug does not work as ASAN and zzuf
+both want to preload libraries and step on each others toes.
+
+Fuzzing
+=======
+
+You should now be able to run "zzuf_test_runner.sh" manually.
+This may take a bit.
+
+Note that the console output will contain a ton of error messages
+as MHD logging is not enabled and fuzzing naturally creates tons of
+malformed requests. That is expected!
+
+Options
+=======
+
+You may
+
+$ export MHD_TEST_FUZZING=$ROUNDS
+
+to change the number of rounds of fuzzing. Set "ZZUF_FLAGS" to
+pass additional options (like a new seed) to zzuf.

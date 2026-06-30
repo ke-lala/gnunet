@@ -1,0 +1,275 @@
+#!/usr/bin/python3
+# Copyright 2003-2008, Nick Mathewson.  See LICENSE for licensing info.
+# Copyright 2018, 2019 ng0 <ng0@n0.is>
+
+"""
+Generate indices by author, topic, date, and BibTeX key.
+"""
+
+from future.utils import raise_with_traceback
+from io import BytesIO ## for Python 3
+import sys
+import re
+import os
+import json
+import BibTeX
+import config
+
+
+assert sys.version_info[:3] >= (2, 2, 0)
+os.umask(0o22)
+
+def getTemplate(name):
+    template_file = open(name)
+    template = template_file.read()
+    template_file.close()
+    template_s, template_e = template.split("%(entries)s")
+    return template_s, template_e
+
+def pathLength(s):
+    n = 0
+    while s:
+        parent, leaf = os.path.split(s)
+        if leaf != '' and leaf != '.':
+            n += 1
+        s = parent
+    return n
+
+def writeBody(target_file, sections, section_urls, cache_path, base_url):
+    """
+    target_file: an open file
+    sections: list of (sectionname, [list of BibTeXEntry])
+    section_urls: map from sectionname to external url
+    """
+    for s, entries in sections:
+        u = section_urls.get(s)
+        sDisp = re.sub(r'\s+', ' ', s.strip())
+        sDisp = sDisp.replace(" ", "&nbsp;")
+        print("<section class='item-preview'>", file=target_file)
+        if u:
+            print(('<h3><a name="%s"></a><a href="%s">%s</a></h3>'
+                   %((BibTeX.url_untranslate(s), u, sDisp))),
+                  file=target_file)
+        else:
+            print(('<h3><a name="%s">%s</a></h3>'
+                   %(BibTeX.url_untranslate(s), sDisp)),
+                  file=target_file)
+        #print("<section class='item-preview'>", file=target_file)
+        for e in entries:
+            print(e.to_html(cache_path=cache_path, base_url=base_url),
+                  file=target_file)
+        print("</section>", file=target_file)
+
+def writeHTML(f, sections, sectionType, fieldName, choices,
+              tag, config, cache_url_path, section_urls={}):
+    """
+    sections: list of (sectionname, [list of BibTeXEntry])'''
+    sectionType: str
+    fieldName: str
+    choices: list of (choice, url)
+    """
+
+    title = config.TAG_TITLES[tag]
+    short_title = config.TAG_SHORT_TITLES[tag]
+    # what used to be the sidebar:
+    secStr = []
+    for s, _ in sections:
+        hts = re.sub(r'\s+', ' ', s.strip())
+        hts = s.replace(" ", "&nbsp;")
+        secStr.append("<li class='bar-item'><a class='bar-link' href='#%s'>%s</a></li>\n"%
+                      ((BibTeX.url_untranslate(s), hts)))
+    secStr = "".join(secStr)
+
+    #
+    tagListStr = []
+    st = list(config.TAG_SHORT_TITLES.keys())
+    st.sort()
+    root = "../"*pathLength(config.TAG_DIRECTORIES[tag])
+    if root == "": root = "."
+    for t in st:
+        name = config.TAG_SHORT_TITLES[t]
+        if t == tag:
+            tagListStr.append(name)
+        else:
+            url = BibTeX.smartJoin(root, config.TAG_DIRECTORIES[t], "date.html")
+            tagListStr.append("<a href='%s'>%s</a>"%(url, name))
+    tagListStr = "&nbsp;|&nbsp;".join(tagListStr)
+
+    #
+    choiceStr = []
+    for choice, url in choices:
+        if url:
+            choiceStr.append("<a href='%s'>%s</a>"%(url, choice))
+        else:
+            choiceStr.append(choice)
+
+    choiceStr = ("&nbsp;|&nbsp;".join(choiceStr))
+
+    fields = {'command_line' :  "",
+              'sectiontypes' :  sectionType,
+              'choices' : choiceStr,
+              'field': fieldName,
+              'sections' : secStr,
+              'otherbibs' : tagListStr,
+              'title': title,
+              'short_title': short_title,
+              "root" : root,}
+
+    header, footer = getTemplate(config.TEMPLATE_FILE)
+    print(header%fields, file=f)
+    writeBody(f, sections, section_urls, cache_path=cache_url_path,
+              base_url=root)
+    print(footer%fields, file=f)
+
+def jsonDumper(obj):
+    if isinstance(obj, BibTeX.BibTeXEntry):
+        e = obj.entries.copy()
+        e['key'] = obj.key
+        return e
+    else:
+        raise_with_traceback(TypeError("Do not know how to serialize %s"%(obj.__class,)))
+
+def writePageSet(config, bib, tag):
+    if tag:
+        bib_entries = [b for b in bib.entries
+                       if tag in b.get('www_tags', "").split()]
+    else:
+        bib_entries = bib.entries[:]
+
+    if not bib_entries:
+        print("No entries with tag %r; skipping"%tag, file=sys.stderr)
+        return
+
+    tagdir = config.TAG_DIRECTORIES[tag]
+    outdir = os.path.join(config.OUTPUT_DIR, tagdir)
+    cache_url_path = BibTeX.smartJoin("../"*pathLength(tagdir),
+                                      config.CACHE_DIR)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir, 0o755)
+    ##### Sorted views:
+
+    ## By topic.
+
+    entries = BibTeX.sortEntriesBy(bib_entries, "www_section", "ZZZZZZZZZZZZZZ")
+    entries = BibTeX.splitSortedEntriesBy(entries, "www_section")
+    if entries[-1][0].startswith("<span class='bad'>"):
+        entries[-1] = ("Miscellaneous", entries[-1][1])
+
+    entries = [(s, BibTeX.sortEntriesByDate(ents))
+               for s, ents in entries]
+
+    f = open(os.path.join(outdir, "topic.html"), 'w')
+    writeHTML(f, entries, "Topics", "topic",
+              (("By topic", None),
+               ("By date", "./date.html"),
+               ("By author", "./author.html")),
+              tag=tag, config=config,
+              cache_url_path=cache_url_path)
+    f.close()
+
+    ## By date.
+
+    entries = BibTeX.sortEntriesByDate(bib_entries)
+    entries = BibTeX.splitSortedEntriesBy(entries, 'year')
+    for idx in -1, -2:
+        try:
+            if entries[idx][0].startswith("<span class='bad'>"):
+                entries[idx] = ("Unknown", entries[idx][1])
+            elif entries[idx][0].startswith("forthcoming"):
+                entries[idx] = ("Forthcoming", entries[idx][1])
+        except IndexError:
+            continue
+    sections = [ent[0] for ent in entries]
+
+    first_year = int(entries[0][1][0]['year'])
+    try:
+        last_year = int(entries[-1][1][0].get('year'))
+    except ValueError:
+        last_year = int(entries[-2][1][0].get('year'))
+
+    years = list(map(str, list(range(first_year, last_year+1))))
+    if entries[-1][0] == 'Unknown':
+        years.append("Unknown")
+
+    date_file = open(os.path.join(outdir, "date.html"), 'w')
+    writeHTML(date_file, entries, "Years", "date",
+              (("By topic", "./topic.html"),
+               ("By date", None),
+               ("By author", "./author.html")),
+              tag=tag, config=config,
+              cache_url_path=cache_url_path)
+    date_file.close()
+
+    ## By author
+    entries, url_map = BibTeX.splitEntriesByAuthor(bib_entries)
+
+    author_file = open(os.path.join(outdir, "author.html"), 'w')
+    writeHTML(author_file, entries, "Authors", "author",
+              (("By topic", "./topic.html"),
+               ("By date", "./date.html"),
+               ("By author", None),),
+              tag=tag, config=config,
+              cache_url_path=cache_url_path,
+              section_urls=url_map)
+    author_file.close()
+
+    ## The big BibTeX file
+
+    entries = bib_entries[:]
+    entries = [(ent.key, ent) for ent in entries]
+    entries.sort()
+    entries = [ent[1] for ent in entries]
+
+    ## Finding the root directory is done by writeHTML(), but
+    ## the BibTeX file doesn't use that, so repeat the code here
+    root = "../"*pathLength(config.TAG_DIRECTORIES[tag])
+    if root == "":
+        root = "."
+
+    header, footer = getTemplate(config.BIBTEX_TEMPLATE_FILE)
+    bibtex_file = open(os.path.join(outdir, "bibtex.html"), 'w')
+    print(header%{'command_line' : "",
+                  'title': config.TAG_TITLES[tag],
+                  'root': root},
+          file=bibtex_file)
+    for ent in entries:
+        print((("<tr><td class='bibtex'><a name='%s'>%s</a>"
+                "<pre class='bibtex'>%s</pre></td></tr>")
+               % (BibTeX.url_untranslate(ent.key),
+                  ent.key,
+                  ent.format(90, 8, 1))),
+              file=bibtex_file)
+    print(footer, file=bibtex_file)
+    bibtex_file.close()
+
+    bibtex_json_file = open(os.path.join(outdir, "bibtex.json"), 'w')
+    json.dump(entries, bibtex_json_file, default=jsonDumper)
+    bibtex_json_file.close()
+
+    # Produce NAME with EXTENSION 'bib' as a FILE holding one
+    # bib record.
+    bibdir = config.BIB_DIRECTORY
+    biboutdir = os.path.join(config.OUTPUT_DIR, bibdir)
+    for ent in entries:
+        bib_file_dir = os.path.join(biboutdir, ent.key)
+        if not os.path.exists(bib_file_dir):
+            os.makedirs(bib_file_dir, 0o755)
+        single_bib_file = open(os.path.join(bib_file_dir,
+                                            "record.bib"),
+                               'w')
+        print("%s" % ent.format(90, 8, 1), file=single_bib_file)
+        single_bib_file.close()
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        print("Loading from %s"%sys.argv[1])
+    else:
+        print("Expected a single configuration file as an argument",
+              file=sys.stderr)
+        sys.exit(1)
+    config.load(sys.argv[1])
+
+    bib = BibTeX.parseFile(config.MASTER_BIB)
+
+    for tag in list(config.TAG_DIRECTORIES.keys()):
+        writePageSet(config, bib, tag)

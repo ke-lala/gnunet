@@ -1,0 +1,13 @@
+Taler DB Events
+---------------
+
+Entries
+^^^^^^^
+
+.. list-table:: Taler DB Events
+   :widths: auto
+   :header-rows: 1
+
+   * - Name
+     - Value
+     - Description

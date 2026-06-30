@@ -1,0 +1,106 @@
+* Gnunet e.V. 2016 Annual Meeting 
+
+Hamburg, 33C3 - 12:40 - 13.50
+
+* Participants
+
+GNUnet e.V. Members
+
+Christian Grothoff
+Matthias Wachs
+Markus Teich
+Julius Buenger
+Florian Dold 
+Nils Durner
+Lurchi
+tgx
+
+via mumble:
+
+ng0
+schanzen 
+totakura
+
+Guests:
+
+Leon Schuhmacher
+nana
+sva
+3 Guests
+
+* Financial Report
+
+GNUnet e.v. was hosting GHM
+
+3 Transactions via Bitcoin
+Sree will check the books
+If Sree ACK's the books everything is fine
+
+* Election
+
+** Vorstand 2016:
+
+Christian, President
+Sree, Vice President
+Florian, Finances
+Bart & Matthias, Beisitzer
+
+** Running 2017:
+Christian, President
+Matthias, Vice President
+Florian, Finances
+Sree & Lurchi, Beisitzer
+
+** Vorstand elected as described above
+
+* GNUnet e.V. - PeP Agreement
+
+Leon:
+presents pep side of gnunet-pep agreement
+
+Christian:
+Centralize license agreements with gnunet e.v.
+This allows gnunet e.v. to make changes to licensing
+Allow pep under strict restrictions to change licensing
+This is required for platforms not allowing open/free software
+Pep wants to try to cover all platforms.
+
+Christian suggestion:
+New VP Matthias will sign the agreement
+Questions to the audience and mumble: no objections
+AP: Matthias sign the agreement
+
+* GNUnet e.v. Copyright Assignment
+
+All contributors must sign copyright agreement
+Otherwise: 
+    - code will be excluded (for pep)
+    - or will be deemed "unimportant"
+
+Agreement can be send via snailmail to postal address printed in agreeement
+
+* GNU Taler Agreement
+
+For Taler, a similar issue as with gnunet exists.
+A agreement between GNUnet e.v. and Taler SA is required.
+
+Christian:
+New VP Matthias will sign the agreement
+Questions to the audience: no objections
+AP: Matthias will take duty
+
+Sree: is there an abandonment clause?
+CG: repsonsibilities will go back to gnunet e.v.
+
+MT: Why swiss law?
+Swiss copyright laws are simpler and you can transfer full copyrights
+
+CG aks is everyone is OK to join agreement?
+MUMBLE: yes
+Audience: yes
+
+* Open Round
+
+Stickers!
+Notes will be put in gnunet-ev SVN
+

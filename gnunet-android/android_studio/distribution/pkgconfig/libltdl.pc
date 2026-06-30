@@ -1,0 +1,13 @@
+prefix=/home/user/AndroidStudioProjects/gnunet-android/android_studio/distribution/libtool/lib/arm64-v8a
+exec_prefix=${prefix}
+libdir=${exec_prefix}
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: libtool
+Description: libltdl
+Version: 2.4.6
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lltdl
+Cflags: -I${includedir}

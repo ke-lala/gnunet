@@ -1,0 +1,14 @@
+.deps/
+.libs/
+
+Makefile.in
+Makefile
+
+stamp-h1
+
+messenger_gtk_config.h
+messenger_gtk_config.h.in
+messenger_gtk_config.h.in~
+
+*.o
+*.a

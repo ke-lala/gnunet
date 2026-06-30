@@ -1,0 +1,108 @@
+\usepackage[utf8]{inputenc}
+
+% fonts and colors
+\usepackage[defaultfam,tabular,lining]{montserrat}
+
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{alerted text}{fg=red!50!black}
+\setbeamercolor{example text}{fg=green!50!black}
+
+\setbeamercolor{title}{fg=white}
+\setbeamerfont{title}{size=\Huge}
+\setbeamerfont{title}{series=\bfseries}
+
+\setbeamercolor{subtitle}{fg=white}
+\setbeamerfont{subtitle}{size=\Large}
+
+\setbeamercolor{author}{fg=white}
+\setbeamerfont{author}{size=\Large}
+
+\setbeamercolor{institute}{fg=white}
+\setbeamerfont{institute}{size=\large}
+
+\setbeamercolor{date}{fg=black}
+\setbeamerfont{date}{size=\large}
+
+\setbeamercolor{frametitle}{fg=white}
+\setbeamerfont{frametitle}{size=\LARGE}
+\setbeamerfont{framesubtitle}{size=\large}
+
+\makeatletter
+\setbeamertemplate{frametitle}{%
+    \vbox{}\vskip-0.5em%
+    \begin{beamercolorbox}[wd=.85\paperwidth]{frametitle}
+        \usebeamerfont{frametitle}%
+        \strut\insertframetitle\strut\par%
+    \end{beamercolorbox}
+    \ifx\insertframesubtitle\@empty%
+      \vskip.9em
+  \else%
+      \vskip-0.3em
+    \begin{beamercolorbox}[wd=.68\paperwidth]{frametitle}
+        \usebeamerfont{framesubtitle}%
+        \strut\insertframesubtitle\strut\par%
+    \end{beamercolorbox}    
+  \fi
+}
+\makeatother
+
+\usepackage{tikz}
+\usetikzlibrary{calc,intersections,positioning,fadings,through}
+
+% footline
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{%
+    \leavevmode%
+    \hskip3pt%
+      \insertframenumber
+	\hfill
+	\SPEAKER
+        \hfill
+	\SUB
+	\hfill
+    \raisebox{-0.8mm}{\includegraphics[height=0.7cm]{logo-NGI_TALER_Bold.png}}
+    \vskip0pt%
+}
+
+% background
+
+\usepackage{xcolor}
+\definecolor{left}{RGB}{0,66,179}
+
+\setbeamertemplate{title page}
+{%\leavemode%
+   \begin{beamercolorbox}[wd=\the\paperwidth, ht=\the\paperheight,ignorebg,center]{}
+    \begin{tikzpicture}[overlay, remember picture]
+        \fill [left color=left, right color=left!50!black] (current page.north west) -- (current page.north east) -- ($(current page.north east)+(0,-6.5)$) -- ($(current page.north west)+(5,-6.5)$) -- ($(current page.north west)+(4.5,-6.8)$) -- ($(current page.north west)+(4,-6.5)$) -- ($(current page.north west)+(0,-6.5)$);
+        \end{tikzpicture}
+    \end{beamercolorbox}%
+    \vspace*{-8.5cm}
+
+    \begin{beamercolorbox}[sep=8pt,left]{title}
+    {\usebeamerfont{title}\inserttitle\par}%
+    {\usebeamerfont{subtitle}\insertsubtitle\par}%
+    \end{beamercolorbox}%
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=8pt,left]{author}
+  \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \vspace*{-0.3cm}
+    \begin{beamercolorbox}[sep=8pt,left]{institute}
+  \usebeamerfont{inst}\insertinstitute\\
+    \end{beamercolorbox}%
+   
+\vspace*{0.5cm}
+
+    \begin{beamercolorbox}[sep=5pt,left]{date}
+  \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}
+   \vspace*{2.5cm}
+}
+
+\setbeamertemplate{background canvas}
+{%\leavemode%
+    \begin{tikzpicture}[overlay, remember picture]
+        \fill [left color=left, right color=left!50!black] (current page.north west) -- (current page.north east) -- ($(current page.north east)+(0,-2)$) -- ($(current page.north west)+(5,-2)$) -- ($(current page.north west)+(4.5,-2.3)$) -- ($(current page.north west)+(4,-2)$) -- ($(current page.north west)+(0,-2)$);
+  \end{tikzpicture}
+}
+

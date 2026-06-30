@@ -1,0 +1,308 @@
+img {
+   border: 0px;
+}
+
+BODY {
+  background-color: #FFF;
+  color: #000;
+  margin: 0px auto;
+  width: 70%;
+}
+
+@media screen and (min-width: 300px) and (max-width: 500px) {
+    BODY {
+        width: 100%;
+    }
+}
+
+FORM {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+P, TD {
+  font-family: lucida, "Lucida Sans Unicode", Geneva, sans-serif;
+}
+
+P.contact {
+  text-align: center;  
+}
+
+P.contact A {
+  font-family: lucida, "Lucida Sans Unicode", Geneva, sans-serif;
+  font-weight: normal;  
+}
+
+SPAN.email {
+  font-family: lucidatypewriter, "Lucida Typewriter", Monaco, "Lucida Sans Unicode", monospace; 
+  font-weight: bold;
+}
+
+P IMG {
+  vertical-align: text-bottom;
+}
+
+P.crumbbreadth {
+  margin-top: 0.25em;
+}
+
+.compact {
+  margin-top: -0.5em;
+  text-indent: 0em;
+}
+
+SPAN.biblio {
+  font-style: italic;
+}
+
+SPAN.biblio A {
+  font-family: lucida, "Lucida Sans Unicode", Geneva, sans-serif;
+  font-weight: normal;
+  text-decoration: underline;
+}
+
+SPAN.availability {
+  font-family: lucidatypewriter, "Lucida Typewriter", Monaco, "Lucida Sans Unicode", monospace;
+  font-weight: normal;
+}
+
+
+UL {
+  list-style: outside;
+}
+
+UL.expand {
+  margin-bottom: 1em;
+}
+
+UL.sections {
+  list-style: none;
+}
+
+/* Font-level properties */
+
+PRE {
+  font-family: lucidatypewriter, "Lucida Typewriter", Monaco, "Lucida Sans Unicode", monospace;
+}
+
+STRONG, A {
+  font-family: lucidatypewriter, "Lucida Typewriter", Monaco, "Rockwell", "Lucida Sans Unicode", monospace;
+  font-weight: bold;
+}
+
+A:link {
+  color: #B00;
+}
+
+A:visited {
+  color: #903;
+}
+
+H1, H2, H3, H4, H5, H6 {
+  font-family: lucidatypewriter, "Lucida Typewriter", "Lucida Console", Monaco, sans-serif;
+}
+
+H1 A, H2 A, H3 A, H4 A, H5 A, H6 A {
+  font-family: lucidatypewriter, "Lucida Typewriter", "Lucida Console", Monaco, sans-serif;
+}
+
+H1 {
+  color: #00B;
+}
+
+H2 {
+  color: #006;
+}
+
+H3 {
+  color: #006;
+}
+
+
+.side-bar {
+    box-sizing: border-box;
+    color: black;
+    font-size: 0.9em;
+    padding: 30px 0px;
+}
+
+.bar-title {
+    color: black;
+    font-size: 14px;
+}
+
+.bar-box-padded {
+    padding: 10px;
+}
+
+.bar-list {
+    list-style: none;
+    padding: 0px;
+}
+
+li:after{ content: ""; }
+li:before{ content: ""; }
+
+.bar-item {
+    display: inline;
+}
+
+.bar-link:link, .bar-link:visited {
+    color: black;
+    padding: 5px 10px;
+}
+
+/*
+.bar-link:active, .bar-link:focus, .bar-link:hover {
+    background-color: #FF73F4;
+    border-color: #FF73F4;
+}
+*/
+
+.feed-link {
+    background-image: url("/static/base/img/feed-bg-white.png");
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+*/
+.a11y-offset {
+    position: absolute;
+    left: -50000px;
+}
+
+.side-bar {
+    display: inline;
+    padding: 0px;
+    text-align: left;
+    vertical-align: top;
+    width: 350px;
+}
+
+@media screen and (min-width: 1280px) {
+
+    .bar-title {
+        background-color: #F5F5F5;
+        font-weight: normal;
+        margin: 0px;
+        padding: 8px;
+    }
+
+    .bar-title-top {
+        border-radius: 4px 4px 0px 0px;
+    }
+
+    .bar-list {
+        margin: 0px;
+    }
+
+    .bar-item {
+        display: inline;
+        margin: 0px;
+    }
+
+    .bar-link:link,
+    .bar-link:visited {
+        display: inline;
+        margin: 0px;
+    }
+}
+.sheet {
+    box-sizing: border-box;
+}
+
+.table-box {
+    overflow-x: auto;
+}
+
+.top-shadow-bg {
+    background-image: url("../img/top-shadow-bg.png");
+    background-repeat: repeat-x;
+}
+
+
+.sheet {
+    display: inline-block;
+    vertical-align: top;
+    width: 75%;
+}
+/*
+@media screen and (min-width: 1280px) {
+    .sheet {
+        display: inline-block;
+        vertical-align: top;
+        width: 75%;
+    }
+
+    .sheet-padded {
+        padding-right: 20px;
+    }
+}
+*/
+
+/* item-preview */
+.item-preview,
+.item-preview:link,
+.item-preview:visited {
+    color: #4D4D4D;
+    display: block;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+.item-preview:active,
+              .item-preview:focus,
+              .item-preview:hover {
+    background-color: white;
+}
+
+.item-preview h3 {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0px;
+}
+
+.item-date {
+    font-size: 0.9em;
+}
+
+
+/*
+@media screen and (min-width: 1024px) {
+    .item-preview,
+    .item-preview:link,
+    .item-preview:visited {
+        background-color: transparent;
+        border-color: transparent;
+        border-style: solid;
+        border-width: thin;
+        display: inline-block;
+        margin: 10px 0px 15px 0px;
+        vertical-align: top;
+        width: 270px;
+    }
+
+    .item-preview:active,
+                  .item-preview:focus,
+                  .item-preview:hover {
+        border-color: white;
+    }
+
+    .summary-box {
+        color: #4D4D4D;
+        display: inline-block;
+        font-size: 0.9em;
+        margin: 5px;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        width: 280px;
+    }
+
+    .summary-box img {
+        display: block;
+        margin: 0px auto;
+        max-width: 100%;
+    }
+}
+*/

@@ -1,0 +1,20 @@
+* Abstract
+
+The motivation of the work presented here is the need for social interactions
+over the internet in a scalable and privacy protecting manner. We have examined
+existing systems from this aspect and have come to the conclusion that they do
+not provide enough privacy or do not scale well enough for our requirements. We
+suggest a peer-to-peer (P2P) architecture for this use and present a social
+network based on the GNUnet P2P framework -- which provides the lower layers of
+the network -- extended with messaging and social semantics by the PSYC
+protocol.
+
+Components of the system we have implemented are a service for the GNUnet
+framework providing social semantics and messaging functionality, a client API
+enabling application developers to write applications for the network with less
+effort, and client applications providing messaging, contact lists and profiles.
+
+The implementation is in a prototype stage, basic functionality, such as person
+identities, friendship establishment and messaging in channels already work,
+but further work is needed to enhance the functionality of the system and
+improve the usability of the user interface.

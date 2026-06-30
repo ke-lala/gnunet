@@ -1,0 +1,46 @@
+# <<syntax>>
+* Appendix 1 - PSYC Syntax
+
+Syntaxes in this section are described in Augmented Backus-Naur Form (ABNF).
+
+*PACKET SYNTAX*
+
+#+BEGIN_SRC abnf
+packet	= routing-header [ content-length content ] "|" LF
+; the length of content is either implicit
+; (scan until LF "|" LF)
+; or explicitly reported in content-length.
+
+routing-header	= *routing-modifier
+entity-header	= *sync-operation *entity-modifier
+content		= entity-header [ body LF ]
+content-length	= [ length ] LF
+
+routing-modifier= operator variable ( simple-arg / LF )
+sync-operation  = ( "=" LF / "?" LF )
+entity-modifier = operator variable entity-arg
+entity-arg	= simple-arg / binary-arg / LF
+
+body		= method [ LF data ]
+
+operator	= "=" / ":" / "+" / "-" / "?" / "!" / "@"
+simple-arg	= HTAB text-data LF
+binary-arg	= SP length HTAB binary-data LF
+
+length		= 1*DIGIT
+binary-data	= *OCTET
+		; a length byte long byte sequence
+
+method		= 1*kwchar
+variable	= 1*kwchar
+text-data	= *nonlchar
+
+data		= *OCTET
+		; amount of bytes as given by length or until
+		; an (LF "|" LF) sequence has been encountered
+
+nonlchar	= %x00-09 / %x0B-FF
+		; any byte except \n
+kwchar		= %x30-39 / %x41-5A / %x61-7A / "_"
+		; alphanumeric or _
+#+END_SRC

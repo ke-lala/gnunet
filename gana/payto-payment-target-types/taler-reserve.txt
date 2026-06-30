@@ -1,0 +1,21 @@
+Structure is
+
+     payto://taler-reserve/$HOSTNAME/$PUBLIC_KEY
+
+where $HOSTNAME is a domain name of an exchange operator
+and $PUBLIC_KEY is an Ed25519 public key identifying the
+long-term reserve public key of a GNU Taler wallet.
+
+Used in GNU Taler to identify a wallet as the target of a
+payment.
+
+The "receiver-name" is typically set to "wallet" as often
+the actual name of the owner of the wallet is unknown.
+
+We use
+     payto://taler-reserve-http/$HOSTNAME/$PUBLIC_KEY
+
+if the exchange service at $HOSTNAME is only reachable
+via HTTP. This is usually only used for testing and
+generally not supported in production where HTTPS is
+required.

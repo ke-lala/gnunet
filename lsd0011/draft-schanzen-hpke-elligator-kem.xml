@@ -1,0 +1,502 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+<!ENTITY RFC1034 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
+<!ENTITY RFC1035 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC1928 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1928.xml">
+<!ENTITY RFC2119 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!--<!ENTITY RFC2693 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2693.xml">-->
+<!ENTITY RFC2782 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2782.xml">
+<!ENTITY RFC3629 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
+<!ENTITY RFC3686 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+<!ENTITY RFC3826 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3826.xml">
+<!ENTITY RFC4033 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
+<!ENTITY RFC5237 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5237.xml">
+<!--<!ENTITY RFC3912 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3912.xml">-->
+<!ENTITY RFC5890 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5890.xml">
+<!ENTITY RFC5895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5895.xml">
+<!ENTITY RFC6066 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
+<!ENTITY RFC6761 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
+<!ENTITY RFC6895 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6895.xml">
+<!ENTITY RFC6979 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6979.xml">
+<!ENTITY RFC7363 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7363.xml">
+<!ENTITY RFC8806 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8806.xml">
+<!ENTITY RFC7748 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7748.xml">
+<!ENTITY RFC8126 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8126.xml">
+<!ENTITY RFC8174 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8244 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8244.xml">
+<!ENTITY RFC8324 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8324.xml">
+<!ENTITY RFC8499 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8499.xml">
+<!ENTITY RFC9106 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9106.xml">
+<!ENTITY RFC9180 PUBLIC '' "http://xml.resource.org/public/rfc/bibxml/reference.RFC.9180.xml">
+<!ENTITY I-D.ietf-dnsop-alt-tld PUBLIC '' "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-alt-tld.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude"
+     category="info"
+     docName="draft-schanzen-hpke-elligator-kem-00"
+     ipr="trust200902"
+     obsoletes="" updates=""
+     submissionType="independent" 
+     xml:lang="en"
+     version="3">
+  <!-- xml2rfc v2v3 conversion 2.26.0 -->
+  <front>
+    <title abbrev="The HPKE Elligator KEM">
+      The HPKE Elligator KEM
+    </title>
+    <seriesInfo name="Internet-Draft" value="draft-schanzen-hpke-elligator-kem-00"/>
+    <author fullname="Martin Schanzenbach" initials="M." surname="Schanzenbach">
+      <organization>Fraunhofer AISEC</organization>
+      <address>
+        <postal>
+          <street>Lichtenbergstrasse 11</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>martin.schanzenbach@aisec.fraunhofer.de</email>
+      </address>
+    </author>
+    <author fullname="Pedram Fardzadeh" initials="P." surname="Fardzadeh">
+      <organization>Technische Universität München</organization>
+      <address>
+        <postal>
+          <street>Boltzmannstrasse 3</street>
+          <city>Garching</city>
+          <code>85748</code>
+          <country>DE</country>
+        </postal>
+        <email>pedram.fardzadeh@tum.de</email>
+      </address>
+    </author>
+
+
+    <!-- Meta-data Declarations -->
+    <area>General</area>
+    <workgroup>Independent Stream</workgroup>
+    <keyword>transport protocols</keyword>
+    <abstract>
+      <t>
+        This document contains the GNUnet communicator
+        specification.
+      </t>
+      <t>
+        This document defines the normative wire format of communicator protocols,
+        cryptographic routines and security
+        considerations for use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to inform readers about the
+        function of GNUnet communicators, guide future communicator implementations, and ensure
+        interoperability among implementations including with the pre-existing
+        GNUnet implementation.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="introduction" numbered="true" toc="default">
+      <name>Introduction</name>
+      <t>
+        Diffie-Hellman-based KEMs (DHKEMs) allow us to securely establish a secret between two parties.
+        However, an observer can quickly identify the exchanged encapsulation in DHKEMs as public keys.
+        In the presence of a passive eavesdropping attacker, packets could drop based on this information,
+        preventing communication between peers as outlined in <xref target="BHKL13"/>.
+        The presented solution in  <xref target="BHKL13"/> is called "Elligator" and allows us to produce random-looking
+        representations of curve points.
+        This leaves an attacker with fewer options: either do nothing or intercept most random-looking packets,
+        thereby potentially disrupting a large part of today's internet communication.
+      </t>
+      <t>
+        In the case of Montgomery curves, such as Curve25519, a point [X, Y] on that curve (e.g., the ephemeral public key) follows the equation 
+        <tt>Y^2 = X^3 + A * X^2 + X mod P</tt>, where A and P are parameters for Curve25519 specified in Section 4.1 of <xref target="RFC7748"/>. For any 
+        valid x-coordinate, the left side of the equation is always a quadratic number. An attacker could read the x-coordinate
+        and verify if this property holds. While this property holds for any valid Curve25519 point, it only holds for a 
+        random number in about 50% of the cases. By observing multiple communication attempts, an attacker can be sure that curve points are being sent if the property consistently holds. 
+        To circumvent this attack, curve points should be encoded into property-less numbers, making valid and invalid curve points indistinguishable 
+        to an outside observer.
+        The Elligator encoding function (also known as the "inverse map") and decoding function (also known as the "direct map") implement this feature. 
+      </t>
+      <t>
+        In this document, we define and use an Elligator transformation for X25519 curve points based on the Curve25519 transformations
+        in <xref target="BHKL13"/> to be used in a Key Encapsulation Mechanim (KEM) for use
+        in HPKE <xref target="RFC9180"/>
+        and its security considerations for use by implementers.
+      </t>
+      <t>
+        This specification was developed outside the IETF and does not have
+        IETF consensus.  It is published here to guide implementers
+        and ensure interoperability among implementations.
+      </t>
+      <section numbered="true" toc="default">
+        <name>Requirements Notation</name>
+        <t>
+          The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
+          when, they appear in all capitals, as shown here.
+        </t>
+      </section>
+    </section>
+    <section anchor="notation" numbered="true" toc="default">
+      <name>Notation</name>
+      <t>
+        We use the notation and terminology of <xref target="RFC9180"/> throughout
+        this document.
+        In addition, we define:
+      </t>
+     <dl>
+       <dt>coinFlip()</dt>
+       <dd>
+         A helper function that returns "heads" or "tails". Each result is
+         returned with a likelihood of 50%.
+       </dd>
+     </dl>    </section>
+    <section anchor="elligator_dhkem" numbered="true" toc="default">
+      <name>Elligator DHKEM</name>
+      <t>
+        The Elligator HPKE DHKEM utilizes Elligator to encode and decode the ephemeral public keys
+        as described in Section 5 of <xref target="BHKL13"/>.
+        We define our KEM analogous to <xref target="RFC9180"/> Section 4.
+        The <tt>kem_id</tt> in the <tt>suite_id</tt> for the Elligator KEM is <tt>TBD</tt>
+      </t>
+      <t>
+        The <tt>ExtractAndExpand()</tt>, <tt>Encap()</tt>
+        and <tt>Decap()</tt> functions (and their authenticated variants) can remain unchanged and <bcp14>MUST</bcp14> be
+        implemented as defined in Section 4.1 of <xref target="RFC9180"/>.
+        The serialization functions <tt>SerializePublicKey</tt> and <tt>DeserializePublicKey</tt> are defined in the following for Curve25519.
+      </t>
+      <section anchor="elligator_dhkem_keygen" numbered="true" toc="default">
+        <name>GenerateKeyPair()</name>
+        <t>
+          First, not all X25519 key pairs are suitable candidates for Elligator.
+          In particular, not all Curve25519 points have the property that the Elligator encoding and subsequent
+          decoding result in the original point (See <xref target="security_elligator"/> for details).
+          To create a Curve25519 point that can be used with Elligator, one needs to find a curve point
+          for which this property holds.
+          When generating a key pair suitable for Elligator, the general idea is to create both a random high-order point and a low-order point.
+          Adding them together results in a curve point that is evenly distributed on the whole curve.
+          One heuristic is to generate random key pairs until one such point is found:
+        </t>
+        <t>
+          Let <tt>G</tt> be the generator of the prime order group of Ed25519 and <tt>H</tt> the generator of the low order subgroup of
+          Ed25519.
+          <tt>EdToCurve()</tt> is a function that converts Ed25519 points to their corresponding Curve25519 points.
+          We define "GenerateElligatorKeyPair()" as follows:
+        </t>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+      GenerateElligatorKeyPair():
+        VALID := 0
+        while(!VALID):
+          skX := random(Nsk)
+          skX[0] &= 24
+          skX[31] &= 127
+          skX[31] |= 64
+          E_high := skX * G
+          E_low := (skX mod 8) * H
+          E := E_high + E_low
+          pkX := EdToCurve(E)
+          if ElligatorDec(ElligatorEnc(pkX)) == pkX:
+            return (skX,pkX)
+          ]]></artwork>
+        <t>
+          We operate on the Edwards representation for the key generation because the necessary
+          low-order point additions are more efficient in most implementations than they would be in their Montgomery form.
+          A conversion from Edwards to their birationally equivalent Montgomery form is always possible and found in
+          most cryptographic library implementations.
+        </t>
+        <t>
+          The <tt>GenerateKeyPair</tt> algorithm <bcp14>MUST</bcp14> be implemented to produce a key pair suitable for
+          Elligator.
+          The <tt>GenerateElligatorKeyPair()</tt> algorithm defined here is <bcp14>RECOMMENDED</bcp14>.
+          Other, more efficient key generation algorithms <bcp14>MAY</bcp14> be used.
+        </t>
+      </section>
+      <section anchor="elligator_dhkem_serialize" numbered="true" toc="default">
+        <name>SerializePublicKey()</name>
+        <t>
+          The serialization functions incorporate the Elligator inverse and direct map functions to obfuscate a curve
+          point.
+          The Elligator literature calls the obfuscated curve point a "representative". In the following, the "representative"
+          is named pkXm, where X stands for any of the roles defined in <xref target="RFC9180"/>.
+        </t>
+        <t>
+          Let <tt>A</tt> and <tt>P</tt> be the parameters for Curve25519 as specified in section 4.1 of <xref target="RFC7748"/>.
+          Further, let <tt>X</tt> be any valid x-coordinate of a Curve25519 point, <tt>L()</tt> a function that computes the
+          Legendre symbol of a field element with regard to the odd prime <tt>P</tt>.
+          Let <tt>sqrt()</tt> denote the square root operation within the field. As each square number has two roots, we need to 
+          define the notion of positive and negative numbers. There are multiple valid ways to partition the field 
+          elements. For this Elligator, we follow the recommendations of the paper in section 5.1 of <xref target="BHKL13"/> and 
+          choose <tt>{0,..., (P-1)/2}</tt> as the set of positive numbers, and consequently <tt>{(P-1)/2 + 1,...,P-1}</tt> as the 
+          set of the  negative numbers. Both Elligator's inverse and direct map require us to define a constant non-square number 
+          of the finite field. Let <tt>U := sqrt(-1)</tt> be this number.
+          The resulting serialization algorithm for the HPKE KEM can then be described as:
+        </t>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+      SerializeElligatorPublicKey(pkX):
+        if coinFlip() == 1:
+          pkXm :=  sqrt(-pkX / ((pkX + A) * U))
+        else:
+          pkXm :=  sqrt(-(pkX + A) / (U * X))
+        if coinFlip() == 1:
+          pkXm[31] |= 128
+        if coinFlip() == 1:
+          pkXm[31] |= 64
+        return pkXm
+        ]]></artwork>
+        <t>
+          Note that SerializeElligatorPublicKey(pkX) represents Elligator's inverse map
+          with a slight modification: The resulting representative of the inverse map is strictly smaller than 2^254 - 9. Therefore, 
+          the most and second most significant bits are always zero, an obvious property an attacker could observe. We avoid this 
+          problem by randomly flipping both bits. The target peer will ignore these bits after reception by setting those bits back to zero.
+          Similarly, as there are always two roots for each square number, we randomly select one or the other upon each serialization.
+        </t>
+      </section>
+      <section anchor="elligator_dhkem_deserialize" numbered="true" toc="default">
+        <name>DeserializePublicKey()</name>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+      DeserializeElligatorPublicKey(pkXm):
+        pkXm[31] &= 63
+        V := -A / (1 + U * pkXm^2)
+        E := L(V^3 + A * V^2 + V)
+        pkX := E * V - (1 - E)(A / 2)
+        return pkX
+        ]]></artwork>
+        <t>
+          Note that DeserializeElligatorPublicKey(pkX) represents Elligator's direct map.
+          We must, and can safely, clear the most and second most significant bits that were set randomly as
+          elaborated above before reconstructing the square root.
+        </t>
+      </section>
+    </section>
+    <section anchor="security" numbered="true" toc="default">
+      <name>Security and Privacy Considerations</name>
+      <section anchor="security_elligator" numbered="true" toc="default">
+        <name>Elligator</name>
+      <t>
+        Most modern implementations of Curve25519 only generate points from its prime 
+        subgroup to circumvent known attacks for which points not within the prime subgroup are susceptible. Those attacks are not an 
+        issue in our case as we use the ephemeral secret key only once for computing key material. The exclusive use of the prime subgroup is a recognizable 
+        property that an outside observer can easily detect, even when using the encoding function. An attacker could decode the suspected 
+        parts of packets to the corresponding Curve25519 points and check if the resulting points are always in the prime subgroup. To circumvent 
+        this attack, we must randomly choose the ephemeral key pair from the whole curve as defined in "GenerateElligatorKeyPair()".
+      </t>
+        <t>
+          The intuition behind elligator is based on the following idea: The direct map (here DeserializeElligatorPublicKey(r))
+          expects a random field element r. The value r is mapped to two values, for which only one coordinate is a valid Curve25519 x-coordinate.
+          One can show the pair of values V_1 := -A / (1 + U * r^2) and V_2 := -A * U * r^2 (1 + U * r^2) always fulfill this property,
+          based on the fact that U is a non-square number in the field. The direct map first computes V_1 and checks if V_1 fulfills the curve
+          equation. If it does, it returns V_1; otherwise, V_2 is computed and returned instead. The inverse map, 
+          (here SerializeElligatorPublicKey(V)) reverses this process and computes the corresponding field element of a valid x-coordinate. 
+          Note that for encode and decode public keys, we reverse the call order of the direct and inverse map: First,
+          the inverse map is called on the ephemeral public key to retrieve the representative r. This representative is then send to the 
+          receiving peer, who calls the direct map to retrieve the corresponding public key. 
+        </t>
+        <t>
+          Note that both for a value r and its negative counterpart -r (in the finite field), the inverse map function will result in the same 
+          x-coordinate. Moreover, for two different valid x-coordinates, the resulting representatives of the corresponding encoding calls are 
+          different. Conversely, we can't decode both representatives back to their original x-coordinate. This is why the sender 
+          eventually tries several random key pairs in GenerateElligatorKeyPair() to create a valid public key that can be used 
+          for a key exchange. Also note that this effectively reduces the entropy of our public keys by 1 bit, which is tolerable.
+        </t>
+        <t>
+          In <xref target="BHKL13"/>, Elligator's inverse map takes the sign of y-coordinate as an additional input parameter. Its value determines 
+          which of the two terms is used instead of our random selection. Due to 
+          known attacks, we also skip the calculation of the corresponding y-coordinate in the decoding function. 
+          We omitted the y-coordinate part of both functions because Curve25519 points are solely represented by their x-coordinate in modern cryptosystems. 
+          Nevertheless, the desired feature of Elligator is still ensured.
+        </t>
+      </section>
+      <section anchor="security_aead" numbered="true" toc="default">
+        <name>Combination with AEAD Encryption</name>
+        <t>
+          When using the Elligator KEM in combination with AEAD encryption schemes, care must be taken to ensure that the
+          ciphertext produced by the AEAD cipher is also indistinguishable from random.
+          The AEAD schemes listed in <xref target="RFC9180"/> use GCM and Poly1305 authentication tags, which
+          should result in ciphertexts that are indistinguishable from random.
+          However, future AEAD schemes and, in particular, their authenticators may not exhibit the same
+          cryptographic properties.
+          This should be considered when assembling HPKE suites with the Elligator KEM.
+        </t>
+      </section>
+    </section>
+    <!-- gana -->
+    <section>
+      <name>IANA Considerations</name>
+      <t>
+        The "HPKE KEM Identifiers" registry was amended with
+        the values from <xref target="kemid-values"/>.
+      </t>
+      <table anchor="kemid-values" align="center">
+        <name slugifiedName="name-kem-ids">KEM IDs</name>
+        <thead>
+          <tr>
+            <th align="left" colspan="1" rowspan="1">Value</th>
+            <th align="left" colspan="1" rowspan="1">KEM</th>
+            <th align="left" colspan="1" rowspan="1">Nsecret</th>
+            <th align="left" colspan="1" rowspan="1">Nenc</th>
+            <th align="left" colspan="1" rowspan="1">Npk</th>
+            <th align="left" colspan="1" rowspan="1">Nsk</th>
+            <th align="left" colspan="1" rowspan="1">Auth</th>
+            <th align="left" colspan="1" rowspan="1">Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td align="left" colspan="1" rowspan="1">0x0022</td>
+            <td align="left" colspan="1" rowspan="1">DHKEM(X25519+Elligator, HKDF-SHA256)</td>
+            <td align="left" colspan="1" rowspan="1">32</td>
+            <td align="left" colspan="1" rowspan="1">32</td>
+            <td align="left" colspan="1" rowspan="1">32</td>
+            <td align="left" colspan="1" rowspan="1">32</td>
+            <td align="left" colspan="1" rowspan="1">yes</td>
+            <td align="left" colspan="1" rowspan="1">
+            This.I-D</td>
+          </tr>
+        </tbody>
+      </table> 
+    </section>
+    <section>
+         <name>Implementation and Deployment Status</name>
+         <t>
+         There is one implementation conforming to this specification, written in C. 
+         The implementation is part of <xref target="GNUnet"/> and represents the original and reference implementation.
+         </t>
+         <t>
+         The basic Elligator primitives GenerateKeyPair(), SerializePublicKey() and DeserializePublicKey() 
+         are present in <xref target="GNUnetElligator"/>. The corresponding KEM primitives are part of <xref target="GNUnetHPKE"/>.
+         </t>
+         </section>
+    <!-- <section>
+    <name>Acknowledgements</name>
+    <t>
+    FIXME
+    </t>
+    </section> -->
+  </middle>
+  <back>
+    <references>
+      <name>Normative References</name>
+      &RFC2119;
+      &RFC7748;
+      &RFC8174;
+      &RFC9180;
+
+    </references>
+    <references>
+      <name>Informative References</name>
+      <reference anchor="BHKL13" target="https://eprint.iacr.org/2013/325.pdf">
+        <front>
+          <title>Elligator: Elliptic-curve points indistinguishable from uniform random strings</title>
+          <author initials="D.J" surname="Bernstein"
+                  fullname="Daniel J.  Bernstein">
+          </author>
+          <author initials="M." surname="Hamburg"
+                  fullname="Mike Hamburg">
+          </author>
+          <author initials="A." surname="Krasnova"
+                  fullname="Anna Krasnova">
+          </author>
+          <author initials="T." surname="Lange"
+                  fullname="Tanja Lange">
+          </author>
+          <date month="August" year="2013" />
+        </front>
+      </reference>
+      <!--<reference anchor="LSD0007" target="https://lsd.gnunet.org/lsd0007">
+        <front>
+          <title>The GNUnet communicators</title>
+          <author initials="M" surname="Schanzenbach"
+                  fullname="Martin Schanzenbach">
+          </author>
+          <author initials="C." surname="Grothoff"
+                  fullname="Christian Grothoff">
+          </author>
+          <author initials="P." surname="Fardzadeh"
+                  fullname="Pedram Fardzadeh">
+          </author>
+          <date month="July" year="2024" />
+        </front>
+      </reference>-->
+    <reference anchor="GNUnet" target="https://git.gnunet.org/gnunet.git">
+        <front>
+          <title>gnunet.git - GNUnet core repository</title>
+          <author initials="GNUnet e.V." surname=""
+                  fullname="">
+          </author>
+          <date month="" year="2023" />
+        </front>
+    </reference>
+    <reference anchor="GNUnetElligator" target="https://git.gnunet.org/gnunet.git/tree/src/lib/util/crypto_elligator.c">
+        <front>
+          <title>gnunet.git - Elligator primitives implementation in GNUnet core repository</title>
+          <author initials="M" surname="Schanzenbach"
+                  fullname="Martin Schanzenbach">
+          </author>
+          <author initials="P." surname="Fardzadeh"
+                  fullname="Pedram Fardzadeh">
+          </author>
+          <date month="" year="2023" />
+        </front>
+    </reference>
+    <reference anchor="GNUnetHPKE" target="https://git.gnunet.org/gnunet.git/tree/src/lib/util/crypto_hpke.c">
+        <front>
+          <title>gnunet.git - HPKE Primitive implementation in GNUnet core repository</title>
+          <author initials="M" surname="Schanzenbach"
+                  fullname="Martin Schanzenbach">
+          </author>
+          <author initials="P." surname="Fardzadeh"
+                  fullname="Pedram Fardzadeh">
+          </author>
+          <date month="" year="2023" />
+        </front>
+    </reference>
+    </references>
+    
+    
+    <section>
+      <name>Elligator implementation</name>
+      <t>
+        This section provides a test vector for the Elligator KEM and should aid in verifying implementations. 
+        Note that Elligator has two parameters: the set of positive and negative numbers, and a non-square number U
+        within the finite field, as described in section 5.1 of <xref target="BHKL13"/>. The displayed test vectors assume that the set of positive 
+        numbers is defined as {0,...,(P-1)/2}, the set of negative numbers as {(P-1)/2 + 1,...,P−1} and U is the non-square number 
+        sqrt(-1). The depicted coin flips are used in the order of the coinFlip() calls in SerializeElligatorPublicKey(pkX), namely 
+        coin flip 1 for choosing the pkXm term, coin flip 2 for the MSB and coin flip 3 for the second MSB.
+        Unless indicated otherwise, the test vectors are provided as little-endian hexadecimal byte arrays.
+      </t>
+      <section>
+        <name>Elligator KEM</name>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+coin flip 1: 0
+coin flip 2: 1
+coin flip 3: 1
+pkEm:
+3f73ee0dd1970ff957f7ec15e0b5151166be3046e6a8b0ee53beca395b74e42c
+
+skEm:
+09395966d6d1c493b9917dd12c8dd24e2c05c081c98a67eb2d6dff622ec9c069
+
+skRm:
+f33887a8562dad5151e9289a0afa1301ccc698917850d56ea409a9949497baa4
+
+pkRm:
+3febadac122d397725ff580f6ce9a3e1c1c4a7de19807f13d383f2f9b6467136
+
+enc:
+da0f7edaefed18a99f0b73a789e51c4c6e80664190ae3c8ae4e95b9d926a34f7
+
+key:
+46eff65b5313f41fbaffc7adf98f5df03ab4e4f46ae62a2c7ecbe1f0ae83280b
+        ]]></artwork>
+      </section>
+    </section>
+  </back>
+</rfc>

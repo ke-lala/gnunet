@@ -1,0 +1,13 @@
+prefix=/home/user/AndroidStudioProjects/gnunet-android/android_studio/distribution/libunistring/lib/arm64-v8a
+exec_prefix=${prefix}
+libdir=${exec_prefix}
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: unistring
+Description: libunistring
+Version: f888a713b446f02a8af829848ed15cbcd4679b32
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lunistring
+Cflags: -I${includedir}

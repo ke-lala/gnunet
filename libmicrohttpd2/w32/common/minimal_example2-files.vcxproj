@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MhdSrc)examples2\minimal_example2.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libmicrohttpd2.vcxproj">
+      <Project>{9baa0888-2b01-42db-a3c8-3f84a64aabc7}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

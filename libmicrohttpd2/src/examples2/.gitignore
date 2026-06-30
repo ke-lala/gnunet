@@ -1,0 +1,8 @@
+/demo
+/minimal_*[a-z0-9_][a-z0-9_][a-z0-9_]
+/*_example
+/*_example?
+/*example_*[a-z0-9_][a-z0-9_][a-z0-9_]
+!*.c
+!*.h
+json_echo

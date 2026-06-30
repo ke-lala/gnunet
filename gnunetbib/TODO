@@ -1,0 +1,90 @@
+- GNUnet:
+  - Fix up gnunetbib.bib so that make no longer throws errors:
+    - Add PDF links or remove the relevant key requirement
+    - Fix some faulty pages/publication types/dates in the bib
+  - Organize into categories
+  - Create the subdomain for this, docs.gnunet.org, where it should
+    be deployed in /bib/.
+  - stylistic branding (css etc) to match whatever new gnunet.org will use.
+  - save the keywords! We have a whole bunch of keywords here https://gnunet.org/bibliography/keywords
+    and anonbib supports categorizing / tagging.
+  - improve the unique title/names (the first text appearing in the bib record).
+
+  - BibTeX.py shortcomings fixing:
+    - add better handling for when 'author' (or: the lack of 'author') returns NoneType:
+      user@abyayala ~/src/gnunet/gnunetbibv1/anonbib [env]$ make | grep "author"
+      ERROR: 2009_16 has no author field
+      ERROR: 2008_3 has no author field
+      ERROR: 2006_18 has no author field
+      ERROR: 2005_8 has no author field
+      ERROR: 2004_8 has no author field
+      ERROR: 2001_1 has no author field
+      Traceback (most recent call last):
+      File "writeHTML.py", line 244, in <module>
+           writePageSet(config, bib, tag)
+      File "writeHTML.py", line 154, in writePageSet
+           cache_url_path=cache_url_path)
+      File "writeHTML.py", line 108, in writeHTML
+           base_url=root)
+      File "writeHTML.py", line 49, in writeBody
+           print >>f, e.to_html(cache_path=cache_path, base_url=base_url)
+      File "/home/user/src/gnunet/gnunetbibv1/anonbib/BibTeX.py", line 611, in to_html
+           htmlAuthors = [a.htmlizeWithLink() for a in self.parsedAuthor]
+      TypeError: 'NoneType' object is not iterable
+
+- make the code more readable, which more or less means:
+  - modularize it
+    - and in conclusion also make it a package + script
+  - follow good python coding standards (for example: just look at
+    what python2-pylint tells you. Try to use really human readable
+    names - don't use 'e', 'a', etc.
+  - instead of printing to a file, explicitly write to it.
+
+- Produce readable error output which fits into < 80 characters
+- Remove duplicate records
+- checks: detect duplicate records
+
+- Add @url to BibTeX.
+- Copy www_section content to @keywords again
+- Produce valid bibtex output!
+
+- support python3 (optional: backwards compat.)
+
+- Longterm:
+  Consider switching to https://bitbucket.org/pybtex-devs/pybtex/
+
+- HTML output
+  - switch to html5, css3
+  - make it responsive
+
+- More general tasks
+        . Know about @book
+	. Write unit tests for everything
+	. Make name parsing vaguely sane
+        - Maybe uncrossref in tmp.bib
+        - Maybe pull important papers to the start of their sections?
+        . Clean \{}~ when going from note to url; add \{}~ when making
+          note from url.
+        . Also clean \_ to _ and back
+        - Look for urls in wherepublished.
+        . Forgive newlines in wherepublished, note.
+        - When sorting by date, entries with unknown months go into a magic
+          "month zero" before January.  Is this right?
+	- Strip unused features.
+	o Take a configuration file on the command line instead of just
+	  importing config.py.
+
+- Cache tasks
+	- Generate a list of broken links
+	- Re-download all cached items if requested
+	- Clear dead items from cache
+	- Use HTTP HEAD requests to decide whetherto update stale
+          elements in cache.
+	- Add ability to honor a "www_no_cache={1}" option for entries
+          if the authors ask us not to cache them.
+	- Maybe, add ability to cache images from an HTML page.
+
+- Reconcile tasks
+        - Document it.
+        - Notice when there is new or different information of certain kinds
+          (pages, dates, etc) in the new information.

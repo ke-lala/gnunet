@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_account"
+        android:title="Account" />
+    <item android:id="@+id/nav_share_contact"
+        android:title="Share Contact" />
+    <item android:id="@+id/nav_list_attributes"
+        android:title="List Attributes" />
+</menu>

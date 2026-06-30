@@ -1,0 +1,1 @@
+Das Docker Image unter https://github.com/compiaffe/gnunet-docker ist nicht funktionsfähig. Im GNUnet repo (ssh://git@gnunet.org/gnunet.git) findet man unter contrib/docker/ ein funktionierendes Docker file.

@@ -1,0 +1,14 @@
+Program: gnunet-fuse
+Homepage: https://gnunet.org/
+Maintainer: Christian Grothoff <christian@grothoff.org>
+Bug reports: https://bugs.gnunet.org
+Security related bug reports: security@gnunet.org
+License: GPLv3+ 
+
+Primary developers (0.10.x series):
+Christian Grothoff <christian@grothoff.org>
+
+Code contributions also came from:
+Mauricio Günther
+Matthias Wachs
+Naomi Phillips

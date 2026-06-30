@@ -1,0 +1,19 @@
+#!/bin/sh
+# prerm script for ascension-bind
+#
+# see: dh_installdeb(1)
+# load debconf library
+set -e
+
+mkdir -p /etc/ascension.d/
+
+# remove systemd stuff
+deb-systemd-invoke stop gnunet-ascension
+deb-systemd-invoke disable gnunet-ascension
+
+# remove the systemd files
+unlink /lib/systemd/system/gnunet-ascension.service
+rm /etc/ascension.d/gnunet-ascension.service
+
+exit 0
+#DEBHELPER#

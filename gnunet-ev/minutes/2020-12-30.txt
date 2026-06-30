@@ -1,0 +1,34 @@
+# Gnunet e.V. Mitgliederversammlung 2020
+
+Online-meeting, gnunet.org Mumble
+
+# Teilnehmer
+  - Guests: keine
+  - Members: fdold, grothoff, schanzen, ch3, t3sserakt
+
+# Finanzbericht
+  - Details: siehe bilanz2020.tex
+    (https://fdold.eu/bilanz2020.pdf)
+
+# Vorstandsbericht:
+  - Vereinsanschrift wird geändert 2021 auf Lenggries b. MUC
+  - Jaehrliche MV von moeglichst "beim CCC" auf moeglichst "online"
+
+# Entlastung
+  - Es wurde einstimmig fuer die Entlastung des Vorstands gestimmt.
+
+# Vorstandswahl
+  - neuer Finanzwart: Florian Dold
+  - neuer Präsident: Martin Schanzenbach
+  - neuer Vizepräsident: t3sserakt
+  - neuer Beisitzer: Christian Grothoff
+  - neuer Beisitzer: ch3
+  - einstimmig gewählt
+
+ # Spending fuer GNU
+ - GNUnet e.V. ist im Prinzip bereit, einen Spendentopf fuer GNU/GHM zu
+   verwalten. Die genauen Regeln sind noch mit GNU zu vereinbaren und
+   muessen in den Rahmen des Vereinszwecks passen. Die
+   steuerlichen Aspekte sind hier noch zu ueberpruefen. Diese koennten
+   insbesondere zu einer jaerhlichen Obergrenze fuehren.
+   => einstimmig beschlossen.

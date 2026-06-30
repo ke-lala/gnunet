@@ -1,0 +1,80 @@
+Python bindings for GNU libextractor
+
+About libextractor
+==================
+
+ libextractor is a simple library for keyword extraction.  libextractor
+ does not support all formats but supports a simple plugging mechanism
+ such that you can quickly add extractors for additional formats, even
+ without recompiling libextractor. libextractor typically ships with a
+ dozen helper-libraries that can be used to obtain keywords from common
+ file-types.
+
+ libextractor is a part of the GNU project (http://www.gnu.org/).
+
+Dependencies
+============
+
+ * python >= 2.7
+    web site: http://www.python.org/
+
+ * libextractor >= 1.6
+    web site: http://www.gnu.org/software/libextractor/
+
+ * ctypes >= 0.9
+    web site: http://starship.python.net/crew/theller/ctypes/
+
+ * setuptools (optional)
+    web site: http://cheeseshop.python.org/pypi/setuptools
+
+Performances
+============
+
+ Surprisingly the original C native library is only 20% faster than
+ this python ctypes bindings. Here a quick and dirty bench:
+
+ The C extract on Extractor test files:
+
+ $ time `find Extractor/test -type f -not -name "*.svn*"|xargs extract`
+
+  real    0m0.403s
+  user    0m0.303s
+  sys     0m0.061s
+
+ Same data with the ctypes python bindings:
+
+ $ time `find Extractor/test -type f -not -name "*.svn*"|xargs extract.py`
+
+  real    0m0.661s
+  user    0m0.529s
+  sys     0m0.074s
+
+Install
+=======
+
+ Using the tarball (as root):
+ # python setup.py install
+
+Copyright
+=========
+
+ Copyright (C) 2006 Bader Ladjemi <bader@tele2.fr>
+ Copyright (C) 2011 Christian Grothoff <christian@grothoff.org>
+ Copyright (C) 2017, 2018 Nikita Gillmann <nikita@n0.is>
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ see COPYING for details
+

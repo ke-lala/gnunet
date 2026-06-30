@@ -1,0 +1,5 @@
+
+    "{{Identifier}}": {
+      "required": {{Required = "true" ? 'true' : 'false'}},
+      "type": "{{Type}}"
+    },

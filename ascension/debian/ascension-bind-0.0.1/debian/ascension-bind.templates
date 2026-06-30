@@ -1,0 +1,12 @@
+Template: ascension-bind/zones
+Type: multiselect
+Choices: ${zonelist}
+Default: ${defaults}
+_Description: Which zones do you want to migrate to the GNU Name System?
+ Please select the zones you want to have migrated into the GNU Name System.
+
+Template: ascension-bind/transfer-allowed
+Type: error
+_Description: Zone transfer is enabled on some zones?
+ Ascension has found zones that have zone transfer enabled. Please go ahead and
+ check the configuration of the zones and allow at least transfer on localhost.

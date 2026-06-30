@@ -1,0 +1,5 @@
+The main registry is populated from the IANA registry.
+
+The 'extras.rec' may be populated with additional status
+codes that have significant usage and do not conflict with
+IANA registry entries.
